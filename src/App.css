@@ -1,6 +1,7 @@
 .landing {
 	position: relative;
-	background: url('./assets/landing.jpg') no-repeat center center/cover;
+	/* background: url('./assets/landing.jpg') no-repeat center center/cover; */
+	background-color: #AAD8F3;
 	height: 100vh;
 }
 

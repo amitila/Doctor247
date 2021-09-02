@@ -9,7 +9,7 @@ class Login extends Component {
 
   render() {
       return (
-        <div className="App">
+    
           <div className="landing">
             <div className="dark-overlay">
               <div className="landing-inner">
@@ -49,7 +49,7 @@ class Login extends Component {
               </div>
             </div>
           </div>
-        </div>
+  
       );
   }
 }
