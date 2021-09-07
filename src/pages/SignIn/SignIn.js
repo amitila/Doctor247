@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    textField: {
+        border: "#303F9F solid 2px",
+        borderRadius: 5,
+        padding: '5px 0px 0px 10px',
+    },
 }));
 
 export default function SignIn() {
@@ -48,7 +53,8 @@ export default function SignIn() {
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
-                        variant="outlined"
+                        className={classes.textField}
+                        variant="standard"
                         margin="normal"
                         required
                         fullWidth
@@ -59,7 +65,8 @@ export default function SignIn() {
                         autoFocus
                     />
                     <TextField
-                        variant="outlined"
+                        className={classes.textField}
+                        variant="standard"
                         margin="normal"
                         required
                         fullWidth
