@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     },
     dropzone: {
         heigh: "5px",
+    },
+    stretch: {
+        marginTop: "10px",
     }
 }));
 
@@ -44,7 +47,6 @@ const QForm = () => {
                     Đặt câu hỏi cho bác sĩ (miễn phí)
                 </Typography>
                 <TextField
-                    className={classes.textField}
                     variant="standard"
                     margin="normal"
                     required
@@ -53,7 +55,7 @@ const QForm = () => {
                     label="Tiêu đề"
                     name="subject"
                 />
-                <Typography paragraph >
+                <Typography paragraph className={classes.stretch} >
                     Trình bày thông tin bao gồm:<br />
                     1. Giới tính <br />
                     2. Tuổi tác <br />

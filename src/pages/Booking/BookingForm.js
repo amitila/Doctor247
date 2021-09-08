@@ -60,7 +60,7 @@ const bookingTime = [
     { title: '15h30 - 16h', time: "chiều" },
     { title: '16h - 16h30', time: "chiều" },
     { title: "16h30 - 17h", time: "chiều" },
-  ];
+];
 
 const BookingForm = () => {
     const classes = useStyles();
@@ -77,12 +77,12 @@ const BookingForm = () => {
         <div className={classes.paper} >
             <form className={classes.form} noValidate>
                 <Typography variant="h6" className={classes.title} >
-                    Đặt ký lịch khám 
+                    Đăng ký lịch khám
                 </Typography>
 
                 <FormControl>
                     <FormLabel component="legend" >Bạn đặt lịch cho ai</FormLabel>
-                    <RadioGroup>
+                    <RadioGroup row>
                         <FormControlLabel value="me" control={<Radio />} label="Đặt cho bản thân" />
                         <FormControlLabel value="people" control={<Radio />} label="Đặt cho người thân" />
                     </RadioGroup>
@@ -100,56 +100,65 @@ const BookingForm = () => {
                 />
 
                 <Grid container spacing={5}>
-                    <Grid item xs={12} sm={3} className={classes.info}>
-                        <Grid item >
-                            <FormControl component="fieldset">
-                                <FormLabel component="legend">Giới tính</FormLabel>
-                                <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                                    <FormControlLabel value="female" control={<Radio />} label="Nữ" />
-                                    <FormControlLabel value="male" control={<Radio />} label="Nam" />
-                                    <FormControlLabel value="other" control={<Radio />} label="Khác" />
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
+                    <Grid item xs={12} sm={3} className={classes.title}>
+                        <TextField
+                            className={classes.textField}
+                            variant="standard"
+                            margin="normal"
+                            type="number"
+                            required
+                            inputProps={{
+                                min: 1,
+                                max: 130
+                            }}
+                            id="age"
+                            label="Tuổi"
+                            name="age"
+                        />
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Giới tính</FormLabel>
+                            <RadioGroup row aria-label="gender" name="gender1" value={value} onChange={handleChange}>
+                                <FormControlLabel value="female" control={<Radio />} label="Nữ" />
+                                <FormControlLabel value="male" control={<Radio />} label="Nam" />
+                                <FormControlLabel value="other" control={<Radio />} label="Khác" />
+                            </RadioGroup>
+                        </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={9} className={classes.info}>
-                        <Grid item >
-                            <TextField
-                                className={classes.textField}
-                                variant="standard"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="phone"
-                                label="Số điện thoại"
-                                name="phone"
-                            />
+                    <Grid item xs={12} sm={9} className={classes.title}>
+                        <TextField
+                            className={classes.textField}
+                            variant="standard"
+                            margin="normal"
+                            required
 
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <Grid container justifyContent="space-around">
-                                    <KeyboardDatePicker
-                                        placeholder="Chọn ngày khám"
-                                        margin="normal"
-                                        id="date-picker-dialog"
-                                        label="Chọn ngày khám"
-                                        format="dd/MM/yyyy"
-                                        value={selectedDate}
-                                        minDate={new Date()}
-                                        onChange={handleDateChange}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                    <Autocomplete
-                                        id="book-time"
-                                        options={bookingTime}
-                                        getOptionLabel={(option) => option.title}
-                                        style={{ width: 300 }}
-                                        renderInput={(params) => <TextField {...params} label="Khung giờ khám" variant="standard" />}
-                                    />
-                                </Grid>
-                            </MuiPickersUtilsProvider>
-                        </Grid>
+                            id="phone"
+                            label="Số điện thoại"
+                            name="phone"
+                        />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid container justifyContent="space-around">
+                                <KeyboardDatePicker
+                                    placeholder="Chọn ngày khám"
+                                    margin="normal"
+                                    id="date-picker-dialog"
+                                    label="Chọn ngày khám"
+                                    format="dd/MM/yyyy"
+                                    value={selectedDate}
+                                    minDate={new Date()}
+                                    onChange={handleDateChange}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                                <Autocomplete
+                                    id="book-time"
+                                    options={bookingTime}
+                                    getOptionLabel={(option) => option.title}
+                                    style={{ width: 300 }}
+                                    renderInput={(params) => <TextField {...params} label="Khung giờ khám" variant="standard" />}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
                     </Grid>
                 </Grid>
 

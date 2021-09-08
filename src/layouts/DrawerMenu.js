@@ -26,7 +26,7 @@ const DrawerMenu = () => {
     const classes = useStyles();
     return (
         <>
-            <Drawer
+            <Drawer 
                 anchor="right"
                 open={openDrawer}
                 onClose={() => setOpenDrawer(false)}               
