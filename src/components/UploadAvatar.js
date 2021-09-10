@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function UploadAvatar() {
+export default function UploadAvatar(props) {
     const classes = useStyles();
     const [url, setUrl] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
     const imageHandler = (e) => {
@@ -48,7 +48,7 @@ export default function UploadAvatar() {
                     </label>
                 }
             >
-                <Avatar className={classes.large} alt="avatar" src={url} />
+                <Avatar className={classes.large} alt="avatar" src={props.dataFromParent !=="" ? props.dataFromParent : url} />
             </Badge>
             <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={imageHandler} />
         </div>

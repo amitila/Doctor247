@@ -40,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
 
 const QForm = () => {
     const classes = useStyles();
+    const [question] = React.useState([
+        "Xương khớp",
+        "Đau lưng, nhứt mỏi 3 ngày và đã uống thuốc giảm đau",
+        "https://scontent.fdad3-3.fna.fbcdn.net/v/t1.6435-9/64922148_358667398350685_4240578411438800896_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=2xtJ36vD13YAX-TAOsJ&tn=qBeE9dEV8LO_X8tf&_nc_ht=scontent.fdad3-3.fna&oh=80df96e535fe5622a2e081a2f95a3850&oe=615F10C1"
+    ]);
+
     return (
         <div className={classes.paper} >
             <form className={classes.form} noValidate>
@@ -52,6 +58,7 @@ const QForm = () => {
                     required
                     fullWidth
                     id="subject"
+                    value={question[0]}
                     label="Tiêu đề"
                     name="subject"
                 />
@@ -65,6 +72,7 @@ const QForm = () => {
                 </Typography>
                 <TextareaAutosize
                     className={classes.textSize}
+                    value={question[1]}
                     minRows={5}
                     placeholder="Vui lòng trình bày đủ thông tin như hướng dẫn trên để bác sĩ có đủ thông tin và việc hồi đáp sẽ chính xác hơn"
                 >

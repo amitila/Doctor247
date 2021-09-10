@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link as LinkTo } from "react-router-dom";
+import APIService from '../../utils/APIService';
+import Cookies from 'universal-cookie';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,6 +43,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
     const classes = useStyles();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const cookies = new Cookies();
+
+    const handleChangeEmail = (event) => {
+        setEmail(event.target.value);
+    }
+    const handleChangePass = (event) => {
+        setPassword(event.target.value);
+    }
+    
+    const history = useHistory();
+
+    const onSignIn = () => {
+        console.log("clicked");
+        APIService.signIn(email, password, (success, json) => {
+            if(success && json.result){
+                const timestamp = new Date().getTime();
+                const expire = timestamp + (60*60*24*1000*3);
+                const expireDate = new Date(expire);
+                cookies.set("token", json.result.token, {path: '/', expires: expireDate });
+                return history.push("/home");
+            } else {
+                return history.push("/signin");
+            }
+        }) 
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -61,6 +91,7 @@ export default function SignIn() {
                         id="email"
                         label="Địa chỉ email"
                         name="email"
+                        onChange={handleChangeEmail}
                         autoComplete="email"
                         autoFocus
                     />
@@ -70,10 +101,11 @@ export default function SignIn() {
                         margin="normal"
                         required
                         fullWidth
+                        id="password"
                         name="password"
                         label="Mật khẩu"
                         type="password"
-                        id="password"
+                        onChange={handleChangePass}
                         autoComplete="current-password"
                     />
                     <FormControlLabel
@@ -81,11 +113,12 @@ export default function SignIn() {
                         label="Nhớ mật khẩu"
                     />
                     <Button
-                        type="submit"
+                        type="button"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={onSignIn}
                     >
                         Đăng nhập
                     </Button>

@@ -43,7 +43,7 @@ ul {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background-color: #e9d8f4;
+	/* background-color: #e9d8f4; */
 	position: fixed;
 	top: 5px;
 	position: sticky;

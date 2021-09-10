@@ -26,10 +26,19 @@ const DrawerMenu = () => {
     const classes = useStyles();
     return (
         <>
-            <Drawer 
+            <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => setOpenDrawer(!openDrawer)}
+                className={classes.menuContainerIcon}
+            >
+                <MenuIcon />
+            </IconButton>
+            <Drawer
                 anchor="right"
                 open={openDrawer}
-                onClose={() => setOpenDrawer(false)}               
+                onClose={() => setOpenDrawer(false)}
             >
                 <List className={classes.listMenu}>
                     <ListItem divider button onClick={() => setOpenDrawer(!openDrawer)} >
@@ -76,15 +85,6 @@ const DrawerMenu = () => {
                     </ListItem>
                 </List>
             </Drawer>
-            <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={() => setOpenDrawer(!openDrawer)}
-                className={classes.menuContainerIcon}
-            >
-                <MenuIcon />
-            </IconButton>
         </>
     )
 }

@@ -64,7 +64,7 @@ const bookingTime = [
 
 const BookingForm = () => {
     const classes = useStyles();
-    const [value, setValue] = React.useState('female');
+    const [value, setValue] = React.useState('other');
     const handleChange = (event) => {
         setValue(event.target.value);
     };

@@ -24,7 +24,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import { Link } from 'react-router-dom';
-import Logo from './Logo';
+import Logo from './../components/Logo';
 
 const drawerWidth = 240;
 
@@ -128,7 +128,7 @@ export default function PersistentDrawerLeft() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        <Link className={classes.link} to="/home">
+                        <Link anchor="right" className={classes.link} to="/home">
                             <Logo />
                         </Link>
                     </Typography>

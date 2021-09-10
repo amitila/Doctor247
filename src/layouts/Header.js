@@ -197,7 +197,6 @@ export default function PrimarySearchAppBar() {
 					</>
 				) : (
 					<>
-						<DrawerMenu anchor="left" />
 						<Button paragraph color="inherit">
 							<Link className={classes.link} to="/home">
 								<Logo />
