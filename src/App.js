@@ -10,6 +10,7 @@ import Doctors from './pages/ListDoctors';
 import DrawerHeader from './layouts/DrawerHeader';
 import QuestionAnswer from './pages/QuestionAnswer';
 import BookingForm from './pages/Booking';
+import MedicalrRecords from './pages/MedicalRecords';
 import Footer from './layouts/Footer';
 import Home from './pages/Home';
 //import Demo from './components/Demo';
@@ -26,6 +27,7 @@ export default function App() {
 				<Route exact path='/profile' component={Profile} />
 				<Route exact path='/doctors' component={Doctors} />
 				<Route exact path='/appointment' component={BookingForm} />
+				<Route exact path='/medicalrecords' component={MedicalrRecords} />
 				<Route exact path='/question' component={QuestionAnswer} />
 				<Route exact path='/home' component={Home} />
 				<Redirect to="/signin" />

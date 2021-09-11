@@ -23,6 +23,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import { Link } from 'react-router-dom';
 import Logo from './../components/Logo';
 
@@ -155,11 +156,12 @@ export default function PersistentDrawerLeft() {
                         <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>, 
                         <Link className={classes.link} to="/appointment">Đặt lịch khám</Link>, 
                         <Link className={classes.link} to="/profile">Hồ sơ cá nhân</Link>, 
+                        <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
                         <Link className={classes.link} to="/question">Hỏi đáp</Link>
                     ].map((text, index) => (
                         <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>
-                                {[<HomeIcon />, <FormatListNumberedIcon />, <EventIcon />, <AccountBoxIcon />, <HelpIcon /> ][index]}
+                                {[<HomeIcon />, <FormatListNumberedIcon />, <EventIcon />, <AccountBoxIcon />, <ReorderIcon />, <HelpIcon /> ][index]}
                             </ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
