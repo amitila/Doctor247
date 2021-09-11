@@ -15,6 +15,8 @@ import Container from "@material-ui/core/Container";
 import { Link as LinkTo } from "react-router-dom";
 import APIService from '../../utils/APIService';
 import Cookies from 'universal-cookie';
+import { useDispatch } from "react-redux";
+import { updateEmail, updatePassword } from "../../store/userSlice";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -55,11 +57,14 @@ export default function SignIn() {
     }
     
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const onSignIn = () => {
         console.log("clicked");
         APIService.signIn(email, password, (success, json) => {
             if(success && json.result){
+                dispatch(updateEmail(email));
+                dispatch(updatePassword(password));
                 const timestamp = new Date().getTime();
                 const expire = timestamp + (60*60*24*1000*3);
                 const expireDate = new Date(expire);

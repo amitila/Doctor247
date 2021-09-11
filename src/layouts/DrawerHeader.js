@@ -172,7 +172,7 @@ export default function PersistentDrawerLeft() {
                         <Link className={classes.link} to="/signup">Đăng ký</Link>, 
                         <Link className={classes.link} to="/home">Thoát</Link>
                     ].map((text, index) => (
-                        <ListItem button key={text}>
+                        <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>
                                 {[<ExitToAppIcon />, <LockOpenIcon />, <PowerSettingsNewIcon />][index]}
                             </ListItemIcon>
