@@ -94,7 +94,7 @@ export default function DoctorInfo() {
                                 }}
                                 variant="dot"
                             >
-                                <Avatar className={classes.large} alt="Remy Sharp" src="https://scontent-hkt1-1.xx.fbcdn.net/v/t1.6435-9/175913934_2279391532196660_5406418668956314956_n.jpg?_nc_cat=108&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=Ffk7VZUABekAX9tXd32&_nc_ht=scontent-hkt1-1.xx&oh=36ce431668b103817e662513807178a2&oe=6156C8FE" />
+                                <Avatar className={classes.large} alt="Remy Sharp" src="https://img.lovepik.com/element/40163/0436.png_860.png" />
                             </StyledBadge>
                         </Grid>
                         <Grid item>
@@ -109,9 +109,6 @@ export default function DoctorInfo() {
                             </Typography>
                             <Typography variant="h4" component="h2">
                                 Hộ sinh mèo
-                            </Typography>
-                            <Typography color="textSecondary" gutterBottom>
-                                0398296632
                             </Typography>
                             <Typography className={classes.pos} color="textSecondary">
                                 Mã số: BS1002
@@ -165,7 +162,11 @@ export default function DoctorInfo() {
                             Địa chỉ: 222 Trần Hưng Đạo, Q10, TP.HCM
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
+                            Liên hệ: 039 829 6632 (di động) - 0257 312 3456 (điện thoại bàn)
+                        </Typography>
+                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
                             Hình ảnh bác sĩ:
+                            <img src="https://img.lovepik.com/element/40163/0436.png_860.png" alt="bacsi" />
                         </Typography>
                     </Grid>
                 </Grid>

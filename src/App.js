@@ -11,6 +11,7 @@ import DrawerHeader from './layouts/DrawerHeader';
 import QuestionAnswer from './pages/QuestionAnswer';
 import BookingForm from './pages/Booking';
 import MedicalrRecords from './pages/MedicalRecords';
+import Appointment from './pages/Appointment';
 import Footer from './layouts/Footer';
 import Home from './pages/Home';
 //import Demo from './components/Demo';
@@ -21,12 +22,14 @@ export default function App() {
 			<DrawerHeader />
 			<Switch>
 				<Route exact path='/' component={Landing} />
+				<Route exact path='/notification' component={SignIn} />
 				<Route exact path='/signin' component={SignIn} />
 				<Route exact path='/signup' component={SignUp} />
 				<Route exact path='/forgotpass' component={ForgotPass} />
 				<Route exact path='/profile' component={Profile} />
 				<Route exact path='/doctors' component={Doctors} />
-				<Route exact path='/appointment' component={BookingForm} />
+				<Route exact path='/bookingappointment' component={BookingForm} />
+				<Route exact path='/appointment' component={Appointment} />
 				<Route exact path='/medicalrecords' component={MedicalrRecords} />
 				<Route exact path='/question' component={QuestionAnswer} />
 				<Route exact path='/home' component={Home} />

@@ -80,7 +80,7 @@ export default function RecipeReviewCard() {
         <Card className={classes.root}>
             <CardHeader
                 avatar={
-                    <Avatar alt="avatar" src="https://scontent-hkt1-1.xx.fbcdn.net/v/t1.6435-9/64922148_358667398350685_4240578411438800896_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=vDCJHGwROWgAX8ZvDHh&tn=qBeE9dEV8LO_X8tf&_nc_ht=scontent-hkt1-1.xx&oh=5faf90398a6abb27f759e339f566c74c&oe=615727C1" />
+                    <Avatar alt="avatar" src="https://img.lovepik.com/element/40163/0436.png_860.png" />
                 }
                 action={
                     <IconButton aria-label="settings">
@@ -145,9 +145,9 @@ export default function RecipeReviewCard() {
                         <Typography variant="h6" className={classes.title}>
                             Phản hồi từ bệnh nhân
                         </Typography>
-                        <Button autoFocus color="inherit" onClick={handleClose}>
+                        {/* <Button autoFocus color="inherit" onClick={handleClose}>
                             Đặt lịch khám ngay
-                        </Button>
+                        </Button> */}
                     </Toolbar>
                 </AppBar>
                 <DoctorInfo />

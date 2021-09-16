@@ -1,6 +1,8 @@
 import React from 'react'
-import MyProfile from './MyProfile'
+// import MyProfile from './MyProfile'
 import { Container, Grid } from '@material-ui/core'
+// import ProfileCard from './ProfileCard'
+import FormControl from './FormControl';
 
 const index = () => {
     return (
@@ -8,12 +10,17 @@ const index = () => {
             <Grid container spacing={5}>
                 <Grid item xs={12} sm={8}>
                     <Grid item>
-                        <MyProfile />
+                        <FormControl />
+                    </Grid>
+                    <Grid item>
+                       
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <Grid item>
-                        
+                        {/* <ProfileCard />
+                        <ProfileCard />
+                        <ProfileCard /> */}
                     </Grid>
                 </Grid>
             </Grid>

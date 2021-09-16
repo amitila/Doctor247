@@ -24,6 +24,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import ReorderIcon from '@material-ui/icons/Reorder';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Link } from 'react-router-dom';
 import Logo from './../components/Logo';
 
@@ -96,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PersistentDrawerLeft() {
+export default function DrawerHeader() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -154,14 +156,15 @@ export default function PersistentDrawerLeft() {
                     {[
                         <Link className={classes.link} to="/home">Trang chủ</Link>, 
                         <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>, 
-                        <Link className={classes.link} to="/appointment">Đặt lịch khám</Link>, 
-                        <Link className={classes.link} to="/profile">Hồ sơ cá nhân</Link>, 
+                        <Link className={classes.link} to="/bookingappointment">Đặt lịch khám</Link>, 
+                        <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>, 
                         <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
-                        <Link className={classes.link} to="/question">Hỏi đáp</Link>
+                        <Link className={classes.link} to="/question">Hỏi đáp</Link>,
+                        <Link className={classes.link} to="/appointment">Xem lịch khám</Link>
                     ].map((text, index) => (
                         <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>
-                                {[<HomeIcon />, <FormatListNumberedIcon />, <EventIcon />, <AccountBoxIcon />, <ReorderIcon />, <HelpIcon /> ][index]}
+                                {[<HomeIcon />, <FormatListNumberedIcon />, <EventIcon />, <AccountBoxIcon />, <ReorderIcon />, <HelpIcon />, <ScheduleIcon /> ][index]}
                             </ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
@@ -170,13 +173,14 @@ export default function PersistentDrawerLeft() {
                 <Divider />
                 <List>
                     {[
+                        <Link className={classes.link} to="/notification">Thông báo</Link>, 
                         <Link className={classes.link} to="/signin">Đăng nhập</Link>, 
                         <Link className={classes.link} to="/signup">Đăng ký</Link>, 
                         <Link className={classes.link} to="/home">Thoát</Link>
                     ].map((text, index) => (
                         <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>
-                                {[<ExitToAppIcon />, <LockOpenIcon />, <PowerSettingsNewIcon />][index]}
+                                {[<NotificationsActiveIcon />, <ExitToAppIcon />, <LockOpenIcon />, <PowerSettingsNewIcon />][index]}
                             </ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
