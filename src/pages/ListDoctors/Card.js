@@ -92,8 +92,11 @@ export default function RecipeReviewCard() {
             />
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 <CardContent className={classes.content}>
+                    <Typography variant="h6" component="h6">
+                        Mã số: BS1002
+                    </Typography>
                     <Typography variant="h5" component="h2">
-                        Truyền nhiễm
+                        <b>Truyền nhiễm</b>
                     </Typography>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
                         0398296632

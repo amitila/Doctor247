@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from './Card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import FormControl from './FormControl';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,27 +22,9 @@ export default function Doctors() {
   return (
     <div className={classes.root}>
         <Container maxWidth="lg">
-            <Grid container spacing={5}>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <Card />
+            <Grid container spacing={1}>           
+                <Grid item xs={12} sm={12}>
+                    <FormControl />
                 </Grid>
             </Grid>
         </Container>

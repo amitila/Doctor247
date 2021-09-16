@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ProfileForm from './ProfileForm';
 import ProfileList from './ProfileList';
 import { useHistory } from "react-router-dom";
+import AddIcon from '@material-ui/icons/Add';
+import { Grid } from '@material-ui/core';
 
 export default function Index() {
     const history = useHistory();
@@ -9,9 +11,9 @@ export default function Index() {
     const [tasks, setTasks] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
-   
+
     const s4 = () => {
-        return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1);
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 
     const generateID = () => {
@@ -19,10 +21,10 @@ export default function Index() {
     }
 
     const onToggleForm = (event) => {//Add task
-        if(isDisplayForm && taskEditing !== null){
+        if (isDisplayForm && taskEditing !== null) {
             setIsDisplayForm(true);
             setTaskEditing(null);
-        }else{
+        } else {
             setIsDisplayForm(!isDisplayForm);
             setTaskEditing(null);
         }
@@ -38,10 +40,10 @@ export default function Index() {
     }
 
     const onSubmit = (data) => {
-        if(data.id === ''){
+        if (data.id === '') {
             data.id = generateID();
             tasks.push(data);
-        }else{
+        } else {
             //Editing
             const index = findIndex(data.id);
             tasks[index] = data;
@@ -54,7 +56,7 @@ export default function Index() {
     const findIndex = (id) => {
         let result = -1;
         tasks.forEach((task, index) => {
-            if(task.id === id) {
+            if (task.id === id) {
                 result = index;
             }
         });
@@ -63,7 +65,7 @@ export default function Index() {
 
     const onDelete = (id) => {
         const index = findIndex(id);
-        if(index !== -1) {
+        if (index !== -1) {
             tasks.splice(index, 1);
             console.log(tasks);
             // setTasks(tasks);
@@ -78,41 +80,65 @@ export default function Index() {
         setTaskEditing(taskEditing);
         onShowForm();
     }
-   
-    var elmTaskForm = isDisplayForm 
-        ?   <ProfileForm 
-                onSubmit={onSubmit} 
-                onCloseForm={onCloseForm} 
-                task={taskEditing}
-            /> : '';
-            
+
+    var elmTaskForm = isDisplayForm
+        ? <ProfileForm
+            onSubmit={onSubmit}
+            onCloseForm={onCloseForm}
+            task={taskEditing}
+        /> : '';
+
     return (
         <div className="container-fluid m-50">
             <div className="text-center">
                 <h1>Hồ sơ gia đình</h1>
-                <br/>
+                <br />
             </div>
             <div className="row">
-                <div className= {isDisplayForm ? "col-xs-12 col-sm-12 col-md-12 col-lg-12" : ''} >
-                    {/*Form*/}
-                    {elmTaskForm}
-                </div>
-                <div className= {isDisplayForm ? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"} >
-                    <button 
-                        type="button" 
-                        className="btn btn-primary"
-                        onClick={onToggleForm}
-                    >
-                        <span className="fa fa-plus mr-5"></span>
-                        Thêm hồ sơ
-                    </button>&nbsp;
-
-                    {/* List*/}
-                    <ProfileList 
-                        tasks={tasks} 
-                        onDelete={onDelete}
-                        onUpdate={onUpdate}
-                    />
+                <div  >
+                    {isDisplayForm ? 
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={8}>
+                                {elmTaskForm}
+                                {/* {isDisplayForm ? '' :   
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={onToggleForm}
+                                    >
+                                        <AddIcon />
+                                        Thêm hồ sơ
+                                    </button>
+                                } */}
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                {/* List*/}
+                                <ProfileList
+                                    tasks={tasks}
+                                    onDelete={onDelete}
+                                    onUpdate={onUpdate}
+                                />
+                            </Grid>
+                        </Grid>
+                        :
+                        <Grid container spacing={2}>
+                            {elmTaskForm}
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={onToggleForm}
+                            >
+                                <AddIcon />
+                                Thêm hồ sơ
+                            </button>
+                            {/* List*/}
+                            <ProfileList
+                                tasks={tasks}
+                                onDelete={onDelete}
+                                onUpdate={onUpdate}
+                            />
+                        </Grid>
+                    }
                 </div>
             </div>
         </div>

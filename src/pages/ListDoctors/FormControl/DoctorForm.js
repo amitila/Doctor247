@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function ProfileForm(props) {
+export default function DoctorForm(props) {
 
 	const classes = useStyles();
 
