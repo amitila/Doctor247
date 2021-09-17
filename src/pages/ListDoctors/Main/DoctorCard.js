@@ -101,7 +101,7 @@ export default function DoctorCard(props) {
 					<CardContent className={classes.content}>
 						<Typography variant="h6" component="h6">
 							{/* Mã số: BS1002 */}
-							{index}
+							{"Mã số: " + index}
 						</Typography>
 						<Typography variant="h5" component="h2">
 							{/* <b>Truyền nhiễm</b> */}

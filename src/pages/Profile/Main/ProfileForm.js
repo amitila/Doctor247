@@ -169,6 +169,7 @@ export default function ProfileForm(props) {
 									value={state.relationship}
 									onChange={onChange}
 									autoComplete="relationship"
+									autoFocus
 								/>
 								<TextField
 									variant="standard"
@@ -226,7 +227,6 @@ export default function ProfileForm(props) {
 											value={state.bhyt}
 											onChange={onChange}
 											autoComplete="bhyt"
-											autoFocus
 										/>
 										<TextField
 											variant="standard"
@@ -239,7 +239,6 @@ export default function ProfileForm(props) {
 											value={state.phone}
 											onChange={onChange}
 											autoComplete="phone"
-											autoFocus
 										/>
 										<TextField
 											variant="standard"
@@ -252,7 +251,6 @@ export default function ProfileForm(props) {
 											value={state.email}
 											onChange={onChange}
 											autoComplete="email"
-											autoFocus
 										/>
 									</Grid>
 									<Grid item xs={4}>

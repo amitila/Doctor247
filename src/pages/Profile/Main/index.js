@@ -7,8 +7,8 @@ import { Grid } from '@material-ui/core';
 
 export default function Index() {
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
-    const [tasks, setTasks] = useState(flag);
+    const flag = (localStorage && localStorage.getItem('profiles')) ? JSON.parse(localStorage.getItem('profiles')) : [];
+    const [profiles, setProfiles] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
 
@@ -42,20 +42,20 @@ export default function Index() {
     const onSubmit = (data) => {
         if (data.id === '') {
             data.id = generateID();
-            tasks.push(data);
+            profiles.push(data);
         } else {
             //Editing
             const index = findIndex(data.id);
-            tasks[index] = data;
+            profiles[index] = data;
         }
-        setTasks(tasks);
+        setProfiles(profiles);
         setTaskEditing(null);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+        localStorage.setItem('profiles', JSON.stringify(profiles));
     }
 
     const findIndex = (id) => {
         let result = -1;
-        tasks.forEach((task, index) => {
+        profiles.forEach((task, index) => {
             if (task.id === id) {
                 result = index;
             }
@@ -66,17 +66,17 @@ export default function Index() {
     const onDelete = (id) => {
         const index = findIndex(id);
         if (index !== -1) {
-            tasks.splice(index, 1);
-            console.log(tasks);
-            // setTasks(tasks);
-            localStorage.setItem('tasks', JSON.stringify(tasks));
+            profiles.splice(index, 1);
+            console.log(profiles);
+            // setProfiles(profiles);
+            localStorage.setItem('profiles', JSON.stringify(profiles));
         }
         onCloseForm();
     }
 
     const onUpdate = (id) => {
         const index = findIndex(id);
-        const taskEditing = tasks[index];
+        const taskEditing = profiles[index];
         setTaskEditing(taskEditing);
         onShowForm();
     }
@@ -114,7 +114,7 @@ export default function Index() {
                             <Grid item xs={12} sm={4}>
                                 {/* List*/}
                                 <ProfileList
-                                    tasks={tasks}
+                                    profiles={profiles}
                                     onDelete={onDelete}
                                     onUpdate={onUpdate}
                                 />
@@ -133,7 +133,7 @@ export default function Index() {
                             </button>
                             {/* List*/}
                             <ProfileList
-                                tasks={tasks}
+                                profiles={profiles}
                                 onDelete={onDelete}
                                 onUpdate={onUpdate}
                             />

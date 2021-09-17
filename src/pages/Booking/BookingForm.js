@@ -3,16 +3,12 @@ import React from 'react'
 import Button from 'react-bootstrap/esm/Button'
 import Typography from '@material-ui/core/Typography';
 import { DropzoneArea } from 'material-ui-dropzone';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import PatientCard from './PatientCard';
 
 const useStyles = makeStyles((theme) => ({
     textSize: {
@@ -64,10 +60,6 @@ const bookingTime = [
 
 const BookingForm = () => {
     const classes = useStyles();
-    const [value, setValue] = React.useState('other');
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -77,64 +69,14 @@ const BookingForm = () => {
         <div className={classes.paper} >
             <form className={classes.form} noValidate>
                 <Typography variant="h6" className={classes.title} >
-                    Đăng ký lịch khám
+                    Đặt lịch khám
                 </Typography>
-
-                <FormControl>
-                    <FormLabel component="legend" >Bạn đặt lịch cho ai</FormLabel>
-                    <RadioGroup row>
-                        <FormControlLabel value="me" control={<Radio />} label="Đặt cho bản thân" />
-                        <FormControlLabel value="people" control={<Radio />} label="Đặt cho người thân" />
-                    </RadioGroup>
-                </FormControl>
-
-                <TextField
-                    className={classes.textField}
-                    variant="standard"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="name"
-                    label="Họ và tên bệnh nhân"
-                    name="name"
-                />
 
                 <Grid container spacing={5}>
                     <Grid item xs={12} sm={3} className={classes.title}>
-                        <TextField
-                            className={classes.textField}
-                            variant="standard"
-                            margin="normal"
-                            type="number"
-                            required
-                            inputProps={{
-                                min: 1,
-                                max: 130
-                            }}
-                            id="age"
-                            label="Tuổi"
-                            name="age"
-                        />
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">Giới tính</FormLabel>
-                            <RadioGroup row aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                                <FormControlLabel value="female" control={<Radio />} label="Nữ" />
-                                <FormControlLabel value="male" control={<Radio />} label="Nam" />
-                                <FormControlLabel value="other" control={<Radio />} label="Khác" />
-                            </RadioGroup>
-                        </FormControl>
+                        <PatientCard />
                     </Grid>
                     <Grid item xs={12} sm={9} className={classes.title}>
-                        <TextField
-                            className={classes.textField}
-                            variant="standard"
-                            margin="normal"
-                            required
-
-                            id="phone"
-                            label="Số điện thoại"
-                            name="phone"
-                        />
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid container justifyContent="space-around">
                                 <KeyboardDatePicker
@@ -188,7 +130,6 @@ const BookingForm = () => {
                     Xác nhận đặt lịch khám
                 </Button>
             </form>
-
         </div>
     )
 }

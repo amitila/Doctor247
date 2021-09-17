@@ -3,8 +3,8 @@ import ProfileCard from './ProfileCard';
 
 export default function ProfileList(props) {
 
-    const { tasks } = props;
-    const elmCards = tasks.map((task, index) => {
+    const { profiles } = props;
+    const elmCards = profiles.map((task, index) => {
         return <ProfileCard
             key={task.id}
             index={index + 1}

@@ -2,7 +2,7 @@ import React from 'react'
 // import MyProfile from './MyProfile'
 import { Container, Grid } from '@material-ui/core'
 // import ProfileCard from './ProfileCard'
-import FormControl from './FormControl';
+import Main from './Main';
 
 const index = () => {
     return (
@@ -10,7 +10,7 @@ const index = () => {
             <Grid container spacing={5}>
                 <Grid item xs={12} sm={12}>
                     <Grid item>
-                        <FormControl />
+                        <Main />
                     </Grid>
                     <Grid item>
                        

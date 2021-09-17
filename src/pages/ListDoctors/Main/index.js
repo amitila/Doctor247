@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
-import DoctorForm from './DoctorForm';
+import React from 'react';
 import DoctorList from './DoctorList';
-import { useHistory } from "react-router-dom";
-import AddIcon from '@material-ui/icons/Add';
 
 export default function Index() {
-    const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
-    const flag = [
+    const doctorcards = [
         {
             "avatar": "https://scontent.fdad3-1.fna.fbcdn.net/v/t1.6435-9/124437127_1251322528580325_2129106518303265346_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=174925&_nc_ohc=GClvlOFTaTMAX-KxWwR&_nc_ht=scontent.fdad3-1.fna&oh=a771eec5044f27cb44b8594683892f7a&oe=61688EC2",
             "name":"Phạm Văn Tâm",
@@ -57,63 +53,6 @@ export default function Index() {
             "workplace":"Bệnh viện đa khoa tỉnh Phú Yên",
         },
     ];
-    const [doctorcards, setDoctorcards] = useState(flag);
-    const [isDisplayForm, setIsDisplayForm] = useState(false);
-    const [taskEditing, setTaskEditing] = useState(null);
-
-    const s4 = () => {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
-    const generateID = () => {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
-    const onToggleForm = (event) => {//Add task
-        if (isDisplayForm && taskEditing !== null) {
-            setIsDisplayForm(true);
-            setTaskEditing(null);
-        } else {
-            setIsDisplayForm(!isDisplayForm);
-            setTaskEditing(null);
-        }
-    }
-
-    const onCloseForm = (event) => {
-        setIsDisplayForm(false);
-        history.push("/doctors");
-    }
-
-    const onSubmit = (data) => {
-        if (data.id === '') {
-            data.id = generateID();
-            doctorcards.push(data);
-        } else {
-            //Editing
-            const index = findIndex(data.id);
-            doctorcards[index] = data;
-        }
-        setDoctorcards(doctorcards);
-        setTaskEditing(null);
-        localStorage.setItem('doctorcards', JSON.stringify(doctorcards));
-    }
-
-    const findIndex = (id) => {
-        let result = -1;
-        doctorcards.forEach((task, index) => {
-            if (task.id === id) {
-                result = index;
-            }
-        });
-        return result;
-    }
-
-    var elmTaskForm = isDisplayForm
-        ? <DoctorForm
-            onSubmit={onSubmit}
-            onCloseForm={onCloseForm}
-            task={taskEditing}
-        /> : '';
 
     return (
         <div className="container-fluid m-50">
@@ -123,16 +62,6 @@ export default function Index() {
             </div>
             <div className="row">
                 <div>          
-                    {elmTaskForm}
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={onToggleForm}
-                    >
-                        <AddIcon />
-                        Thêm hồ sơ
-                    </button>
-                    {/* List*/}
                     <DoctorList doctorcards={doctorcards} />   
                 </div>
             </div>

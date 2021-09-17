@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -6,6 +6,10 @@ export default function SelectProvince(props) {
 
     const [value, setValue] = React.useState(props.dataFromParent);
     const [inputValue, setInputValue] = React.useState('');
+
+    useEffect(() => {
+		setValue(props.dataFromParent);
+	}, [props]);
 
     const changeProvince = (event) => {
         props.handleChangeProvince(event.target.innerText);
