@@ -22,6 +22,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import DoctorInfo from './DoctorInfo.js';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -82,6 +83,8 @@ export default function DoctorCard(props) {
 
 	const { task, index } = props;
 
+	const history = useHistory();
+
 	return (
 		<div className={classes.root}>
 			<Card>
@@ -130,7 +133,7 @@ export default function DoctorCard(props) {
 					</IconButton>
 
 					<IconButton aria-label="share">
-						<Button variant="contained" color="primary">
+						<Button variant="contained" color="primary" onClick={()=>history.push("/appointment")} >
 							Đặt khám
 						</Button>
 					</IconButton>

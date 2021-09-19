@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TaskSearchControl(props) {
+export default function QuestionSearchControl(props) {
 
     const [keyword, setKeyword] = React.useState('');
 
@@ -17,15 +17,15 @@ export default function TaskSearchControl(props) {
             <div className="input-group">
                 <input
                     name="keyword"
-                    value={keyword}
+                    value={keyword} 
                     type="text"
                     className="form-control"
-                    placeholder="Nhập từ khóa..."
+                    placeholder="Nhập từ khóa về bệnh..."
                     onChange={onHandleChange}
                 />
                 <span className="input-group-btn">
                     <button className="btn btn-primary" type="button" onClick={onSearch}>
-                        <span className="fa fa-search mr-5"></span>Tìm nhanh
+                        <span className="fa fa-search mr-5"></span>Tìm kiếm
                     </button>
                 </span>
             </div>

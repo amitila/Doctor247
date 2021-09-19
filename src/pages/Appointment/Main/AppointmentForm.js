@@ -38,7 +38,10 @@ const useStyles = makeStyles((theme) => ({
     },
     dropzone: {
         heigh: "5px",
-    }
+    },
+	autocomplete: {
+		marginBottom: "20px",
+	}
 }));
 
 const bookingTime = [
@@ -58,19 +61,29 @@ const bookingTime = [
     { title: "16h30 - 17h", time: "chiều" },
 ];
 
-export default function TaskForm(props) {
+const doctorName = [
+    { title: 'Nguyễn Đức Thăng', id: "01" },
+    { title: 'Nguyễn Mai Phương Nhung', id: "02" },
+    { title: 'Hồ Thủy Tiên', id: "03" },
+    { title: 'Đào Dương Long', id: "04" },
+    { title: 'Lô Vỹ Oanh', id: "05" },
+];
+
+export default function AppointmentForm(props) {
 
 	const flag = props.task ? {
 		id: props.task.id,
 		name: props.task.name,
 		date: props.task.date,
 		hour: props.task.hour,
+		doctor: props.task.doctor,
 		symptom: props.task.symptom
 	} : {
 		id: '',
 		name: '',
 		date: '',
 		hour: '',
+		doctor: '',
 		symptom: ''
 	};
 	
@@ -83,6 +96,7 @@ export default function TaskForm(props) {
 				name: props.task.name,
 				date: props.task.date,
 				hour: props.task.hour,
+				doctor: props.task.doctor,
 				symptom: props.task.symptom
 			});
 		} else if (!props.task) {
@@ -91,6 +105,7 @@ export default function TaskForm(props) {
 				name: '',
 				date: '',
 				hour: '',
+				doctor: '',
 				symptom: ''
 			});
 		}
@@ -125,6 +140,7 @@ export default function TaskForm(props) {
 			name: '',
 			date: '',
 			hour: '',
+			doctor: '',
 			symptom: ''
 		});
 	}
@@ -134,15 +150,24 @@ export default function TaskForm(props) {
 		setState({...state, name: text});
 	}
 
-	const handleChangHour = (e, newValue) => {
-		setState({...state, hour: newValue.title +'('+ newValue.time +')'});
+	const handleChangeHour = (e, newValue) => {
+		setState({...state, hour: newValue?.title +'('+ newValue?.time +')'});
 	}
 
-	const [inputValue, setInputValue] = React.useState(state.hour);
+	const handleChangeDoctor = (e, newValue) => {
+		setState({...state, doctor: newValue?.title +'( Mã số: '+ newValue?.id +')'});
+	}
+
+	const [inputHour, setInputHour] = React.useState(state.hour);
+	const [inputDoctor, setInputDoctor] = React.useState(state.doctor);
 
 	useEffect(() => {
-		setInputValue(state.hour);
+		setInputHour(state.hour);
 	}, [state.hour]);
+
+	useEffect(() => {
+		setInputDoctor(state.doctor);
+	}, [state.doctor]);
 
 	return (
 		<div className="panel panel-warning">
@@ -185,13 +210,26 @@ export default function TaskForm(props) {
 									<Autocomplete
 										id="book-hour"
 										name="hour"
-										inputValue={inputValue}
-										onInputChange={(e, newInputChange) => setInputValue(newInputChange)}
-										onChange={handleChangHour}
+										inputValue={inputHour}
+										onInputChange={(e, newInputChange) => setInputHour(newInputChange)}
+										onChange={handleChangeHour}
 										options={bookingTime}
 										getOptionLabel={(option) => option.title}
 										style={{ width: 300 }}
 										renderInput={(params) => <TextField {...params} label="Khung giờ khám" variant="standard" />}
+										className={classes.autocomplete}
+									/>
+									<Autocomplete
+										id="doctor"
+										name="doctor"
+										inputValue={inputDoctor}
+										onInputChange={(e, newInputChange) => setInputDoctor(newInputChange)}
+										onChange={handleChangeDoctor}
+										options={doctorName}
+										getOptionLabel={(option) => option.title}
+										style={{ width: 300 }}
+										renderInput={(params) => <TextField {...params} label="Chọn bác sĩ" variant="standard" />}
+										className={classes.autocomplete}
 									/>
 								</Grid>
 							</MuiPickersUtilsProvider>

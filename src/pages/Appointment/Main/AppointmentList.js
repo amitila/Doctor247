@@ -1,7 +1,7 @@
 import React from 'react';
-import TaskItem from './TaskItem';
+import AppointmentItem from './AppointmentItem';
 
-export default function TaskList(props) {
+export default function AppointmentList(props) {
 
     const [state, setState] = React.useState({
         filterName : '',
@@ -22,7 +22,7 @@ export default function TaskList(props) {
  
     const {appointments} = props;
     const elmTasks = appointments.map((task, index) => {
-        return <TaskItem 
+        return <AppointmentItem 
                     key={task.id} 
                     index={index + 1} 
                     task={task} 
@@ -37,9 +37,10 @@ export default function TaskList(props) {
             <thead>
                 <tr>
                     <th className="text-center" >Mã số</th>
-                    <th className="text-center">Tên</th>
+                    <th className="text-center">Bệnh nhân</th>
                     <th className="text-center">Ngày</th>
                     <th className="text-center">Thời gian</th>
+                    <th className="text-center">Bác sĩ</th>
                     <th className="text-center">Triệu chứng</th>
                     <th className="text-center">Thao tác</th>
                 </tr>

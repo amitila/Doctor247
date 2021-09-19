@@ -23,6 +23,9 @@ export default function TaskItem(props) {
                {task.hour}
             </td>
             <td className="text-center">
+               {task.doctor}
+            </td>
+            <td className="text-center">
                {task.symptom}
             </td>
             <td className="text-center">

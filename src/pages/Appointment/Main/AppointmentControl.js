@@ -1,15 +1,15 @@
 import React from 'react';
-import TaskControlSearch from './TaskControlSearch';
-import TaskControlSort from './TaskControlSort';
+import AppointmentControlSearch from './AppointmentControlSearch';
+import AppointmentControlSort from './AppointmentControlSort';
 
 export default function TaskControl(props) {
 
     return (
         <div className="row mt-15">
         {/* Search*/}
-            <TaskControlSearch onSearch={props.onSearch} />
+            <AppointmentControlSearch onSearch={props.onSearch} />
         {/*Sort*/}
-            <TaskControlSort 
+            <AppointmentControlSort 
                 onSort={props.onSort}
                 sortBy={props.sortBy}
                 sortValue={props.sortValue}

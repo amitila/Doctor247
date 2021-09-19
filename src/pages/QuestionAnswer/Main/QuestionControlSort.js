@@ -35,7 +35,7 @@ const StyledMenuItem = withStyles((theme) => ({
 	},
 }))(MenuItem);
 
-export default function TaskSortControl(props) {
+export default function QuestionSortControl(props) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
 	const handleClick = (event) => {
@@ -69,10 +69,10 @@ export default function TaskSortControl(props) {
 				onClose={handleClose}
 			>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('name', 1)} >A-Z</Button>
+					<Button onClick={() => onClick('title', 1)} >A-Z</Button>
 				</StyledMenuItem>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('name', -1)} >Z-A</Button>
+					<Button onClick={() => onClick('title', -1)} >Z-A</Button>
 				</StyledMenuItem>
 				<StyledMenuItem>
 					<Button onClick={() => onClick('status', 1)} >Active</Button>

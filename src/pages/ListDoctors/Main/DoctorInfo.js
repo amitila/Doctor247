@@ -130,7 +130,7 @@ export default function DoctorInfo(props) {
                             </Typography>
                             <Typography paragraph>
                                 <Button color="inherit">
-                                    <Link className={classes.link} to="/doctors">Đặt lịch khám</Link>
+                                    <Link className={classes.link} to="/appointment">Đặt lịch khám</Link>
                                 </Button>
                             </Typography>
                         </Grid>

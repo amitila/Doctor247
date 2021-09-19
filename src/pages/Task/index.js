@@ -6,8 +6,8 @@ import { useHistory } from "react-router-dom";
 
 export default function Index() {
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
-    const [appointments, setAppointments] = useState(flag);
+    const flag = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
+    const [tasks, setTasks] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     //const [filter, setFilter] = useState({name: '', status: -1});
@@ -34,7 +34,7 @@ export default function Index() {
 
     const onCloseForm = (event) => {
         setIsDisplayForm(false);
-        history.push("/bookingappointment");
+        history.push("/appointment");
     }
 
     const onShowForm = (event) => {
@@ -44,29 +44,29 @@ export default function Index() {
     const onSubmit = (data) => {
         if(data.id === ''){
             data.id = generateID();
-            appointments.push(data);
+            tasks.push(data);
         }else{
             //Editing
             const index = findIndex(data.id);
-            appointments[index] = data;
+            tasks[index] = data;
         }
-        setAppointments(appointments);
+        setTasks(tasks);
         setTaskEditing(null);
-        localStorage.setItem('appointments', JSON.stringify(appointments));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
     const onUpdateStatus = (id) => {
         const index = findIndex(id);
         if(index !== -1) {
-            appointments[index].status = ! appointments[index].status;
-            setAppointments(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
+            tasks[index].status = ! tasks[index].status;
+            setTasks(tasks);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }
 
     const findIndex = (id) => {
         let result = -1;
-        appointments.forEach((task, index) => {
+        tasks.forEach((task, index) => {
             if(task.id === id) {
                 result = index;
             }
@@ -77,18 +77,17 @@ export default function Index() {
     const onDelete = (id) => {
         const index = findIndex(id);
         if(index !== -1) {
-            appointments.splice(index, 1);
-            console.log(appointments);
-            // setAppointments(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
+            tasks.splice(index, 1);
+            console.log(tasks);
+            // setTasks(tasks);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
         onCloseForm();
     }
 
     const onUpdate = (id) => {
-        console.log(appointments);
         const index = findIndex(id);
-        const taskEditing = appointments[index];
+        const taskEditing = tasks[index];
         setTaskEditing(taskEditing);
         onShowForm();
     }
@@ -110,7 +109,7 @@ export default function Index() {
                 return task.status === (parseInt(filterStatus, 10) === 1 ? true : false);
             }
         });
-        setAppointments(temp);
+        setTasks(temp);
     }
 
     const onSearch = (keyword)=>{
@@ -119,7 +118,7 @@ export default function Index() {
         const temp = flag.filter((task) => {
             return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
-        setAppointments(temp);
+        setTasks(temp);
     }
 
     const onSort = (sortBy, sortValue) => {
@@ -133,14 +132,14 @@ export default function Index() {
                 else if(a.name < b.name) return - sortValue;
                 else return 0;
             });
-            setAppointments(typeName);
+            setTasks(typeName);
         }else{
             const typeStatus = flag.sort((a, b) => {
                 if(a.status > b.status) return -sortValue;
                 else if(a.status < b.status) return sortValue;
                 else return 0;
             });
-            setAppointments(typeStatus);
+            setTasks(typeStatus);
         }
     }
    
@@ -154,7 +153,7 @@ export default function Index() {
     return (
         <div className="container-fluid m-50">
             <div className="text-center">
-                <h1>Đăng ký lịch khám</h1>
+                <h1>TASK MANAGER</h1>
                 <br/>
             </div>
             <div className="row">
@@ -169,7 +168,7 @@ export default function Index() {
                         onClick={onToggleForm}
                     >
                         <span className="fa fa-plus mr-5"></span>
-                        Thêm lịch hẹn
+                        Add task
                     </button>&nbsp;
     
                     {/* Search-Sort */}
@@ -182,7 +181,7 @@ export default function Index() {
 
                     {/* List*/}
                     <TaskList 
-                        appointments={appointments} 
+                        tasks={tasks} 
                         onUpdateStatus = {onUpdateStatus} 
                         onDelete={onDelete}
                         onUpdate={onUpdate}

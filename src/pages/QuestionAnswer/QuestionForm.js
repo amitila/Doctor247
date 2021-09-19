@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const QForm = () => {
+export default function QuestionForm(){
     const classes = useStyles();
     const [question] = React.useState([
         "Xương khớp",
@@ -99,5 +99,3 @@ const QForm = () => {
         </div>
     )
 }
-
-export default QForm;

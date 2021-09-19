@@ -156,11 +156,11 @@ export default function DrawerHeader() {
                     {[
                         <Link className={classes.link} to="/home">Trang chủ</Link>, 
                         <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>, 
-                        <Link className={classes.link} to="/bookingappointment">Đặt lịch khám</Link>, 
+                        <Link className={classes.link} to="/appointment">Đặt và xem lịch khám</Link>, 
                         <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>, 
                         <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
                         <Link className={classes.link} to="/question">Hỏi đáp</Link>,
-                        <Link className={classes.link} to="/appointment">Xem lịch khám</Link>
+                        <Link className={classes.link} to="/task">Công việc</Link>
                     ].map((text, index) => (
                         <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>
