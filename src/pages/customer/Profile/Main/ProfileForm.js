@@ -9,8 +9,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-import SelectProvince from '../../../components/SelectProvince.js';
-import UploadAvatar from "../../../components/UploadAvatar.js";
+import SelectProvince from '../../../../components/SelectProvince';
+import UploadAvatar from "../../../../components/UploadAvatar.js";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const useStyles = makeStyles((theme) => ({

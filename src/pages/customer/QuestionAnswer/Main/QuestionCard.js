@@ -126,6 +126,7 @@ export default function QuestionCard(props) {
                         </IconButton>
                         <Menu
                             id="menu"
+                            style={{height: 400, display:"flex"}}
                             MenuListProps={{
                             'aria-labelledby': 'fade-button',
                             }}

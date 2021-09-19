@@ -13,10 +13,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link as LinkTo } from "react-router-dom";
-import APIService from '../../utils/APIService';
+import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
-import { updateEmail, updatePassword } from "../../store/userSlice";
+import { updateEmail, updatePassword } from "../../../store/userSlice";
 
 const useStyles = makeStyles((theme) => ({
     paper: {

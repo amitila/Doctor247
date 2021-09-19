@@ -27,7 +27,7 @@ import ReorderIcon from '@material-ui/icons/Reorder';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Link } from 'react-router-dom';
-import Logo from './../components/Logo';
+import Logo from '../../components/Logo';
 
 const drawerWidth = 240;
 

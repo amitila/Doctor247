@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './../../App.css';
+import './../../../App.css';
 import { useSelector } from "react-redux";
-import { selectEmail, selectPassword, selectProvince } from '../../store/userSlice';
+import { selectEmail, selectPassword, selectProvince } from '../../../store/userSlice';
 
 export default function Home() {
 	// Select username from store
