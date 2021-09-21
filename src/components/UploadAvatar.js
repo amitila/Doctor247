@@ -22,15 +22,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UploadAvatar(props) {
     const classes = useStyles();
-    const [url, setUrl] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
+    const [url, setUrl] = useState('');
     const imageHandler = (e) => {
+        const temp = e.target.value.split('fakepath\\');
         const reader = new FileReader();
         reader.onload = () => {
             if (reader.readyState === 2) {
                 setUrl(reader.result)
             }
         }
-        reader.readAsDataURL(e.target.files[0])
+        reader.readAsDataURL(e.target.files[0]);
+        props.handleChangeAvatar('/images/' + temp[1]);
     }
     return (
         <div className={classes.root}>

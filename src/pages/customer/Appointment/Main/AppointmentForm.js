@@ -1,6 +1,6 @@
 import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core'
 import React, { useEffect } from 'react';
-import Button from 'react-bootstrap/esm/Button'
+import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import { DropzoneArea } from 'material-ui-dropzone';
 import 'date-fns';
@@ -9,6 +9,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import PatientCard from './PatientCard';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     textSize: {
@@ -41,6 +42,13 @@ const useStyles = makeStyles((theme) => ({
     },
 	autocomplete: {
 		marginBottom: "20px",
+	},
+	clear: {
+		backgroundColor: 'orange',
+		color: 'white',
+		"&:hover": {
+			backgroundColor: 'orange',
+		}
 	}
 }));
 
@@ -77,14 +85,16 @@ export default function AppointmentForm(props) {
 		date: props.task.date,
 		hour: props.task.hour,
 		doctor: props.task.doctor,
-		symptom: props.task.symptom
+		symptom: props.task.symptom,
+		images: props.task.images
 	} : {
 		id: '',
 		name: '',
 		date: '',
 		hour: '',
 		doctor: '',
-		symptom: ''
+		symptom: '',
+		images: ''
 	};
 	
 	const [state, setState] = React.useState(flag);
@@ -97,7 +107,8 @@ export default function AppointmentForm(props) {
 				date: props.task.date,
 				hour: props.task.hour,
 				doctor: props.task.doctor,
-				symptom: props.task.symptom
+				symptom: props.task.symptom,
+				images: props.task.images
 			});
 		} else if (!props.task) {
 			setState({
@@ -106,7 +117,8 @@ export default function AppointmentForm(props) {
 				date: '',
 				hour: '',
 				doctor: '',
-				symptom: ''
+				symptom: '',
+				images: ''
 			});
 		}
 	}, [props]);
@@ -141,7 +153,8 @@ export default function AppointmentForm(props) {
 			date: '',
 			hour: '',
 			doctor: '',
-			symptom: ''
+			symptom: '',
+			images: ''
 		});
 	}
 
@@ -169,6 +182,22 @@ export default function AppointmentForm(props) {
 		setInputDoctor(state.doctor);
 	}, [state.doctor]);
 
+	const getCurrentDate = () => {
+		var dateObj = new Date();
+		var month = dateObj.getUTCMonth() + 1; //months from 1-12
+		var day = dateObj.getUTCDate();
+		var year = dateObj.getUTCFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
+
+	const handleChangeFile = (files) => {
+		const temp = [];
+		files.forEach((file, index) => {
+            temp.push("/images/" + file.path);
+        });
+		setState({...state, images: temp});
+	}
+
 	return (
 		<div className="panel panel-warning">
 			<div className="panel-heading">
@@ -194,6 +223,7 @@ export default function AppointmentForm(props) {
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
 								<Grid container justifyContent="space-around">
 									<TextField
+										required
 										id="date"
 										label="Ngày khám"
 										type="date"
@@ -204,6 +234,9 @@ export default function AppointmentForm(props) {
 										className={classes.textField}
 										InputLabelProps={{
 											shrink: true,
+										}}
+										InputProps={{
+											inputProps: { min: getCurrentDate()} 
 										}}
 										autoFocus
 									/>
@@ -216,7 +249,7 @@ export default function AppointmentForm(props) {
 										options={bookingTime}
 										getOptionLabel={(option) => option.title}
 										style={{ width: 300 }}
-										renderInput={(params) => <TextField {...params} label="Khung giờ khám" variant="standard" />}
+										renderInput={(params) => <TextField required {...params} label="Khung giờ khám" variant="standard" />}
 										className={classes.autocomplete}
 									/>
 									<Autocomplete
@@ -228,7 +261,7 @@ export default function AppointmentForm(props) {
 										options={doctorName}
 										getOptionLabel={(option) => option.title}
 										style={{ width: 300 }}
-										renderInput={(params) => <TextField {...params} label="Chọn bác sĩ" variant="standard" />}
+										renderInput={(params) => <TextField required {...params} label="Chọn bác sĩ" variant="standard" />}
 										className={classes.autocomplete}
 									/>
 								</Grid>
@@ -237,6 +270,7 @@ export default function AppointmentForm(props) {
 					</Grid>
 
 					<TextareaAutosize
+						required
 						name="symptom"
 						value={state.symptom}
 						onChange={onChange}
@@ -253,27 +287,38 @@ export default function AppointmentForm(props) {
 						filesLimit={5}
 						acceptedFiles={['image/*']}
 						dropzoneText={"Kéo ảnh thả vào hay nhấp vào để tải ảnh lên"}
-						// onChange={(files) => console.log('Files:', files)}
+						onChange={handleChangeFile}
 					/>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Xác nhận đặt lịch khám
-					</Button>
-					<Button
-						type="button"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-						onChange={onClear}
-					>
-						Điền lại
-					</Button>
+					
+					<div className="text-center">
+						{state.name ? <Button
+									type="submit"
+									variant="contained"
+									color="primary"
+								>
+									Xác nhận
+								</Button>
+							:
+							<Alert severity="warning">Vui lòng chọn tên Bệnh nhân được khám</Alert>
+						}	
+						&nbsp;
+						<Button
+							className={classes.clear}
+							type="button"
+							variant="contained"
+							onClick={onClear}
+						>
+							Điền lại
+						</Button>
+						&nbsp;
+						<Button
+							variant="contained"
+							color="secondary"
+							onClick={onCloseForm}
+						>
+							Đóng
+						</Button>
+					</div>
 				</form>
 			</div>
 		</div>

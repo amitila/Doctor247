@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -40,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
 			backgroundColor: '#FF0101',
 		}
 	},
+	avatar: {
+		width: 125,
+		height: 125,
+	}
 }));
 
 export default function ProfileCard(props) {
@@ -70,19 +75,31 @@ export default function ProfileCard(props) {
 							<Typography className={classes.pos} color="textSecondary">
 								{task.birthday}
 							</Typography>
-							<Typography variant="body2" component="p">
-								Giới tính: {task.gender}
-								<br />
-								Mã số BHYT: {task.bhyt}
-								<br />
-								Số điện thoại: {task.phone}
-								<br />
-								Email: {task.email}
-								<br />
-								Tỉnh/TP: {task.province}
-								<br />
-								Địa chỉ: {task.address}
-							</Typography>
+							<Grid container>
+								<Grid xs={12} sm={8}>
+									<Typography variant="body2" component="p">
+										Giới tính: {task.gender}
+										<br />
+										Mã số BHYT: {task.bhyt}
+										<br />
+										Số điện thoại: {task.phone}
+										<br />
+										Email: {task.email}
+										<br />
+										Tỉnh/TP: {task.province}
+										<br />
+										Địa chỉ: {task.address}
+									</Typography>
+								</Grid>
+								<Grid xs={12} sm={4}>
+									<Avatar 
+										alt="avatar" 
+										src={task.avatar} 
+										loading="lazy" 
+										className={classes.avatar}
+									/>
+								</Grid>
+							</Grid>
 						</CardContent>
 					</Grid>
 					<Grid item xs={12}>

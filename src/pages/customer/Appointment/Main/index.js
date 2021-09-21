@@ -34,7 +34,7 @@ export default function Index() {
 
     const onCloseForm = (event) => {
         setIsDisplayForm(false);
-        history.push("/bookingappointment");
+        history.push("/appointment");
     }
 
     const onShowForm = (event) => {
@@ -79,7 +79,6 @@ export default function Index() {
         if(index !== -1) {
             appointments.splice(index, 1);
             console.log(appointments);
-            // setAppointments(appointments);
             localStorage.setItem('appointments', JSON.stringify(appointments));
         }
         onCloseForm();

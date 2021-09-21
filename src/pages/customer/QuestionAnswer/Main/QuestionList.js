@@ -1,6 +1,6 @@
 import React from 'react';
 import QuestionCard from './QuestionCard';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +38,7 @@ export default function QuestionList(props) {
  
     const {questions} = props;
     const elmQuestions = questions.map((task, index) => {
-        return <Grid item xs={12} sm={4} className={classes.root} >
+        return <Grid item xs={12} className={classes.root} >
                     <QuestionCard
                         key={task.id} 
                         index={index + 1} 
@@ -49,7 +49,7 @@ export default function QuestionList(props) {
                     />
                 </Grid>
     });
-        
+
     return (
         <div className={classes.paper}>
             <table className="table table-borderd table-hover mt-15">
@@ -90,7 +90,28 @@ export default function QuestionList(props) {
                 </tr>
                 </tbody>
             </table>  
-            {elmQuestions.reverse()}
+            <Container maxWidth="lg">
+                <Grid container spacing={0}>
+                    <Grid item xs={12} sm={4}>
+                        {/* {elmQuestions.reverse()} */}
+                        {elmQuestions.reverse().map((item, index) => {
+                            return index % 3 === 0 ? item : ""
+                        })}
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        {/* {elmQuestions.reverse()} */}
+                        {elmQuestions.reverse().map((item, index) => {
+                            return index % 3 === 1 ? item : ""
+                        })}
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        {/* {elmQuestions.reverse()} */}
+                        {elmQuestions.reverse().map((item, index) => {
+                            return index % 3 === 2 ? item : ""
+                        })}
+                    </Grid>
+                </Grid>
+            </Container>          
         </div>
     );
 

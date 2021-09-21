@@ -42,6 +42,7 @@ export default function AppointmentList(props) {
                     <th className="text-center">Thời gian</th>
                     <th className="text-center">Bác sĩ</th>
                     <th className="text-center">Triệu chứng</th>
+                    <th className="text-center">Hình ảnh</th>
                     <th className="text-center">Thao tác</th>
                 </tr>
             </thead>

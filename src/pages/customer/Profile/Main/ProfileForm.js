@@ -40,6 +40,7 @@ export default function ProfileForm(props) {
 
 	const flag = props.task ? {
 		id: props.task.id,
+		avatar: props.task.avatar,
 		relationship: props.task.relationship,
 		name: props.task.name,
 		gender: props.task.gender,
@@ -51,6 +52,7 @@ export default function ProfileForm(props) {
 		address: props.task.address
 	} : {
 		id: '',
+		avatar: '',
 		relationship: '',
 		name: '',
 		gender: '',
@@ -68,6 +70,7 @@ export default function ProfileForm(props) {
 		if (props && props.task) {
 			setState({
 				id: props.task.id,
+				avatar: props.task.avatar,
 				relationship: props.task.relationship,
 				name: props.task.name,
 				gender: props.task.gender,
@@ -81,6 +84,7 @@ export default function ProfileForm(props) {
 		} else if (!props.task) {
 			setState({
 				id: '',
+				avatar: '',
 				relationship: '',
 				name: '',
 				gender: '',
@@ -117,6 +121,7 @@ export default function ProfileForm(props) {
 	const onClear = () => {
 		setState({
 			id: '',
+			avatar: '',
 			relationship: '',
 			name: '',
 			gender: '',
@@ -129,12 +134,20 @@ export default function ProfileForm(props) {
 		});
 	}
 
-	// const handleChangeAvatar = (text) => {
-    //     setState({ ...state, avatar: text });
-    // }
+	const handleChangeAvatar = (text) => {
+        setState({ ...state, avatar: text });
+    }
 
 	const handleChangeProvince = (text) => {
 		setState({ ...state, province: text });
+	}
+
+	const getCurrentDate = () => {
+		var dateObj = new Date();
+		var month = dateObj.getUTCMonth() + 1; //months from 1-12
+		var day = dateObj.getUTCDate();
+		var year = dateObj.getUTCFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
 	}
 
 	return (
@@ -152,10 +165,10 @@ export default function ProfileForm(props) {
 						<Grid item xs={12}>
 							{/* Upload avatar into profile */}
 							<UploadAvatar 
-								// dataFromParent={avatar} 
-								// //onChange={event => setAvatar(event.target.value)} 
-								// handleChangeAvatar={handleChangeAvatar}
-								// avatar={avatar}
+								dataFromParent={state.avatar} 
+								//onChange={event => setAvatar(event.target.value)} 
+								handleChangeAvatar={handleChangeAvatar}
+								avatar={state.avatar}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -184,7 +197,7 @@ export default function ProfileForm(props) {
 								/>
 								<Grid container spacing={2} className={classes.rowgender} >
 									<Grid item xs={5}>
-										<FormControl className={classes.gender} component="fieldset">
+										<FormControl required className={classes.gender} component="fieldset">
 											<FormLabel component="legend">Giới tính</FormLabel>
 											<RadioGroup
 												row aria-label="gender"
@@ -192,7 +205,7 @@ export default function ProfileForm(props) {
 												value={state.gender}
 												onChange={onChange}
 											>
-												<FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
+												<FormControlLabel value="Nữ" control={<Radio required />} label="Nữ" />
 												<FormControlLabel value="Nam" control={<Radio />} label="Nam" />
 												<FormControlLabel value="Khác" control={<Radio />} label="Khác" />
 											</RadioGroup>
@@ -200,17 +213,22 @@ export default function ProfileForm(props) {
 									</Grid>
 									<Grid item xs={7}>
 										<TextField
+											required
 											id="date"
 											label="Ngày sinh"
 											type="date"
 											format={'DD/MM/YYYY'}
 											defaultValue="1890-10-01"
+											maxDate="2021-09-20"
 											name="birthday"
 											value={state.birthday}
 											onChange={onChange}
 											className={classes.textField}
 											InputLabelProps={{
 												shrink: true,
+											}}
+											InputProps={{
+												inputProps: { min: "1890-01-01", max: getCurrentDate()} 
 											}}
 										/>
 									</Grid>
@@ -295,7 +313,6 @@ export default function ProfileForm(props) {
 									</Button>
 									&nbsp;
 									<Button
-										type="button"
 										variant="contained"
 										color="secondary"
 										onClick={onCloseForm}

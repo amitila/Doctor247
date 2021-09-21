@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core';
-// import Button from 'react-bootstrap/esm/Button'
+import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import { DropzoneArea } from 'material-ui-dropzone';
 
@@ -35,7 +35,14 @@ const useStyles = makeStyles((theme) => ({
     },
     stretch: {
         marginTop: "10px",
-    }
+    },
+	clear: {
+		backgroundColor: 'orange',
+		color: 'white',
+		"&:hover": {
+			backgroundColor: 'orange',
+		}
+	}
 }));
 
 export default function QuestionForm(props) {
@@ -124,7 +131,7 @@ export default function QuestionForm(props) {
 				</h3>
 			</div>
 			<div className={classes.paper} >
-				<form className={classes.form} noValidate onSubmit={onSubmit} >
+				<form className={classes.form} onSubmit={onSubmit} >
 					<Typography variant="h6" className={classes.title} >
 						Đặt câu hỏi cho bác sĩ (miễn phí)
 					</Typography>
@@ -149,6 +156,7 @@ export default function QuestionForm(props) {
 					</Typography>
 					<TextareaAutosize
 						className={classes.textSize}
+						required
 						id="content"
 						name="content"
 						value={state.content}
@@ -166,16 +174,30 @@ export default function QuestionForm(props) {
 						onChange={handleChangeFile}
 					/>
 					<div className="text-center">
-						<button type="submit" className="btn btn-warning">
-						<span className="fa fa-plus mr-5"></span>Submit
-						</button>
+						<Button
+							type="submit"
+							variant="contained"
+							color="primary"
+						>
+							Đăng câu hỏi 
+						</Button>
 						&nbsp;
-						<button 
-							type="button" 
-							className="btn btn-danger"
+						<Button
+							className={classes.clear}
+							type="button"
+							variant="contained"
 							onClick={onClear}
-						><span className="fa fa-close mr-5"></span>Clear
-						</button>
+						>
+							Điền lại
+						</Button>
+						&nbsp;
+						<Button
+							variant="contained"
+							color="secondary"
+							onClick={onCloseForm}
+						>
+							Đóng
+						</Button>
 					</div>
 				</form>
         	</div>

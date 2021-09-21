@@ -30,7 +30,7 @@ export default function SelectProvince(props) {
                 id="select-province"
                 options={top63provinces}
                 style={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Chọn tỉnh/thành phố" variant="standard" />}
+                renderInput={(params) => <TextField required {...params} label="Chọn tỉnh/thành phố" variant="standard" />}
             />
         </div>
     );

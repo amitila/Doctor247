@@ -20,6 +20,8 @@ import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -43,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         textAlign: "center",
+        color: "#0320fc",
     },
     box: {
         marginTop: '5px',
@@ -52,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
         width: '400px',
         heigth: '400px',
     },
+    card: {
+        border: "3px solid orange",
+    }
 }));
 
 
@@ -98,20 +104,24 @@ export default function QuestionCard(props) {
 
     const onDelete = () => {
         props.onDelete(props.task.id);
+        handleClose();
     }
 
     const onUpdate = () => {
         props.onUpdate(props.task.id);
+        handleClose();
     }
 
 
     return (
-        <Card sx={{ maxWidth: 400 }}>
+        <Card sx={{ maxWidth: 400 }} className={classes.card} >
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                        ?
-                    </Avatar>
+                    <Avatar 
+                        src="https://png.pngtree.com/element_our/20190523/ourlarge/pngtree-cute-boy-questioning-question-image_1082181.jpg" 
+                        sx={{ bgcolor: red[500] }} 
+                        aria-label="recipe"
+                    />
                 }
                 action={
                     <div>
@@ -140,22 +150,23 @@ export default function QuestionCard(props) {
                         </Menu>
                    </div>
                 }
-                title="Bệnh nhân ẩn danh đã hỏi"
+                title={<b>CÂU HỎI</b>}
                 subheader={currentTime}
             />
-            <Typography variant="h4" color="text.secondary" className={classes.title} >
-                {task.title}
+            <Typography variant="h5" className={classes.title} >
+                <b>{task.title}</b>
             </Typography>
             <Box className={classes.boxImage} >
                 {
-                    (task.images)?.map((image) => {
+                    task.images ? task.images.map((image) => {
                         return<CardMedia
+                            style={{border: "1px solid white"}}
                             component="img"
                             height={task.images.length === 1 ? 250 : 150}
                             image={image}
                             alt="Ảnh đính kèm"
                         />
-                    })
+                    }): ''
                 }
             </Box>
             <CardContent>
@@ -165,7 +176,10 @@ export default function QuestionCard(props) {
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                    <FormControlLabel
+                        control={<Checkbox icon={<FavoriteIcon />} checkedIcon={<FavoriteIcon />} name="checkedH" />}
+                        label="Cảm ơn"
+                    />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
@@ -176,12 +190,12 @@ export default function QuestionCard(props) {
                     aria-expanded={expanded}
                     aria-label="show more"
                 >
-                    {expanded ? "" : "Bình luận"} <ExpandMoreIcon />
+                    {expanded ? "" : <b>GIẢI ĐÁP</b>} <ExpandMoreIcon />
                 </ExpandMore>
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography paragraph>Bình luận trả lời câu hỏi</Typography>
+                    <Typography paragraph>Câu trả lời có sẵn</Typography>
                     <Typography>
                         {comments.map((comment) => {
                             return <Box className={classes.box} sx={{ p: 2, border: '1px dashed grey' }}>

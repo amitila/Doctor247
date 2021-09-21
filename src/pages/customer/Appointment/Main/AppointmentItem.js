@@ -1,4 +1,5 @@
 import React from 'react';
+import { CardMedia } from '@material-ui/core';
 
 export default function TaskItem(props) {
 
@@ -11,6 +12,7 @@ export default function TaskItem(props) {
     }
 
     const {task, index} = props;
+    const images = task.images;
     
     return (
         <tr>
@@ -27,6 +29,18 @@ export default function TaskItem(props) {
             </td>
             <td className="text-center">
                {task.symptom}
+            </td>
+            <td className="text-center">
+                {
+                    images ? images.map(image => {
+                        return<CardMedia
+                            component="img"
+                            height={task.images.length === 1 ? 250 : 150}
+                            image={image}
+                            alt="Ảnh đính kèm"
+                        />
+                    }) : ''
+                }
             </td>
             <td className="text-center">
                 <button 
