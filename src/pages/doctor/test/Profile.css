@@ -1,0 +1,13 @@
+.row{
+    width: 100%;
+}
+
+.card{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+}
+.content{
+    background-color: whitesmoke;
+}

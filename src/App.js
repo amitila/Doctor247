@@ -14,6 +14,7 @@ import MedicalrRecords from './pages/customer/MedicalRecords';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
+import Doctor from './pages/doctor/home/Doctor';
 //import Demo from './components/Demo';
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
 				<Route exact path='/question' component={QuestionAnswer} />
 				<Route exact path='/home' component={Home} />
 				<Redirect to="/signin" />
+				<Route exact path='/doctor/home' component={Doctor} />
 			</Switch>
 			<Footer />
 		</Router>
