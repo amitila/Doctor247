@@ -31,12 +31,12 @@ export default class APIService {
 	}
 
 	// api for SignIn
-	static signUp(email, firtName, lastName, password, phoneNumber, avatar, gender, callback) {
+	static signUp(email, firstName, lastName, password, phoneNumber, avatar, gender, callback) {
 		WebService.sendJsonPOST(
 			this.apiSignUp(),
 			{
 				email, 
-				firtName, 
+				firstName, 
 				lastName, 
 				password, 
 				phoneNumber, 
