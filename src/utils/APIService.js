@@ -1,7 +1,7 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.7:8080';
+	static urlServerAddress = 'http://192.168.1.2:8080';
 
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -11,8 +11,14 @@ export default class APIService {
 		return `${APIService.baseAPI()}user/login`;
 	};
 
-  	// TODO: multipart
+	static apiSignUp = () => {
+		return `${APIService.baseAPI()}user/signup`;
+	};
 
+
+  	// TODO: multipart
+	  
+	// api for SignIn
 	static signIn(email, password, callback) {
 		WebService.sendJsonPOST(
 			this.apiSignIn(),
@@ -23,4 +29,22 @@ export default class APIService {
 			callback,
 		);
 	}
+
+	// api for SignIn
+	static signUp(email, firtName, lastName, password, phoneNumber, avatar, gender, callback) {
+		WebService.sendJsonPOST(
+			this.apiSignUp(),
+			{
+				email, 
+				firtName, 
+				lastName, 
+				password, 
+				phoneNumber, 
+				avatar, 
+				gender,
+			},
+			callback,
+		);
+	}
+	
 }
