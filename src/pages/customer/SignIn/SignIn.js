@@ -60,7 +60,7 @@ export default function SignIn() {
     const dispatch = useDispatch();
 
     const onSignIn = () => {
-        console.log("clicked");
+        console.log("logined");
         APIService.signIn(email, password, (success, json) => {
             if(success && json.result){
                 dispatch(updateEmail(email));

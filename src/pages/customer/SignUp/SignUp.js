@@ -74,14 +74,15 @@ export default function SignUp() {
     const onSignUp = (event) => {
         event.preventDefault();
         console.log(state);
-        APIService.signUp(
-            state.email, 
-            state.firstName, 
-            state.lastName, 
-            state.password, 
-            state.phoneNumber, 
-            state.avatar, 
-            state.gender, 
+        APIService.signUp({
+            email:state.email, 
+            firstName:state.firstName, 
+            lastName:state.lastName, 
+            password:state.password, 
+            phoneNumber:state.phoneNumber, 
+            avatar:state.avatar, 
+            gender:state.gender
+        } ,
             (success, json) => {
             if(success && json.result){
                 // dispatch(updateEmail(email));
@@ -92,8 +93,8 @@ export default function SignUp() {
                 // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
                 return history.push("/signin");
             } else {
-                console.log(json);
-                // return history.push("/signup");
+                // console.log(json);
+                return history.push("/signup");
             }
         }) 
     }

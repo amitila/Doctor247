@@ -30,18 +30,20 @@ export default class APIService {
 		);
 	}
 
-	// api for SignIn
-	static signUp(email, firstName, lastName, password, phoneNumber, avatar, gender, callback) {
+	// api for SignUp
+	static signUp(values, callback) {
+		const formData = new FormData();
+		formData.append('email', values.email);
+		formData.append('firstName', values.firstName);
+		formData.append('lastName', values.lastName);
+		formData.append('password', values.password);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('avatar', values.avatar);
+		formData.append('gender', values.gender);
 		WebService.sendJsonPOST(
 			this.apiSignUp(),
 			{
-				email, 
-				firstName, 
-				lastName, 
-				password, 
-				phoneNumber, 
-				avatar, 
-				gender,
+				formData
 			},
 			callback,
 		);
