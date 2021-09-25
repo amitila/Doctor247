@@ -28,6 +28,10 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Link } from 'react-router-dom';
 import Logo from '../../components/Logo';
+import { Badge } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Switch from '@mui/material/Switch';
+import { useMediaQuery, useTheme as Theme} from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -73,6 +77,14 @@ const useStyles = makeStyles((theme) => ({
         ...theme.mixins.toolbar,
         justifyContent: 'flex-end',
     },
+    drawerHeaderRight: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-start',
+    },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
@@ -82,12 +94,28 @@ const useStyles = makeStyles((theme) => ({
         }),
         marginLeft: -drawerWidth,
     },
+    contentRight: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginRight: -drawerWidth,
+    },
     contentShift: {
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
         marginLeft: 0,
+    },
+    contentShiftRight: {
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginRight: 0,
     },
     link: {
         textDecoration: 'none',
@@ -96,6 +124,9 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold',
         backgroundColor: 'none',
     },
+    title: {
+        flexGrow: 1,
+    }
 }));
 
 export default function DrawerHeader() {
@@ -111,45 +142,134 @@ export default function DrawerHeader() {
         setOpen(false);
     };
 
+    const label = { inputProps: { 'anchorLeft': 'anchorRight' } };
+    const [checked, setChecked] = React.useState(false);
+    const handleChangeSwitch = (e) => {
+        setChecked(e.target.checked);
+    }
+
+    const themeMedia = Theme();
+	const isMatch = useMediaQuery(themeMedia.breakpoints.down('sm'));
+
     return (
         <div className={classes.root}>
             <CssBaseline />
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
+                    [checked ? classes.appBarShiftRight : classes.appBarShift]: open,
                 })}
             >
                 <Toolbar>
+                    {
+                        checked ? <>
+                                    {
+                                        isMatch ? 
+                                        <>
+                                            <Typography variant="h6">
+                                                <Link anchor="right" className={classes.link} to="/home">
+                                                    <Logo />
+                                                </Link>
+                                            </Typography> 
+                                            <Typography >
+                                                <IconButton
+                                                    size="large"
+                                                    aria-label="show 17 new notifications"
+                                                    color="inherit"
+                                                    >
+                                                    <Badge badgeContent={17} color="error">
+                                                        <Link className={classes.link} to="/notification">
+                                                            <NotificationsIcon />
+                                                        </Link>                              
+                                                    </Badge>
+                                                </IconButton>
+                                                {/* <p>Thông báo</p> */}
+                                            </Typography>
+                                        </>
+                                        :
+                                        <>
+                                            <Typography variant="h6" noWrap className={classes.title}>
+                                                <Link anchor="right" className={classes.link} to="/home">
+                                                    <Logo />
+                                                </Link>
+                                            </Typography> 
+                                            <Typography >
+                                                <IconButton
+                                                    size="large"
+                                                    aria-label="show 17 new notifications"
+                                                    color="inherit"
+                                                    >
+                                                    <Badge badgeContent={17} color="error">
+                                                        <Link className={classes.link} to="/notification">
+                                                            <NotificationsIcon />
+                                                        </Link>                              
+                                                    </Badge>
+                                                </IconButton>
+                                                {/* <p>Thông báo</p> */}
+                                            </Typography>
+                                        </>
+                                    } 
+                                </>
+                                :''
+                    }
+                    
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
+                        edge={checked ? 'end' : 'start'}
+                        className={checked ? clsx(open && classes.hide) : clsx(classes.menuButton, open && classes.hide)}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
-                        <Link anchor="right" className={classes.link} to="/home">
-                            <Logo />
-                        </Link>
-                    </Typography>
+                    {
+                        checked ? '' : <>
+                                            <Typography variant="h6" noWrap>
+                                                <Link anchor="right" className={classes.link} to="/home">
+                                                    <Logo />
+                                                </Link>
+                                            </Typography>
+                                            <Typography >
+                                                <IconButton
+                                                    size="large"
+                                                    aria-label="show 17 new notifications"
+                                                    color="inherit"
+                                                    >
+                                                    <Badge badgeContent={17} color="error">
+                                                        <Link className={classes.link} to="/notification">
+                                                            <NotificationsIcon />
+                                                        </Link>                              
+                                                    </Badge>
+                                                </IconButton>
+                                                {/* <p>Thông báo</p> */}
+                                            </Typography>
+                                        </>
+                    }
                 </Toolbar>
             </AppBar>
             <Drawer
                 className={classes.drawer} 
                 variant="persistent"
-                anchor="left"
+                anchor= {checked ? 'right' : 'left'}
                 open={open}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
             >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                <div className={checked ? classes.drawerHeaderRight : classes.drawerHeader}>
+                    <p>L</p>
+                    <IconButton>
+                        <Switch checked={checked} {...label} onChange={handleChangeSwitch} />
                     </IconButton>
+                    <p>R</p>
+                    {
+                        checked ? <IconButton onClick={handleDrawerClose}>
+                                    {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                                </IconButton> :
+                                <IconButton onClick={handleDrawerClose}>
+                                    {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                                </IconButton>
+                    }               
                 </div>
                 <Divider />
                 <List>
@@ -188,11 +308,11 @@ export default function DrawerHeader() {
                 </List>
             </Drawer>
             <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: open,
+                className={clsx(checked ? classes.contentRight : classes.content, {
+                    [checked ? classes.contentShiftRight : classes.contentShift]: open,
                 })}
             >
-                <div className={classes.drawerHeader} />
+                <div className={checked ? classes.drawerHeaderRight : classes.drawerHeader} />
                 {/* content */}
             </main>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 
-export default function QuestionSearchControl(props) {
+export default function DoctorSearchControl(props) {
 
     const [keyword, setKeyword] = React.useState('');
 
@@ -20,7 +20,7 @@ export default function QuestionSearchControl(props) {
                 value={keyword} 
                 type="text"
                 className="form-control"
-                placeholder="Nhập các từ khóa về bệnh..."
+                placeholder="Nhập các từ khóa về bác sĩ..."
                 onChange={onHandleChange}
             />
             &nbsp;

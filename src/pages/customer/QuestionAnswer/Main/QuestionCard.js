@@ -178,7 +178,7 @@ export default function QuestionCard(props) {
                 <IconButton aria-label="add to favorites">
                     <FormControlLabel
                         control={<Checkbox icon={<FavoriteIcon />} checkedIcon={<FavoriteIcon />} name="checkedH" />}
-                        label="Cảm ơn"
+                        label=""
                     />
                 </IconButton>
                 <IconButton aria-label="share">

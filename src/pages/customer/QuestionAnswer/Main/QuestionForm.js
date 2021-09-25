@@ -3,6 +3,7 @@ import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import { DropzoneArea } from 'material-ui-dropzone';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
     textSize: {
@@ -123,11 +124,11 @@ export default function QuestionForm(props) {
 		<div className="panel panel-warning">
 			<div className="panel-heading">
 				<h3 className="panel-title">
-					{state.id !== '' ? 'Chỉnh sửa' : 'Tạo câu hỏi'}
-					<span 
-						className="fa fa-times-circle text-right" 
-						onClick={onCloseForm}
-					></span>
+					{state.id !== '' ? 'Chỉnh sửa  ' : 'Tạo câu hỏi  '}
+					<span onClick={onCloseForm} >
+						<CloseIcon />Đóng
+					</span>
+					
 				</h3>
 			</div>
 			<div className={classes.paper} >

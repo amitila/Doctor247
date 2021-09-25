@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Landing from './components/Landing.js';
+import Notification from './pages/customer/Notification';
 import SignIn from './pages/customer/SignIn';
 import SignUp from './pages/customer/SignUp';
 import ForgotPass from './components/ForgotPass';
@@ -20,9 +21,18 @@ export default function App() {
 	return (
 		<Router>
 			<DrawerHeader />
+			<div
+				class="fb-like"
+				data-href="http://192.168.1.2:3000/home"
+				data-width=""
+				data-layout="button_count"
+				data-action="like"
+				data-size="large"
+				data-share="true"
+			></div>
 			<Switch>
 				<Route exact path='/' component={Landing} />
-				<Route exact path='/notification' component={SignIn} />
+				<Route exact path='/notification' component={Notification} />
 				<Route exact path='/signin' component={SignIn} />
 				<Route exact path='/signup' component={SignUp} />
 				<Route exact path='/forgotpass' component={ForgotPass} />

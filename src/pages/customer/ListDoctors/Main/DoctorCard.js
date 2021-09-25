@@ -23,6 +23,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import DoctorInfo from './DoctorInfo.js';
 import { useHistory } from "react-router-dom";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -85,6 +87,15 @@ export default function DoctorCard(props) {
 
 	const history = useHistory();
 
+	const [anchorEl, setAnchorEl] = React.useState(null);
+    const openAnchor = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleAnchor = () => {
+        setAnchorEl(null);
+    };
+
 	return (
 		<div className={classes.root}>
 			<Card>
@@ -93,9 +104,32 @@ export default function DoctorCard(props) {
 						<Avatar alt="avatar" src={task.avatar} loading="lazy" />
 					}
 					action={
-						<IconButton aria-label="settings">
-							<MoreVertIcon />
-						</IconButton>
+						<div>
+							<IconButton
+								id="fade-button"
+								aria-controls="fade-menu"
+								aria-haspopup="true"
+								aria-expanded={openAnchor ? 'true' : undefined}
+								onClick={handleClick}
+							>
+								<MoreVertIcon />
+							</IconButton>
+							<Menu
+								id="menu"
+								style={{height: 400, display:"flex"}}
+								MenuListProps={{
+								'aria-labelledby': 'fade-button',
+								}}
+								anchorEl={anchorEl}
+								open={openAnchor}
+								onClose={handleAnchor}
+							>
+								<MenuItem onClick={handleAnchor}>Thông tin bác sĩ</MenuItem>
+								<MenuItem onClick={handleAnchor}>Đặt lịch khám</MenuItem>
+								<MenuItem onClick={handleAnchor}>Chat với bác sĩ</MenuItem>
+								<MenuItem onClick={handleAnchor}>Theo dõi</MenuItem>
+							</Menu>
+						</div>
 					}
 					title={task.name} //"BS.Phạm Văn Tâm "
 					subheader={"Chuyên khoa " + task.specialist} //"Chuyên khoa truyền nhiễm"

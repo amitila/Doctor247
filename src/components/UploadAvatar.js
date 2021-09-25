@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UploadAvatar(props) {
     const classes = useStyles();
-    const [url, setUrl] = useState('');
+    const [url, setUrl] = useState(props.dataFromParent);
     const imageHandler = (e) => {
         const temp = e.target.value.split('fakepath\\');
         const reader = new FileReader();
@@ -34,6 +34,7 @@ export default function UploadAvatar(props) {
         reader.readAsDataURL(e.target.files[0]);
         props.handleChangeAvatar('/images/' + temp[1]);
     }
+    
     return (
         <div className={classes.root}>
             <Badge
@@ -50,7 +51,7 @@ export default function UploadAvatar(props) {
                     </label>
                 }
             >
-                <Avatar className={classes.large} alt="avatar" src={props.dataFromParent !=="" ? props.dataFromParent : url} />
+                <Avatar className={classes.large} alt="avatar" src={url} />
             </Badge>
             <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={imageHandler} />
         </div>
