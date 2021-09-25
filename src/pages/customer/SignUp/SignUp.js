@@ -72,11 +72,11 @@ export default function SignUp() {
 	}
 
     const onSignUp = (event) => {
-        // event.preventDefault();
+        event.preventDefault();
         console.log(state);
-        APIService.signIn(
+        APIService.signUp(
             state.email, 
-            state.firtName, 
+            state.firstName, 
             state.lastName, 
             state.password, 
             state.phoneNumber, 
@@ -92,7 +92,8 @@ export default function SignUp() {
                 // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
                 return history.push("/signin");
             } else {
-                return history.push("/signup");
+                console.log(json);
+                // return history.push("/signup");
             }
         }) 
     }

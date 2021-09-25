@@ -12,7 +12,7 @@ export default class APIService {
 	};
 
 	static apiSignUp = () => {
-		return `${APIService.baseAPI()}user/signup`;
+		return `${APIService.baseAPI()}user/customer`;
 	};
 
 
