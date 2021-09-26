@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 		textAlign: "center",
 	},
 	grid: {
-		float: "right",
+		float: "none",
 	},
 }));
 
@@ -30,11 +30,11 @@ export default function Doctors() {
 					</Grid>
 					<Grid xs={12} sm={12}>
 						<div
-							class="fb-page"
+							className="fb-page"
 							data-href="https://www.facebook.com/doctor247DHT"
 							data-tabs="timeline"
 							data-width="500"
-							data-height=""
+							data-height="50"
 							data-small-header="true"
 							data-adapt-container-width="true"
 							data-hide-cover="false"
@@ -42,14 +42,22 @@ export default function Doctors() {
 						>
 							<blockquote
 							cite="https://www.facebook.com/doctor247DHT"
-							class="fb-xfbml-parse-ignore"
+							className="fb-xfbml-parse-ignore"
 							>
 							<a href="https://www.facebook.com/doctor247DHT">Doctor247</a>
 							</blockquote>
 						</div>
 					</Grid>
-					<Grid xs={12} sm={7}>
-						<Slide className={classes.grid} />
+					<Grid container xs={12} >
+						<Grid xs={12} sm={4} >
+							
+						</Grid>
+						<Grid xs={12} sm={4} >
+							<Slide className={classes.grid} />
+						</Grid>
+						<Grid xs={12} sm={4} >
+							
+						</Grid>
 					</Grid>
 				</Grid>
 			</Container>

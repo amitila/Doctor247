@@ -32,6 +32,9 @@ import { Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Switch from '@mui/material/Switch';
 import { useMediaQuery, useTheme as Theme} from '@material-ui/core';
+import { useHistory } from "react-router-dom";
+import Cookies from 'universal-cookie';
+import PersonalIcon from './PersonalIcon';
 
 const drawerWidth = 240;
 
@@ -150,6 +153,19 @@ export default function DrawerHeader() {
 
     const themeMedia = Theme();
 	const isMatch = useMediaQuery(themeMedia.breakpoints.down('sm'));
+
+    // code for signout
+    const cookies = new Cookies();
+    const history = useHistory();
+
+    const onSignOut = () => {
+        console.log("signout");
+        if(cookies.get("token")) {
+            cookies.remove("token");
+            return history.push("/signin");
+        }
+        alert("Bạn vẫn chưa đăng nhập !");
+    }
 
     return (
         <div className={classes.root}>
@@ -272,6 +288,8 @@ export default function DrawerHeader() {
                     }               
                 </div>
                 <Divider />
+                <PersonalIcon />
+                <Divider />
                 <List>
                     {[
                         <Link className={classes.link} to="/home">Trang chủ</Link>, 
@@ -296,7 +314,7 @@ export default function DrawerHeader() {
                         <Link className={classes.link} to="/notification">Thông báo</Link>, 
                         <Link className={classes.link} to="/signin">Đăng nhập</Link>, 
                         <Link className={classes.link} to="/signup">Đăng ký</Link>, 
-                        <Link className={classes.link} to="/home">Thoát</Link>
+                        <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
                     ].map((text, index) => (
                         <ListItem button key={text} onClick={handleDrawerClose} >
                             <ListItemIcon>

@@ -3,7 +3,7 @@ import SignIn from './SignIn'
 //import APIService from '../../utils/APIService.js';
 //import Button from "@material-ui/core/Button";
 
-const index = () => {
+export default function Index() {
     // const email = 'ami@gmail.com';
     // const password = '1234';
     // const onSignIn = () => {
@@ -30,5 +30,3 @@ const index = () => {
         </div>
     )
 }
-
-export default index
