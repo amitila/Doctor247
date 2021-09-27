@@ -35,6 +35,8 @@ import { useMediaQuery, useTheme as Theme} from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import PersonalIcon from './PersonalIcon';
+import { useSelector, useDispatch } from "react-redux";
+import { selectName, updateName} from '../../store/userSlice';
 
 const drawerWidth = 240;
 
@@ -157,11 +159,13 @@ export default function DrawerHeader() {
     // code for signout
     const cookies = new Cookies();
     const history = useHistory();
+    const dispatch = useDispatch();
 
+    const name = useSelector(selectName);
     const onSignOut = () => {
-        console.log("signout");
         if(cookies.get("token")) {
             cookies.remove("token");
+            dispatch(updateName(''));
             return history.push("/signin");
         }
         alert("Bạn vẫn chưa đăng nhập !");
@@ -288,7 +292,7 @@ export default function DrawerHeader() {
                     }               
                 </div>
                 <Divider />
-                <PersonalIcon />
+                <PersonalIcon name={name} />
                 <Divider />
                 <List>
                     {[

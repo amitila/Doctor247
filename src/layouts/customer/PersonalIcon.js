@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import APIService from '../../utils/APIService';
 import Cookies from 'universal-cookie';
-import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -23,16 +22,22 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import Badge from '@material-ui/core/Badge';
+import { useDispatch } from "react-redux";
+import { updateName } from '../../store/userSlice';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(1),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     avatar: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(0),
         backgroundColor: theme.palette.secondary.light,
     },
     form: {
@@ -52,11 +57,28 @@ const useStyles = makeStyles((theme) => ({
 	},
     input: {
 		marginLeft: "10px",
+		display: "none"
 	},
 	large: {
-		width: theme.spacing(15),
-		height: theme.spacing(15),
+		width: theme.spacing(18),
+		height: theme.spacing(18),
 	},
+	link: {
+        textDecoration: 'none',
+        fontSize: '14px',
+        color: theme.palette.warning.dark,
+        fontWeight: 'bold',
+        backgroundColor: 'none',
+		textAlign: 'center'
+    },
+	personal: {
+        textDecoration: 'none',
+        fontSize: '16px',
+        color: theme.palette.success.dark,
+        fontWeight: 'bold',
+        backgroundColor: 'none',
+		textAlign: 'center'
+    },
 }));
 
 const styles = (theme) => ({
@@ -88,7 +110,7 @@ const DialogTitle = withStyles(styles)((props) => {
 
 const DialogContent = withStyles((theme) => ({
 	root: {
-		padding: theme.spacing(2),
+		padding: theme.spacing(0),
 	},
 }))(MuiDialogContent);
 
@@ -99,7 +121,7 @@ const DialogActions = withStyles((theme) => ({
 	},
 }))(MuiDialogActions);
 
-export default function PersonalIcon() {
+export default function PersonalIcon(props) {
 	const classes = useStyles();
 	const history = useHistory();
 	const [open, setOpen] = React.useState(false);
@@ -120,26 +142,14 @@ export default function PersonalIcon() {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	}
 
-	const [name, setName] = React.useState('Bạn');
 	const cookies = new Cookies();
 	const token = cookies.get("token");
 
 	const handleClickOpen = () => {
 		if(token) {
-			setOpen(true);
-			APIService.checkToken(token, (success, json) => {
-				console.log(token);
-				if(success && json.result){
-					setName(json.result.customer.lastName);
-					console.log(json.result.customer.lastName);
-				} else {
-					console.log("failed");
-				}
-			}) 
-
 			APIService.getProfile(token, (success, json) => {
 				if(success && json.result){
-					console.log(json.result.email);
+					setOpen(true);
 					setState({
 						email: json.result.email,
 						firstName: json.result.customer.firstName,
@@ -155,8 +165,8 @@ export default function PersonalIcon() {
 		}
 	};
 
+	const dispatch = useDispatch();
 	const onSave = (event) => {
-		console.log("Đã vào save");
         event.preventDefault();
         APIService.putProfile(
 			token,
@@ -164,16 +174,15 @@ export default function PersonalIcon() {
 				firstName:state.firstName, 
 				lastName:state.lastName, 
 				gender:state.gender, 
-				avatar:state.avatar, 
-				birthday: ''
+				birthday: '2000-09-03T23:16:32+07:00',
+				avatar: url
 			} ,
             (success, json) => {
             if(success && json.result){
-				console.log("ok");
-                return alert("THÀNH CÔNG !")
+				dispatch(updateName(json.result.customer.lastName));
+                return alert("THÀNH CÔNG !");;
             } else {
-				console.log(json);
-                return alert("Cập nhật thay đổi THẤT BẠI !")
+                return alert("Cập nhật thay đổi THẤT BẠI !");
             }
         }) 
     }
@@ -181,14 +190,33 @@ export default function PersonalIcon() {
 	const handleClose = () => {
 		setOpen(false);
 	};
+	
+	const [url, setUrl] = React.useState('');
+	const imageHandler = (e) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setState({...state, avatar: reader.result});
+            }
+        }
+        reader.readAsDataURL(e.target.files[0]);
+        setUrl(e.currentTarget.files[0]);
+    }
 
 	return (
 		<div>
-			<Button variant="none" color="primary" onClick={handleClickOpen}>
-		 		<AccountCircleIcon />
-				&nbsp;
-				Chào {name}
-			</Button>
+			{
+				props.name ? <Button className={classes.personal} fullWidth variant="none" color="primary" onClick={handleClickOpen} >
+								<AccountCircleIcon />
+								&nbsp;
+								Chào {props.name}
+							</Button> 
+							: 
+							<Button fullWidth variant="none" color="primary" >
+								<Link className={classes.link} to="/signin" >Bạn chưa đăng nhập !</Link>
+							</Button> 
+							
+			}
 			<Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
 				<DialogTitle id="customized-dialog-title" onClose={handleClose}>
 					Thông tin cá nhân
@@ -197,7 +225,25 @@ export default function PersonalIcon() {
 					<Container component="main" maxWidth="xs">
 						<CssBaseline />
 						<div className={classes.paper}>
-							<Avatar alt="Remy Sharp" src={state.avatar} className={classes.large} />
+							<div>
+								<Badge
+									overlap="circular"
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'right',
+									}}
+									badgeContent={
+										<label htmlFor="icon-button-file">
+											<IconButton color="primary" aria-label="upload picture" component="span">
+												<PhotoCamera />
+											</IconButton>
+										</label>
+									}
+								>
+									<Avatar className={classes.large} alt="avatar" src={state.avatar} />
+								</Badge>
+								<input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={imageHandler} />
+							</div>
 							<form className={classes.form} noValidate>
 								<Grid container spacing={2}>
 									<Grid item xs={12} sm={6}>
@@ -275,24 +321,21 @@ export default function PersonalIcon() {
 											autoComplete="current-phoneNumber"
 										/>
 									</Grid>
-								</Grid>
-								<Button
-									type="submit"
-									fullWidth
-									variant="contained"
-									color="primary"
-									className={classes.submit}
-									onClick={onSave}
-								>
-									Lưu thay đổi
-								</Button>
+								</Grid>	
 							</form>
 						</div>
 					</Container>
 				</DialogContent>
 				<DialogActions>
-					<Button autoFocus onClick={handleClose} color="primary">
-						Đóng thẻ
+					<Button
+						autoFocus
+						type="submit"
+						variant="contained"
+						color="primary"
+						className={classes.submit}
+						onClick={onSave}
+					>
+						Lưu thay đổi
 					</Button>
 				</DialogActions>
 			</Dialog>

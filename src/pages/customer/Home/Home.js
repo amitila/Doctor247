@@ -1,56 +1,51 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './../../../App.css';
-// import { useSelector } from "react-redux";
-// import { selectEmail, selectPassword, selectProvince } from '../../../store/userSlice';
+import { useDispatch } from "react-redux";
+import { updateName } from '../../../store/userSlice';
 import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
 
 export default function Home() {
-	// Select username from store
-	// const email = useSelector(selectEmail);
-	// const password = useSelector(selectPassword);
-	// const province = useSelector(selectProvince);
+	const dispatch = useDispatch();
+
 	const [state, setState] = React.useState({
 		email: '',
-		role: ''
+		role: '',
+		id: '',
+		name: ''
 	});
 
 	const cookies = new Cookies();
 	const [token, setToken] = React.useState(cookies.get("token"));
 	const onCheckToken = () => {
         APIService.checkToken(token, (success, json) => {
-			console.log(token);
             if(success && json.result){
-               console.log("success");
-			   console.log(json.result.token);
-			   setToken(json.result.token);
+				setToken(json.result.token);
             } else {
-                console.log("failed");
+                console.log("Thất bại");
             }
         }) 
     }
 
 	React.useEffect(() => {
-		console.log("useEffect");
 		if(token) {
 			APIService.checkToken(token, (success, json) => {
-				console.log(token);
 				if(success && json.result){
-					console.log("success");
-					console.log(json.result.token);
 					// setToken(json.result.token);
 					setState({
-							email: json.result.email,
-							role: json.result.role
-					})
+						email: json.result.email,
+						role: json.result.role,
+						id: json.result.id,
+						name: json.result.customer.lastName
+					});
+					dispatch(updateName(json.result.customer.lastName));
 				} else {
-					console.log("failed");
+					console.log("Thất bại");
 				}
 			}) 
 		}
-	}, [token]);
-	
+	}, [dispatch, token]);
 
 	return (
 		<div className="header" >

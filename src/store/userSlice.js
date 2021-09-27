@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  id: '',
   relationship: '',
   email: '',
   password: '',
@@ -19,6 +20,9 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    updateId: (state, action) => {
+      state.id = action.payload || initialState.id;
+    },
     updateRelationship: (state, action) => {
       state.relationship = action.payload || initialState.relationship;
     },
@@ -57,6 +61,7 @@ export const userSlice = createSlice({
 
 // Export actions
 export const { 
+  updateId,
   updateRelationship,
   updateEmail, 
   updatePassword,
@@ -71,6 +76,7 @@ export const {
 } = userSlice.actions;
 
 // Select state username from slice
+export const selectId = state => state.user.id;
 export const selectRelationship = state => state.user.relationship;
 export const selectEmail = state => state.user.email;
 export const selectPassword = state => state.user.password; 
