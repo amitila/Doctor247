@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { updateName } from '../../../store/userSlice';
 import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
+import Alert from '@mui/material/Alert';
 
 export default function Home() {
 	const dispatch = useDispatch();
@@ -18,21 +19,21 @@ export default function Home() {
 
 	const cookies = new Cookies();
 	const [token, setToken] = React.useState(cookies.get("token"));
-	const onCheckToken = () => {
-        APIService.checkToken(token, (success, json) => {
-            if(success && json.result){
-				setToken(json.result.token);
-            } else {
-                console.log("Thất bại");
-            }
-        }) 
-    }
+	// const onCheckToken = () => {
+    //     APIService.checkToken(token, (success, json) => {
+    //         if(success && json.result){
+	// 			setToken(json.result.token);
+    //         } else {
+    //             console.log("Thất bại");
+    //         }
+    //     }) 
+    // }
 
 	React.useEffect(() => {
 		if(token) {
 			APIService.checkToken(token, (success, json) => {
 				if(success && json.result){
-					// setToken(json.result.token);
+					setToken(json.result.token);
 					setState({
 						email: json.result.email,
 						role: json.result.role,
@@ -41,7 +42,7 @@ export default function Home() {
 					});
 					dispatch(updateName(json.result.customer.lastName));
 				} else {
-					console.log("Thất bại");
+					return document.getElementById("alert").innerHTML = <Alert severity="error">Phiên đã hết hạn, bạn vui lòng đăng nhập lại!</Alert>;
 				}
 			}) 
 		}
@@ -49,9 +50,10 @@ export default function Home() {
 
 	return (
 		<div className="header" >
-			<button onClick={onCheckToken} >
+			{/* <button onClick={onCheckToken} >
 				Check token
-			</button>
+			</button> */}
+			<div id="alert">hihi</div>
 			<h2>Chào mừng bạn có email là <u>{state.email ? state.email : "chưa đăng nhập"}</u>  đã đến với Ứng dụng kết nối bác sĩ trực tuyến Doctor247</h2>
 			<h2>Vai trò của bạn trong ứng dụng này là <u>{state.role ? (state.role === "CUSTOMER" ? "Khách" : "") : "chưa đăng nhập"}</u>.</h2>
 			<Link to="/signin">Log out</Link>

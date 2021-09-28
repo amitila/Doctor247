@@ -7,7 +7,8 @@ import SignIn from './pages/customer/SignIn';
 import SignUp from './pages/customer/SignUp';
 import ForgotPass from './components/ForgotPass';
 import Profile from './pages/customer/Profile';
-import Doctors from './pages/customer/ListDoctors';
+import ListDoctors from './pages/customer/ListDoctors';
+import PhoneBook from './pages/customer/PhoneBook';
 import DrawerHeader from './layouts/customer/DrawerHeader';
 import QuestionAnswer from './pages/customer/QuestionAnswer';
 import Appointment from './pages/customer/Appointment';
@@ -37,7 +38,8 @@ export default function App() {
 				<Route exact path='/signup' component={SignUp} />
 				<Route exact path='/forgotpass' component={ForgotPass} />
 				<Route exact path='/profile' component={Profile} />
-				<Route exact path='/doctors' component={Doctors} />
+				<Route exact path='/doctors' component={ListDoctors} />
+				<Route exact path='/phonebook' component={PhoneBook} />
 				<Route exact path='/appointment' component={Appointment} />
 				<Route exact path='/task' component={Task} />
 				<Route exact path='/medicalrecords' component={MedicalrRecords} />

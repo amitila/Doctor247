@@ -31,12 +31,13 @@ import Logo from '../../components/Logo';
 import { Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Switch from '@mui/material/Switch';
-import { useMediaQuery, useTheme as Theme} from '@material-ui/core';
+import { useMediaQuery, useTheme as Theme } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import PersonalIcon from './PersonalIcon';
 import { useSelector, useDispatch } from "react-redux";
-import { selectName, updateName} from '../../store/userSlice';
+import { selectName, updateName } from '../../store/userSlice';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const drawerWidth = 240;
 
@@ -50,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         backgroundColor: "#F6F6F6",
-		color: "black",
-		width: "100%",
+        color: "black",
+        width: "100%",
     },
     appBarShift: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -154,7 +155,7 @@ export default function DrawerHeader() {
     }
 
     const themeMedia = Theme();
-	const isMatch = useMediaQuery(themeMedia.breakpoints.down('sm'));
+    const isMatch = useMediaQuery(themeMedia.breakpoints.down('sm'));
 
     // code for signout
     const cookies = new Cookies();
@@ -163,7 +164,7 @@ export default function DrawerHeader() {
 
     const name = useSelector(selectName);
     const onSignOut = () => {
-        if(cookies.get("token")) {
+        if (cookies.get("token")) {
             cookies.remove("token");
             dispatch(updateName(''));
             return history.push("/signin");
@@ -183,56 +184,56 @@ export default function DrawerHeader() {
                 <Toolbar>
                     {
                         checked ? <>
-                                    {
-                                        isMatch ? 
-                                        <>
-                                            <Typography variant="h6">
-                                                <Link anchor="right" className={classes.link} to="/home">
-                                                    <Logo />
-                                                </Link>
-                                            </Typography> 
-                                            <Typography >
-                                                <IconButton
-                                                    size="large"
-                                                    aria-label="show 17 new notifications"
-                                                    color="inherit"
-                                                    >
-                                                    <Badge badgeContent={17} color="error">
-                                                        <Link className={classes.link} to="/notification">
-                                                            <NotificationsIcon />
-                                                        </Link>                              
-                                                    </Badge>
-                                                </IconButton>
-                                                {/* <p>Thông báo</p> */}
-                                            </Typography>
-                                        </>
-                                        :
-                                        <>
-                                            <Typography variant="h6" noWrap className={classes.title}>
-                                                <Link anchor="right" className={classes.link} to="/home">
-                                                    <Logo />
-                                                </Link>
-                                            </Typography> 
-                                            <Typography >
-                                                <IconButton
-                                                    size="large"
-                                                    aria-label="show 17 new notifications"
-                                                    color="inherit"
-                                                    >
-                                                    <Badge badgeContent={17} color="error">
-                                                        <Link className={classes.link} to="/notification">
-                                                            <NotificationsIcon />
-                                                        </Link>                              
-                                                    </Badge>
-                                                </IconButton>
-                                                {/* <p>Thông báo</p> */}
-                                            </Typography>
-                                        </>
-                                    } 
-                                </>
-                                :''
+                            {
+                                isMatch ?
+                                    <>
+                                        <Typography variant="h6">
+                                            <Link anchor="right" className={classes.link} to="/home">
+                                                <Logo />
+                                            </Link>
+                                        </Typography>
+                                        <Typography >
+                                            <IconButton
+                                                size="large"
+                                                aria-label="show 17 new notifications"
+                                                color="inherit"
+                                            >
+                                                <Badge badgeContent={17} color="error">
+                                                    <Link className={classes.link} to="/notification">
+                                                        <NotificationsIcon />
+                                                    </Link>
+                                                </Badge>
+                                            </IconButton>
+                                            {/* <p>Thông báo</p> */}
+                                        </Typography>
+                                    </>
+                                    :
+                                    <>
+                                        <Typography variant="h6" noWrap className={classes.title}>
+                                            <Link anchor="right" className={classes.link} to="/home">
+                                                <Logo />
+                                            </Link>
+                                        </Typography>
+                                        <Typography >
+                                            <IconButton
+                                                size="large"
+                                                aria-label="show 17 new notifications"
+                                                color="inherit"
+                                            >
+                                                <Badge badgeContent={17} color="error">
+                                                    <Link className={classes.link} to="/notification">
+                                                        <NotificationsIcon />
+                                                    </Link>
+                                                </Badge>
+                                            </IconButton>
+                                            {/* <p>Thông báo</p> */}
+                                        </Typography>
+                                    </>
+                            }
+                        </>
+                            : ''
                     }
-                    
+
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -244,33 +245,33 @@ export default function DrawerHeader() {
                     </IconButton>
                     {
                         checked ? '' : <>
-                                            <Typography variant="h6" noWrap>
-                                                <Link anchor="right" className={classes.link} to="/home">
-                                                    <Logo />
-                                                </Link>
-                                            </Typography>
-                                            <Typography >
-                                                <IconButton
-                                                    size="large"
-                                                    aria-label="show 17 new notifications"
-                                                    color="inherit"
-                                                    >
-                                                    <Badge badgeContent={17} color="error">
-                                                        <Link className={classes.link} to="/notification">
-                                                            <NotificationsIcon />
-                                                        </Link>                              
-                                                    </Badge>
-                                                </IconButton>
-                                                {/* <p>Thông báo</p> */}
-                                            </Typography>
-                                        </>
+                            <Typography variant="h6" noWrap>
+                                <Link anchor="right" className={classes.link} to="/home">
+                                    <Logo />
+                                </Link>
+                            </Typography>
+                            <Typography >
+                                <IconButton
+                                    size="large"
+                                    aria-label="show 17 new notifications"
+                                    color="inherit"
+                                >
+                                    <Badge badgeContent={17} color="error">
+                                        <Link className={classes.link} to="/notification">
+                                            <NotificationsIcon />
+                                        </Link>
+                                    </Badge>
+                                </IconButton>
+                                {/* <p>Thông báo</p> */}
+                            </Typography>
+                        </>
                     }
                 </Toolbar>
             </AppBar>
             <Drawer
-                className={classes.drawer} 
+                className={classes.drawer}
                 variant="persistent"
-                anchor= {checked ? 'right' : 'left'}
+                anchor={checked ? 'right' : 'left'}
                 open={open}
                 classes={{
                     paper: classes.drawerPaper,
@@ -284,50 +285,67 @@ export default function DrawerHeader() {
                     <p>R</p>
                     {
                         checked ? <IconButton onClick={handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                                </IconButton> :
-                                <IconButton onClick={handleDrawerClose}>
-                                    {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                                </IconButton>
-                    }               
+                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        </IconButton> :
+                            <IconButton onClick={handleDrawerClose}>
+                                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            </IconButton>
+                    }
                 </div>
                 <Divider />
                 <PersonalIcon name={name} />
                 <Divider />
-                <List>
-                    {[
-                        <Link className={classes.link} to="/home">Trang chủ</Link>, 
-                        <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>, 
-                        <Link className={classes.link} to="/appointment">Đặt và xem lịch khám</Link>, 
-                        <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>, 
-                        <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
-                        <Link className={classes.link} to="/question">Hỏi đáp</Link>,
-                        <Link className={classes.link} to="/task">Công việc</Link>
-                    ].map((text, index) => (
-                        <ListItem button key={text} onClick={handleDrawerClose} >
-                            <ListItemIcon>
-                                {[<HomeIcon />, <FormatListNumberedIcon />, <EventIcon />, <AccountBoxIcon />, <ReorderIcon />, <HelpIcon />, <ScheduleIcon /> ][index]}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {[
-                        <Link className={classes.link} to="/notification">Thông báo</Link>, 
-                        <Link className={classes.link} to="/signin">Đăng nhập</Link>, 
-                        <Link className={classes.link} to="/signup">Đăng ký</Link>, 
-                        <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
-                    ].map((text, index) => (
-                        <ListItem button key={text} onClick={handleDrawerClose} >
-                            <ListItemIcon>
-                                {[<NotificationsActiveIcon />, <ExitToAppIcon />, <LockOpenIcon />, <PowerSettingsNewIcon />][index]}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
+                <div>
+                    <List>
+                        {[
+                            <Link className={classes.link} to="/home">Trang chủ</Link>,
+                            <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
+                            <Link className={classes.link} to="/appointment">Đặt và xem lịch khám</Link>,
+                            <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>,
+                            <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
+                            <Link className={classes.link} to="/question">Hỏi đáp</Link>,
+                            <Link className={classes.link} to="/phonebook">Danh bạ</Link>,
+                            <Link className={classes.link} to="/task">Công việc</Link>
+                        ].map((text, index) => (
+                            <ListItem button key={text} onClick={handleDrawerClose} >
+                                <ListItemIcon>
+                                    {
+                                        [<HomeIcon />, 
+                                        <FormatListNumberedIcon />, 
+                                        <EventIcon />, 
+                                        <AccountBoxIcon />, 
+                                        <ReorderIcon />, 
+                                        <HelpIcon />, 
+                                        <LibraryBooksIcon />, 
+                                        <ScheduleIcon />][index]
+                                    }
+                                </ListItemIcon>
+                                <ListItemText primary={text} />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                    <List>
+                        {[
+                            <Link className={classes.link} to="/notification">Thông báo</Link>,
+                            <Link className={classes.link} to="/signin">Đăng nhập</Link>,
+                            <Link className={classes.link} to="/signup">Đăng ký</Link>,
+                            <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
+                        ].map((text, index) => (
+                            <ListItem button key={text} onClick={handleDrawerClose} >
+                                <ListItemIcon>
+                                    {
+                                        [<NotificationsActiveIcon />, 
+                                        <ExitToAppIcon />, 
+                                        <LockOpenIcon />, 
+                                        <PowerSettingsNewIcon />][index]
+                                    }
+                                </ListItemIcon>
+                                <ListItemText primary={text} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
             </Drawer>
             <main
                 className={clsx(checked ? classes.contentRight : classes.content, {

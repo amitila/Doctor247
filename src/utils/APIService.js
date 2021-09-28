@@ -7,7 +7,6 @@ export default class APIService {
 		return `${APIService.urlServerAddress}/api/`;
 	};
 
-
 	static apiCheckToken = () => {
 		return `${APIService.baseAPI()}customer/users/check-token`;
 	};
