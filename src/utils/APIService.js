@@ -1,7 +1,7 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.2:8080';
+	static urlServerAddress = 'http://192.168.1.5:8080';
 
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -25,6 +25,10 @@ export default class APIService {
 
 	static apiAppointment = () => {
 		return `${APIService.baseAPI()}customer/appointment`;
+	};
+
+	static apiProvinces = () => {
+		return `${APIService.baseAPI()}province`;
 	};
 
 
@@ -73,6 +77,9 @@ export default class APIService {
 		formData.append('gender', values.gender);
 		formData.append('birthday', values.birthday);
 		formData.append('avatar', values.avatar);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('provinceId', values.provinceId);
+		formData.append('address', values.address);
 		WebService.sendJsonPUT(
 			this.apiProfile(),
 			{
@@ -91,7 +98,6 @@ export default class APIService {
 		formData.append('lastName', values.lastName);
 		formData.append('password', values.password);
 		formData.append('phoneNumber', values.phoneNumber);
-		formData.append('avatar', values.avatar);
 		formData.append('gender', values.gender);
 		WebService.sendJsonPOST(
 			this.apiSignUp(),
@@ -116,6 +122,16 @@ export default class APIService {
 			this.apiAppointment(),
 			{
 				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Get Profile
+	static getProvinces( callback ) {
+		WebService.sendJsonGET(
+			this.apiProvinces(),
+			{
 			},
 			callback,
 		);

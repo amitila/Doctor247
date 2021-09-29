@@ -18,6 +18,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { useHistory } from "react-router-dom";
 import APIService from '../../../utils/APIService';
+import Alert from '@mui/material/Alert';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
         padding: '5px 0px 0px 10px',
     },
     rowgender: {
-		marginLeft: "10px",
-	},
+        marginLeft: "10px",
+    },
     input: {
-		marginLeft: "10px",
-	},
+        marginLeft: "10px",
+    },
 }));
 
 export default function SignUp() {
@@ -56,59 +59,50 @@ export default function SignUp() {
 
     const [state, setState] = React.useState({
         email: '',
-		firstName: '',
-		lastName: '',
-		password: '',
-		phoneNumber: '',
-		avatar: '',
-		gender: ''
+        firstName: '',
+        lastName: '',
+        password: '',
+        phoneNumber: '',
+        gender: ''
     })
 
     const onChange = (event) => {
-		let target = event.target;
-		let name = target.name;
-		let value = target.value;
-		setState(prevState => ({ ...prevState, [name]: value }));
-	}
+        let target = event.target;
+        let name = target.name;
+        let value = target.value;
+        setState(prevState => ({ ...prevState, [name]: value }));
+    }
 
+    const [status, setStatus] = React.useState(false);
     const onSignUp = (event) => {
         event.preventDefault();
-        console.log(state);
         APIService.signUp({
-            email:state.email, 
-            firstName:state.firstName, 
-            lastName:state.lastName, 
-            password:state.password, 
-            phoneNumber:state.phoneNumber, 
-            avatar:state.avatar, 
-            gender:state.gender
-        } ,
+            email: state.email,
+            firstName: state.firstName,
+            lastName: state.lastName,
+            password: state.password,
+            phoneNumber: state.phoneNumber,
+            gender: state.gender
+        },
             (success, json) => {
-            if(success && json.result){
-                // dispatch(updateEmail(email));
-                // dispatch(updatePassword(password));
-                // const timestamp = new Date().getTime();
-                // const expire = timestamp + (60*60*24*1000*3);
-                // const expireDate = new Date(expire);
-                // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-                return history.push("/signin");
-            } else {
-                // console.log(json);
-                return history.push("/signup");
-            }
-        }) 
+                if (success && json.result) {
+                    // dispatch(updateEmail(email));
+                    // dispatch(updatePassword(password));
+                    // const timestamp = new Date().getTime();
+                    // const expire = timestamp + (60*60*24*1000*3);
+                    // const expireDate = new Date(expire);
+                    // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
+                    return history.push("/signin");
+                } else {
+                    setStatus(true);
+                }
+            })
     }
 
-    const imageHandler = (e) => {
-        // const reader = new FileReader();
-        // reader.onload = () => {
-        //     if (reader.readyState === 2) {
-        //         setState({...state, avatar: reader.result});
-        //     }
-        // }
-        // reader.readAsDataURL(e.target.files[0]);
-        setState({...state, avatar: e.currentTarget.files[0]});
-    }
+    const [showPassword, setShowPassword] = React.useState(false);
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -120,7 +114,7 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Đăng ký tài khoản
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} onSubmit={onSignUp} >
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -175,6 +169,7 @@ export default function SignUp() {
                                 id="email"
                                 label="Địa chỉ email"
                                 name="email"
+                                type="email"
                                 onChange={onChange}
                                 autoComplete="email"
                             />
@@ -185,29 +180,35 @@ export default function SignUp() {
                                 variant="standard"
                                 required
                                 fullWidth
-                                type="number"
                                 id="phoneNumber"
                                 label="Số điện thoại"
                                 name="phoneNumber"
+                                type="number"
                                 onChange={onChange}
                                 autoComplete="current-phoneNumber"
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                className={classes.textField}
-                                variant="standard"
-                                required
-                                fullWidth
-                                type="password"
-                                id="password"
-                                label="Mật khẩu"
-                                name="password"
-                                onChange={onChange}
-                                autoComplete="current-password"
-                            />
+                        <Grid container item xs={12}>
+                            <Grid item sm={11}>
+                                <TextField
+                                    className={classes.textField}
+                                    variant="standard"
+                                    required
+                                    fullWidth
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    label="Mật khẩu"
+                                    name="password"
+                                    onChange={onChange}
+                                    autoComplete="current-password"
+                                />
+                            </Grid>
+                            <Grid item sm={1}>
+                                <Box style={{ marginTop: 15, marginLeft: 3, border: "solid" }} onClick={handleClickShowPassword}>
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </Box>
+                            </Grid>   
                         </Grid>
-                        <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={imageHandler} />
                         <Grid item xs={12}>
                             <FormControlLabel
                                 control={<Checkbox value="allowExtraEmails" color="primary" />}
@@ -215,13 +216,15 @@ export default function SignUp() {
                             />
                         </Grid>
                     </Grid>
+                    {
+                        status ? <Alert severity="error">Email hay mật khẩu đã được sử dụng, vui lòng đăng ký lại!</Alert> : ''
+                    }
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={onSignUp}
                     >
                         Đăng ký
                     </Button>

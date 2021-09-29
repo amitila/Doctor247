@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         width: '100%',
         margin: "auto",
-        border: "#303F9F solid 5px",
+        border: "#303F9F double 5px",
         borderRadius: 5,
         padding: '10px',
     },
@@ -210,7 +210,7 @@ export default function AppointmentForm(props) {
 				</h3>
 			</div>
 			<div className="panel-body">
-				<form onSubmit={onSubmit} >
+				<form onSubmit={onSubmit} className={classes.paper} >
 					<Typography variant="h6" className={classes.title} >
 						Đặt lịch khám
 					</Typography>

@@ -10,6 +10,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import SelectProvince from '../../../../components/SelectProvince';
+import Relationship from '../../../../components/Relationship';
 import UploadAvatar from "../../../../components/UploadAvatar.js";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
@@ -18,9 +19,17 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 	},
 	paper: {
-		padding: theme.spacing(1),
+		padding: theme.spacing(0.5),
 		textAlign: "center",
 		color: theme.palette.text.secondary,
+		marginTop: theme.spacing(8),
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		width: '100%',
+		margin: "auto",
+		border: "#303F9F double 5px",
+		borderRadius: 5,
 	},
 	rowgender: {
 		marginTop: "5px",
@@ -42,7 +51,8 @@ export default function ProfileForm(props) {
 		id: props.task.id,
 		avatar: props.task.avatar,
 		relationship: props.task.relationship,
-		name: props.task.name,
+		firstName: props.task.firstName,
+		lastName: props.task.lastName,
 		gender: props.task.gender,
 		birthday: props.task.birthday,
 		bhyt: props.task.bhyt,
@@ -54,7 +64,8 @@ export default function ProfileForm(props) {
 		id: '',
 		avatar: '',
 		relationship: '',
-		name: '',
+		firstName: '',
+		lastName: '',
 		gender: '',
 		birthday: '',
 		bhyt: '',
@@ -72,7 +83,8 @@ export default function ProfileForm(props) {
 				id: props.task.id,
 				avatar: props.task.avatar,
 				relationship: props.task.relationship,
-				name: props.task.name,
+				firstName: props.task.firstName,
+				lastName: props.task.lastName,
 				gender: props.task.gender,
 				birthday: props.task.birthday,
 				bhyt: props.task.bhyt,
@@ -86,7 +98,8 @@ export default function ProfileForm(props) {
 				id: '',
 				avatar: '',
 				relationship: '',
-				name: '',
+				firstName: '',
+				lastName: '',
 				gender: '',
 				birthday: '',
 				bhyt: '',
@@ -123,7 +136,8 @@ export default function ProfileForm(props) {
 			id: '',
 			avatar: '',
 			relationship: '',
-			name: '',
+			firstName: '',
+			lastName: '',
 			gender: '',
 			birthday: '',
 			bhyt: '',
@@ -135,11 +149,15 @@ export default function ProfileForm(props) {
 	}
 
 	const handleChangeAvatar = (text) => {
-        setState({ ...state, avatar: text });
-    }
+		setState({ ...state, avatar: text });
+	}
 
 	const handleChangeProvince = (text) => {
 		setState({ ...state, province: text });
+	}
+
+	const handleSelectRelationship = (text) => {
+		setState({ ...state, relationship: text });
 	}
 
 	const getCurrentDate = () => {
@@ -156,7 +174,7 @@ export default function ProfileForm(props) {
 				<h3 className="panel-title" onClick={onCloseForm} >
 					{state.id !== '' ? 'Hủy bỏ cập nhật hồ sơ' : 'Hủy bỏ thêm hồ sơ'}
 					&nbsp;
-					<HighlightOffIcon  />
+					<HighlightOffIcon />
 				</h3>
 			</div>
 			<div className={classes.root}>
@@ -164,8 +182,8 @@ export default function ProfileForm(props) {
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							{/* Upload avatar into profile */}
-							<UploadAvatar 
-								dataFromParent={state.avatar} 
+							<UploadAvatar
+								dataFromParent={state.avatar}
 								//onChange={event => setAvatar(event.target.value)} 
 								handleChangeAvatar={handleChangeAvatar}
 								avatar={state.avatar}
@@ -173,28 +191,43 @@ export default function ProfileForm(props) {
 						</Grid>
 						<Grid item xs={12}>
 							<form onSubmit={onSubmit} >
-								<TextField
-									variant="standard"
-									required
-									id="relationship"
-									label="Mối quan hệ:"
-									name="relationship"
-									value={state.relationship}
-									onChange={onChange}
-									autoComplete="relationship"
-									autoFocus
+								<Relationship
+									dataFromParent={state.relationship}
+									handleSelectRelationship={handleSelectRelationship}
+									relationship={state.relationship}
 								/>
-								<TextField
-									variant="standard"
-									required
-									fullWidth
-									id="name"
-									label="Họ và tên"
-									name="name"
-									value={state.name}
-									onChange={onChange}
-									autoComplete="name"
-								/>
+								<Grid style={{ marginTop: 10 }} container xs={12}>
+									<Grid item sm={5}>
+										<TextField
+											variant="filled"
+											size="small"
+											required
+											fullWidth
+											id="firstName"
+											label="Họ và tên đệm"
+											name="firstName"
+											value={state.firstName}
+											onChange={onChange}
+											autoComplete="firstName"
+										/>
+									</Grid>
+									<br />
+									<Grid item sm={2}></Grid>
+									<Grid item sm={3}>
+										<TextField
+											variant="filled"
+											size="small"
+											required
+											fullWidth
+											id="lastName"
+											label="Tên"
+											name="lastName"
+											value={state.lastName}
+											onChange={onChange}
+											autoComplete="lastName"
+										/>
+									</Grid>
+								</Grid>
 								<Grid container spacing={2} className={classes.rowgender} >
 									<Grid item xs={5}>
 										<FormControl required className={classes.gender} component="fieldset">
@@ -213,6 +246,8 @@ export default function ProfileForm(props) {
 									</Grid>
 									<Grid item xs={7}>
 										<TextField
+											variant="filled"
+											size="small"
 											required
 											id="date"
 											label="Ngày sinh"
@@ -228,7 +263,7 @@ export default function ProfileForm(props) {
 												shrink: true,
 											}}
 											InputProps={{
-												inputProps: { min: "1890-01-01", max: getCurrentDate()} 
+												inputProps: { min: "1890-01-01", max: getCurrentDate() }
 											}}
 										/>
 									</Grid>
@@ -236,7 +271,8 @@ export default function ProfileForm(props) {
 								<Grid container spacing={3}>
 									<Grid item xs={8}>
 										<TextField
-											variant="standard"
+											variant="filled"
+											size="small"
 											margin="normal"
 											fullWidth
 											id="bhyt"
@@ -247,25 +283,29 @@ export default function ProfileForm(props) {
 											autoComplete="bhyt"
 										/>
 										<TextField
-											variant="standard"
+											variant="filled"
+											size="small"
 											margin="normal"
 											required
 											fullWidth
 											id="numphone"
 											label="Số điện thoại"
 											name="phone"
+											type="number"
 											value={state.phone}
 											onChange={onChange}
 											autoComplete="phone"
 										/>
 										<TextField
-											variant="standard"
+											variant="filled"
+											size="small"
 											margin="normal"
 											required
 											fullWidth
 											id="email"
 											label="Địa chỉ email"
 											name="email"
+											type="email"
 											value={state.email}
 											onChange={onChange}
 											autoComplete="email"
@@ -282,7 +322,8 @@ export default function ProfileForm(props) {
 									province={state.province}
 								/>
 								<TextField
-									variant="standard"
+									variant="filled"
+									size="small"
 									margin="normal"
 									required
 									fullWidth
@@ -304,7 +345,7 @@ export default function ProfileForm(props) {
 									</Button>
 									&nbsp;
 									<Button
-									 	className={classes.clear}
+										className={classes.clear}
 										type="button"
 										variant="contained"
 										onClick={onClear}

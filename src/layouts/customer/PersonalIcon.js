@@ -28,6 +28,7 @@ import Badge from '@material-ui/core/Badge';
 import { useDispatch } from "react-redux";
 import { updateName } from '../../store/userSlice';
 import { Link } from 'react-router-dom';
+import SelectProvince from '../../components/SelectProvince';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -130,9 +131,13 @@ export default function PersonalIcon(props) {
         email: '',
 		firstName: '',
 		lastName: '',
+		birthday: '',
+		gender: '',
 		phoneNumber: '',
-		avatar: '',
-		gender: ''
+		healthInsuranceCode: '',
+		address: '',
+		province: '',
+		avatar: ''
     })
 
     const onChange = (event) => {
@@ -154,9 +159,13 @@ export default function PersonalIcon(props) {
 						email: json.result.email,
 						firstName: json.result.customer.firstName,
 						lastName: json.result.customer.lastName,
+						birthday: json.result.birthday,
+						gender: json.result.customer.gender,
 						phoneNumber: json.result.phoneNumber,
+						healthInsuranceCode: json.result.customer.healthInsuranceCode,
+						address: json.result.customer.address,
+						province: json.result.customer.province,
 						avatar: json.result.customer.avatarURL,
-						gender: json.result.customer.gender
 					})
 				}
 			}) 
@@ -175,7 +184,10 @@ export default function PersonalIcon(props) {
 				lastName:state.lastName, 
 				gender:state.gender, 
 				birthday: '2000-09-03T23:16:32+07:00',
-				avatar: url
+				avatar: url,
+				phoneNumber: state.phoneNumber,
+				provinceId: state.province,
+				address: state.address
 			} ,
             (success, json) => {
             if(success && json.result){
@@ -202,6 +214,18 @@ export default function PersonalIcon(props) {
         reader.readAsDataURL(e.target.files[0]);
         setUrl(e.currentTarget.files[0]);
     }
+
+	const getCurrentDate = () => {
+		var dateObj = new Date();
+		var month = dateObj.getMonth() + 1; //months from 1-12
+		var day = dateObj.getDate();
+		var year = dateObj.getFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
+
+	const handleChangeProvince = (text) => {
+		setState({ ...state, province: text });
+	}
 
 	return (
 		<div>
@@ -275,6 +299,28 @@ export default function PersonalIcon(props) {
 											autoComplete="lname"
 										/>
 									</Grid>
+									<Grid item xs={12}>
+										<TextField
+											className={classes.textField}
+											variant="standard"
+											required
+											id="date"
+											label="Ngày sinh"
+											type="date"
+											format={'DD/MM/YYYY'}
+											defaultValue="1890-10-01"
+											maxDate="2021-09-20"
+											name="birthday"
+											value={state.birthday}
+											onChange={onChange}
+											InputLabelProps={{
+												shrink: true,
+											}}
+											InputProps={{
+												inputProps: { min: "1890-01-01", max: getCurrentDate() }
+											}}
+										/>
+									</Grid>
 									<Grid spacing={5} className={classes.rowgender} >
 										<Grid item xs={12}>
 											<FormControl required className={classes.gender} component="fieldset">
@@ -291,6 +337,19 @@ export default function PersonalIcon(props) {
 												</RadioGroup>
 											</FormControl>
 										</Grid>
+									</Grid>
+									<Grid item xs={12}>
+										<TextField
+											className={classes.textField}
+											variant="standard"
+											fullWidth
+											id="healthInsuranceCode"
+											label="Mã BHYT (nếu có)"
+											name="healthInsuranceCode"
+											value={state.healthInsuranceCode}
+											onChange={onChange}
+											autoComplete="bhyt"
+										/>
 									</Grid>
 									<Grid item xs={12}>
 										<TextField
@@ -319,6 +378,28 @@ export default function PersonalIcon(props) {
 											value={state.phoneNumber}
 											onChange={onChange}
 											autoComplete="current-phoneNumber"
+										/>
+									</Grid>
+									<Grid item xs={12} >
+										<SelectProvince
+											dataFromParent={state.province}
+											handleChangeProvince={handleChangeProvince}
+											province={state.province}
+										/>
+									</Grid>
+									<Grid item xs={12}>
+										<TextField
+											className={classes.textField}
+											variant="standard"
+											required
+											fullWidth
+											name="address"
+											label="Địa chỉ cụ thể"
+											type="address"
+											id="address"
+											value={state.address}
+											onChange={onChange}
+											autoComplete="current-address"
 										/>
 									</Grid>
 								</Grid>	

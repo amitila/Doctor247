@@ -70,7 +70,7 @@ export default function ProfileCard(props) {
 								Hồ sơ số {index} của {task.relationship}
 							</Typography>
 							<Typography variant="h5" component="h2">
-								{task.name}
+								{task.firstName +' '+ task.lastName}
 							</Typography>
 							<Typography className={classes.pos} color="textSecondary">
 								{task.birthday}

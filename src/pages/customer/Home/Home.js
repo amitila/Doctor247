@@ -29,6 +29,7 @@ export default function Home() {
     //     }) 
     // }
 
+	const [status, setStatus] = React.useState(false);
 	React.useEffect(() => {
 		if(token) {
 			APIService.checkToken(token, (success, json) => {
@@ -42,7 +43,7 @@ export default function Home() {
 					});
 					dispatch(updateName(json.result.customer.lastName));
 				} else {
-					return document.getElementById("alert").innerHTML = <Alert severity="error">Phiên đã hết hạn, bạn vui lòng đăng nhập lại!</Alert>;
+					setStatus(true);
 				}
 			}) 
 		}
@@ -53,7 +54,9 @@ export default function Home() {
 			{/* <button onClick={onCheckToken} >
 				Check token
 			</button> */}
-			<div id="alert">hihi</div>
+			{
+				status ? <Alert severity="error">Phiên đã hết hạn, bạn vui lòng đăng nhập lại!</Alert> : ''
+			}
 			<h2>Chào mừng bạn có email là <u>{state.email ? state.email : "chưa đăng nhập"}</u>  đã đến với Ứng dụng kết nối bác sĩ trực tuyến Doctor247</h2>
 			<h2>Vai trò của bạn trong ứng dụng này là <u>{state.role ? (state.role === "CUSTOMER" ? "Khách" : "") : "chưa đăng nhập"}</u>.</h2>
 			<Link to="/signin">Log out</Link>

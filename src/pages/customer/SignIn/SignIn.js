@@ -17,6 +17,9 @@ import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
 import { updateEmail, updatePassword } from "../../../store/userSlice";
+import Alert from '@mui/material/Alert';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -47,7 +50,12 @@ export default function SignIn() {
     const classes = useStyles();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [showPassword, setShowPassword] = useState(false);
     const cookies = new Cookies();
+
+    const handleClickShowPassword = () => {
+       setShowPassword(!showPassword);
+    };
 
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -59,8 +67,9 @@ export default function SignIn() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const onSignIn = () => {
-        console.log("logined");
+    const [status, setStatus] = React.useState(false);
+    const onSignIn = (event) => {
+        event.preventDefault();
         APIService.signIn(email, password, (success, json) => {
             if(success && json.result){
                 dispatch(updateEmail(email));
@@ -71,7 +80,7 @@ export default function SignIn() {
                 cookies.set("token", json.result.token, {path: '/', expires: expireDate });
                 return history.push("/home");
             } else {
-                return history.push("/signin");
+                setStatus(true);
             }
         }) 
     }
@@ -86,7 +95,7 @@ export default function SignIn() {
                 <Typography component="h1" variant="h5">
                     Đăng nhập
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} onSubmit={onSignIn} >
                     <TextField
                         className={classes.textField}
                         variant="standard"
@@ -96,34 +105,46 @@ export default function SignIn() {
                         id="email"
                         label="Địa chỉ email"
                         name="email"
+                        type="email"
                         onChange={handleChangeEmail}
                         autoComplete="email"
                         autoFocus
                     />
-                    <TextField
-                        className={classes.textField}
-                        variant="standard"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="password"
-                        name="password"
-                        label="Mật khẩu"
-                        type="password"
-                        onChange={handleChangePass}
-                        autoComplete="current-password"
-                    />
+                    <Grid container xs={12}>
+                        <Grid item sm={11}>
+                            <TextField
+                                className={classes.textField}
+                                variant="standard"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="password"
+                                name="password"
+                                label="Mật khẩu"
+                                type={showPassword ? "text": "password"}
+                                onChange={handleChangePass}
+                                autoComplete="current-password"
+                            />
+                        </Grid>
+                        <Grid item sm={1}>
+                            <Box style={{marginTop: 30, marginLeft: 3, border: "solid"}} onClick={handleClickShowPassword}>
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </Box>
+                        </Grid>
+                    </Grid>
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Nhớ mật khẩu"
                     />
+                    {
+                        status ? <Alert severity="warning">Email hoặc mật khẩu không đúng, vui lòng đăng nhập lại!</Alert> : ''
+                    }
                     <Button
-                        type="button"
+                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={onSignIn}
                     >
                         Đăng nhập
                     </Button>
