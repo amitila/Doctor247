@@ -137,8 +137,9 @@ export default function PersonalIcon(props) {
 		healthInsuranceCode: '',
 		address: '',
 		province: '',
-		avatar: ''
-    })
+		avatar: '',
+    });
+	const [provinceId, setProvinceId] = React.useState('');
 
     const onChange = (event) => {
 		let target = event.target;
@@ -155,18 +156,19 @@ export default function PersonalIcon(props) {
 			APIService.getProfile(token, (success, json) => {
 				if(success && json.result){
 					setOpen(true);
+					console.log(json.result.customer.birthday?.slice(0,10));
 					setState({
 						email: json.result.email,
 						firstName: json.result.customer.firstName,
 						lastName: json.result.customer.lastName,
-						birthday: json.result.birthday,
+						birthday: json.result.customer.birthday ? json.result.customer.birthday.slice(0,10) : "1890-10-01",
 						gender: json.result.customer.gender,
 						phoneNumber: json.result.phoneNumber,
-						healthInsuranceCode: json.result.customer.healthInsuranceCode,
-						address: json.result.customer.address,
-						province: json.result.customer.province,
-						avatar: json.result.customer.avatarURL,
-					})
+						healthInsuranceCode: json.result.customer.healthInsuranceCode ? json.result.customer.healthInsuranceCode : '' ,
+						address: json.result.customer.address ? json.result.customer.address : '',
+						province: json.result.customer.province?.name,
+						avatar: json.result.customer.avatarURL ? json.result.customer.avatarURL : '' ,
+					});
 				}
 			}) 
 		} else {
@@ -183,16 +185,16 @@ export default function PersonalIcon(props) {
 				firstName:state.firstName, 
 				lastName:state.lastName, 
 				gender:state.gender, 
-				birthday: '2000-09-03T23:16:32+07:00',
+				birthday: getBirthday(),
 				avatar: url,
 				phoneNumber: state.phoneNumber,
-				provinceId: state.province,
+				provinceId: provinceId,
 				address: state.address
 			} ,
             (success, json) => {
             if(success && json.result){
 				dispatch(updateName(json.result.customer.lastName));
-                return alert("THÀNH CÔNG !");;
+                return alert("THÀNH CÔNG !");
             } else {
                 return alert("Cập nhật thay đổi THẤT BẠI !");
             }
@@ -223,10 +225,22 @@ export default function PersonalIcon(props) {
 		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
 	}
 
-	const handleChangeProvince = (text) => {
-		setState({ ...state, province: text });
+	const handleChangeProvince = (obj) => {
+		setState({ ...state, province: obj.name });
+		setProvinceId(obj.id);
 	}
 
+	const getBirthday = () => {
+		var date = new Date();
+		var value = state.birthday;
+		var dd = parseInt(value.slice(0,4));
+		date.setDate(parseInt(value.slice(8,10))+1);
+		date.setMonth(parseInt(value.slice(5,7))-1);
+		date.setFullYear(parseInt(value.slice(0,4)));
+		console.log(dd);
+		return date;
+	}
+	console.log(getBirthday());
 	return (
 		<div>
 			{
@@ -309,7 +323,7 @@ export default function PersonalIcon(props) {
 											type="date"
 											format={'DD/MM/YYYY'}
 											defaultValue="1890-10-01"
-											maxDate="2021-09-20"
+											// maxDate="2021-09-20"
 											name="birthday"
 											value={state.birthday}
 											onChange={onChange}
@@ -382,9 +396,9 @@ export default function PersonalIcon(props) {
 									</Grid>
 									<Grid item xs={12} >
 										<SelectProvince
-											dataFromParent={state.province}
-											handleChangeProvince={handleChangeProvince}
 											province={state.province}
+											provinceId={provinceId}
+											handleChangeProvince={handleChangeProvince}
 										/>
 									</Grid>
 									<Grid item xs={12}>
