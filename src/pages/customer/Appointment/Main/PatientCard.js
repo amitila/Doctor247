@@ -15,7 +15,13 @@ import Typography from '@material-ui/core/Typography';
 import { blue } from '@material-ui/core/colors';
 import { useHistory } from "react-router-dom";
 
-const patientNames = ['Phạm Văn Tâm', 'Trương Ngọc Sơn', 'Nguyễn Thị Nhật Trang'];
+const patientList = [
+    { name: 'Trương Ngọc Sơn', id: "11" },
+	{ name: 'Nguyễn Thị Nhật Trang', id: "12" },
+	{ name: 'Phạm Văn Tâm', id: "13" },
+	{ name: 'Lê Văn Hân', id: "14" },
+	{ name: 'Hoàng Văn Dũng', id: "15" },
+];
 const useStyles = makeStyles({
     avatar: {
         backgroundColor: blue[100],
@@ -40,14 +46,14 @@ function SimpleDialog(props) {
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
             <DialogTitle id="simple-dialog-title">Danh sách bệnh nhân</DialogTitle>
             <List>
-                {patientNames.map((patientName) => (
-                    <ListItem button onClick={() => handleListItemClick(patientName)} key={patientName}>
+                {patientList.map((patient) => (
+                    <ListItem button onClick={() => handleListItemClick(patient.name)} key={patient.name}>
                         <ListItemAvatar>
                             <Avatar className={classes.avatar}>
                                 <PersonIcon />
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={patientName} />
+                        <ListItemText primary={patient.name} />
                     </ListItem>
                 ))}
 
@@ -86,6 +92,7 @@ export default function PatientCard(props) {
         setOpen(false);
         setSelectedValue(value);
         props.onSetName(value);
+        props.onSetId('12');
     };
 
     return (

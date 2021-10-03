@@ -1,6 +1,5 @@
 import { Container, Grid } from '@material-ui/core'
 import React from 'react'
-// import BookingForm from './BookingForm'
 import Main from './Main';
 
 export default function Index() {

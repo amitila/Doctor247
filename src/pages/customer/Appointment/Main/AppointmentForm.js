@@ -2,7 +2,7 @@ import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core'
 import React, { useEffect } from 'react';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-import { DropzoneArea } from 'material-ui-dropzone';
+// import { DropzoneArea } from 'material-ui-dropzone';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
@@ -10,36 +10,39 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import PatientCard from './PatientCard';
 import Alert from '@material-ui/lab/Alert';
+import APIService from '../../../../utils/APIService';
+import Cookies from 'universal-cookie';
+import UploadImage from '../../../../components/UploadImage';
 
 const useStyles = makeStyles((theme) => ({
-    textSize: {
-        width: '100%',
-    },
-    paper: {
-        marginTop: theme.spacing(8),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: '100%',
-        margin: "auto",
-        border: "#303F9F double 5px",
-        borderRadius: 5,
-        padding: '10px',
-    },
-    form: {
-        width: "100%", // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-        backgroundColor: 'orange',
-    },
-    title: {
-        textAlign: "center",
-    },
-    dropzone: {
-        heigh: "5px",
-    },
+	textSize: {
+		width: '100%',
+	},
+	paper: {
+		marginTop: theme.spacing(8),
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		width: '100%',
+		margin: "auto",
+		border: "#303F9F double 5px",
+		borderRadius: 5,
+		padding: '10px',
+	},
+	form: {
+		width: "100%", // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
+	},
+	submit: {
+		margin: theme.spacing(3, 0, 2),
+		backgroundColor: 'orange',
+	},
+	title: {
+		textAlign: "center",
+	},
+	dropzone: {
+		heigh: "5px",
+	},
 	autocomplete: {
 		marginBottom: "20px",
 	},
@@ -53,28 +56,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const bookingTime = [
-    { title: '7h30 - 8h', time: "sáng" },
-    { title: '8h30 - 9h', time: "sáng" },
-    { title: '9h30 - 10h', time: "sáng" },
-    { title: '10h30 - 11h', time: "sáng" },
-    { title: '11h - 11h30', time: "sáng" },
-    { title: '11h30 - 12h', time: "sáng" },
-    { title: '13h - 13h30', time: "chiều" },
-    { title: "13h30 - 14h", time: "chiều" },
-    { title: '14h - 14h30', time: "chiều" },
-    { title: '14h30 - 15h', time: "chiều" },
-    { title: '15h - 15h30', time: "chiều" },
-    { title: '15h30 - 16h', time: "chiều" },
-    { title: '16h - 16h30', time: "chiều" },
-    { title: "16h30 - 17h", time: "chiều" },
+	'07h30 - 08h00',
+	'08h30 - 09h00',
+	'09h30 - 10h00',
+	'10h30 - 11h00',
+	'11h00 - 11h30',
+	'11h30 - 12h00',
+	'13h00 - 13h30',
+	"13h30 - 14h00",
+	'14h00 - 14h30',
+	'14h30 - 15h00',
+	'15h00 - 15h30',
+	'15h30 - 16h00',
+	'16h00 - 16h30',
+	"16h30 - 17h00",
 ];
 
-const doctorName = [
-    { title: 'Nguyễn Đức Thăng', id: "01" },
-    { title: 'Nguyễn Mai Phương Nhung', id: "02" },
-    { title: 'Hồ Thủy Tiên', id: "03" },
-    { title: 'Đào Dương Long', id: "04" },
-    { title: 'Lô Vỹ Oanh', id: "05" },
+const doctorList = [
+	{ name: 'Nguyễn Đức Thăng', id: "01" },
+	{ name: 'Nguyễn Mai Phương Nhung', id: "02" },
+	{ name: 'Hồ Thủy Tiên', id: "03" },
+	{ name: 'Đào Dương Long', id: "04" },
+	{ name: 'Lô Vỹ Oanh', id: "05" },
 ];
 
 export default function AppointmentForm(props) {
@@ -94,11 +97,20 @@ export default function AppointmentForm(props) {
 		hour: '',
 		doctor: '',
 		symptom: '',
-		images: ''
+		images: []
 	};
-	
+
 	const [state, setState] = React.useState(flag);
-	// console.log(state);
+	const cookies = new Cookies();
+	const token = cookies.get("token");
+	const [book, setBook] = React.useState({
+		guadianId: '',
+		doctorId: '',
+		dayTime: '',
+		description: '',
+		images: [],
+	});
+	
 	useEffect(() => {
 		if (props && props.task) {
 			setState({
@@ -118,7 +130,7 @@ export default function AppointmentForm(props) {
 				hour: '',
 				doctor: '',
 				symptom: '',
-				images: ''
+				images: []
 			});
 		}
 	}, [props]);
@@ -135,12 +147,31 @@ export default function AppointmentForm(props) {
 		// 	value = target.value === 'true' ? true : false;
 		// }
 		setState(prevState => ({ ...prevState, [name]: value }));
+		setBook({...book, dayTime: getDateTime() });
 	}
 
 	const onSubmit = (event) => {
 		event.preventDefault();
+		getDateTime();
 		console.log(state);
+		console.log(book);
 		props.onSubmit(state);
+		APIService.postAppointment(
+			token,
+			{
+				guadianId: book.guadianId,
+				doctorId: book.doctorId,
+				dayTime: book.dayTime,
+				description: book.description,
+				images: book.images,
+			},
+			(success, json) => {
+				if (success && json.result) {
+					return alert("Đặt lịch THÀNH CÔNG!");
+				} else {
+					return alert("THẤT BẠI");
+				}
+			})
 		//Clear and Close form
 		onClear();
 		onCloseForm();
@@ -154,21 +185,33 @@ export default function AppointmentForm(props) {
 			hour: '',
 			doctor: '',
 			symptom: '',
-			images: ''
+			images: []
 		});
+		setBook({ ...book, images: [] });
+		setNumber(4);
 	}
 
 	const classes = useStyles();
 	const onSetName = (text) => {
-		setState({...state, name: text});
+		setState({ ...state, name: text });
+	}
+	const onSetId = (text) => {
+		setBook({ ...book, guadianId: parseInt(text) });
 	}
 
 	const handleChangeHour = (e, newValue) => {
-		setState({...state, hour: newValue?.title +'('+ newValue?.time +')'});
+		setState({ ...state, hour: newValue? newValue: '' });
+		setBook({...book, dayTime: getDateTime() });
 	}
 
 	const handleChangeDoctor = (e, newValue) => {
-		setState({...state, doctor: newValue?.title +'( Mã số: '+ newValue?.id +')'});
+		setState({ ...state, doctor: newValue? newValue.name : '' });
+		setBook({ ...book, doctorId: parseInt(newValue? newValue.id : '') });
+	}
+
+	const handleChangeText = (e) => {
+		setState({ ...state, symptom: e.target.value });
+		setBook({ ...book, description: e.target.value });
 	}
 
 	const [inputHour, setInputHour] = React.useState(state.hour);
@@ -189,15 +232,47 @@ export default function AppointmentForm(props) {
 		var year = dateObj.getFullYear();
 		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
 	}
-
-	const handleChangeFile = (files) => {
-		const temp = [];
-		files.forEach((file, index) => {
-            temp.push("/images/" + file.path);
-        });
-		setState({...state, images: temp});
+	
+	const [number, setNumber] = React.useState(4);
+	if(number < 0){
+		setNumber(4);
+		setState({ ...state, images: [] });
+		setBook({ ...book, images: [] });
+	}
+	const handleChangeImages1 = (local, global) => {
+		state.images.push(local);
+		book.images.push(global);
+		setNumber(number - 1);
+	}
+	const handleChangeImages2 = (local, global) => {
+		state.images.push(local);
+		book.images.push(global);
+		setNumber(number - 1);
+	}
+	const handleChangeImages3 = (local, global) => {
+		state.images.push(local);
+		book.images.push(global);
+		setNumber(number - 1);
+	}
+	const handleChangeImages4 = (local, global) => {
+		state.images.push(local);
+		book.images.push(global);
+		setNumber(number - 1);
 	}
 
+	const getDateTime = () => {
+		var date = new Date();
+		var day = state.date;
+		var time = state.hour;
+		date.setDate(parseInt(day? day.slice(8,10) : '0'));
+		date.setMonth(parseInt((day? day.slice(5,7) : '1')-1));
+		date.setFullYear(parseInt(day? day.slice(0,4) : '0'));
+		date.setHours(parseInt(time? time.slice(0,2) : '0'));
+		date.setMinutes(parseInt(time? time.slice(3,5) : '0'));
+		date.setSeconds(0);
+		return date;
+	}
+	
 	return (
 		<div className="panel panel-warning">
 			<div className="panel-heading">
@@ -217,7 +292,11 @@ export default function AppointmentForm(props) {
 
 					<Grid container spacing={5}>
 						<Grid item xs={12} sm={3} className={classes.title}>
-							<PatientCard dataFromParent={state.name} onSetName={onSetName} />
+							<PatientCard 
+								dataFromParent={state.name} 
+								onSetName={onSetName} 
+								onSetId={onSetId}
+							/>
 						</Grid>
 						<Grid item xs={12} sm={9} className={classes.title}>
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -236,7 +315,7 @@ export default function AppointmentForm(props) {
 											shrink: true,
 										}}
 										InputProps={{
-											inputProps: { min: getCurrentDate()} 
+											inputProps: { min: getCurrentDate() }
 										}}
 										autoFocus
 									/>
@@ -247,7 +326,7 @@ export default function AppointmentForm(props) {
 										onInputChange={(e, newInputChange) => setInputHour(newInputChange)}
 										onChange={handleChangeHour}
 										options={bookingTime}
-										getOptionLabel={(option) => option.title}
+										// getOptionLabel={(option) => option}
 										style={{ width: 300 }}
 										renderInput={(params) => <TextField required {...params} label="Khung giờ khám" variant="standard" />}
 										className={classes.autocomplete}
@@ -258,8 +337,8 @@ export default function AppointmentForm(props) {
 										inputValue={inputDoctor}
 										onInputChange={(e, newInputChange) => setInputDoctor(newInputChange)}
 										onChange={handleChangeDoctor}
-										options={doctorName}
-										getOptionLabel={(option) => option.title}
+										options={doctorList}
+										getOptionLabel={(option) => option.name}
 										style={{ width: 300 }}
 										renderInput={(params) => <TextField required {...params} label="Chọn bác sĩ" variant="standard" />}
 										className={classes.autocomplete}
@@ -273,7 +352,7 @@ export default function AppointmentForm(props) {
 						required
 						name="symptom"
 						value={state.symptom}
-						onChange={onChange}
+						onChange={handleChangeText}
 						className={classes.textSize}
 						minRows={5}
 						placeholder="Lý do đăng ký khám (gồm triệu chứng, thuốc đang dùng, tiền sử bệnh án,...)"
@@ -281,26 +360,44 @@ export default function AppointmentForm(props) {
 
 					</TextareaAutosize>
 
-					<Typography>Hình ảnh đính kèm (nếu có)</Typography>
-					<DropzoneArea
-						className={classes.dropzone}
-						filesLimit={5}
-						acceptedFiles={['image/*']}
-						dropzoneText={"Kéo ảnh thả vào hay nhấp vào để tải ảnh lên"}
-						onChange={handleChangeFile}
-					/>
-					
+					<Typography>Hình ảnh đính kèm (nếu có, tối đa 4 ảnh)</Typography>
+					<Grid container>
+						{
+							number <= 1 ? <UploadImage 
+											handleChangeImages={handleChangeImages1}
+											number={number}
+										/> : ''
+						}
+						{
+							number <=2  ? <UploadImage 
+											handleChangeImages={handleChangeImages2}
+											number={number}
+										/> : ''
+						}
+						{
+							number <= 3 ? <UploadImage 
+											handleChangeImages={handleChangeImages3}
+											number={number}
+										/> : ''
+						}
+						{
+							number <= 4 ? <UploadImage 
+											handleChangeImages={handleChangeImages4}
+											number={number}
+										/> : ''
+						}
+					</Grid>
 					<div className="text-center">
 						{state.name ? <Button
-									type="submit"
-									variant="contained"
-									color="primary"
-								>
-									Xác nhận
-								</Button>
+							type="submit"
+							variant="contained"
+							color="primary"
+						>
+							Xác nhận
+						</Button>
 							:
 							<Alert severity="warning">Vui lòng chọn tên Bệnh nhân được khám</Alert>
-						}	
+						}
 						&nbsp;
 						<Button
 							className={classes.clear}

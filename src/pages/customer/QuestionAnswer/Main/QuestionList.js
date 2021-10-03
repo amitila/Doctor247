@@ -66,6 +66,7 @@ export default function QuestionList(props) {
     const temp1 = temp;
     const temp2 = temp;
     const temp3 = temp;
+    const l = elmQuestions.length;
 
     return (
         <div className={classes.paper}>
@@ -104,9 +105,9 @@ export default function QuestionList(props) {
                             placeholder="Nhập chuyên khoa...(như nội khoa, ngoại khoa,...)"
                             onChange={onChange}
                         >
-                            <option value="-1">All</option>
-                            <option value="0">Hide</option>
-                            <option value="1">Active</option>
+                            <option value="0">Tai Mũi Họng</option>
+                            <option value="1">Răng Hàm Măt</option>
+                            <option value="2">Chấn thương chỉnh hình</option>
                         </select>
                     </td>
                 </tr>
@@ -122,13 +123,13 @@ export default function QuestionList(props) {
                         </Grid>
                     :
                     <Grid container spacing={0}>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={l === 1 ? 8: (l === 2 ? 6 : 4)}>
                             {/* {elmQuestions.reverse()} */}
                             {temp1.map((item, index) => {
                                 return index % 3 === 0 ? item : ""
                             })}
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={l === 2 ? 6 : 4}>
                             {/* {elmQuestions.reverse()} */}
                             {temp2.map((item, index) => {
                                 return index % 3 === 1 ? item : ""

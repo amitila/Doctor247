@@ -1,5 +1,6 @@
 import React from 'react';
 import AppointmentItem from './AppointmentItem';
+import { Grid } from '@material-ui/core'
 
 export default function AppointmentList(props) {
 
@@ -33,48 +34,57 @@ export default function AppointmentList(props) {
     });
     
     return (
-        <table className="table table-borderd table-hover mt-15">
-            <thead>
+        <>
+            <table className="table table-borderd table-hover mt-15">
+                <thead>
+                    <tr>
+                        <th className="text-center" >Mã số</th>
+                        <th className="text-center">Bệnh nhân</th>
+                        <th className="text-center">Ngày</th>
+                        <th className="text-center">Thời gian</th>
+                        <th className="text-center">Bác sĩ</th>
+                        <th className="text-center">Triệu chứng</th>
+                        <th className="text-center">Hình ảnh</th>
+                        <th className="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
                 <tr>
-                    <th className="text-center" >Mã số</th>
-                    <th className="text-center">Bệnh nhân</th>
-                    <th className="text-center">Ngày</th>
-                    <th className="text-center">Thời gian</th>
-                    <th className="text-center">Bác sĩ</th>
-                    <th className="text-center">Triệu chứng</th>
-                    <th className="text-center">Hình ảnh</th>
-                    <th className="text-center">Thao tác</th>
+                    <td></td>
+                    <td>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            name="filterName"
+                            //value={state.filterName}
+                            onChange={onChange}
+                        />
+                    </td>
+                    <td>
+                        <select 
+                            className="form-control"
+                            name="filterStatus"
+                            //value={state.filterStatus}
+                            onChange={onChange}
+                        >
+                            <option value="-1">All</option>
+                            <option value="0">Hide</option>
+                            <option value="1">Active</option>
+                        </select>
+                    </td>
+                    <td></td>
                 </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td></td>
-                <td>
-                    <input 
-                        type="text" 
-                        className="form-control" 
-                        name="filterName"
-                        //value={state.filterName}
-                        onChange={onChange}
-                    />
-                </td>
-                <td>
-                    <select 
-                        className="form-control"
-                        name="filterStatus"
-                        //value={state.filterStatus}
-                        onChange={onChange}
-                    >
-                        <option value="-1">All</option>
-                        <option value="0">Hide</option>
-                        <option value="1">Active</option>
-                    </select>
-                </td>
-                <td></td>
-            </tr>
-            {elmTasks}
-            </tbody>
-        </table>  
+                </tbody> 
+            </table>  
+            <Grid container spacing={5}>
+                <Grid item xs={12} sm={10}>
+                    {elmTasks}
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                   
+                </Grid>
+            </Grid>
+        </>
     );
 
 }

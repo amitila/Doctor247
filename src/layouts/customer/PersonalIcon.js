@@ -26,7 +26,7 @@ import Avatar from "@material-ui/core/Avatar";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import Badge from '@material-ui/core/Badge';
 import { useDispatch } from "react-redux";
-import { updateName } from '../../store/userSlice';
+import { updateName, updateAvatar } from '../../store/userSlice';
 import { Link } from 'react-router-dom';
 import SelectProvince from '../../components/SelectProvince';
 
@@ -155,8 +155,8 @@ export default function PersonalIcon(props) {
 		if(token) {
 			APIService.getProfile(token, (success, json) => {
 				if(success && json.result){
+					dispatch(updateAvatar(json.result.customer.avatarURL));
 					setOpen(true);
-					console.log(json.result.customer.birthday?.slice(0,10));
 					setState({
 						email: json.result.email,
 						firstName: json.result.customer.firstName,
@@ -233,25 +233,27 @@ export default function PersonalIcon(props) {
 	const getBirthday = () => {
 		var date = new Date();
 		var value = state.birthday;
-		var dd = parseInt(value.slice(0,4));
-		date.setDate(parseInt(value.slice(8,10))+1);
+		date.setDate(parseInt(value.slice(8,10)));
 		date.setMonth(parseInt(value.slice(5,7))-1);
 		date.setFullYear(parseInt(value.slice(0,4)));
-		console.log(dd);
 		return date;
 	}
-	console.log(getBirthday());
+
 	return (
 		<div>
 			{
 				props.name ? <Button className={classes.personal} fullWidth variant="none" color="primary" onClick={handleClickOpen} >
-								<AccountCircleIcon />
+								{props.avatar ? 
+									<Avatar alt="avatar" src={props.avatar} />
+									:
+									<AccountCircleIcon />
+								}
 								&nbsp;
 								Chào {props.name}
 							</Button> 
 							: 
 							<Button fullWidth variant="none" color="primary" >
-								<Link className={classes.link} to="/signin" >Bạn chưa đăng nhập !</Link>
+								<Link className={classes.link} onClick={props.handleDrawerClose} to="/signin" >Bạn chưa đăng nhập !</Link>
 							</Button> 
 							
 			}
@@ -292,7 +294,7 @@ export default function PersonalIcon(props) {
 											required
 											fullWidth
 											id="firstName"
-											label="Tên"
+											label="Họ và tên đệm"
 											name="firstName"
 											value={state.firstName}
 											onChange={onChange}
@@ -306,7 +308,7 @@ export default function PersonalIcon(props) {
 											required
 											fullWidth
 											id="lastName"
-											label="Họ và tên đệm"
+											label="Tên"
 											name="lastName"
 											value={state.lastName}
 											onChange={onChange}

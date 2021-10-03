@@ -13,12 +13,14 @@ import DrawerHeader from './layouts/customer/DrawerHeader';
 import QuestionAnswer from './pages/customer/QuestionAnswer';
 import Appointment from './pages/customer/Appointment';
 import MedicalrRecords from './pages/customer/MedicalRecords';
+import Speciality from './pages/customer/Speciality';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
-//import Demo from './components/Demo';
+import CheckToken from './helpers/checkToken';
 
 export default function App() {
+	CheckToken();
 	return (
 		<Router>
 			<DrawerHeader />
@@ -41,6 +43,7 @@ export default function App() {
 				<Route exact path='/doctors' component={ListDoctors} />
 				<Route exact path='/phonebook' component={PhoneBook} />
 				<Route exact path='/appointment' component={Appointment} />
+				<Route exact path='/speciality' component={Speciality} />
 				<Route exact path='/task' component={Task} />
 				<Route exact path='/medicalrecords' component={MedicalrRecords} />
 				<Route exact path='/question' component={QuestionAnswer} />

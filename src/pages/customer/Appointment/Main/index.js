@@ -10,8 +10,6 @@ export default function Index() {
     const [appointments, setAppointments] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
-    //const [filter, setFilter] = useState({name: '', status: -1});
-    //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({by: 'name', value: 1});
    
     const s4 = () => {

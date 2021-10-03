@@ -124,7 +124,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 id="firstName"
-                                label="Tên"
+                                label="Họ và tên đệm"
                                 name="firstName"
                                 onChange={onChange}
                                 autoFocus
@@ -137,7 +137,7 @@ export default function SignUp() {
                                 required
                                 fullWidth
                                 id="lastName"
-                                label="Họ và tên đệm"
+                                label="Tên"
                                 name="lastName"
                                 onChange={onChange}
                                 autoComplete="lname"

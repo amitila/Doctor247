@@ -5,14 +5,12 @@ import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
@@ -31,13 +29,16 @@ import Logo from '../../components/Logo';
 import { Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Switch from '@mui/material/Switch';
-import { useMediaQuery, useTheme as Theme } from '@material-ui/core';
+import { MenuList, useMediaQuery, useTheme as Theme } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import PersonalIcon from './PersonalIcon';
 import { useSelector, useDispatch } from "react-redux";
-import { selectName, updateName } from '../../store/userSlice';
+import { selectName, updateName, selectAvatar } from '../../store/userSlice';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import MenuItem from '@mui/material/MenuItem';
+import { withStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 240;
 
@@ -129,11 +130,24 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.info.dark,
         fontWeight: 'bold',
         backgroundColor: 'none',
+        marginTop: 5,
+        marginBottom: 5,
     },
     title: {
         flexGrow: 1,
-    }
+    },
 }));
+
+const MyMenuItem = withStyles({
+    root: {
+        '&:hover': {
+            backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23ff9800' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E")`,
+            backgroundPosition: '0 100%',
+            backgroundSize: 'auto 6px',
+            backgroundRepeat: 'repeat-x',
+        },
+    }
+})(MenuItem);
 
 export default function DrawerHeader() {
     const classes = useStyles();
@@ -163,6 +177,7 @@ export default function DrawerHeader() {
     const dispatch = useDispatch();
 
     const name = useSelector(selectName);
+    const avatar = useSelector(selectAvatar);
     const onSignOut = () => {
         if (cookies.get("token")) {
             cookies.remove("token");
@@ -293,21 +308,30 @@ export default function DrawerHeader() {
                     }
                 </div>
                 <Divider />
-                <PersonalIcon name={name} />
+                <PersonalIcon handleDrawerClose={handleDrawerClose} name={name} avatar={avatar} />
                 <Divider />
                 <div>
-                    <List>
+                    <MenuList>
                         {[
-                            <Link className={classes.link} to="/home">Trang chủ</Link>,
-                            <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
-                            <Link className={classes.link} to="/appointment">Đặt và xem lịch khám</Link>,
-                            <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>,
-                            <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
-                            <Link className={classes.link} to="/question">Hỏi đáp</Link>,
-                            <Link className={classes.link} to="/phonebook">Danh bạ</Link>,
-                            <Link className={classes.link} to="/task">Công việc</Link>
+                            <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
+                            <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
+                            <div className={classes.link} onClick={()=>history.push("/appointment")}>Lịch khám</div>,
+                            <div className={classes.link} onClick={()=>history.push("/profile")}>Hồ sơ gia đình</div>,
+                            <div className={classes.link} onClick={()=>history.push("/medicalrecords")}>Xem bệnh án</div>,
+                            <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
+                            <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
+                            <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
+                            <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
+                            // <Link className={classes.link} to="/home">Trang chủ</Link>,
+                            // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
+                            // <Link className={classes.link} to="/appointment">Lịch khám</Link>,
+                            // <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>,
+                            // <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
+                            // <Link className={classes.link} to="/question">Hỏi đáp</Link>,
+                            // <Link className={classes.link} to="/phonebook">Danh bạ</Link>,
+                            // <Link className={classes.link} to="/task">Công việc</Link>
                         ].map((text, index) => (
-                            <ListItem button key={text} onClick={handleDrawerClose} >
+                            <MyMenuItem button key={text} onClick={handleDrawerClose} >
                                 <ListItemIcon>
                                     {
                                         [<HomeIcon />, 
@@ -317,40 +341,52 @@ export default function DrawerHeader() {
                                         <ReorderIcon />, 
                                         <HelpIcon />, 
                                         <LibraryBooksIcon />, 
+                                        <FolderSpecialIcon />,
                                         <ScheduleIcon />][index]
                                     }
                                 </ListItemIcon>
                                 <ListItemText primary={text} />
-                            </ListItem>
+                            </MyMenuItem>
                         ))}
-                    </List>
+                    </MenuList>
                     <Divider />
-                    <List>
+                    <MenuList>
                         {[
-                            <Link className={classes.link} to="/notification">Thông báo</Link>,
-                            <Link className={classes.link} to="/signin">Đăng nhập</Link>,
-                            <Link className={classes.link} to="/signup">Đăng ký</Link>,
-                            <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
+                            <div className={classes.link} onClick={()=>history.push("/notification")}>Thông báo</div>,
+                            <div className={classes.link} onClick={()=>history.push("/signup")}>Đăng ký</div>,
+                            (name ? 
+                                <div className={classes.link} onClick={onSignOut}>Thoát</div>
+                                : 
+                                <div className={classes.link} onClick={()=>history.push("/signin")}>Đăng nhập</div> 
+                            ),
+                            // <Link className={classes.link} to="/notification">Thông báo</Link>,
+                            // <Link className={classes.link} to="/signin">Đăng nhập</Link>,
+                            // <Link className={classes.link} to="/signup">Đăng ký</Link>,
+                            // <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
                         ].map((text, index) => (
-                            <ListItem button key={text} onClick={handleDrawerClose} >
+                            <MyMenuItem button key={text} onClick={handleDrawerClose} >
                                 <ListItemIcon>
                                     {
                                         [<NotificationsActiveIcon />, 
-                                        <ExitToAppIcon />, 
-                                        <LockOpenIcon />, 
-                                        <PowerSettingsNewIcon />][index]
+                                        <LockOpenIcon />,
+                                        (name ?
+                                            <PowerSettingsNewIcon />
+                                            :   
+                                            <ExitToAppIcon />
+                                        )][index]   
                                     }
                                 </ListItemIcon>
                                 <ListItemText primary={text} />
-                            </ListItem>
+                            </MyMenuItem>
                         ))}
-                    </List>
+                    </MenuList>
                 </div>
             </Drawer>
             <main
                 className={clsx(checked ? classes.contentRight : classes.content, {
                     [checked ? classes.contentShiftRight : classes.contentShift]: open,
                 })}
+                onClick={handleDrawerClose}
             >
                 <div className={checked ? classes.drawerHeaderRight : classes.drawerHeader} />
                 {/* content */}

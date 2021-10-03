@@ -27,12 +27,18 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/appointment`;
 	};
 
+	static apiAppointmentById = () => {
+		return `${APIService.baseAPI()}customer/appointment/{id}`;
+	};
+
 	static apiProvinces = () => {
 		return `${APIService.baseAPI()}province`;
 	};
 
 
   	// TODO: multipart
+
+//====================CHECK-TOKEN AND SET NEW TOKEN======================
 
 	// api for check-token
 	static checkToken(token, callback) {
@@ -46,6 +52,7 @@ export default class APIService {
 		);
 	}
 	  
+//====================SIGNIGN======================
 	// api for SignIn
 	static signIn(email, password, callback) {
 		WebService.sendJsonPOST(
@@ -57,6 +64,8 @@ export default class APIService {
 			callback,
 		);
 	}
+
+//====================PROFILE======================
 
 	// api for Get Profile
 	static getProfile(token, callback ) {
@@ -90,6 +99,8 @@ export default class APIService {
 		);
 	}
 
+//====================SIGNUP======================
+
 	// api for SignUp
 	static signUp(values, callback) {
 		const formData = new FormData();
@@ -108,26 +119,71 @@ export default class APIService {
 		);
 	}
 
-	// api for Appointment
-	static appointment(values, callback) {
+//====================APPOINTMENT======================
+
+	// api for Post Appointment Form
+	static postAppointment(token, values, callback) {
 		const formData = new FormData();
-		formData.append('email', values.email);
-		formData.append('firstName', values.firstName);
-		formData.append('lastName', values.lastName);
-		formData.append('password', values.password);
-		formData.append('phoneNumber', values.phoneNumber);
-		formData.append('avatar', values.avatar);
-		formData.append('gender', values.gender);
+		formData.append('guadianId', values.guadianId);
+		formData.append('doctorId', values.doctorId);
+		formData.append('dayTime', values.dayTime);
+		formData.append('description', values.description);
+		formData.append('images', values.images);
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{
+				jwt: token,
 				formData
 			},
 			callback,
 		);
 	}
 
-	// api for Get Profile
+	// api for Get Appointment
+	static getAppointment(token, values, callback) {
+		const formData = new FormData();
+		formData.append('status', values.status);
+		formData.append('period', values.period);
+		formData.append('day', values.day);
+		formData.append('month', values.month);
+		formData.append('year', values.year);
+		WebService.sendJsonGET(
+			this.apiAppointment(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Get an appoitment by id
+	static getAppointmentById( token, id, callback ) {
+		WebService.sendJsonGET(
+			this.apiAppointmentById(),
+			{
+				jwt: token,
+				id
+			},
+			callback,
+		);
+	}
+
+	// api for Delete an appoitment by id
+	static deleteAppointmentById( token, id, callback ) {
+		WebService.sendJsonDELETE(
+			this.apiAppointmentById(),
+			{
+				jwt: token,
+				id
+			},
+			callback,
+		);
+	}
+
+//====================PROVINCES======================
+
+	// api for Get Provinces
 	static getProvinces( callback ) {
 		WebService.sendJsonGET(
 			this.apiProvinces(),
