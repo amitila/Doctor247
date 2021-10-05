@@ -27,12 +27,20 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/appointment`;
 	};
 
-	static apiAppointmentById = () => {
-		return `${APIService.baseAPI()}customer/appointment/{id}`;
+	static apiAppointmentById = (id) => {
+		return `${APIService.baseAPI()}customer/appointment/${id}`;
 	};
 
 	static apiProvinces = () => {
 		return `${APIService.baseAPI()}province`;
+	};
+
+	static apiGuardian = () => {
+		return `${APIService.baseAPI()}customer/guardian`;
+	};
+
+	static apiGuardianById = (id) => {
+		return `${APIService.baseAPI()}customer/guardian/${id}`;
 	};
 
 
@@ -124,11 +132,13 @@ export default class APIService {
 	// api for Post Appointment Form
 	static postAppointment(token, values, callback) {
 		const formData = new FormData();
-		formData.append('guadianId', values.guadianId);
+		formData.append('guardianId', values.guardianId);
 		formData.append('doctorId', values.doctorId);
 		formData.append('dayTime', values.dayTime);
 		formData.append('description', values.description);
-		formData.append('images', values.images);
+		values.images.forEach((image, index) => {
+			formData.append(`images[${index}]`, image);
+		  });
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{
@@ -160,10 +170,9 @@ export default class APIService {
 	// api for Get an appoitment by id
 	static getAppointmentById( token, id, callback ) {
 		WebService.sendJsonGET(
-			this.apiAppointmentById(),
+			this.apiAppointmentById(id),
 			{
 				jwt: token,
-				id
 			},
 			callback,
 		);
@@ -172,10 +181,9 @@ export default class APIService {
 	// api for Delete an appoitment by id
 	static deleteAppointmentById( token, id, callback ) {
 		WebService.sendJsonDELETE(
-			this.apiAppointmentById(),
+			this.apiAppointmentById(id),
 			{
 				jwt: token,
-				id
 			},
 			callback,
 		);
@@ -188,6 +196,63 @@ export default class APIService {
 		WebService.sendJsonGET(
 			this.apiProvinces(),
 			{
+			},
+			callback,
+		);
+	}
+
+//====================GUARDIAN======================
+
+	// api for Post Guardian
+	static postGuardian(token, values, callback ) {
+		const formData = new FormData();
+		formData.append('guardianName', values.guardianName);
+		formData.append('firstName', values.firstName);
+		formData.append('lastName', values.lastName);
+		formData.append('gender', values.gender);
+		formData.append('birthday', values.birthday);
+		formData.append('avatar', values.avatar);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('provinceId', values.provinceId);
+		formData.append('address', values.address);
+		WebService.sendJsonPOST(
+			this.apiGuardian(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Get Guardian
+	static getGuardian(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiGuardian(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Put a Guardian by id
+	static putGuardianById( token, id, values, callback ) {
+		const formData = new FormData();
+		formData.append('guardianName', values.guardianName);
+		formData.append('firstName', values.firstName);
+		formData.append('lastName', values.lastName);
+		formData.append('gender', values.gender);
+		formData.append('birthday', values.birthday);
+		formData.append('avatar', values.avatar);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('provinceId', values.provinceId);
+		formData.append('address', values.address);
+		WebService.sendJsonPUT(
+			this.apiGuardianById(id),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);

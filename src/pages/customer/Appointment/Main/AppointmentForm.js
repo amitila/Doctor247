@@ -2,7 +2,6 @@ import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core'
 import React, { useEffect } from 'react';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-// import { DropzoneArea } from 'material-ui-dropzone';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
@@ -10,8 +9,6 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import PatientCard from './PatientCard';
 import Alert from '@material-ui/lab/Alert';
-import APIService from '../../../../utils/APIService';
-import Cookies from 'universal-cookie';
 import UploadImage from '../../../../components/UploadImage';
 
 const useStyles = makeStyles((theme) => ({
@@ -73,67 +70,28 @@ const bookingTime = [
 ];
 
 const doctorList = [
-	{ name: 'Nguyễn Đức Thăng', id: "01" },
-	{ name: 'Nguyễn Mai Phương Nhung', id: "02" },
-	{ name: 'Hồ Thủy Tiên', id: "03" },
-	{ name: 'Đào Dương Long', id: "04" },
-	{ name: 'Lô Vỹ Oanh', id: "05" },
+	{ name: 'Nguyễn Đức Thăng', id: 1 },
+	{ name: 'Nguyễn Mai Phương Nhung', id: 2 },
+	{ name: 'Hồ Thủy Tiên', id: 1 },
+	{ name: 'Đào Dương Long', id: 2 },
+	{ name: 'Lô Vỹ Oanh', id: 1 },
 ];
 
 export default function AppointmentForm(props) {
 
-	const flag = props.task ? {
-		id: props.task.id,
-		name: props.task.name,
-		date: props.task.date,
-		hour: props.task.hour,
-		doctor: props.task.doctor,
-		symptom: props.task.symptom,
-		images: props.task.images
-	} : {
+	const [state, setState] = React.useState({
 		id: '',
 		name: '',
 		date: '',
 		hour: '',
 		doctor: '',
-		symptom: '',
-		images: []
-	};
-
-	const [state, setState] = React.useState(flag);
-	const cookies = new Cookies();
-	const token = cookies.get("token");
-	const [book, setBook] = React.useState({
-		guadianId: '',
+		description: '',
+		imagesView: [],
+		guardianId: '',
 		doctorId: '',
 		dayTime: '',
-		description: '',
-		images: [],
+		imagesSend: [],
 	});
-	
-	useEffect(() => {
-		if (props && props.task) {
-			setState({
-				id: props.task.id,
-				name: props.task.name,
-				date: props.task.date,
-				hour: props.task.hour,
-				doctor: props.task.doctor,
-				symptom: props.task.symptom,
-				images: props.task.images
-			});
-		} else if (!props.task) {
-			setState({
-				id: '',
-				name: '',
-				date: '',
-				hour: '',
-				doctor: '',
-				symptom: '',
-				images: []
-			});
-		}
-	}, [props]);
 
 	const onCloseForm = (event) => {
 		props.onCloseForm();
@@ -146,32 +104,15 @@ export default function AppointmentForm(props) {
 		// if(name === 'status') {
 		// 	value = target.value === 'true' ? true : false;
 		// }
-		setState(prevState => ({ ...prevState, [name]: value }));
-		setBook({...book, dayTime: getDateTime() });
+		setState(prevState => ({ ...prevState, [name]: value, dayTime: getDateTime() }));
+		console.log("onchange: ");
+		console.log(state);
 	}
 
 	const onSubmit = (event) => {
 		event.preventDefault();
-		getDateTime();
 		console.log(state);
-		console.log(book);
 		props.onSubmit(state);
-		APIService.postAppointment(
-			token,
-			{
-				guadianId: book.guadianId,
-				doctorId: book.doctorId,
-				dayTime: book.dayTime,
-				description: book.description,
-				images: book.images,
-			},
-			(success, json) => {
-				if (success && json.result) {
-					return alert("Đặt lịch THÀNH CÔNG!");
-				} else {
-					return alert("THẤT BẠI");
-				}
-			})
 		//Clear and Close form
 		onClear();
 		onCloseForm();
@@ -184,34 +125,23 @@ export default function AppointmentForm(props) {
 			date: '',
 			hour: '',
 			doctor: '',
-			symptom: '',
-			images: []
+			description: '',
+			imagesView: [],
+			guardianId: '',
+			doctorId: '',
+			dayTime: '',
+			imagesSend: [],
 		});
-		setBook({ ...book, images: [] });
 		setNumber(4);
 	}
 
 	const classes = useStyles();
-	const onSetName = (text) => {
-		setState({ ...state, name: text });
-	}
-	const onSetId = (text) => {
-		setBook({ ...book, guadianId: parseInt(text) });
-	}
-
-	const handleChangeHour = (e, newValue) => {
-		setState({ ...state, hour: newValue? newValue: '' });
-		setBook({...book, dayTime: getDateTime() });
+	const onSetAttribute = (name, id) => {
+		setState(prevState => ({ ...prevState, name: name, guardianId: id }));
 	}
 
 	const handleChangeDoctor = (e, newValue) => {
-		setState({ ...state, doctor: newValue? newValue.name : '' });
-		setBook({ ...book, doctorId: parseInt(newValue? newValue.id : '') });
-	}
-
-	const handleChangeText = (e) => {
-		setState({ ...state, symptom: e.target.value });
-		setBook({ ...book, description: e.target.value });
+		setState({ ...state, doctor: newValue? newValue.name : '', doctorId: newValue? newValue.id : '' });
 	}
 
 	const [inputHour, setInputHour] = React.useState(state.hour);
@@ -225,6 +155,7 @@ export default function AppointmentForm(props) {
 		setInputDoctor(state.doctor);
 	}, [state.doctor]);
 
+	// get current time
 	const getCurrentDate = () => {
 		var dateObj = new Date();
 		var month = dateObj.getMonth() + 1; //months from 1-12
@@ -233,43 +164,51 @@ export default function AppointmentForm(props) {
 		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
 	}
 	
+	// add images
 	const [number, setNumber] = React.useState(4);
 	if(number < 0){
 		setNumber(4);
-		setState({ ...state, images: [] });
-		setBook({ ...book, images: [] });
+		setState({ ...state, imagesView: [], imagesSend: [] });
 	}
-	const handleChangeImages1 = (local, global) => {
-		state.images.push(local);
-		book.images.push(global);
+	const handleChangeImages1 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
 		setNumber(number - 1);
+		console.log(state);
 	}
-	const handleChangeImages2 = (local, global) => {
-		state.images.push(local);
-		book.images.push(global);
+	const handleChangeImages2 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
 		setNumber(number - 1);
+		console.log(state);
 	}
-	const handleChangeImages3 = (local, global) => {
-		state.images.push(local);
-		book.images.push(global);
+	const handleChangeImages3 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
 		setNumber(number - 1);
+		console.log(state);
 	}
-	const handleChangeImages4 = (local, global) => {
-		state.images.push(local);
-		book.images.push(global);
+	const handleChangeImages4 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
 		setNumber(number - 1);
+		console.log(state);
 	}
 
 	const getDateTime = () => {
 		var date = new Date();
 		var day = state.date;
 		var time = state.hour;
-		date.setDate(parseInt(day? day.slice(8,10) : '0'));
-		date.setMonth(parseInt((day? day.slice(5,7) : '1')-1));
-		date.setFullYear(parseInt(day? day.slice(0,4) : '0'));
-		date.setHours(parseInt(time? time.slice(0,2) : '0'));
-		date.setMinutes(parseInt(time? time.slice(3,5) : '0'));
-		date.setSeconds(0);
+		if(day) {
+			date.setDate(parseInt(day.slice(8,10)));
+			date.setMonth(parseInt(day.slice(5,7) -1));
+			date.setFullYear(parseInt(day.slice(0,4)));
+		}
+		if(time) {
+			date.setHours(parseInt(time.slice(0,2)));
+			date.setMinutes(parseInt(time.slice(3,5)));
+			date.setSeconds(0);
+		}
 		return date;
 	}
 	
@@ -293,9 +232,7 @@ export default function AppointmentForm(props) {
 					<Grid container spacing={5}>
 						<Grid item xs={12} sm={3} className={classes.title}>
 							<PatientCard 
-								dataFromParent={state.name} 
-								onSetName={onSetName} 
-								onSetId={onSetId}
+								onSetAttribute={onSetAttribute}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={9} className={classes.title}>
@@ -320,11 +257,14 @@ export default function AppointmentForm(props) {
 										autoFocus
 									/>
 									<Autocomplete
-										id="book-hour"
+										id="state-hour"
 										name="hour"
+										value={state.hour}
 										inputValue={inputHour}
 										onInputChange={(e, newInputChange) => setInputHour(newInputChange)}
-										onChange={handleChangeHour}
+										onChange={(e, newValue) => {
+											setState(prevState => ({ ...prevState, hour: newValue ? newValue : '' }));
+										}}
 										options={bookingTime}
 										// getOptionLabel={(option) => option}
 										style={{ width: 300 }}
@@ -350,9 +290,9 @@ export default function AppointmentForm(props) {
 
 					<TextareaAutosize
 						required
-						name="symptom"
-						value={state.symptom}
-						onChange={handleChangeText}
+						name="description"
+						value={state.description}
+						onChange={onChange}
 						className={classes.textSize}
 						minRows={5}
 						placeholder="Lý do đăng ký khám (gồm triệu chứng, thuốc đang dùng, tiền sử bệnh án,...)"

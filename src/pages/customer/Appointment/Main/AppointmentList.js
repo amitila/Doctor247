@@ -27,9 +27,7 @@ export default function AppointmentList(props) {
                     key={task.id} 
                     index={index + 1} 
                     task={task} 
-                    onUpdateStatus={props.onUpdateStatus}
                     onDelete={props.onDelete}
-                    onUpdate={props.onUpdate}
                 />
     });
     

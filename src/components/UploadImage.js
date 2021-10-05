@@ -33,9 +33,9 @@ export default function UploadImage(props) {
             }
         }
         reader.readAsDataURL(e.target.files[0]);
-        const local = '/images/' + temp[1];
-        const global = e.currentTarget.files[0];
-        props.handleChangeImages(local, global);
+        const view = '/images/' + temp[1];
+        const send = e.currentTarget.files[0];
+        props.handleChangeImages(view, send);
     }
     
     return (

@@ -3,23 +3,50 @@ import AppointmentForm from './AppointmentForm';
 import AppointmentList from './AppointmentList';
 import AppointmentControl from './AppointmentControl';
 import { useHistory } from "react-router-dom";
+import APIService from '../../../../utils/APIService';
+
+// Lấy lịch đăng ký từ db về 
+const appointmentList = [];
+const token = document.cookie.slice(6);
+var flag = [];
+APIService.getAppointment(
+    token,
+    {
+    },
+    (success, json) => {
+        if (success && json.result) {
+            json.result.map(item => {
+                return appointmentList.push(item);
+            })
+            appointmentList?.map(item => {
+                return flag.push({
+                    id: item.medicalRecordId,
+                    guardian: item.medicalRecord.customer,
+                    doctor: item.doctor,
+                    dateTime: item.day,
+                    description:item.medicalRecord.symptom,
+                    images: item.medicalRecord.images,
+                    status: item.status,
+                    createdAt: item.createdAt,
+                })
+            })
+            return console.log("thành công");
+        } else {
+            return alert("Lỗi server!");
+        }
+    }
+    
+)
 
 export default function Index() {
+
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
+    // const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
     const [appointments, setAppointments] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     const [sort, setSort] = useState({by: 'name', value: 1});
    
-    const s4 = () => {
-        return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
-    const generateID = () => {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
     const onToggleForm = (event) => {//Add task
         if(isDisplayForm && taskEditing !== null){
             setIsDisplayForm(true);
@@ -35,31 +62,24 @@ export default function Index() {
         history.push("/appointment");
     }
 
-    const onShowForm = (event) => {
-        setIsDisplayForm(true);
-    }
-
     const onSubmit = (data) => {
-        if(data.id === ''){
-            data.id = generateID();
-            appointments.push(data);
-        }else{
-            //Editing
-            const index = findIndex(data.id);
-            appointments[index] = data;
-        }
-        setAppointments(appointments);
-        setTaskEditing(null);
-        localStorage.setItem('appointments', JSON.stringify(appointments));
-    }
-
-    const onUpdateStatus = (id) => {
-        const index = findIndex(id);
-        if(index !== -1) {
-            appointments[index].status = ! appointments[index].status;
-            setAppointments(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
-        }
+        APIService.postAppointment(
+			token,
+			{
+				guardianId: data.guardianId,
+				doctorId: data.doctorId,
+				dayTime: data.dayTime,
+				description: data.description,
+				images: data.imagesSend,
+			},
+			(success, json) => {
+				
+				if (success && json.result) {
+					return alert("Đặt lịch THÀNH CÔNG!");
+				} else {
+					return alert("THẤT BẠI");
+				}
+			})
     }
 
     const findIndex = (id) => {
@@ -75,26 +95,41 @@ export default function Index() {
     const onDelete = (id) => {
         const index = findIndex(id);
         if(index !== -1) {
-            appointments.splice(index, 1);
-            console.log(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
+            APIService.deleteAppointmentById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        return console.log("Xóa thành công");
+                    } else {
+                        return alert("THẤT BẠI!");
+                    }
+                }
+    
+            )
+            
         }
         onCloseForm();
     }
 
-    const onUpdate = (id) => {
-        console.log(appointments);
-        const index = findIndex(id);
-        const taskEditing = appointments[index];
-        setTaskEditing(taskEditing);
-        onShowForm();
+    const onGetAnItem = (id) => {
+        APIService.getAppointmentById(
+            token,
+            id,
+            (success, json) => {
+                if (success && json.result) {
+                    return console.log("Lấy thành công");
+                } else {
+                    return alert("THẤT BẠI!");
+                }
+            }
+
+        )
     }
 
+    console.log(onGetAnItem(34));
+
     const onFilter = (filterName, filterStatus) => {
-        // setFilter({
-        //     name : filterName,
-        //     status : filterStatus
-        // });
         
         let temp = flag.filter((task) => {
             return task.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
@@ -111,7 +146,6 @@ export default function Index() {
     }
 
     const onSearch = (keyword)=>{
-        //setKeyword(keyword);
         console.log(flag);
         const temp = flag.filter((task) => {
             return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
@@ -180,9 +214,7 @@ export default function Index() {
                     {/* List*/}
                     <AppointmentList 
                         appointments={appointments} 
-                        onUpdateStatus = {onUpdateStatus} 
                         onDelete={onDelete}
-                        onUpdate={onUpdate}
                         onFilter={onFilter}
                     />
                 </div>

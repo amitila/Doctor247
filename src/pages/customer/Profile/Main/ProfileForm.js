@@ -76,6 +76,7 @@ export default function ProfileForm(props) {
 	};
 
 	const [state, setState] = React.useState(flag);
+	const [provinceId, setProvinceId] = React.useState('');
 
 	useEffect(() => {
 		if (props && props.task) {
@@ -152,8 +153,9 @@ export default function ProfileForm(props) {
 		setState({ ...state, avatar: text });
 	}
 
-	const handleChangeProvince = (text) => {
-		setState({ ...state, province: text });
+	const handleChangeProvince = (obj) => {
+		setState({ ...state, province: obj.name });
+		setProvinceId(obj.id);
 	}
 
 	const handleSelectRelationship = (text) => {
@@ -317,9 +319,9 @@ export default function ProfileForm(props) {
 								</Grid>
 								{/* Select province where living */}
 								<SelectProvince
-									dataFromParent={state.province}
-									handleChangeProvince={handleChangeProvince}
 									province={state.province}
+									provinceId={provinceId}
+									handleChangeProvince={handleChangeProvince}
 								/>
 								<TextField
 									variant="filled"

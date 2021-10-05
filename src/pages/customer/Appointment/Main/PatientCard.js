@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -16,11 +16,11 @@ import { blue } from '@material-ui/core/colors';
 import { useHistory } from "react-router-dom";
 
 const patientList = [
-    { name: 'Trương Ngọc Sơn', id: "11" },
-	{ name: 'Nguyễn Thị Nhật Trang', id: "12" },
-	{ name: 'Phạm Văn Tâm', id: "13" },
-	{ name: 'Lê Văn Hân', id: "14" },
-	{ name: 'Hoàng Văn Dũng', id: "15" },
+    { name: 'Trương Ngọc Sơn', id: 2 },
+	{ name: 'Nguyễn Thị Nhật Trang', id: 2 },
+	{ name: 'Phạm Văn Tâm', id: 2 },
+	{ name: 'Lê Văn Hân', id: 2 },
+	{ name: 'Hoàng Văn Dũng', id: 2 },
 ];
 const useStyles = makeStyles({
     avatar: {
@@ -80,10 +80,6 @@ export default function PatientCard(props) {
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState('');
 
-    useEffect(() => {
-		setSelectedValue(props.dataFromParent);
-	}, [props]);
-
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -91,8 +87,12 @@ export default function PatientCard(props) {
     const handleClose = (value) => {
         setOpen(false);
         setSelectedValue(value);
-        props.onSetName(value);
-        props.onSetId('12');
+        patientList.map(item => {
+            if(value === item.name){
+                return props.onSetAttribute(value, item.id);
+            }
+            return 0;
+        })
     };
 
     return (
