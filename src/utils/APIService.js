@@ -1,7 +1,7 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.5:8080';
+	static urlServerAddress = 'http://192.168.1.3:8080';
 
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -205,6 +205,7 @@ export default class APIService {
 
 	// api for Post Guardian
 	static postGuardian(token, values, callback ) {
+		console.log(values);
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
@@ -215,6 +216,7 @@ export default class APIService {
 		formData.append('phoneNumber', values.phoneNumber);
 		formData.append('provinceId', values.provinceId);
 		formData.append('address', values.address);
+		console.log(formData);
 		WebService.sendJsonPOST(
 			this.apiGuardian(),
 			{

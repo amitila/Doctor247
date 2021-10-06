@@ -4,20 +4,78 @@ import ProfileList from './ProfileList';
 import { useHistory } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import { Grid } from '@material-ui/core';
+import APIService from '../../../../utils/APIService';
+
+// Lấy guardian từ db về 
+const getBirthdayVN = (value) => {
+    var date = new Date();
+    date.setDate(parseInt(value?.slice(8, 10)));
+    date.setMonth(parseInt(value?.slice(5, 7)) - 1);
+    date.setFullYear(parseInt(value?.slice(0, 4)));
+    return date;
+}
+const profileList = [];
+const token = document.cookie.slice(6);
+var flag = [];
+APIService.getGuardian(
+    token,
+    (success, json) => {
+        if (success && json.result) {
+            json.result.map(item => {
+                return profileList.push(item);
+            })
+            profileList?.map(item => {
+                return flag.push({
+                    id: item.id,
+                    userTowId: item.userTwoId,
+                    relationship: item.name,
+                    email: 'ami@gmail.com',
+                    firstName: item.userTwo.firstName,
+                    lastName: item.userTwo.lastName,
+                    birthday: item.userTwo.birthday.slice(0, 10),
+                    birthdayVN: getBirthdayVN(item.userTwo.birthday),
+                    gender: item.userTwo.gender,
+                    phoneNumber: item.userTwo.phoneNumber,
+                    bhyt: item.userTwo.healthInsuranceCode,
+                    address: item.userTwo.address,
+                    province: item.userTwo.province.name,
+                    provinceId: item.userTwo.province.id,
+                    avatar: item.userTwo.avatarURL,
+                })
+            })
+            return console.log("thành công");
+        } else {
+            return alert("Lỗi server!");
+        }
+    }
+
+)
 
 export default function Index() {
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('profiles')) ? JSON.parse(localStorage.getItem('profiles')) : [];
+    // const flag = (localStorage && localStorage.getItem('profiles')) ? JSON.parse(localStorage.getItem('profiles')) : [];
     const [profiles, setProfiles] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
 
-    const s4 = () => {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    } 
+    // ***Here is the code for converting "image source" (url) to "Base64".***
+    const toDataURL = url => fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result)
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+        }))
 
-    const generateID = () => {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    // ***Here is code for converting "Base64" to javascript "File Object".***
+    const dataURLtoFile = (dataurl, filename) => {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
     }
 
     const onToggleForm = (event) => {//Add task
@@ -41,16 +99,57 @@ export default function Index() {
 
     const onSubmit = (data) => {
         if (data.id === '') {
-            data.id = generateID();
-            profiles.push(data);
+            APIService.postGuardian(
+                token,
+                {
+                    guardianName: data.relationship,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    gender: data.gender,
+                    birthday: data.birthdayVN,
+                    avatar: data.avatar,
+                    phoneNumber: data.phoneNumber,
+                    provinceId: data.provinceId,
+                    address: data.address
+                },
+                (success, json) => {
+                    if (success && json.result) {
+                        return alert("THÀNH CÔNG !");
+                    } else {
+                        return alert("Cập nhật thay đổi THẤT BẠI !");
+                    }
+                })
         } else {
             //Editing
-            const index = findIndex(data.id);
-            profiles[index] = data;
+            toDataURL(data.avatar ? data.avatar: "https://thelifetank.com/wp-content/uploads/2018/08/avatar-default-icon.png")
+            .then(dataUrl => {
+                const fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+                APIService.putGuardianById(
+                    token,
+                    data.id,
+                    {
+                        guardianName: data.relationship,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        gender: data.gender,
+                        birthday: getBirthdayVN(data.birthday),
+                        avatar: typeof(data.avatar) === "string" ? fileData : data.avatar,
+                        phoneNumber: data.phoneNumber,
+                        provinceId: data.provinceId,
+                        address: data.address
+                    },
+                    (success, json) => {
+                        if (success && json.result) {
+                            return alert("Cập nhật THÀNH CÔNG !");
+                        } else {
+                            return alert("Cập nhật thay đổi THẤT BẠI !");
+                        }
+                    }
+                )
+            })
         }
         setProfiles(profiles);
         setTaskEditing(null);
-        localStorage.setItem('profiles', JSON.stringify(profiles));
     }
 
     const findIndex = (id) => {
@@ -94,7 +193,7 @@ export default function Index() {
             </div>
             <div className="row">
                 <div  >
-                    {isDisplayForm ? 
+                    {isDisplayForm ?
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={8}>
                                 {elmTaskForm}
@@ -142,3 +241,4 @@ export default function Index() {
         </div>
     );
 }
+

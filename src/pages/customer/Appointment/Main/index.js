@@ -79,7 +79,8 @@ export default function Index() {
 				} else {
 					return alert("THẤT BẠI");
 				}
-			})
+			}
+        )
     }
 
     const findIndex = (id) => {

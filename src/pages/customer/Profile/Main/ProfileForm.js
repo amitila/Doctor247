@@ -50,63 +50,74 @@ export default function ProfileForm(props) {
 	const flag = props.task ? {
 		id: props.task.id,
 		avatar: props.task.avatar,
+		avatarView: props.task.avatarView,
 		relationship: props.task.relationship,
 		firstName: props.task.firstName,
 		lastName: props.task.lastName,
 		gender: props.task.gender,
 		birthday: props.task.birthday,
+		birthdayVN: props.task.birthdayVN,
 		bhyt: props.task.bhyt,
-		phone: props.task.phone,
+		phoneNumber: props.task.phoneNumber,
 		email: props.task.email,
 		province: props.task.province,
+		provinceId: props.task.provinceId,
 		address: props.task.address
 	} : {
 		id: '',
 		avatar: '',
+		avatarView: '',
 		relationship: '',
 		firstName: '',
 		lastName: '',
 		gender: '',
 		birthday: '',
+		birthdayVN: '',
 		bhyt: '',
-		phone: '',
+		phoneNumber: '',
 		email: '',
 		province: '',
+		provinceId: '',
 		address: ''
 	};
 
 	const [state, setState] = React.useState(flag);
-	const [provinceId, setProvinceId] = React.useState('');
 
 	useEffect(() => {
 		if (props && props.task) {
 			setState({
 				id: props.task.id,
 				avatar: props.task.avatar,
+				avatarView: props.task.avatarView,
 				relationship: props.task.relationship,
 				firstName: props.task.firstName,
 				lastName: props.task.lastName,
 				gender: props.task.gender,
 				birthday: props.task.birthday,
+				birthdayVN: props.task.birthdayVN,
 				bhyt: props.task.bhyt,
-				phone: props.task.phone,
+				phoneNumber: props.task.phoneNumber,
 				email: props.task.email,
 				province: props.task.province,
+				provinceId: props.task.provinceId,
 				address: props.task.address
 			});
 		} else if (!props.task) {
 			setState({
 				id: '',
 				avatar: '',
+				avatarView: '',
 				relationship: '',
 				firstName: '',
 				lastName: '',
 				gender: '',
 				birthday: '',
+				birthdayVN: '',
 				bhyt: '',
-				phone: '',
+				phoneNumber: '',
 				email: '',
 				province: '',
+				provinceId: '',
 				address: ''
 			});
 		}
@@ -121,6 +132,7 @@ export default function ProfileForm(props) {
 		let name = target.name;
 		let value = target.value;
 		setState(prevState => ({ ...prevState, [name]: value }));
+		if(state.birthday) setState(prevState => ({ ...prevState, birthdayVN: getBirthday()}), ()=>console.log(state.birthdayVN));
 	}
 
 	const onSubmit = (event) => {
@@ -136,26 +148,28 @@ export default function ProfileForm(props) {
 		setState({
 			id: '',
 			avatar: '',
+			avatarView: '',
 			relationship: '',
 			firstName: '',
 			lastName: '',
 			gender: '',
 			birthday: '',
+			birthdayVN: '',
 			bhyt: '',
-			phone: '',
+			phoneNumber: '',
 			email: '',
 			province: '',
+			provinceId: '',
 			address: ''
 		});
 	}
 
-	const handleChangeAvatar = (text) => {
-		setState({ ...state, avatar: text });
+	const handleChangeAvatar = (view, send) => {
+		setState({ ...state, avatar: send, avatarView: view });
 	}
 
 	const handleChangeProvince = (obj) => {
-		setState({ ...state, province: obj.name });
-		setProvinceId(obj.id);
+		setState({ ...state, province: obj.name, provinceId: obj.id });
 	}
 
 	const handleSelectRelationship = (text) => {
@@ -168,6 +182,15 @@ export default function ProfileForm(props) {
 		var day = dateObj.getDate();
 		var year = dateObj.getFullYear();
 		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
+
+	const getBirthday = () => {
+		var date = new Date();
+		var value = state.birthday;
+		date.setDate(parseInt(value?.slice(8,10)));
+		date.setMonth(parseInt(value?.slice(5,7))-1);
+		date.setFullYear(parseInt(value?.slice(0,4)));
+		return date;
 	}
 
 	return (
@@ -185,8 +208,6 @@ export default function ProfileForm(props) {
 						<Grid item xs={12}>
 							{/* Upload avatar into profile */}
 							<UploadAvatar
-								dataFromParent={state.avatar}
-								//onChange={event => setAvatar(event.target.value)} 
 								handleChangeAvatar={handleChangeAvatar}
 								avatar={state.avatar}
 							/>
@@ -240,9 +261,9 @@ export default function ProfileForm(props) {
 												value={state.gender}
 												onChange={onChange}
 											>
-												<FormControlLabel value="Nữ" control={<Radio required />} label="Nữ" />
-												<FormControlLabel value="Nam" control={<Radio />} label="Nam" />
-												<FormControlLabel value="Khác" control={<Radio />} label="Khác" />
+												<FormControlLabel value="FEMALE" control={<Radio required />} label="Nữ" />
+												<FormControlLabel value="MALE" control={<Radio />} label="Nam" />
+												<FormControlLabel value="ORTHER" control={<Radio />} label="Khác" />
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -256,7 +277,7 @@ export default function ProfileForm(props) {
 											type="date"
 											format={'DD/MM/YYYY'}
 											defaultValue="1890-10-01"
-											maxDate="2021-09-20"
+											// maxDate="2021-09-20"
 											name="birthday"
 											value={state.birthday}
 											onChange={onChange}
@@ -290,13 +311,13 @@ export default function ProfileForm(props) {
 											margin="normal"
 											required
 											fullWidth
-											id="numphone"
+											id="phoneNumber"
 											label="Số điện thoại"
-											name="phone"
+											name="phoneNumber"
 											type="number"
-											value={state.phone}
+											value={state.phoneNumber}
 											onChange={onChange}
-											autoComplete="phone"
+											autoComplete="phoneNumber"
 										/>
 										<TextField
 											variant="filled"
@@ -320,7 +341,7 @@ export default function ProfileForm(props) {
 								{/* Select province where living */}
 								<SelectProvince
 									province={state.province}
-									provinceId={provinceId}
+									provinceId={state.provinceId}
 									handleChangeProvince={handleChangeProvince}
 								/>
 								<TextField
@@ -343,7 +364,9 @@ export default function ProfileForm(props) {
 										variant="contained"
 										color="primary"
 									>
-										Lưu thay đổi
+										{
+											state.id ? "Cập nhật thay đổi" : "Lưu hồ sơ"
+										}
 									</Button>
 									&nbsp;
 									<Button

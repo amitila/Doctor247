@@ -179,6 +179,7 @@ export default function PersonalIcon(props) {
 	const dispatch = useDispatch();
 	const onSave = (event) => {
         event.preventDefault();
+		console.log(url);
         APIService.putProfile(
 			token,
 			{
