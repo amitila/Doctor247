@@ -27,7 +27,7 @@ APIService.getGuardian(
             profileList?.map(item => {
                 return flag.push({
                     id: item.id,
-                    userTowId: item.userTwoId,
+                    userTwoId: item.userTwoId,
                     relationship: item.name,
                     email: 'ami@gmail.com',
                     firstName: item.userTwo.firstName,
@@ -48,7 +48,6 @@ APIService.getGuardian(
             return alert("Lỗi server!");
         }
     }
-
 )
 
 export default function Index() {

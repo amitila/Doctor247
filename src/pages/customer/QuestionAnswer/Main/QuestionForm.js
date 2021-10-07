@@ -51,12 +51,14 @@ export default function QuestionForm(props) {
 		id : props.task.id,
 		title : props.task.title,
 		content : props.task.content,
-		images: props.task.images
+		images: [],
+		imagesView: props.task.images
 	} : {
 		id : '',
 		title : '',
 		content : '',
-		images: ''
+		images: [],
+		imagesView: ''
 	};
 	
 	const classes = useStyles();
@@ -68,14 +70,16 @@ export default function QuestionForm(props) {
 				id : props.task.id,
 				title : props.task.title,
 				content : props.task.content,
-				images: props.task.images
+				images: [],
+				imagesView: props.task.images
 			});
 		}else if(!props.task){
 			setState({
 				id : '',
 				title : '',
 				content : '',
-				images: ''
+				images: [],
+				imagesView: []
 			});
 		}
 	},[props]);
@@ -96,6 +100,7 @@ export default function QuestionForm(props) {
 
 	const onSubmit = (event) => {
 		event.preventDefault();
+		console.log('state');
 		console.log(state);
 		props.onSubmit(state);
 		//Clear and Close form
@@ -108,17 +113,21 @@ export default function QuestionForm(props) {
 			id : '',
 			title : '',
 			content : '',
-			image: ''
+			images: [],
+			imagesView: []
 		});
 	}
 
 	const handleChangeFile = (files) => {
-		const temp = [];
-		files.forEach((file, index) => {
-            temp.push("/images/" + file.path);
+		console.log('state.images');
+		files.forEach((file) => {
+            state.images.push(file);
         });
-		setState({...state, images: temp});
+		console.log(state.images);
+		// setState({...state, images: files});
 	}
+
+	
    
 	return (
 		<div className="panel panel-warning">
@@ -173,6 +182,8 @@ export default function QuestionForm(props) {
 						acceptedFiles={['image/*']}
 						dropzoneText={"Kéo ảnh thả vào hay nhấp vào để tải ảnh lên"}
 						onChange={handleChangeFile}
+						showAlerts={false}
+						showFileNames={false}
 					/>
 					<div className="text-center">
 						<Button

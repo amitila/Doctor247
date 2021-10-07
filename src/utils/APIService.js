@@ -43,6 +43,18 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/guardian/${id}`;
 	};
 
+	static apiQuestionMy = () => {
+		return `${APIService.baseAPI()}customer/question/my`;
+	};
+
+	static apiQuestion = () => {
+		return `${APIService.baseAPI()}customer/question`;
+	};
+
+	static apiQuestionById = (id) => {
+		return `${APIService.baseAPI()}customer/question/${id}`;
+	};
+
 
   	// TODO: multipart
 
@@ -205,7 +217,6 @@ export default class APIService {
 
 	// api for Post Guardian
 	static postGuardian(token, values, callback ) {
-		console.log(values);
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
@@ -216,7 +227,6 @@ export default class APIService {
 		formData.append('phoneNumber', values.phoneNumber);
 		formData.append('provinceId', values.provinceId);
 		formData.append('address', values.address);
-		console.log(formData);
 		WebService.sendJsonPOST(
 			this.apiGuardian(),
 			{
@@ -259,5 +269,55 @@ export default class APIService {
 			callback,
 		);
 	}
-	
+
+//====================QUESTION======================
+
+	// api for Get Question My
+	static getQuestionMy(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiQuestionMy(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Post A Question
+	static postQuestion(token, values, callback) {
+		const formData = new FormData();
+		formData.append('content', values.content);
+		values.images.forEach((image, index) => {
+			formData.append(`images[${index}]`, image);
+		});
+		WebService.sendJsonPOST(
+			this.apiQuestion(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Put Question By Id
+	static putQuestionById(token, id, values, callback ) {
+		const formData = new FormData();
+		formData.append('content', values.content);
+		values.images.forEach((image, index) => {
+			formData.append(`images[${index}]`, image);
+		});
+		values.deleteImgs.forEach((image, index) => {
+			formData.append(`deleteImgs[${index}]`, image);
+		});
+		WebService.sendJsonPUT(
+			this.apiQuestionById(id),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
 }

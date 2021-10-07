@@ -229,7 +229,7 @@ export default function AppointmentForm(props) {
 						Đặt lịch khám
 					</Typography>
 
-					<Grid container spacing={5}>
+					<Grid container spacing={10}>
 						<Grid item xs={12} sm={3} className={classes.title}>
 							<PatientCard 
 								onSetAttribute={onSetAttribute}
@@ -289,6 +289,7 @@ export default function AppointmentForm(props) {
 					</Grid>
 
 					<TextareaAutosize
+						style={{marginTop: 10}}
 						required
 						name="description"
 						value={state.description}
@@ -300,7 +301,7 @@ export default function AppointmentForm(props) {
 
 					</TextareaAutosize>
 
-					<Typography>Hình ảnh đính kèm (nếu có, tối đa 4 ảnh)</Typography>
+					<Typography style={{marginTop: 10}} >Hình ảnh đính kèm (nếu có, tối đa 4 ảnh)</Typography>
 					<Grid container>
 						{
 							number <= 1 ? <UploadImage 

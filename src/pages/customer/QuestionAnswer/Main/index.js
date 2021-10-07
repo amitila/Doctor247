@@ -5,24 +5,45 @@ import QuestionControl from './QuestionControl';
 import { useHistory } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import { Grid } from '@material-ui/core';
+import APIService from '../../../../utils/APIService';
+
+const questionList = [];
+const token = document.cookie.slice(6);
+var flag = [];
+APIService.getQuestionMy(
+    token,
+    (success, json) => {
+        if (success && json.result) {
+            json.result.map(item => {
+                return questionList.push(item);
+            })
+            questionList?.map(item => {
+                return flag.push({
+                    id: item.id,
+                    updatedAt: item.updatedAt,
+                    title: item.title ? item.title : "Bệnh",
+                    content: item.content,
+                    images: item.images,
+                    answers: item.answers,
+                    questionLike: item._count.questionLike
+                })
+            })
+            return console.log("Lấy câu hỏi thành công");
+        } else {
+            return console.log("Lỗi server !");
+        }
+    }
+)
 
 export default function Index() {
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
+    // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
     const [questions, setQuestions] = useState(flag);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     //const [filter, setFilter] = useState({name: '', status: -1});
     //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({ by: 'name', value: 1 });
-
-    const s4 = () => {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
-    const generateID = () => {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
 
     const onToggleForm = (event) => {//Add task
         if (isDisplayForm && taskEditing !== null) {
@@ -45,16 +66,52 @@ export default function Index() {
 
     const onSubmit = (data) => {
         if (data.id === '') {
-            data.id = generateID();
-            questions.push(data);
+            APIService.postQuestion(
+                token,
+                {
+                    content: data.content,
+                    images: data.images
+                },
+                (success, json) => {
+                    if (success && json.result) {
+                        return alert("THÀNH CÔNG !");
+                    } else {
+                        return alert("Cập nhật thay đổi THẤT BẠI !");
+                    }
+                })
         } else {
             //Editing
-            const index = findIndex(data.id);
-            questions[index] = data;
+            // const index = findIndex(data.id);
+            // questions[index] = data;
+            const deleteImgs =[];
+            data.imagesView?.map(item => {
+                deleteImgs.push(item.slice(-36, -4));
+                return 0;
+            })
+            console.log(data);
+            console.log(deleteImgs);
+            APIService.putQuestionById(
+                token,
+                data.id,
+                {
+                    content: data.content,
+                    images: data.images,
+                    deleteImgs: deleteImgs
+                },
+                (success, json) => {
+                    if (success && json.result) {
+                        console.log('json.result');
+                        console.log(json.result);
+                        return alert("Cập nhật THÀNH CÔNG !");
+                    } else {
+                        return alert("Cập nhật thay đổi THẤT BẠI !");
+                    }
+                }
+            )
         }
         setQuestions(questions);
         setTaskEditing(null);
-        localStorage.setItem('questions', JSON.stringify(questions));
+        // localStorage.setItem('questions', JSON.stringify(questions));
     }
 
     const onUpdateStatus = (id) => {
@@ -90,6 +147,7 @@ export default function Index() {
         const index = findIndex(id);
         const taskEditing = questions[index];
         setTaskEditing(taskEditing);
+        console.log(taskEditing);
         onShowForm();
     }
 
