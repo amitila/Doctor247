@@ -54,6 +54,7 @@ export default function QuestionList(props) {
                         onUpdateStatus={props.onUpdateStatus}
                         onDelete={props.onDelete}
                         onUpdate={props.onUpdate}
+                        onUpdateLike={props.onUpdateLike}
                     />
                 </Grid>
     });

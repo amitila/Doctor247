@@ -21,7 +21,7 @@ APIService.getQuestionMy(
                 return flag.push({
                     id: item.id,
                     updatedAt: item.updatedAt,
-                    title: item.title ? item.title : "Bệnh",
+                    title: item.title,
                     content: item.content,
                     images: item.images,
                     answers: item.answers,
@@ -65,10 +65,12 @@ export default function Index() {
     }
 
     const onSubmit = (data) => {
+        //console.log("đã thẻ :" + data.id);
         if (data.id === '') {
             APIService.postQuestion(
                 token,
                 {
+                    title: data.title,
                     content: data.content,
                     images: data.images
                 },
@@ -85,15 +87,14 @@ export default function Index() {
             // questions[index] = data;
             const deleteImgs =[];
             data.imagesView?.map(item => {
-                deleteImgs.push(item.slice(-36, -4));
+                deleteImgs.push(item);
                 return 0;
             })
-            console.log(data);
-            console.log(deleteImgs);
             APIService.putQuestionById(
                 token,
                 data.id,
                 {
+                    title: data.title,
                     content: data.content,
                     images: data.images,
                     deleteImgs: deleteImgs
@@ -149,6 +150,39 @@ export default function Index() {
         setTaskEditing(taskEditing);
         console.log(taskEditing);
         onShowForm();
+    }
+
+    const onUpdateLike = (mark, id) => {
+        if(mark === 0) {
+            APIService.putQuestionLikeById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        return console.log("Like THÀNH CÔNG !");
+                    } else {
+                        return console.log("Like THẤT BẠI !");
+                    }
+                }
+            )
+        }
+        else if(mark === 1) {
+            APIService.putQuestionUnLikeById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        return console.log("UnLike THÀNH CÔNG !");
+                    } else {
+                        return console.log("UnLike THẤT BẠI !");
+                    }
+                }
+            )
+        }
+        else{
+            console.log("Lỗi like");
+        }
+        
     }
 
     const onFilter = (filterTitle, filterContent) => {
@@ -243,6 +277,7 @@ export default function Index() {
                                     onUpdateStatus={onUpdateStatus}
                                     onDelete={onDelete}
                                     onUpdate={onUpdate}
+                                    onUpdateLike={onUpdateLike}
                                     onFilter={onFilter}
                                 />
 
@@ -278,6 +313,7 @@ export default function Index() {
                                 onUpdateStatus={onUpdateStatus}
                                 onDelete={onDelete}
                                 onUpdate={onUpdate}
+                                onUpdateLike={onUpdateLike}
                                 onFilter={onFilter}
                             />
                         </Grid>

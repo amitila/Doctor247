@@ -66,7 +66,8 @@ export default function QuestionCard(props) {
     const [state, setState] = React.useState({
         specialityName: '',
         replyContent: '',
-        heartCounter: 0
+        likeCounter: props.task.questionLike,
+        mark: 0
     });
 
     const handleExpandClick = () => {
@@ -120,8 +121,13 @@ export default function QuestionCard(props) {
         handleClose();
     }
 
-    const handleCountHeart = () => {
-        setState({...state, heartCounter: state.heartCounter + 1});
+    const handleCountLike = () => {
+        props.onUpdateLike(state.mark, props.task.id);
+        setState({
+            ...state, 
+            likeCounter: state.mark === 0? state.likeCounter + 1 : state.likeCounter - 1,
+            mark: state.mark === 0? state.mark + 1 : state.mark - 1
+        });
     }
 
     return (
@@ -188,9 +194,14 @@ export default function QuestionCard(props) {
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
                     <FormControlLabel
-                        onClick={handleCountHeart}
-                        control={<Checkbox icon={<FavoriteIcon />} checkedIcon={<FavoriteIcon />} name="checkedH" />}
-                        label={state.heartCounter}
+                        onClick={handleCountLike}
+                        control={<Checkbox 
+                                    icon={<FavoriteIcon />} 
+                                    checkedIcon={<FavoriteIcon />} 
+                                    name="checkedH" 
+                                    checked={state.mark === 0 ? false : true}
+                                />}
+                        label={state.likeCounter}
                     />
                 </IconButton>
                 <IconButton aria-label="share">

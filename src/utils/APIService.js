@@ -55,6 +55,41 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/question/${id}`;
 	};
 
+	// Save - Unsave question
+	static apiQuestionSave = () => {
+		return `${APIService.baseAPI()}customer/question/saved`;
+	};
+
+	static apiQuestionSaveById = (id) => {
+		return `${APIService.baseAPI()}customer/question/${id}/save`;
+	};
+
+	static apiQuestionUnSaveById = (id) => {
+		return `${APIService.baseAPI()}customer/question/${id}/unsave`;
+	};
+
+	// Like - Unlike question
+	static apiQuestionLikeById = (id) => {
+		return `${APIService.baseAPI()}customer/question/${id}/like`;
+	};
+
+	static apiQuestionUnLikeById = (id) => {
+		return `${APIService.baseAPI()}customer/question/${id}/unlike`;
+	};
+
+	// Like - Unlike answer
+	static apiAnswerById = (id) => {
+		return `${APIService.baseAPI()}customer/answer/${id}`;
+	};
+
+	static apiAnswerLikeById = (id) => {
+		return `${APIService.baseAPI()}customer/answer/${id}/like`;
+	};
+
+	static apiAnswerUnLikeById = (id) => {
+		return `${APIService.baseAPI()}customer/answer/${id}/unlike`;
+	};
+
 
   	// TODO: multipart
 
@@ -283,9 +318,21 @@ export default class APIService {
 		);
 	}	
 
+	// api for All Questions
+	static getQuestion(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiQuestion(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
 	// api for Post A Question
 	static postQuestion(token, values, callback) {
 		const formData = new FormData();
+		formData.append('title', values.title);
 		formData.append('content', values.content);
 		values.images.forEach((image, index) => {
 			formData.append(`images[${index}]`, image);
@@ -303,11 +350,12 @@ export default class APIService {
 	// api for Put Question By Id
 	static putQuestionById(token, id, values, callback ) {
 		const formData = new FormData();
+		formData.append('title', values.title);
 		formData.append('content', values.content);
-		values.images.forEach((image, index) => {
+		values.images?.forEach((image, index) => {
 			formData.append(`images[${index}]`, image);
 		});
-		values.deleteImgs.forEach((image, index) => {
+		values.deleteImgs?.forEach((image, index) => {
 			formData.append(`deleteImgs[${index}]`, image);
 		});
 		WebService.sendJsonPUT(
@@ -315,6 +363,100 @@ export default class APIService {
 			{
 				jwt: token,
 				formData
+			},
+			callback,
+		);
+	}
+
+//====================SAVE - UNSAVE QUESTION======================
+
+	// api for Get Saved Question
+	static getSavedQuestion(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiQuestionSave(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Put Question Save By Id
+	static putQuestionSaveById(token, id, callback ) {
+		WebService.sendJsonPUT(
+			this.apiQuestionSaveById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Put Question Save By Id
+	static putQuestionUnSaveById(token, id, callback ) {
+		WebService.sendJsonDELETE(
+			this.apiQuestionUnSaveById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+//====================LIKE - UNLIKE QUESTION======================
+
+	// api for Put Question Like By Id
+	static putQuestionLikeById(token, id, callback ) {
+		WebService.sendJsonPUT(
+			this.apiQuestionLikeById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Put Question Like By Id
+	static putQuestionUnLikeById(token, id, callback ) {
+		WebService.sendJsonPUT(
+			this.apiQuestionUnLikeById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+//====================LIKE - UNLIKE ANSWER======================
+
+	// api for Get Answer By Id
+	static getAnswerById(token, id, callback ) {
+		WebService.sendJsonGET(
+			this.apiAnswerById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Put Answer Like By Id
+	static putAnswerLikeById(token, id, callback ) {
+		WebService.sendJsonPUT(
+			this.apiAnswerLikeById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Put Answer Like By Id
+	static putAnswerUnLikeById(token, id, callback ) {
+		WebService.sendJsonPUT(
+			this.apiAnswerUnLikeById(id),
+			{
+				jwt: token
 			},
 			callback,
 		);
