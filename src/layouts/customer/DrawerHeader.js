@@ -39,6 +39,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import MenuItem from '@mui/material/MenuItem';
 import { withStyles } from "@material-ui/core/styles";
+import SaveIcon from '@mui/icons-material/Save';
 
 const drawerWidth = 240;
 
@@ -321,6 +322,7 @@ export default function DrawerHeader() {
                             <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
                             <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
                             <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
+                            <div className={classes.link} onClick={()=>history.push("/savedquestion")}>Đã lưu</div>,
                             <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
                             // <Link className={classes.link} to="/home">Trang chủ</Link>,
                             // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
@@ -342,6 +344,7 @@ export default function DrawerHeader() {
                                         <HelpIcon />, 
                                         <LibraryBooksIcon />, 
                                         <FolderSpecialIcon />,
+                                        <SaveIcon />,
                                         <ScheduleIcon />][index]
                                     }
                                 </ListItemIcon>

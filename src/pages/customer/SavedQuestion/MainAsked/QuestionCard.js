@@ -120,11 +120,6 @@ export default function QuestionCard(props) {
         handleClose();
     }
 
-    const onSave = () => {
-        props.onSave(props.task.id);
-        handleClose();
-    }
-
     const handleCountLike = () => {
         props.onUpdateLike(state.mark, props.task.id);
         setState({
@@ -167,11 +162,6 @@ export default function QuestionCard(props) {
                         >
                             <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem>
                             <MenuItem onClick={onDelete}>Xóa bài</MenuItem>
-                            {
-                                task.saved ? <MenuItem>Bài đã lưu</MenuItem>
-                                            :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
-                            }
-                            
                         </Menu>
                    </div>
                 }

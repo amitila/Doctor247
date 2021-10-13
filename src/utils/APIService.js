@@ -392,7 +392,7 @@ export default class APIService {
 		);
 	}
 
-	// api for Put Question Save By Id
+	// api for Put Question UnSave By Id
 	static putQuestionUnSaveById(token, id, callback ) {
 		WebService.sendJsonDELETE(
 			this.apiQuestionUnSaveById(id),

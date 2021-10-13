@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         backgroundColor: "#d0e7f4",
+        marginBottom: 5,
     },
     wordColor: {
         color: "black",
@@ -25,24 +26,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function QuestionList(props) {
     const classes = useStyles();
-    const [state, setState] = React.useState({
-        filterTitle : '',
-        filterContent : '',
-        filterSpecialist : -1 //all:-1, active:1, hide:0
-    });
+    // const [state, setState] = React.useState({
+    //     filterTitle : '',
+    //     filterContent : '',
+    //     filterSpecialist : -1 //all:-1, active:1, hide:0
+    // });
 
-    const onChange = (event) => {
-        let target = event.target;
-        let name = target.name;
-        let value = target.value;
-        props.onFilter(
-            name === 'filterTitle' ? value : state.filterTitle,
-            name === 'filterContent' ? value : state.filterContent,
-            name === 'filterSpecialist' ? value : state.filterSpecialist
-        )
-        setState(prevState => ({...prevState, [name]: value}));
-        console.log(state);
-    }
+    // const onChange = (event) => {
+    //     let target = event.target;
+    //     let name = target.name;
+    //     let value = target.value;
+    //     props.onFilter(
+    //         name === 'filterTitle' ? value : state.filterTitle,
+    //         name === 'filterContent' ? value : state.filterContent,
+    //         name === 'filterSpecialist' ? value : state.filterSpecialist
+    //     )
+    //     setState(prevState => ({...prevState, [name]: value}));
+    //     console.log(state);
+    // }
  
     const {questions} = props;
     const elmQuestions = questions.map((task, index) => {
@@ -51,10 +52,7 @@ export default function QuestionList(props) {
                         key={task.id} 
                         index={index + 1} 
                         task={task} 
-                        onUpdateStatus={props.onUpdateStatus}
-                        onDelete={props.onDelete}
-                        onUpdate={props.onUpdate}
-                        onSave={props.onSave}
+                        onUnSave={props.onUnSave}
                         onUpdateLike={props.onUpdateLike}
                     />
                 </Grid>
@@ -72,7 +70,7 @@ export default function QuestionList(props) {
 
     return (
         <div className={classes.paper}>
-            <table className="table table-borderd table-hover mt-15">
+            {/* <table className="table table-borderd table-hover mt-15">
                 <thead>
                     <tr>
                         <th className={classes.wordColor}>Tiêu đề (tên bệnh)</th>
@@ -114,7 +112,7 @@ export default function QuestionList(props) {
                     </td>
                 </tr>
                 </tbody>
-            </table>  
+            </table>   */}
             <Container maxWidth="lg">
                 {
                     isMatch ?

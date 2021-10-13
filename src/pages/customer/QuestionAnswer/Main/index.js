@@ -10,7 +10,7 @@ import APIService from '../../../../utils/APIService';
 const questionList = [];
 const token = document.cookie.slice(6);
 var flag = [];
-APIService.getQuestionMy(
+APIService.getQuestion(
     token,
     (success, json) => {
         if (success && json.result) {
@@ -25,7 +25,9 @@ APIService.getQuestionMy(
                     content: item.content,
                     images: item.images,
                     answers: item.answers,
-                    questionLike: item._count.questionLike
+                    questionLike: item._count.questionLike,
+                    liked: item.liked,
+                    saved: item.saved
                 })
             })
             return console.log("Lấy câu hỏi thành công");
@@ -152,8 +154,22 @@ export default function Index() {
         onShowForm();
     }
 
+    const onSave = (id) => {
+        APIService.putQuestionSaveById(
+            token,
+            id,
+            (success, json) => {
+                if (success && json.result) {
+                    return alert("LƯU THÀNH CÔNG !", id);
+                } else {
+                    return alert("Lưu bài thất bại !");
+                }
+            })
+        onCloseForm();
+    }
+
     const onUpdateLike = (mark, id) => {
-        if(mark === 0) {
+        if(mark === false) {
             APIService.putQuestionLikeById(
                 token,
                 id,
@@ -166,7 +182,7 @@ export default function Index() {
                 }
             )
         }
-        else if(mark === 1) {
+        else if(mark) {
             APIService.putQuestionUnLikeById(
                 token,
                 id,
@@ -182,9 +198,8 @@ export default function Index() {
         else{
             console.log("Lỗi like");
         }
-        
     }
-
+    
     const onFilter = (filterTitle, filterContent) => {
         // setFilter({
         //     name : filterName,
@@ -277,6 +292,7 @@ export default function Index() {
                                     onUpdateStatus={onUpdateStatus}
                                     onDelete={onDelete}
                                     onUpdate={onUpdate}
+                                    onSave={onSave}
                                     onUpdateLike={onUpdateLike}
                                     onFilter={onFilter}
                                 />
@@ -313,6 +329,7 @@ export default function Index() {
                                 onUpdateStatus={onUpdateStatus}
                                 onDelete={onDelete}
                                 onUpdate={onUpdate}
+                                onSave={onSave}
                                 onUpdateLike={onUpdateLike}
                                 onFilter={onFilter}
                             />

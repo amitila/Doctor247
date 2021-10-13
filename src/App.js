@@ -14,6 +14,7 @@ import QuestionAnswer from './pages/customer/QuestionAnswer';
 import Appointment from './pages/customer/Appointment';
 import MedicalrRecords from './pages/customer/MedicalRecords';
 import Speciality from './pages/customer/Speciality';
+import SavedQuestion from './pages/customer/SavedQuestion';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
@@ -44,6 +45,7 @@ export default function App() {
 				<Route exact path='/phonebook' component={PhoneBook} />
 				<Route exact path='/appointment' component={Appointment} />
 				<Route exact path='/speciality' component={Speciality} />
+				<Route exact path='/savedquestion' component={SavedQuestion} />
 				<Route exact path='/task' component={Task} />
 				<Route exact path='/medicalrecords' component={MedicalrRecords} />
 				<Route exact path='/question' component={QuestionAnswer} />

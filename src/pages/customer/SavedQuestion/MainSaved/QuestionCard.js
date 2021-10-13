@@ -110,18 +110,8 @@ export default function QuestionCard(props) {
     const date = new Date();
     const currentTime = date.getHours() +':'+ date.getMinutes() +'  '+ date.getDate() +'/'+ (date.getMonth() + 1) +'/'+ date.getFullYear() ;
 
-    const onDelete = () => {
-        props.onDelete(props.task.id);
-        handleClose();
-    }
-
-    const onUpdate = () => {
-        props.onUpdate(props.task.id);
-        handleClose();
-    }
-
-    const onSave = () => {
-        props.onSave(props.task.id);
+    const onUnSave = () => {
+        props.onUnSave(props.task.id);
         handleClose();
     }
 
@@ -165,13 +155,7 @@ export default function QuestionCard(props) {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem>
-                            <MenuItem onClick={onDelete}>Xóa bài</MenuItem>
-                            {
-                                task.saved ? <MenuItem>Bài đã lưu</MenuItem>
-                                            :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
-                            }
-                            
+                            <MenuItem onClick={onUnSave}>Gỡ bài lưu</MenuItem>
                         </Menu>
                    </div>
                 }
