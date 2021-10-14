@@ -142,7 +142,6 @@ export default function QuestionList(props) {
                             })}
                         </Grid>
                     </Grid>
-                    
                 }
             </Container>          
         </div>

@@ -12,7 +12,7 @@ APIService.getSavedQuestion(
         if (success && json.result) {
             json.result.map(item => {
                 return flag.push({
-                    id: item.id,
+                    id: item.question.id,
                     updatedAt: item.updatedAt,
                     title: item.question.title,
                     content: item.question.content,

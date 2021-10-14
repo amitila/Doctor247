@@ -9,6 +9,8 @@ import { pink, red } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import SpeedDial from '@mui/material/SpeedDial';
 import CallIcon from '@mui/icons-material/Call';
+import { styled as STYLED } from '@mui/material/styles';
+import Badge from '@mui/material/Badge';
 
 const customTheme = createTheme({
 	palette: {
@@ -31,6 +33,35 @@ const StyledAvatar = styled(Avatar)`
 	`}
 `;
 
+const StyledBadge = STYLED(Badge)(({ theme }) => ({
+	'& .MuiBadge-badge': {
+	  backgroundColor: 'red',
+	  color: 'red',
+	  boxShadow: `0 0 0 2px ${theme.palette.error.light}`,
+	  '&::after': {
+		position: 'absolute',
+		top: -32,
+		left: -32,
+		width: '550%',
+		height: '550%',
+		borderRadius: '100%',
+		animation: 'ripple 1.5s infinite ease-in-out',
+		border: '10px solid currentColor',
+		content: '""',
+	  },
+	},
+	'@keyframes ripple': {
+	  '0%': {
+		transform: 'scale(.8)',
+		opacity: 1,
+	  },
+	  '100%': {
+		transform: 'scale(2.4)',
+		opacity: 0,
+	  },
+	},
+  }));
+
 export default function Emergency() {
 	return (
 		<SpeedDial
@@ -40,15 +71,21 @@ export default function Emergency() {
 			icon={<NoSsr>
 				<MuiThemeProvider theme={customTheme}>
 					<ThemeProvider theme={customTheme}>
-						<StyledAvatar>
-							<CallIcon />
-						</StyledAvatar>
+						<StyledBadge
+							overlap="circular"
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+							variant="dot"
+							onClick={()=>alert("Gọi cấp cứu")}
+						>
+							<StyledAvatar>
+								<CallIcon />
+							</StyledAvatar>
+						</StyledBadge>
 					</ThemeProvider>
 				</MuiThemeProvider>
 			</NoSsr>}
 		>
 
 		</SpeedDial>
-
 	);
 }

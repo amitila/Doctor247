@@ -90,6 +90,14 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/answer/${id}/unlike`;
 	};
 
+	// DoctorList
+	static apiDoctorList = () => {
+		return `${APIService.baseAPI()}customer/doctor/list`;
+	};
+
+	static apiDoctorById = (id) => {
+		return `${APIService.baseAPI()}customer/doctor/${id}`;
+	};
 
   	// TODO: multipart
 
@@ -461,5 +469,29 @@ export default class APIService {
 			callback,
 		);
 	}
+
+//====================DOCTOR - LIST======================
+
+	// api for Get Doctor List
+	static getDoctorList(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiDoctorList(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Get Doctor By Id
+	static getDoctorById(token, id, callback ) {
+		WebService.sendJsonGET(
+			this.apiDoctorById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
 
 }
