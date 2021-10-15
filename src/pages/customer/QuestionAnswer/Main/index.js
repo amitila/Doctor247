@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuestionControl from './QuestionControl';
@@ -6,46 +6,59 @@ import { useHistory } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
-const questionList = [];
-const token = document.cookie.slice(6);
-var flag = [];
-APIService.getQuestion(
-    token,
-    (success, json) => {
-        if (success && json.result) {
-            json.result.map(item => {
-                return questionList.push(item);
-            })
-            questionList?.map(item => {
-                return flag.push({
-                    id: item.id,
-                    updatedAt: item.updatedAt,
-                    title: item.title,
-                    content: item.content,
-                    images: item.images,
-                    answers: item.answers,
-                    questionLike: item._count.questionLike,
-                    liked: item.liked,
-                    saved: item.saved
-                })
-            })
-            return console.log("Lấy câu hỏi thành công");
-        } else {
-            return console.log("Lỗi server !");
-        }
-    }
-)
+// const token = document.cookie.slice(6);
 
-export default function Index() {
+export default function Index(props) {
     const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
-    const [questions, setQuestions] = useState(flag);
+    const [isHaveChange, setIsHaveChange] = useState(true);
+    const [questions, setQuestions] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     //const [filter, setFilter] = useState({name: '', status: -1});
     //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({ by: 'name', value: 1 });
+    var flag = questions;
+
+    useEffect(() => {
+        if (isHaveChange) {
+            getQuestion()
+        }
+    }, [isHaveChange])
+
+    const getQuestion = () => {
+        const token = getToken();
+        const questionList = [];
+        APIService.getQuestion(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return questionList.push(item);
+                    })
+                    setQuestions(questionList?.map(item => {
+                        return {
+                            id: item.id,
+                            updatedAt: item.updatedAt,
+                            title: item.title,
+                            content: item.content,
+                            images: item.images,
+                            answers: item.answers,
+                            questionLike: item._count.questionLike,
+                            liked: item.liked,
+                            saved: item.saved
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("Lấy câu hỏi thành công");
+                } else {
+                    return console.log("Lỗi server !");
+                }
+            }
+        )
+    }
 
     const onToggleForm = (event) => {//Add task
         if (isDisplayForm && taskEditing !== null) {
@@ -67,7 +80,7 @@ export default function Index() {
     }
 
     const onSubmit = (data) => {
-        //console.log("đã thẻ :" + data.id);
+        const token = getToken();
         if (data.id === '') {
             APIService.postQuestion(
                 token,
@@ -78,6 +91,7 @@ export default function Index() {
                 },
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return alert("THÀNH CÔNG !");
                     } else {
                         return alert("Cập nhật thay đổi THẤT BẠI !");
@@ -103,8 +117,7 @@ export default function Index() {
                 },
                 (success, json) => {
                     if (success && json.result) {
-                        console.log('json.result');
-                        console.log(json.result);
+                        setIsHaveChange(true);
                         return alert("Cập nhật THÀNH CÔNG !");
                     } else {
                         return alert("Cập nhật thay đổi THẤT BẠI !");
@@ -137,12 +150,18 @@ export default function Index() {
     }
 
     const onDelete = (id) => {
-        const index = findIndex(id);
-        if (index !== -1) {
-            questions.splice(index, 1);
-            console.log(questions);
-            localStorage.setItem('questions', JSON.stringify(questions));
-        }
+        const token = getToken();
+        APIService.deleteQuestionById(
+            token,
+            id,
+            (success, json) => {
+                if (success && json.result) {
+                    setIsHaveChange(true);
+                    return alert("XÓA THÀNH CÔNG !");
+                } else {
+                    return alert("Xóa bài thất bại !");
+                }
+            })
         onCloseForm();
     }
 
@@ -155,11 +174,13 @@ export default function Index() {
     }
 
     const onSave = (id) => {
+        const token = getToken();
         APIService.putQuestionSaveById(
             token,
             id,
             (success, json) => {
                 if (success && json.result) {
+                    setIsHaveChange(true);
                     return alert("LƯU THÀNH CÔNG !", id);
                 } else {
                     return alert("Lưu bài thất bại !");
@@ -169,12 +190,14 @@ export default function Index() {
     }
 
     const onUpdateLike = (mark, id) => {
+        const token = getToken();
         if(mark === false) {
             APIService.putQuestionLikeById(
                 token,
                 id,
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return console.log("Like THÀNH CÔNG !");
                     } else {
                         return console.log("Like THẤT BẠI !");
@@ -188,6 +211,7 @@ export default function Index() {
                 id,
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return console.log("UnLike THÀNH CÔNG !");
                     } else {
                         return console.log("UnLike THẤT BẠI !");

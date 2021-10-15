@@ -43,6 +43,7 @@ function a11yProps(index) {
 
 export default function BasicTabs() {
 	const [value, setValue] = React.useState(0);
+	const mark = true;
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -61,7 +62,7 @@ export default function BasicTabs() {
 					<TabPanel value={value} index={0}>
 						<Grid item xs={12}>
 							<Grid item>
-								<MainSaved />
+								<MainSaved mark={mark} />
 							</Grid>
 						</Grid>
 						<Grid item xs={12}>
@@ -73,7 +74,7 @@ export default function BasicTabs() {
 					<TabPanel value={value} index={1}>
 						<Grid item xs={12}>
 							<Grid item>
-								<MainAsked />
+								<MainAsked mark={mark} />
 							</Grid>
 						</Grid>
 						<Grid item xs={12}>

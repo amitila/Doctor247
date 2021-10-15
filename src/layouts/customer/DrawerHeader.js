@@ -40,6 +40,8 @@ import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import MenuItem from '@mui/material/MenuItem';
 import { withStyles } from "@material-ui/core/styles";
 import SaveIcon from '@mui/icons-material/Save';
+import APIService from '../../utils/APIService';
+import getToken from '../../helpers/getToken';
 
 const drawerWidth = 240;
 
@@ -154,9 +156,17 @@ export default function DrawerHeader() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [avatar, setAvatar] = React.useState(useSelector(selectAvatar));
+    const name = useSelector(selectName);
 
     const handleDrawerOpen = () => {
         setOpen(true);
+        const token = getToken();
+        APIService.getProfile(token, (success, json) => {
+            if(success && json.result){
+                setAvatar(json.result.customer.avatarURL);
+            }
+        }) 
     };
 
     const handleDrawerClose = () => {
@@ -177,8 +187,6 @@ export default function DrawerHeader() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const name = useSelector(selectName);
-    const avatar = useSelector(selectAvatar);
     const onSignOut = () => {
         if (cookies.get("token")) {
             cookies.remove("token");

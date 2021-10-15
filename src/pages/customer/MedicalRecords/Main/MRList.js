@@ -21,8 +21,8 @@ export default function MRList(props) {
         console.log(state);
     }
  
-    const {appointments} = props;
-    const elmTasks = appointments.map((task, index) => {
+    const {medicalRecords} = props;
+    const elmTasks = medicalRecords.map((task, index) => {
         return <MRItem 
                     key={task.id} 
                     index={index + 1} 

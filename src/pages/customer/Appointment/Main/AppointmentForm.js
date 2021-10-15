@@ -211,6 +211,8 @@ export default function AppointmentForm(props) {
 		}
 		return date;
 	}
+
+	const {patientList} = props;
 	
 	return (
 		<div className="panel panel-warning">
@@ -233,6 +235,7 @@ export default function AppointmentForm(props) {
 						<Grid item xs={12} sm={3} className={classes.title}>
 							<PatientCard 
 								onSetAttribute={onSetAttribute}
+								patientList={patientList}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={9} className={classes.title}>

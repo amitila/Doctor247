@@ -1,51 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppointmentForm from './AppointmentForm';
 import AppointmentList from './AppointmentList';
 import AppointmentControl from './AppointmentControl';
 import { useHistory } from "react-router-dom";
 import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
 // Lấy lịch đăng ký từ db về 
-const appointmentList = [];
-const token = document.cookie.slice(6);
-var flag = [];
-APIService.getAppointment(
-    token,
-    {
-    },
-    (success, json) => {
-        if (success && json.result) {
-            json.result.map(item => {
-                return appointmentList.push(item);
-            })
-            appointmentList?.map(item => {
-                return flag.push({
-                    id: item.medicalRecordId,
-                    guardian: item.medicalRecord.customer,
-                    doctor: item.doctor,
-                    dateTime: item.day,
-                    description:item.medicalRecord.symptom,
-                    images: item.medicalRecord.images,
-                    status: item.status,
-                    createdAt: item.createdAt,
-                })
-            })
-            return console.log("thành công");
-        } else {
-            return alert("Lỗi server!");
-        }
-    }
-    
-)
+// const token = document.cookie.slice(6);
 
-export default function Index() {
-
+export default function Index(props) {
     const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
-    const [appointments, setAppointments] = useState(flag);
+    const [isHaveChange, setIsHaveChange] = useState(true);
+    const [appointments, setAppointments] = useState([]);
+    const [patientList, setPatientList] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     const [sort, setSort] = useState({by: 'name', value: 1});
+
+    var flag = appointments;
+
+    useEffect(() => {
+        if (isHaveChange) {
+            getAppointment();
+            onGetGuardian();
+        }
+    }, [isHaveChange])
+
+    const getAppointment = () => {
+        const token = getToken();
+        const appointmentList = [];
+        APIService.getAppointment(
+            token,
+            {},
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return appointmentList.push(item);
+                    })
+                    setAppointments(appointmentList?.map(item => {
+                        return {
+                            id: item.medicalRecordId,
+                            guardian: item.medicalRecord.customer,
+                            doctor: item.doctor,
+                            dateTime: item.day,
+                            description:item.medicalRecord.symptom,
+                            images: item.medicalRecord.images,
+                            status: item.status,
+                            createdAt: item.createdAt,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("thành công");
+                } else {
+                    return alert("Lỗi server!");
+                }
+            }
+        )
+    }
    
     const onToggleForm = (event) => {//Add task
         if(isDisplayForm && taskEditing !== null){
@@ -63,6 +76,7 @@ export default function Index() {
     }
 
     const onSubmit = (data) => {
+        const token = getToken();
         APIService.postAppointment(
 			token,
 			{
@@ -75,6 +89,7 @@ export default function Index() {
 			(success, json) => {
 				
 				if (success && json.result) {
+                    setIsHaveChange(true);
 					return alert("Đặt lịch THÀNH CÔNG!");
 				} else {
 					return alert("THẤT BẠI");
@@ -94,6 +109,7 @@ export default function Index() {
     }
 
     const onDelete = (id) => {
+        const token = getToken();
         const index = findIndex(id);
         if(index !== -1) {
             APIService.deleteAppointmentById(
@@ -101,6 +117,7 @@ export default function Index() {
                 id,
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return console.log("Xóa thành công");
                     } else {
                         return alert("THẤT BẠI!");
@@ -114,21 +131,21 @@ export default function Index() {
     }
 
     const onGetAnItem = (id) => {
+        const token = getToken();
         APIService.getAppointmentById(
             token,
             id,
             (success, json) => {
                 if (success && json.result) {
-                    return console.log("Lấy thành công");
+                    return 0;
                 } else {
                     return alert("THẤT BẠI!");
                 }
             }
-
         )
     }
 
-    console.log(onGetAnItem(34));
+    console.log(onGetAnItem(34) ? "has an item" : "not found");
 
     const onFilter = (filterName, filterStatus) => {
         
@@ -175,11 +192,39 @@ export default function Index() {
             setAppointments(typeStatus);
         }
     }
+
+    const onGetGuardian = () => {
+        const token = getToken();
+        var profileList = [];
+        APIService.getGuardian(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return profileList.push(item);
+                    })
+                    setPatientList(profileList?.map(item => {
+                        return {
+                            userTwoId: item.userTwoId,
+                            firstName: item.userTwo.firstName,
+                            lastName: item.userTwo.lastName,
+                            avatar: item.userTwo.avatarURL,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("lấy patient list thành công");
+                } else {
+                    return console.log("Lấy danh sách gia đình thất bại");
+                }
+            }
+        )
+    }
    
     var elmAppointmentForm = isDisplayForm 
         ?   <AppointmentForm 
                 onSubmit={onSubmit} 
                 onCloseForm={onCloseForm} 
+                patientList={patientList}
                 task={taskEditing}
             /> : '';
             

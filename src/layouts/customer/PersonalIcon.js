@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,7 +10,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import APIService from '../../utils/APIService';
-import Cookies from 'universal-cookie';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -29,6 +28,7 @@ import { useDispatch } from "react-redux";
 import { updateName, updateAvatar } from '../../store/userSlice';
 import { Link } from 'react-router-dom';
 import SelectProvince from '../../components/SelectProvince';
+import getToken from '../../helpers/getToken';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -125,9 +125,10 @@ const DialogActions = withStyles((theme) => ({
 export default function PersonalIcon(props) {
 	const classes = useStyles();
 	const history = useHistory();
-	const [open, setOpen] = React.useState(false);
+	const dispatch = useDispatch();
+	const [open, setOpen] = useState(false);
 
-	const [state, setState] = React.useState({
+	const [state, setState] = useState({
         email: '',
 		firstName: '',
 		lastName: '',
@@ -139,7 +140,7 @@ export default function PersonalIcon(props) {
 		province: '',
 		avatar: '',
     });
-	const [provinceId, setProvinceId] = React.useState('');
+	const [provinceId, setProvinceId] = useState('');
 
     const onChange = (event) => {
 		let target = event.target;
@@ -148,10 +149,8 @@ export default function PersonalIcon(props) {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	}
 
-	const cookies = new Cookies();
-	const token = cookies.get("token");
-
 	const handleClickOpen = () => {
+		const token = getToken();
 		if(token) {
 			APIService.getProfile(token, (success, json) => {
 				if(success && json.result){
@@ -176,10 +175,9 @@ export default function PersonalIcon(props) {
 		}
 	};
 
-	const dispatch = useDispatch();
 	const onSave = (event) => {
         event.preventDefault();
-		console.log(url);
+		const token = getToken();
         APIService.putProfile(
 			token,
 			{
@@ -195,6 +193,11 @@ export default function PersonalIcon(props) {
             (success, json) => {
             if(success && json.result){
 				dispatch(updateName(json.result.customer.lastName));
+				APIService.getProfile(token, (success, json) => {
+					if(success && json.result){
+						dispatch(updateAvatar(json.result.customer.avatarURL));
+					}
+				}) 
                 return alert("THÀNH CÔNG !");
             } else {
                 return alert("Cập nhật thay đổi THẤT BẠI !");
@@ -206,7 +209,7 @@ export default function PersonalIcon(props) {
 		setOpen(false);
 	};
 	
-	const [url, setUrl] = React.useState('');
+	const [url, setUrl] = useState('');
 	const imageHandler = (e) => {
         const reader = new FileReader();
         reader.onload = () => {

@@ -376,6 +376,17 @@ export default class APIService {
 		);
 	}
 
+	// api for Delete Question By Id
+	static deleteQuestionById(token, id, callback ) {
+		WebService.sendJsonDELETE(
+			this.apiQuestionById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
 //====================SAVE - UNSAVE QUESTION======================
 
 	// api for Get Saved Question

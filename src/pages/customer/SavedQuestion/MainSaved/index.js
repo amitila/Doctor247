@@ -1,47 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QuestionList from './QuestionList';
 import QuestionControl from './QuestionControl';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
-const token = document.cookie.slice(6);
-var flag = [];
-APIService.getSavedQuestion(
-    token,
-    (success, json) => {
-        if (success && json.result) {
-            json.result.map(item => {
-                return flag.push({
-                    id: item.question.id,
-                    updatedAt: item.updatedAt,
-                    title: item.question.title,
-                    content: item.question.content,
-                    images: item.question.images,
-                    // answers: item.answers,
-                    questionLike: item.question._count.questionLike,
-                    liked: item.liked,
-                    saved: item.saved,
-                })
-            })
-            return console.log("Lấy câu hỏi đã lưu thành công");
-        } else {
-            return console.log("Lỗi server !");
-        }
-    }
-)
+// const token = document.cookie.slice(6);
 
-export default function Index() {
+export default function Index(props) {
     // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
-    const [questions, setQuestions] = useState(flag);
+    const [questions, setQuestions] = useState([]);
+    const [isHaveChange, setIsHaveChange] = useState(true);
     const [sort, setSort] = useState({ by: 'name', value: 1 });
+    var flag = questions;
 
+    useEffect(() => {
+        if (isHaveChange) {
+            getQuestion()
+        }
+    }, [isHaveChange])
+
+    const getQuestion = () => {
+        const token = getToken();
+        APIService.getSavedQuestion(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    setQuestions(json.result.map(item => {
+                        return {
+                            id: item.question.id,
+                            updatedAt: item.updatedAt,
+                            title: item.question.title,
+                            content: item.question.content,
+                            images: item.question.images,
+                            // answers: item.answers,
+                            questionLike: item.question._count.questionLike,
+                            liked: item.liked,
+                            saved: item.saved,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("Lấy câu hỏi đã lưu thành công");
+                } else {
+                    return console.log("Lỗi server !");
+                }
+            }
+        )
+    }
     const onUnSave = (id) => {
-        console.log(id);
+        const token = getToken();
         APIService.putQuestionUnSaveById(
             token,
             id,
             (success, json) => {
                 if (success && json.result) {
+                    setIsHaveChange(true);
                     return alert("GỠ THÀNH CÔNG !");
                 } else {
                     return alert("Gỡ thất bại !");
@@ -51,12 +64,14 @@ export default function Index() {
     }
 
     const onUpdateLike = (mark, id) => {
-        if(mark === false) {
+        const token = getToken();
+        if (mark === false) {
             APIService.putQuestionLikeById(
                 token,
                 id,
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return console.log("Like THÀNH CÔNG !");
                     } else {
                         return console.log("Like THẤT BẠI !");
@@ -64,12 +79,14 @@ export default function Index() {
                 }
             )
         }
-        else if(mark) {
+        else if (mark) {
+            const token = getToken();
             APIService.putQuestionUnLikeById(
                 token,
                 id,
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return console.log("UnLike THÀNH CÔNG !");
                     } else {
                         return console.log("UnLike THẤT BẠI !");
@@ -77,7 +94,7 @@ export default function Index() {
                 }
             )
         }
-        else{
+        else {
             console.log("Lỗi like");
         }
     }

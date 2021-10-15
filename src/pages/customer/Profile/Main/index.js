@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileForm from './ProfileForm';
 import ProfileList from './ProfileList';
 import { useHistory } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
-// Lấy guardian từ db về 
 const getBirthdayVN = (value) => {
     var date = new Date();
     date.setDate(parseInt(value?.slice(8, 10)));
@@ -14,48 +14,59 @@ const getBirthdayVN = (value) => {
     date.setFullYear(parseInt(value?.slice(0, 4)));
     return date;
 }
-const profileList = [];
-const token = document.cookie.slice(6);
-var flag = [];
-APIService.getGuardian(
-    token,
-    (success, json) => {
-        if (success && json.result) {
-            json.result.map(item => {
-                return profileList.push(item);
-            })
-            profileList?.map(item => {
-                return flag.push({
-                    id: item.id,
-                    userTwoId: item.userTwoId,
-                    relationship: item.name,
-                    email: 'ami@gmail.com',
-                    firstName: item.userTwo.firstName,
-                    lastName: item.userTwo.lastName,
-                    birthday: item.userTwo.birthday.slice(0, 10),
-                    birthdayVN: getBirthdayVN(item.userTwo.birthday),
-                    gender: item.userTwo.gender,
-                    phoneNumber: item.userTwo.phoneNumber,
-                    bhyt: item.userTwo.healthInsuranceCode,
-                    address: item.userTwo.address,
-                    province: item.userTwo.province.name,
-                    provinceId: item.userTwo.province.id,
-                    avatar: item.userTwo.avatarURL,
-                })
-            })
-            return console.log("thành công");
-        } else {
-            return alert("Lỗi server!");
-        }
-    }
-)
+// const token = document.cookie.slice(6);
 
-export default function Index() {
+export default function Index(props) {
     const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('profiles')) ? JSON.parse(localStorage.getItem('profiles')) : [];
-    const [profiles, setProfiles] = useState(flag);
+    const [isHaveChange, setIsHaveChange] = useState(true);
+    const [profiles, setProfiles] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
+
+    useEffect(() => {
+        if (isHaveChange) {
+            getGuardian()
+        }
+    }, [isHaveChange])
+
+    const getGuardian = () => {
+        const token = getToken();
+        const profileList = [];
+        APIService.getGuardian(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return profileList.push(item);
+                    })
+                    setProfiles(profileList?.map(item => {
+                        return {
+                            id: item.id,
+                            userTwoId: item.userTwoId,
+                            relationship: item.name,
+                            email: 'ami@gmail.com',
+                            firstName: item.userTwo.firstName,
+                            lastName: item.userTwo.lastName,
+                            birthday: item.userTwo.birthday.slice(0, 10),
+                            birthdayVN: getBirthdayVN(item.userTwo.birthday),
+                            gender: item.userTwo.gender,
+                            phoneNumber: item.userTwo.phoneNumber,
+                            bhyt: item.userTwo.healthInsuranceCode,
+                            address: item.userTwo.address,
+                            province: item.userTwo.province.name,
+                            provinceId: item.userTwo.province.id,
+                            avatar: item.userTwo.avatarURL,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("thành công");
+                } else {
+                    return alert("Lỗi server!");
+                }
+            }
+        )
+    }
 
     // ***Here is the code for converting "image source" (url) to "Base64".***
     const toDataURL = url => fetch(url)
@@ -97,6 +108,7 @@ export default function Index() {
     }
 
     const onSubmit = (data) => {
+        const token = getToken();
         if (data.id === '') {
             APIService.postGuardian(
                 token,
@@ -113,6 +125,7 @@ export default function Index() {
                 },
                 (success, json) => {
                     if (success && json.result) {
+                        setIsHaveChange(true);
                         return alert("THÀNH CÔNG !");
                     } else {
                         return alert("Cập nhật thay đổi THẤT BẠI !");
@@ -139,6 +152,7 @@ export default function Index() {
                     },
                     (success, json) => {
                         if (success && json.result) {
+                            setIsHaveChange(true);
                             return alert("Cập nhật THÀNH CÔNG !");
                         } else {
                             return alert("Cập nhật thay đổi THẤT BẠI !");

@@ -14,32 +14,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { blue } from '@material-ui/core/colors';
 import { useHistory } from "react-router-dom";
-import APIService from '../../../../utils/APIService';
-
-const profileList = [];
-const token = document.cookie.slice(6);
-var patientList = [];
-APIService.getGuardian(
-    token,
-    (success, json) => {
-        if (success && json.result) {
-            json.result.map(item => {
-                return profileList.push(item);
-            })
-            profileList?.map(item => {
-                return patientList.push({
-                    userTwoId: item.userTwoId,
-                    firstName: item.userTwo.firstName,
-                    lastName: item.userTwo.lastName,
-                    avatar: item.userTwo.avatarURL,
-                })
-            })
-            return console.log("thành công");
-        } else {
-            return console.log("Lấy danh sách gia đình thất bại");
-        }
-    }
-)
 
 // const patientList = [
 //     { name: 'Trương Ngọc Sơn', id: 2 },
@@ -67,6 +41,8 @@ function SimpleDialog(props) {
     const handleListItemClick = (value) => {
         onClose(value);
     };
+
+    const {patientList} = props;
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
@@ -111,6 +87,7 @@ SimpleDialog.propTypes = {
 };
 
 export default function PatientCard(props) {
+    const {patientList} = props;
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState('');
     const [url, setUrl] = React.useState('');
@@ -146,7 +123,7 @@ export default function PatientCard(props) {
                         "Chọn bệnh nhân cần khám"
                 }
             </Button>
-            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} patientList={patientList} />
         </div>
     );
 }
