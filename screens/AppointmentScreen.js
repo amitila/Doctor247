@@ -20,7 +20,7 @@ const appointments = [
     },
 ];
 
-const DoctorListScreen = ({ navigation }) => {
+const AppointmentScreen = ({ navigation }) => {
     return (
         <ScrollView>
             {
@@ -64,7 +64,7 @@ const DoctorListScreen = ({ navigation }) => {
     );
 };
 
-export default DoctorListScreen;
+export default AppointmentScreen;
 
 const styles = StyleSheet.create({
     container: {

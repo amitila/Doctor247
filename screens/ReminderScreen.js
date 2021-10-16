@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-const QuestionScreen = () => {
+const ReminderScreen = () => {
 	return (
 		<View style={styles.container}>
 			<Text>QuestionScreen</Text>
@@ -13,7 +13,7 @@ const QuestionScreen = () => {
 	);
 };
 
-export default QuestionScreen;
+export default ReminderScreen;
 
 const styles = StyleSheet.create({
 	container: {

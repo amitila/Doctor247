@@ -7,11 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
 import NotificationScreen from './NotificationScreen';
-import QuestionScreen from './QuestionScreen';
+import ReminderScreen from './ReminderScreen';
 import ProfileScreen from './ProfileScreen';
-import DoctorListScreen from './DoctorListScreen';
-import AppointmentScreen from './AppointmentScreen';
-import QuestionAnswerScreen from './QuestionAnswerScreen';
 
 const HomeStack = createStackNavigator();
 const NotificationStack = createStackNavigator();
@@ -35,13 +32,14 @@ const MainTabScreen = () => (
 			}}
 		/>
 		<Tab.Screen
-			name="Question"
-			component={QuestionScreen}
+			name="Reminder"
+			display={false}
+			component={ReminderScreen}
 			options={{
-				tabBarLabel: 'Hỏi đáp',
+				tabBarLabel: 'Nhắc lịch',
 				tabBarColor: '#036ffc',
 				tabBarIcon: ({ color }) => (
-					<Icon name="help-circle-outline" color={color} size={28} />
+					<Icon name="alarm" color={color} size={28} />
 				),
 			}}
 		/>
@@ -61,39 +59,6 @@ const MainTabScreen = () => (
 			component={ProfileScreen}
 			options={{
 				tabBarLabel: 'Cá nhân',
-				tabBarColor: '#036ffc',
-				tabBarIcon: ({ color }) => (
-					<Icon name="ios-person" color={color} size={26} />
-				),
-			}}
-		/>
-		<Tab.Screen
-			name="DoctorList"
-			component={DoctorListScreen}
-			options={{
-				tabBarLabel: 'Bac si',
-				tabBarColor: '#036ffc',
-				tabBarIcon: ({ color }) => (
-					<Icon name="ios-person" color={color} size={26} />
-				),
-			}}
-		/>
-		<Tab.Screen
-			name="Appointment"
-			component={AppointmentScreen}
-			options={{
-				tabBarLabel: 'Lịch khám',
-				tabBarColor: '#036ffc',
-				tabBarIcon: ({ color }) => (
-					<Icon name="ios-person" color={color} size={26} />
-				),
-			}}
-		/>
-		<Tab.Screen
-			name="QuestionAnswer"
-			component={QuestionAnswerScreen}
-			options={{
-				tabBarLabel: 'Hỏi đáp',
 				tabBarColor: '#036ffc',
 				tabBarIcon: ({ color }) => (
 					<Icon name="ios-person" color={color} size={26} />

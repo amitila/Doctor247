@@ -23,6 +23,10 @@ import BookmarkScreen from './screens/BookmarkScreen';
 import { AuthContext } from './components/context';
 
 import RootStackScreen from './screens/RootStackScreen';
+import DoctorListScreen from './screens/DoctorListScreen';
+import AppointmentScreen from './screens/AppointmentScreen';
+import QuestionAnswerScreen from './screens/QuestionAnswerScreen';
+import FamilyScreen from './screens/FamilyScreen';
 
 //  import AsyncStorage from '@react-native-community/async-storage';
 
@@ -164,6 +168,10 @@ const App = () => {
 							<Drawer.Screen name="Hỗ trợ" component={SupportScreen} />
 							<Drawer.Screen name="Thiết lập" component={SettingsScreen} />
 							<Drawer.Screen name="Điều khoản sử dụng" component={BookmarkScreen} />
+							<Drawer.Screen name="Danh sách bác sĩ" component={DoctorListScreen} />
+							<Drawer.Screen name="Lịch khám" component={AppointmentScreen} />
+							<Drawer.Screen name="Hỏi đáp cùng bác sĩ" component={QuestionAnswerScreen} />
+							<Drawer.Screen name="Hồ sơ gia đình" component={FamilyScreen} />
 						</Drawer.Navigator>
 					)
 						:

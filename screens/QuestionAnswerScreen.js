@@ -1,8 +1,9 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
-import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, CheckBox } from 'react-native';
+import { Card, ListItem, Button, Avatar, CheckBox as Like } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const doctors = [
+const questions = [
     {
         id: 1,
         title: 'Đau khớp vai',
@@ -23,11 +24,13 @@ const doctors = [
     }
 ];
 
-const DoctorListScreen = ({ navigation }) => {
+const QuestionAnswerScreen = ({ navigation }) => {
+    const [isSelected, setSelection] = useState(false);
+
     return (
         <ScrollView>
             {
-                doctors.map((item, i) => {
+                questions.map((item, i) => {
                     return (
                         <Card key={i}>
                             <Card.Title>
@@ -39,6 +42,22 @@ const DoctorListScreen = ({ navigation }) => {
                                         {item.title}
                                     </Text>
                                 </SafeAreaView>
+                                <View style={styles.container}>
+                                    <Like
+                                        checkedIcon={<Icon 
+                                            name="heart" 
+                                            color="red" 
+                                            size={20} 
+                                        />}
+                                        uncheckedIcon={<Icon 
+                                            name="heart" 
+                                            color="pink" 
+                                            size={20} 
+                                        />}
+                                        checked={isSelected}
+                                        onPress={() => setSelection(!isSelected)}
+                                    />
+                                </View>
                             </Card.Title>
                             <Card.Divider />
                             <View>
@@ -49,11 +68,13 @@ const DoctorListScreen = ({ navigation }) => {
                             <Card.Image source={{uri: item.images}}>
                                 
                             </Card.Image>
-                            <Button
-                                icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                title='Xem bình luận' 
-                            />
+                            <View>
+                                <Button
+                                    icon={<Icon name='code' color='#ffffff' />}
+                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    title='Xem bình luận' 
+                                />
+                            </View>
                         </Card>
                     );
                 })
@@ -62,7 +83,7 @@ const DoctorListScreen = ({ navigation }) => {
     );
 };
 
-export default DoctorListScreen;
+export default QuestionAnswerScreen;
 
 const styles = StyleSheet.create({
     container: {
