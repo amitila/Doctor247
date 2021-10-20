@@ -138,6 +138,7 @@ export default function AppointmentForm(props) {
 	const classes = useStyles();
 	const onSetAttribute = (name, id) => {
 		setState(prevState => ({ ...prevState, name: name, guardianId: id }));
+		console.log(id);
 	}
 
 	const handleChangeDoctor = (e, newValue) => {

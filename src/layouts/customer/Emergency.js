@@ -75,7 +75,7 @@ export default function Emergency() {
 							overlap="circular"
 							anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 							variant="dot"
-							onClick={()=>alert("Gọi cấp cứu")}
+							onClick={()=>alert("Gọi khẩn cấp")}
 						>
 							<StyledAvatar>
 								<CallIcon />

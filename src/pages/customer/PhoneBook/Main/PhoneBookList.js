@@ -37,7 +37,7 @@ export default function PhoneBookList(props) {
     const elmCards = phoneBookCards.map((task, index) => {
         return <Grid item xs={12} sm={4} className={classes.root} >
             <PhoneBookCard
-                key={task.id}
+                // key={task.id}
                 index={index + 1}
                 task={task}
             />
