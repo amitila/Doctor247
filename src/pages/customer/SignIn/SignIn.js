@@ -17,6 +17,8 @@ import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
 import { updateEmail, updatePassword } from "../../../store/userSlice";
+import { useContext } from "react/cjs/react.development";
+import { DoctorContext } from "../../Doctor/DoctorProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,6 +51,8 @@ export default function SignIn() {
     const [password, setPassword] = useState();
     const cookies = new Cookies();
 
+    const { setUserId } = useContext(DoctorContext);
+
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
     }
@@ -63,13 +67,20 @@ export default function SignIn() {
         console.log("clicked");
         APIService.signIn(email, password, (success, json) => {
             if(success && json.result){
+                setUserId(json.result.id.toString());
                 dispatch(updateEmail(email));
                 dispatch(updatePassword(password));
                 const timestamp = new Date().getTime();
                 const expire = timestamp + (60*60*24*1000*3);
                 const expireDate = new Date(expire);
                 cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-                return history.push("/home");
+                if(json.result.role === "CUSTOMER"){
+                    return history.push("/home");
+                }
+                else if(json.result.role === "DOCTOR"){
+                    return history.push("/doctor/home");
+                }
+                
             } else {
                 return history.push("/signin");
             }

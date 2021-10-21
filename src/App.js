@@ -14,13 +14,15 @@ import MedicalrRecords from './pages/customer/MedicalRecords';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
-import Doctor from './pages/doctor/Doctor';
+import Doctor from './pages/Doctor/Doctor';
+import DoctorProvider from './pages/Doctor/DoctorProvider';
 //import Demo from './components/Demo';
 
 export default function App() {
 	return (
 		<Router>
 			<DrawerHeader />
+			<DoctorProvider>
 			<Switch>
 				<Route exact path='/' component={Landing} />
 				<Route exact path='/notification' component={SignIn} />
@@ -34,9 +36,10 @@ export default function App() {
 				<Route exact path='/medicalrecords' component={MedicalrRecords} />
 				<Route exact path='/question' component={QuestionAnswer} />
 				<Route exact path='/home' component={Home} />
-				<Redirect to="/signin" />
 				<Route exact path='/doctor/home' component={Doctor} />
+				<Redirect to="/signin" />
 			</Switch>
+			</DoctorProvider>
 			<Footer />
 		</Router>
 	);

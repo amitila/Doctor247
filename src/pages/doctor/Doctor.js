@@ -3,14 +3,13 @@ import './Doctor.css';
 import DoctorTopNavbar from './DoctorTopNavbar';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import DrBody from './DrBody';
-import Checkout from './../Test/Checkout';
+import Checkout from '../Test/Checkout';
 import Profile from './Profile';
 import WorkPlan from './WorkPlan';
 
 import ChatRoom from './ChatRoom/ChatRoom';
 import { DoctorContext } from './DoctorProvider';
 import MedicalRecords from './MedicalRecords';
-import useFirestore from '../../firebase/useFirestore';
 import { useEffect } from 'react/cjs/react.development';
 
 

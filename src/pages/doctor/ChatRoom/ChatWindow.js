@@ -2,10 +2,10 @@ import './ChatRoom.css';
 import React, { useMemo } from 'react';
 import { doc, setDoc, updateDoc } from '@firebase/firestore';
 import styled from 'styled-components';
-import { db } from './../../../firebase/config';
-import { getNowDateTimeCode, getDateTimeShow } from './../../../firebase/service';
+import { db } from '../../../firebase/config';
+import { getNowDateTimeCode, getDateTimeShow } from '../../../firebase/service';
 import Message from './Message';
-import { DoctorContext } from './../DoctorProvider';
+import { DoctorContext } from '../DoctorProvider';
 import { GetMessages } from '../../../firebase/useFirestore';
 
 import { useContext, useState, useEffect } from 'react/cjs/react.development';

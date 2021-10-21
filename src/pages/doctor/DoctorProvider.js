@@ -44,8 +44,8 @@ export default function DoctorProvider({children}) {
 
     const roomsCondition = useMemo(() => {
         return {
-            fieldName: 'members',
-            operator: 'array-contains',
+            fieldName: 'id',
+            operator: '!=',
             compareValue: userId
         }
     }, [userId]);
