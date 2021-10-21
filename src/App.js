@@ -14,7 +14,7 @@ import MedicalrRecords from './pages/customer/MedicalRecords';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
-import Doctor from './pages/doctor/home/Doctor';
+import Doctor from './pages/doctor/Doctor';
 //import Demo from './components/Demo';
 
 export default function App() {

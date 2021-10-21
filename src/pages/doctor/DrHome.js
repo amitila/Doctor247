@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
-import userImg from '../../../assets/user.png';
-import './../../../App.css';
-import './../home/DrHome.css';
-import PatientRecord from './../home/PatientRecord';
+import React, { useState, useContext } from 'react';
+import './../../App.css';
+import './DrHome.css';
+import userImg from '../../assets/user.png';
+import PatientRecord from './PatientRecord';
+import { DoctorContext } from './DoctorProvider';
 
-class DrBody extends Component {
 
-  render() {
-      return (
+export default function DrHome () {
+
+    const { ScreenCode, currentMenuItem, setCurrentMenuItem } = useContext(DoctorContext);
+
+
+    return (
         <div className="body">
             <div className="cards">
-                <div className="card-single">
+                <div className="card-single" onClick={() => {setCurrentMenuItem(ScreenCode.CHAT)}}>
                     <div>
                         <h1>3</h1>
                         <span>Tin nhắn mới</span>
@@ -20,7 +24,7 @@ class DrBody extends Component {
                     </div>
                 </div>
 
-                <div className="card-single">
+                <div className="card-single" onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORDS)}}>
                     <div>
                         <h1>44</h1>
                         <span>Hồ sơ</span>
@@ -30,7 +34,7 @@ class DrBody extends Component {
                     </div>
                 </div>
 
-                <div className="card-single">
+                <div className="card-single" onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORDS)}}>
                     <div>
                         <h1>13</h1>
                         <span>Yêu cầu mới</span>
@@ -40,7 +44,7 @@ class DrBody extends Component {
                     </div>
                 </div>
 
-                <div className="card-single">
+                <div className="card-single" onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORDS)}}>
                     <div>
                         <h1>2</h1>
                         <span>Thông báo</span>
@@ -61,30 +65,13 @@ class DrBody extends Component {
                         </div>
                         <div className="card-body">
                             <table width="100%">
-                                {/* <thead>
-                                    <tr>
-                                        <td>ID</td>
-                                        <td>Name</td>
-                                        <td>Description</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1011</td>
-                                        <td>Hồ sơ 1</td>
-                                        <td>
-                                            <span className="status"></span>
-                                            mô tả 1
-                                        </td>
-                                    </tr>
-                                </tbody> */}
-                                <PatientRecord/>
+                                <PatientRecord />
 
                             </table>
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="customers">
                     <div className="card">
                         <div className="card-header">
@@ -129,8 +116,5 @@ class DrBody extends Component {
                 </div>
             </div>
         </div>
-      );
-  }
+    );
 }
-
-export default DrBody;

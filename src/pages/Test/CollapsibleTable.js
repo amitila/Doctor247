@@ -51,18 +51,18 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">{row.name}</TableCell>
-        <TableCell align="right">{row.id}</TableCell>
-        <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.status}</TableCell>
-        <TableCell align="right">{row.note}</TableCell>
+        <TableCell >{row.id}</TableCell>
+        <TableCell >{row.name}</TableCell>
+        <TableCell >{row.date}</TableCell>
+        <TableCell >{row.status}</TableCell>
+        <TableCell >{row.note}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Tiền sử bệnh án
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -119,27 +119,25 @@ const rows = [
   createData('Granit Xhaka', 210932684, '2021/08/30', 'Chưa khám', '', 4),
   createData('Erling Haaland', 210939003, '2021/08/24', 'Chưa khám', '', 3),
   createData('Thogan Hazard', 210926452, '2021/08/16', 'Chưa khám', '', 2),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
-  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã khám', '', 1),
+  createData('Luka Modric', 210932611, '2021/08/06', 'Đang điều trị', '', 1),
+  createData('James Harrison', 210932611, '2021/08/06', 'Đang điều trị', '', 1),
+  createData('Marcos Alonso', 210932611, '2021/08/06', 'Đang điều trị', '', 1),
+  createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã điều trị', '', 1),
 ];
 
 export default function CollapsibleTable() {
   return (
     <TableContainer component={Paper}>
+      <h3>Danh sách bệnh án</h3>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Tên bệnh nhân</TableCell>
-            <TableCell align="right">Mã hồ sơ</TableCell>
-            <TableCell align="right">Ngày khám</TableCell>
-            <TableCell align="right">Trạng thái</TableCell>
-            <TableCell align="right">Ghi chú</TableCell>
+            <TableCell width="15%">Mã hồ sơ</TableCell>
+            <TableCell width="30%">Tên bệnh nhân</TableCell>
+            <TableCell width="15%">Ngày khám</TableCell>
+            <TableCell width="20%">Trạng thái</TableCell>
+            <TableCell width="20%">Ghi chú</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

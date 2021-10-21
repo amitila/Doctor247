@@ -1,23 +1,19 @@
 import { Link } from '@material-ui/core';
-import React, {useState, useEffect, useRef} from 'react';
-import './../../doctor/home/Doctor.css';
+import React, {useState } from 'react';
+import './Doctor.css';
 
 function DoctorTopNavbar(props) {
-    const [appName, setUserInfo] = useState("Doctor 247");
+    //const [appName, setUserInfo] = useState("Doctor 247");
 
     const [displayShowHamburger, setIsShowHamburger] = useState('none');
 
-    const menuRef = useRef();
-    const onButtonClick = () => {
-        menuRef.current.focus();
-    };
+    //const menuRef = useRef();
 
-    useEffect( () =>{
-    }, []);
+    // useEffect( () =>{
+    // }, []);
 
     return (
-        <React.Fragment>
-            <script src="https://kit.fontawesome.com/8d6784f1e8.js" crossorigin="anonymous"></script>
+        <React.Fragment>            
             <div className="top_navbar">
                 <div className="hamburger" onClick={props.onClick}>
                     <div className="hamburger__inner">
@@ -29,12 +25,12 @@ function DoctorTopNavbar(props) {
 
                 <div className="menu">
                     <div className="logo">
-                        {appName}
+                        "Doctor 247"
                     </div>
                     <div className="right_menu">
                         <ul>
                             <li>
-                                <i className="fas fa-user" onClick={() => {(displayShowHamburger=='none')? setIsShowHamburger('block') : setIsShowHamburger('none')}}></i>
+                                <i className="fas fa-user" onClick={() => {(displayShowHamburger==='none')? setIsShowHamburger('block') : setIsShowHamburger('none')}}></i>
                                 <div className="profile_dd" style={{display:displayShowHamburger}}>
                                     <div className="dd_item">Profile</div>
                                     <div className="dd_item">Change Password</div>
