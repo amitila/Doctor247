@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/auth';
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
+import APIService from "../../../utils/APIService";
+import Cookies from 'universal-cookie';
+import { useDispatch } from "react-redux";
+import { updatePhone } from "../../../store/userSlice";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -31,24 +32,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AuthPhone() {
-	var firebaseConfig = {
-		apiKey: "AIzaSyBDWZcUa06wmavlixK3EowB2yCLpcY42Is",
-		authDomain: "phoneverify-db763.firebaseapp.com",
-		databaseURL: "https://phoneverify-db763.firebaseio.com",
-		projectId: "phoneverify-db763",
-		storageBucket: "phoneverify-db763.appspot.com",
-		messagingSenderId: "565311308222",
-		appId: "1:565311308222:web:5fc82a97c0d23b10e879ef"
-	};
-	firebase.initializeApp(firebaseConfig);
-	const auth = firebase.auth();
-	auth.useEmulator("http://localhost:9099");
+
 	const classes = useStyles();
 	const [viewOtpForm, setViewOtpForm] = useState(false);
 	const [state, setState] = useState({
 		phone: '',
 		otp: ''
 	});
+	const cookies = new Cookies();
 	
 	const handleChange = (event) => {
 		let target = event.target;
@@ -57,55 +48,50 @@ export default function AuthPhone() {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	}
 
-	React.useEffect(() => {
-		window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-			"recaptcha-container", {
-				size: "invisible",
-				callback: function(response) {
-					console.log("Captcha Resolved");
-				},
-				defaultCountry: "VN",
-			}
-		);
-	}, []);
-
 	const loginSubmit = (e) => {
 		e.preventDefault();
-		let phone_number = "+84" + state.phone;
-		const appVerifier = window.recaptchaVerifier;
-		console.log(phone_number);
-		auth
-			.signInWithPhoneNumber(phone_number, appVerifier)
-			.then((confirmationResult) => {
-				// SMS sent. Prompt user to type the code from the message, then sign the
-				// user in with confirmationResult.confirm(code).
-				console.log("otp sent");
-				setViewOtpForm(true);
-				window.confirmationResult = confirmationResult;
-				// ...
-			})
-			.catch((error) => {
-				// Error; SMS not sent
-				// ...
-				alert(error.message);
-			});
+		let phoneNumber = state.phone;
+
+		if(phoneNumber === '') {
+            alert("Bạn chưa nhập số điện thoại!")
+        }
+        else {
+            APIService.signInSendCodeToSms(phoneNumber, (success, json) => {
+                if (success && json.result) {
+					setViewOtpForm(true);
+                    return alert("Vui lòng kiểm tra tin nhắn!")
+                } else {
+                    return alert("Không gửi được!")
+                }
+            })
+        }
 	};
+
+	const history = useHistory();
+    const dispatch = useDispatch();
 
 	const otpSubmit = (e) => {
 		e.preventDefault();
-		let opt_number = state.otp;
-		window.confirmationResult
-			.confirm(opt_number)
-			.then((confirmationResult) => {
-				console.log(confirmationResult);
-				console.log("success");
-				alert("Xác thực thành công");
-				// window.open("/", "_self");
-			})
-			.catch((error) => {
-				// User couldn't sign in (bad verification code?)
-				alert(error.message);
-			});
+		let phoneNumber = state.phone;
+		let code = state.otp;
+		
+		if(code === '') {
+            alert("Bạn chưa nhập mã OTP!")
+        }
+        else {
+            APIService.signInBySms(phoneNumber, code, (success, json) => {
+                if (success && json.result) {
+					dispatch(updatePhone(phoneNumber));
+					const timestamp = new Date().getTime();
+					const expire = timestamp + (60*60*24*1000*3);
+					const expireDate = new Date(expire);
+					cookies.set("token", json.result.token, {path: '/', expires: expireDate });
+					return history.push("/home");
+                } else {
+                    return alert("Đã xảy ra lỗi đăng nhập!")
+                }
+            })
+        }
 	};
 
 	return (

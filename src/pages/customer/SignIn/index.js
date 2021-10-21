@@ -1,6 +1,6 @@
 import React from 'react'
 import SignIn from './SignIn'
-import AuthPhone from './AuthPhone';
+import SignInBySms from './SignInBySms';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Button from '@mui/material/Button';
@@ -46,7 +46,7 @@ export default function Index() {
                 </Grid>
             </> :
             <>
-                <AuthPhone />
+                <SignInBySms />
                 <Grid item xs={12} sm={12} className={classes.paper}>
                     <Grid item style={{textAlign: 'center'}}> 
                         <Button

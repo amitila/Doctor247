@@ -15,8 +15,24 @@ export default class APIService {
 		return `${APIService.baseAPI()}user/login`;
 	};
 
+	static apiSignInBySms = () => {
+		return `${APIService.baseAPI()}user/login-by-sms`;
+	};
+
+	static apiSignInSendCodeToSms = () => {
+		return `${APIService.baseAPI()}user/send-login-sms`;
+	};
+
 	static apiSignUp = () => {
 		return `${APIService.baseAPI()}user/customer`;
+	};
+
+	static apiSignUpByEmail = () => {
+		return `${APIService.baseAPI()}user/send-register-mail`;
+	};
+
+	static apiSignUpBySms = () => {
+		return `${APIService.baseAPI()}user/send-register-sms`;
 	};
 
 	static apiProfile = () => {
@@ -38,6 +54,10 @@ export default class APIService {
 	static apiGuardian = () => {
 		return `${APIService.baseAPI()}customer/guardian`;
 	};
+
+	// static apiGuardianSendMail = () => {
+	// 	return `${APIService.baseAPI()}customer/guardian/send-mail`;
+	// };
 
 	static apiGuardianById = (id) => {
 		return `${APIService.baseAPI()}customer/guardian/${id}`;
@@ -128,6 +148,29 @@ export default class APIService {
 		);
 	}
 
+	// api for SignIn send code to Sms
+	static signInSendCodeToSms(phoneNumber, callback) {
+		WebService.sendJsonPOST(
+			this.apiSignInSendCodeToSms(),
+			{
+				phoneNumber
+			},
+			callback,
+		);
+	}
+
+	// api for SignIn By Sms
+	static signInBySms(phoneNumber, code, callback) {
+		WebService.sendJsonPOST(
+			this.apiSignInBySms(),
+			{
+				phoneNumber,
+				code
+			},
+			callback,
+		);
+	}
+
 //====================PROFILE======================
 
 	// api for Get Profile
@@ -167,16 +210,40 @@ export default class APIService {
 	// api for SignUp
 	static signUp(values, callback) {
 		const formData = new FormData();
+		formData.append('registerType', values.registerType);
 		formData.append('email', values.email);
 		formData.append('firstName', values.firstName);
 		formData.append('lastName', values.lastName);
 		formData.append('password', values.password);
 		formData.append('phoneNumber', values.phoneNumber);
 		formData.append('gender', values.gender);
+		formData.append('code', values.code);
 		WebService.sendJsonPOST(
 			this.apiSignUp(),
 			{
 				formData
+			},
+			callback,
+		);
+	}
+
+	// api for get code from register by email
+	static getCodeFromMail(email, callback) {
+		WebService.sendJsonPOST(
+			this.apiSignUpByEmail(),
+			{
+				email
+			},
+			callback,
+		);
+	}
+
+	// api for get code from register by number phone
+	static getCodeFromSms(phoneNumber, callback) {
+		WebService.sendJsonPOST(
+			this.apiSignUpBySms(),
+			{
+				phoneNumber
 			},
 			callback,
 		);
@@ -312,6 +379,28 @@ export default class APIService {
 			callback,
 		);
 	}
+
+	// api for Delete Guardian
+	// static deleteGuardian(token, values, callback ) {
+	// 	const formData = new FormData();
+	// 	formData.append('guardianName', values.guardianName);
+	// 	formData.append('firstName', values.firstName);
+	// 	formData.append('lastName', values.lastName);
+	// 	formData.append('gender', values.gender);
+	// 	formData.append('birthday', values.birthday);
+	// 	formData.append('avatar', values.avatar);
+	// 	formData.append('phoneNumber', values.phoneNumber);
+	// 	formData.append('provinceId', values.provinceId);
+	// 	formData.append('address', values.address);
+	// 	WebService.sendJsonDELETE(
+	// 		this.apiGuardianSendMail(),
+	// 		{
+	// 			jwt: token,
+	// 			formData
+	// 		},
+	// 		callback,
+	// 	);
+	// }
 
 //====================QUESTION======================
 
