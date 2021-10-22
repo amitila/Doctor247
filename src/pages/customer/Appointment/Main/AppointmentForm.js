@@ -2,7 +2,6 @@ import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core'
 import React, { useEffect } from 'react';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
-import { DropzoneArea } from 'material-ui-dropzone';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
@@ -10,36 +9,37 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import PatientCard from './PatientCard';
 import Alert from '@material-ui/lab/Alert';
+import UploadImage from '../../../../components/UploadImage';
 
 const useStyles = makeStyles((theme) => ({
-    textSize: {
-        width: '100%',
-    },
-    paper: {
-        marginTop: theme.spacing(8),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: '100%',
-        margin: "auto",
-        border: "#303F9F solid 5px",
-        borderRadius: 5,
-        padding: '10px',
-    },
-    form: {
-        width: "100%", // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-        backgroundColor: 'orange',
-    },
-    title: {
-        textAlign: "center",
-    },
-    dropzone: {
-        heigh: "5px",
-    },
+	textSize: {
+		width: '100%',
+	},
+	paper: {
+		marginTop: theme.spacing(8),
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		width: '100%',
+		margin: "auto",
+		border: "#303F9F double 5px",
+		borderRadius: 5,
+		padding: '10px',
+	},
+	form: {
+		width: "100%", // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
+	},
+	submit: {
+		margin: theme.spacing(3, 0, 2),
+		backgroundColor: 'orange',
+	},
+	title: {
+		textAlign: "center",
+	},
+	dropzone: {
+		heigh: "5px",
+	},
 	autocomplete: {
 		marginBottom: "20px",
 	},
@@ -53,75 +53,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const bookingTime = [
-    { title: '7h30 - 8h', time: "sáng" },
-    { title: '8h30 - 9h', time: "sáng" },
-    { title: '9h30 - 10h', time: "sáng" },
-    { title: '10h30 - 11h', time: "sáng" },
-    { title: '11h - 11h30', time: "sáng" },
-    { title: '11h30 - 12h', time: "sáng" },
-    { title: '13h - 13h30', time: "chiều" },
-    { title: "13h30 - 14h", time: "chiều" },
-    { title: '14h - 14h30', time: "chiều" },
-    { title: '14h30 - 15h', time: "chiều" },
-    { title: '15h - 15h30', time: "chiều" },
-    { title: '15h30 - 16h', time: "chiều" },
-    { title: '16h - 16h30', time: "chiều" },
-    { title: "16h30 - 17h", time: "chiều" },
+	'07h30 - 08h00',
+	'08h30 - 09h00',
+	'09h30 - 10h00',
+	'10h30 - 11h00',
+	'11h00 - 11h30',
+	'11h30 - 12h00',
+	'13h00 - 13h30',
+	"13h30 - 14h00",
+	'14h00 - 14h30',
+	'14h30 - 15h00',
+	'15h00 - 15h30',
+	'15h30 - 16h00',
+	'16h00 - 16h30',
+	"16h30 - 17h00",
 ];
 
-const doctorName = [
-    { title: 'Nguyễn Đức Thăng', id: "01" },
-    { title: 'Nguyễn Mai Phương Nhung', id: "02" },
-    { title: 'Hồ Thủy Tiên', id: "03" },
-    { title: 'Đào Dương Long', id: "04" },
-    { title: 'Lô Vỹ Oanh', id: "05" },
+const doctorList = [
+	{ name: 'Nguyễn Đức Thăng', id: 1 },
+	{ name: 'Nguyễn Mai Phương Nhung', id: 2 },
+	{ name: 'Hồ Thủy Tiên', id: 1 },
+	{ name: 'Đào Dương Long', id: 2 },
+	{ name: 'Lô Vỹ Oanh', id: 1 },
 ];
 
 export default function AppointmentForm(props) {
 
-	const flag = props.task ? {
-		id: props.task.id,
-		name: props.task.name,
-		date: props.task.date,
-		hour: props.task.hour,
-		doctor: props.task.doctor,
-		symptom: props.task.symptom,
-		images: props.task.images
-	} : {
+	const [state, setState] = React.useState({
 		id: '',
 		name: '',
 		date: '',
 		hour: '',
 		doctor: '',
-		symptom: '',
-		images: ''
-	};
-	
-	const [state, setState] = React.useState(flag);
-	// console.log(state);
-	useEffect(() => {
-		if (props && props.task) {
-			setState({
-				id: props.task.id,
-				name: props.task.name,
-				date: props.task.date,
-				hour: props.task.hour,
-				doctor: props.task.doctor,
-				symptom: props.task.symptom,
-				images: props.task.images
-			});
-		} else if (!props.task) {
-			setState({
-				id: '',
-				name: '',
-				date: '',
-				hour: '',
-				doctor: '',
-				symptom: '',
-				images: ''
-			});
-		}
-	}, [props]);
+		description: '',
+		imagesView: [],
+		guardianId: '',
+		doctorId: '',
+		dayTime: '',
+		imagesSend: [],
+	});
 
 	const onCloseForm = (event) => {
 		props.onCloseForm();
@@ -134,7 +104,9 @@ export default function AppointmentForm(props) {
 		// if(name === 'status') {
 		// 	value = target.value === 'true' ? true : false;
 		// }
-		setState(prevState => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value, dayTime: getDateTime() }));
+		console.log("onchange: ");
+		console.log(state);
 	}
 
 	const onSubmit = (event) => {
@@ -153,22 +125,24 @@ export default function AppointmentForm(props) {
 			date: '',
 			hour: '',
 			doctor: '',
-			symptom: '',
-			images: ''
+			description: '',
+			imagesView: [],
+			guardianId: '',
+			doctorId: '',
+			dayTime: '',
+			imagesSend: [],
 		});
+		setNumber(4);
 	}
 
 	const classes = useStyles();
-	const onSetName = (text) => {
-		setState({...state, name: text});
-	}
-
-	const handleChangeHour = (e, newValue) => {
-		setState({...state, hour: newValue?.title +'('+ newValue?.time +')'});
+	const onSetAttribute = (name, id) => {
+		setState(prevState => ({ ...prevState, name: name, guardianId: id }));
+		console.log(id);
 	}
 
 	const handleChangeDoctor = (e, newValue) => {
-		setState({...state, doctor: newValue?.title +'( Mã số: '+ newValue?.id +')'});
+		setState({ ...state, doctor: newValue? newValue.name : '', doctorId: newValue? newValue.id : '' });
 	}
 
 	const [inputHour, setInputHour] = React.useState(state.hour);
@@ -182,22 +156,65 @@ export default function AppointmentForm(props) {
 		setInputDoctor(state.doctor);
 	}, [state.doctor]);
 
+	// get current time
 	const getCurrentDate = () => {
 		var dateObj = new Date();
-		var month = dateObj.getUTCMonth() + 1; //months from 1-12
-		var day = dateObj.getUTCDate();
-		var year = dateObj.getUTCFullYear();
+		var month = dateObj.getMonth() + 1; //months from 1-12
+		var day = dateObj.getDate();
+		var year = dateObj.getFullYear();
 		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
 	}
-
-	const handleChangeFile = (files) => {
-		const temp = [];
-		files.forEach((file, index) => {
-            temp.push("/images/" + file.path);
-        });
-		setState({...state, images: temp});
+	
+	// add images
+	const [number, setNumber] = React.useState(4);
+	if(number < 0){
+		setNumber(4);
+		setState({ ...state, imagesView: [], imagesSend: [] });
+	}
+	const handleChangeImages1 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
+		setNumber(number - 1);
+		console.log(state);
+	}
+	const handleChangeImages2 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
+		setNumber(number - 1);
+		console.log(state);
+	}
+	const handleChangeImages3 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
+		setNumber(number - 1);
+		console.log(state);
+	}
+	const handleChangeImages4 = (view, send) => {
+		state.imagesView.push(view);
+		state.imagesSend.push(send);
+		setNumber(number - 1);
+		console.log(state);
 	}
 
+	const getDateTime = () => {
+		var date = new Date();
+		var day = state.date;
+		var time = state.hour;
+		if(day) {
+			date.setDate(parseInt(day.slice(8,10)));
+			date.setMonth(parseInt(day.slice(5,7) -1));
+			date.setFullYear(parseInt(day.slice(0,4)));
+		}
+		if(time) {
+			date.setHours(parseInt(time.slice(0,2)));
+			date.setMinutes(parseInt(time.slice(3,5)));
+			date.setSeconds(0);
+		}
+		return date;
+	}
+
+	const {patientList} = props;
+	
 	return (
 		<div className="panel panel-warning">
 			<div className="panel-heading">
@@ -210,14 +227,17 @@ export default function AppointmentForm(props) {
 				</h3>
 			</div>
 			<div className="panel-body">
-				<form onSubmit={onSubmit} >
+				<form onSubmit={onSubmit} className={classes.paper} >
 					<Typography variant="h6" className={classes.title} >
 						Đặt lịch khám
 					</Typography>
 
-					<Grid container spacing={5}>
+					<Grid container spacing={10}>
 						<Grid item xs={12} sm={3} className={classes.title}>
-							<PatientCard dataFromParent={state.name} onSetName={onSetName} />
+							<PatientCard 
+								onSetAttribute={onSetAttribute}
+								patientList={patientList}
+							/>
 						</Grid>
 						<Grid item xs={12} sm={9} className={classes.title}>
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -236,18 +256,21 @@ export default function AppointmentForm(props) {
 											shrink: true,
 										}}
 										InputProps={{
-											inputProps: { min: getCurrentDate()} 
+											inputProps: { min: getCurrentDate() }
 										}}
 										autoFocus
 									/>
 									<Autocomplete
-										id="book-hour"
+										id="state-hour"
 										name="hour"
+										value={state.hour}
 										inputValue={inputHour}
 										onInputChange={(e, newInputChange) => setInputHour(newInputChange)}
-										onChange={handleChangeHour}
+										onChange={(e, newValue) => {
+											setState(prevState => ({ ...prevState, hour: newValue ? newValue : '' }));
+										}}
 										options={bookingTime}
-										getOptionLabel={(option) => option.title}
+										// getOptionLabel={(option) => option}
 										style={{ width: 300 }}
 										renderInput={(params) => <TextField required {...params} label="Khung giờ khám" variant="standard" />}
 										className={classes.autocomplete}
@@ -258,8 +281,8 @@ export default function AppointmentForm(props) {
 										inputValue={inputDoctor}
 										onInputChange={(e, newInputChange) => setInputDoctor(newInputChange)}
 										onChange={handleChangeDoctor}
-										options={doctorName}
-										getOptionLabel={(option) => option.title}
+										options={doctorList}
+										getOptionLabel={(option) => option.name}
 										style={{ width: 300 }}
 										renderInput={(params) => <TextField required {...params} label="Chọn bác sĩ" variant="standard" />}
 										className={classes.autocomplete}
@@ -270,9 +293,10 @@ export default function AppointmentForm(props) {
 					</Grid>
 
 					<TextareaAutosize
+						style={{marginTop: 10}}
 						required
-						name="symptom"
-						value={state.symptom}
+						name="description"
+						value={state.description}
 						onChange={onChange}
 						className={classes.textSize}
 						minRows={5}
@@ -281,26 +305,44 @@ export default function AppointmentForm(props) {
 
 					</TextareaAutosize>
 
-					<Typography>Hình ảnh đính kèm (nếu có)</Typography>
-					<DropzoneArea
-						className={classes.dropzone}
-						filesLimit={5}
-						acceptedFiles={['image/*']}
-						dropzoneText={"Kéo ảnh thả vào hay nhấp vào để tải ảnh lên"}
-						onChange={handleChangeFile}
-					/>
-					
+					<Typography style={{marginTop: 10}} >Hình ảnh đính kèm (nếu có, tối đa 4 ảnh)</Typography>
+					<Grid container>
+						{
+							number <= 1 ? <UploadImage 
+											handleChangeImages={handleChangeImages1}
+											number={number}
+										/> : ''
+						}
+						{
+							number <=2  ? <UploadImage 
+											handleChangeImages={handleChangeImages2}
+											number={number}
+										/> : ''
+						}
+						{
+							number <= 3 ? <UploadImage 
+											handleChangeImages={handleChangeImages3}
+											number={number}
+										/> : ''
+						}
+						{
+							number <= 4 ? <UploadImage 
+											handleChangeImages={handleChangeImages4}
+											number={number}
+										/> : ''
+						}
+					</Grid>
 					<div className="text-center">
 						{state.name ? <Button
-									type="submit"
-									variant="contained"
-									color="primary"
-								>
-									Xác nhận
-								</Button>
+							type="submit"
+							variant="contained"
+							color="primary"
+						>
+							Xác nhận
+						</Button>
 							:
 							<Alert severity="warning">Vui lòng chọn tên Bệnh nhân được khám</Alert>
-						}	
+						}
 						&nbsp;
 						<Button
 							className={classes.clear}

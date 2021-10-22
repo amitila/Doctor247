@@ -3,6 +3,7 @@ import { makeStyles, TextareaAutosize, TextField } from '@material-ui/core';
 import Button from "@material-ui/core/Button";
 import Typography from '@material-ui/core/Typography';
 import { DropzoneArea } from 'material-ui-dropzone';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
     textSize: {
@@ -50,12 +51,14 @@ export default function QuestionForm(props) {
 		id : props.task.id,
 		title : props.task.title,
 		content : props.task.content,
-		images: props.task.images
+		images: [],
+		imagesView: props.task.images
 	} : {
 		id : '',
 		title : '',
 		content : '',
-		images: ''
+		images: [],
+		imagesView: ''
 	};
 	
 	const classes = useStyles();
@@ -67,14 +70,16 @@ export default function QuestionForm(props) {
 				id : props.task.id,
 				title : props.task.title,
 				content : props.task.content,
-				images: props.task.images
+				images: [],
+				imagesView: props.task.images
 			});
 		}else if(!props.task){
 			setState({
 				id : '',
 				title : '',
 				content : '',
-				images: ''
+				images: [],
+				imagesView: []
 			});
 		}
 	},[props]);
@@ -95,6 +100,7 @@ export default function QuestionForm(props) {
 
 	const onSubmit = (event) => {
 		event.preventDefault();
+		console.log('state');
 		console.log(state);
 		props.onSubmit(state);
 		//Clear and Close form
@@ -107,27 +113,31 @@ export default function QuestionForm(props) {
 			id : '',
 			title : '',
 			content : '',
-			image: ''
+			images: [],
+			imagesView: []
 		});
 	}
 
 	const handleChangeFile = (files) => {
-		const temp = [];
-		files.forEach((file, index) => {
-            temp.push("/images/" + file.path);
+		console.log('state.images');
+		files.forEach((file) => {
+            state.images.push(file);
         });
-		setState({...state, images: temp});
+		console.log(state.images);
+		// setState({...state, images: files});
 	}
+
+	
    
 	return (
 		<div className="panel panel-warning">
 			<div className="panel-heading">
 				<h3 className="panel-title">
-					{state.id !== '' ? 'Chỉnh sửa' : 'Tạo câu hỏi'}
-					<span 
-						className="fa fa-times-circle text-right" 
-						onClick={onCloseForm}
-					></span>
+					{state.id !== '' ? 'Chỉnh sửa  ' : 'Tạo câu hỏi  '}
+					<span onClick={onCloseForm} >
+						<CloseIcon />Đóng
+					</span>
+					
 				</h3>
 			</div>
 			<div className={classes.paper} >
@@ -172,6 +182,8 @@ export default function QuestionForm(props) {
 						acceptedFiles={['image/*']}
 						dropzoneText={"Kéo ảnh thả vào hay nhấp vào để tải ảnh lên"}
 						onChange={handleChangeFile}
+						showAlerts={false}
+						showFileNames={false}
 					/>
 					<div className="text-center">
 						<Button

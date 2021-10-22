@@ -165,10 +165,10 @@ export default function DoctorInfo(props) {
                             4. Chuyển đổi giới tính thai nhi cho mèo <br />
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Địa chỉ: 222 Trần Hưng Đạo, Q10, TP.HCM
+                            Địa chỉ phòng khám: 222 Trần Hưng Đạo, Q10, TP.HCM
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Liên hệ: 039 829 6632 (di động) - 0257 312 3456 (điện thoại bàn)
+                            Liên hệ: 0257 312 3456 (điện thoại bàn / phòng khám)
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
                             Hình ảnh bác sĩ:

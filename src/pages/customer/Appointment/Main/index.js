@@ -1,27 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppointmentForm from './AppointmentForm';
 import AppointmentList from './AppointmentList';
 import AppointmentControl from './AppointmentControl';
 import { useHistory } from "react-router-dom";
+import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
-export default function Index() {
+// Lấy lịch đăng ký từ db về 
+// const token = document.cookie.slice(6);
+
+export default function Index(props) {
     const history = useHistory();
-    const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
-    const [appointments, setAppointments] = useState(flag);
+    // const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
+    const [isHaveChange, setIsHaveChange] = useState(true);
+    const [appointments, setAppointments] = useState([]);
+    const [patientList, setPatientList] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
-    //const [filter, setFilter] = useState({name: '', status: -1});
-    //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({by: 'name', value: 1});
+
+    var flag = appointments;
+
+    useEffect(() => {
+        if (isHaveChange) {
+            getAppointment();
+            onGetGuardian();
+        }
+    }, [isHaveChange])
+
+    const getAppointment = () => {
+        const token = getToken();
+        const appointmentList = [];
+        APIService.getAppointment(
+            token,
+            {},
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return appointmentList.push(item);
+                    })
+                    setAppointments(appointmentList?.map(item => {
+                        return {
+                            id: item.medicalRecordId,
+                            guardian: item.medicalRecord.customer,
+                            doctor: item.doctor,
+                            dateTime: item.day,
+                            description:item.medicalRecord.symptom,
+                            images: item.medicalRecord.images,
+                            status: item.status,
+                            createdAt: item.createdAt,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("thành công");
+                } else {
+                    return alert("Lỗi server!");
+                }
+            }
+        )
+    }
    
-    const s4 = () => {
-        return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
-    const generateID = () => {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
-
     const onToggleForm = (event) => {//Add task
         if(isDisplayForm && taskEditing !== null){
             setIsDisplayForm(true);
@@ -37,31 +75,27 @@ export default function Index() {
         history.push("/appointment");
     }
 
-    const onShowForm = (event) => {
-        setIsDisplayForm(true);
-    }
-
     const onSubmit = (data) => {
-        if(data.id === ''){
-            data.id = generateID();
-            appointments.push(data);
-        }else{
-            //Editing
-            const index = findIndex(data.id);
-            appointments[index] = data;
-        }
-        setAppointments(appointments);
-        setTaskEditing(null);
-        localStorage.setItem('appointments', JSON.stringify(appointments));
-    }
-
-    const onUpdateStatus = (id) => {
-        const index = findIndex(id);
-        if(index !== -1) {
-            appointments[index].status = ! appointments[index].status;
-            setAppointments(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
-        }
+        const token = getToken();
+        APIService.postAppointment(
+			token,
+			{
+				guardianId: data.guardianId,
+				doctorId: data.doctorId,
+				dayTime: data.dayTime,
+				description: data.description,
+				images: data.imagesSend,
+			},
+			(success, json) => {
+				
+				if (success && json.result) {
+                    setIsHaveChange(true);
+					return alert("Đặt lịch THÀNH CÔNG!");
+				} else {
+					return alert("THẤT BẠI");
+				}
+			}
+        )
     }
 
     const findIndex = (id) => {
@@ -75,28 +109,45 @@ export default function Index() {
     }
 
     const onDelete = (id) => {
+        const token = getToken();
         const index = findIndex(id);
         if(index !== -1) {
-            appointments.splice(index, 1);
-            console.log(appointments);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
+            APIService.deleteAppointmentById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        setIsHaveChange(true);
+                        return console.log("Xóa thành công");
+                    } else {
+                        return alert("THẤT BẠI!");
+                    }
+                }
+    
+            )
+            
         }
         onCloseForm();
     }
 
-    const onUpdate = (id) => {
-        console.log(appointments);
-        const index = findIndex(id);
-        const taskEditing = appointments[index];
-        setTaskEditing(taskEditing);
-        onShowForm();
+    const onGetAnItem = (id) => {
+        const token = getToken();
+        APIService.getAppointmentById(
+            token,
+            id,
+            (success, json) => {
+                if (success && json.result) {
+                    return 0;
+                } else {
+                    return alert("THẤT BẠI!");
+                }
+            }
+        )
     }
 
+    console.log(onGetAnItem(34) ? "has an item" : "not found");
+
     const onFilter = (filterName, filterStatus) => {
-        // setFilter({
-        //     name : filterName,
-        //     status : filterStatus
-        // });
         
         let temp = flag.filter((task) => {
             return task.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
@@ -113,7 +164,6 @@ export default function Index() {
     }
 
     const onSearch = (keyword)=>{
-        //setKeyword(keyword);
         console.log(flag);
         const temp = flag.filter((task) => {
             return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
@@ -142,11 +192,39 @@ export default function Index() {
             setAppointments(typeStatus);
         }
     }
+
+    const onGetGuardian = () => {
+        const token = getToken();
+        var profileList = [];
+        APIService.getGuardian(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return profileList.push(item);
+                    })
+                    setPatientList(profileList?.map(item => {
+                        return {
+                            userTwoId: item.userTwoId,
+                            firstName: item.userTwo.firstName,
+                            lastName: item.userTwo.lastName,
+                            avatar: item.userTwo.avatarURL,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("lấy patient list thành công");
+                } else {
+                    return console.log("Lấy danh sách gia đình thất bại");
+                }
+            }
+        )
+    }
    
     var elmAppointmentForm = isDisplayForm 
         ?   <AppointmentForm 
                 onSubmit={onSubmit} 
                 onCloseForm={onCloseForm} 
+                patientList={patientList}
                 task={taskEditing}
             /> : '';
             
@@ -182,9 +260,7 @@ export default function Index() {
                     {/* List*/}
                     <AppointmentList 
                         appointments={appointments} 
-                        onUpdateStatus = {onUpdateStatus} 
                         onDelete={onDelete}
-                        onUpdate={onUpdate}
                         onFilter={onFilter}
                     />
                 </div>

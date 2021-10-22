@@ -59,6 +59,13 @@ export default function ProfileCard(props) {
 	}
 
 	const { task, index } = props;
+	// const birthday = new Date(task.birthday);
+	// const getBirthday = (dmy) => {
+	// 	const dd = dmy.getDate();
+	// 	const mm = dmy.getMonth() + 1;
+	// 	const yyyy = dmy.getFullYear();
+	// 	return (dd + '/' + mm + '/' + yyyy).toString();
+	// }
 
 	return (
 		<div className={classes.root}>
@@ -70,7 +77,10 @@ export default function ProfileCard(props) {
 								Hồ sơ số {index} của {task.relationship}
 							</Typography>
 							<Typography variant="h5" component="h2">
-								{task.name}
+								{task.firstName +' '+ task.lastName}
+							</Typography>
+							<Typography variant="h6" component="h2">
+								Mã nhận dạng: {task.id}
 							</Typography>
 							<Typography className={classes.pos} color="textSecondary">
 								{task.birthday}
@@ -78,11 +88,11 @@ export default function ProfileCard(props) {
 							<Grid container>
 								<Grid xs={12} sm={8}>
 									<Typography variant="body2" component="p">
-										Giới tính: {task.gender}
+										Giới tính: {task.gender === 'FEMALE' ? "Nữ" : 'Nam'}
 										<br />
 										Mã số BHYT: {task.bhyt}
 										<br />
-										Số điện thoại: {task.phone}
+										Số điện thoại: {task.phoneNumber}
 										<br />
 										Email: {task.email}
 										<br />

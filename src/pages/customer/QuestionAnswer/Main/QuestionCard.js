@@ -12,7 +12,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from 'react-bootstrap/esm/Button';
@@ -22,7 +21,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
+import { TextField } from '@material-ui/core';
+import AnswerCard from './AnswerCard';
+import ShareBoard from './ShareBoard';
+ 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
     return <IconButton {...other} />;
@@ -47,10 +49,6 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         color: "#0320fc",
     },
-    box: {
-        marginTop: '5px',
-        marginLeft: '5px'
-    },
     boxImage: {
         width: '400px',
         heigth: '400px',
@@ -63,29 +61,41 @@ const useStyles = makeStyles((theme) => ({
 
 export default function QuestionCard(props) {
     const classes = useStyles();
+    const {task} = props;
     const [expanded, setExpanded] = React.useState(false);
     const [comments, setComments] = React.useState([]);
-    const [value, setValue] = React.useState('');
+    const [state, setState] = React.useState({
+        specialityName: '',
+        replyContent: '',
+        likeCounter: props.task.questionLike,
+        mark: task.liked
+    });
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    const handleChangeText = (e) => {
-        setValue(e.target.value);
-    }
+    const onChange = (event) => {
+		let target = event.target;
+		let name = target.name;
+		let value = target.value;
+		// if(name === 'status') {
+		// 	value = target.value === 'true' ? true : false;
+		// }
+		setState(prevState => ({...prevState, [name]: value}));
+	}
 
     const handleChangeComment = (e) => {
         var elmComment = <Grid container spacing={2}>
-            <Grid item xs={12} sm={3} >
-                Bé Chó:
-            </Grid>
-            <Grid item xs={12} sm={9} >
-                {value}
-            </Grid>
+            <AnswerCard  
+                state={state}
+            />
         </Grid>;
         setComments(prevComment => [...prevComment, elmComment]);
-        setValue('');
+        setState({...state,
+            specialityName: '',
+            replyContent: '',
+        });
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -100,8 +110,6 @@ export default function QuestionCard(props) {
     const date = new Date();
     const currentTime = date.getHours() +':'+ date.getMinutes() +'  '+ date.getDate() +'/'+ (date.getMonth() + 1) +'/'+ date.getFullYear() ;
 
-    const {task} = props;
-
     const onDelete = () => {
         props.onDelete(props.task.id);
         handleClose();
@@ -112,6 +120,19 @@ export default function QuestionCard(props) {
         handleClose();
     }
 
+    const onSave = () => {
+        props.onSave(props.task.id);
+        handleClose();
+    }
+
+    const handleCountLike = () => {
+        props.onUpdateLike(state.mark, props.task.id);
+        setState({
+            ...state, 
+            likeCounter: state.mark ? state.likeCounter - 1 : state.likeCounter + 1,
+            mark: state.mark ? false : true
+        });
+    }
 
     return (
         <Card sx={{ maxWidth: 400 }} className={classes.card} >
@@ -146,7 +167,11 @@ export default function QuestionCard(props) {
                         >
                             <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem>
                             <MenuItem onClick={onDelete}>Xóa bài</MenuItem>
-                            <MenuItem onClick={handleClose}>Lưu bài</MenuItem>
+                            {
+                                task.saved ? <MenuItem>Bài đã lưu</MenuItem>
+                                            :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
+                            }
+                            
                         </Menu>
                    </div>
                 }
@@ -177,12 +202,18 @@ export default function QuestionCard(props) {
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
                     <FormControlLabel
-                        control={<Checkbox icon={<FavoriteIcon />} checkedIcon={<FavoriteIcon />} name="checkedH" />}
-                        label="Cảm ơn"
+                        onClick={handleCountLike}
+                        control={<Checkbox 
+                                    icon={<FavoriteIcon />} 
+                                    checkedIcon={<FavoriteIcon />} 
+                                    name="checkedH" 
+                                    checked={state.mark ? true : false}
+                                />}
+                        label={state.likeCounter}
                     />
                 </IconButton>
                 <IconButton aria-label="share">
-                    <ShareIcon />
+                    <ShareBoard />
                 </IconButton>
                 <ExpandMore
                     expand={expanded}
@@ -198,28 +229,42 @@ export default function QuestionCard(props) {
                     <Typography paragraph>Câu trả lời có sẵn</Typography>
                     <Typography>
                         {comments.map((comment) => {
-                            return <Box className={classes.box} sx={{ p: 2, border: '1px dashed grey' }}>
+                            return <Box sx={{ p: 1 }}>
                                 {comment}
                             </Box>
                         })}
                     </Typography>
-                    <TextareaAutosize
-                        className={classes.textSize}
-                        value={value}
-                        onChange={handleChangeText}
-                        minRows={3}
-                        placeholder="Trả lời"
-                    ></TextareaAutosize>
-                    <Button
-                        type="button"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={value ? handleChangeComment : null}
-                    >
-                        Trả lời
-                    </Button>
+                    <form>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="specialityName"
+                            name="specialityName"
+                            value={state.specialityName}
+                            onChange={onChange}
+                            label="Bệnh thuộc chuyên khoa"
+                        />
+                        <TextareaAutosize
+                            id="replyContent"
+                            name="replyContent"
+                            className={classes.textSize}
+                            value={state.replyContent}
+                            onChange={onChange}
+                            minRows={3}
+                            placeholder="Trả lời"
+                        ></TextareaAutosize>
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={state.replyContent ? handleChangeComment : null}
+                        >
+                            Trả lời
+                        </Button>
+                    </form>
                 </CardContent>
             </Collapse>
         </Card>

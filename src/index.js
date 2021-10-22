@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import SpeedDial from './layouts/customer/SpeedDial';
+import Emergency from './layouts/customer/Emergency';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
 import { store } from "./store/index";
@@ -13,6 +15,16 @@ ReactDOM.render(
 		</React.StrictMode>
 	</Provider>,
 	document.getElementById('root')
+);
+
+ReactDOM.render(
+	<SpeedDial />,
+	document.getElementById('speed_dial')
+);
+
+ReactDOM.render(
+	<Emergency />,
+	document.getElementById('emergency')
 );
 
 // If you want to start measuring performance in your app, pass a function
