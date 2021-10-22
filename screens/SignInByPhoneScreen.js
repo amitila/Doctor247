@@ -18,7 +18,7 @@ import { AuthContext } from '../components/context';
 import Users from '../model/users';
 import APIService from '../utils/APIService';
 
-const SignInScreen = ({ navigation }) => {
+const SignInByPhoneScreen = ({ navigation }) => {
 
 	const [data, setData] = React.useState({
 		username: '',
@@ -67,13 +67,6 @@ const SignInScreen = ({ navigation }) => {
 		}
 	}
 
-	const updateSecureTextEntry = () => {
-		setData({
-			...data,
-			secureTextEntry: !data.secureTextEntry
-		});
-	}
-
 	const handleValidUser = (val) => {
 		if (val.trim().length >= 4) {
 			setData({
@@ -88,37 +81,53 @@ const SignInScreen = ({ navigation }) => {
 		}
 	}
 
+	const getCode = () => {
+		if(data.username.length == 0) {
+			Alert.alert('Lỗi đầu vào!', 'Vui lòng nhập số điện thoại để nhận mã.', [
+				{ text: 'Okay' }
+			]);
+		}
+		else {
+			APIService.signInSendCodeToSms(data.username, (success, json) => {
+                if (success && json.result) {
+                    return Alert.alert("Vui lòng kiểm tra tin nhắn!")
+                } else {
+                    return Alert.alert("Số điện thoại nhập sai hay chưa đăng ký!")
+                }
+            })
+		}
+	}
+
 	const loginHandle = (username, password) => {
 
 		if (data.username.length == 0 || data.password.length == 0) {
-			Alert.alert('Lỗi đầu vào!', 'Tên đăng nhập và mật khẩu không thể được để trống.', [
+			Alert.alert('Lỗi đầu vào!', 'Số điện thoại và mã OTP không thể được để trống.', [
 				{ text: 'Okay' }
 			]);
 			return;
 		}
 
-		APIService.signIn(username, password, (success, json) => {
-			if(success && json.result){
+		APIService.signInBySms(username, password, (success, json) => {
+			if (success && json.result) {
 				const foundUser = Users.filter(item => {
 					return username == item.username && password == item.password || success;
 				});
 
 				if (foundUser.length == 0) {
-					Alert.alert('Người dùng vô hiệu!', 'Tên đăng nhập hay mật khẩu không đúng.', [
+					Alert.alert('Người dùng vô hiệu!', 'Số điện thoại hay mã OTP không đúng.', [
 						{ text: 'Okay' }
 					]);
 					return;
 				}
 		
 				signIn(foundUser);
-
 			} else {
 				const foundUser = Users.filter(item => {
 					return username == item.username && password == item.password || success;
 				});
 
 				if (foundUser.length == 0) {
-					Alert.alert('Người dùng vô hiệu!', 'Tên đăng nhập hay mật khẩu không đúng.', [
+					Alert.alert('Người dùng vô hiệu!', 'Số điện thoại hay mã OTP không đúng.', [
 						{ text: 'Okay' }
 					]);
 					return;
@@ -126,7 +135,7 @@ const SignInScreen = ({ navigation }) => {
 		
 				signIn(foundUser);
 			}
-		}) 
+		})
 	}
 
 	return (
@@ -143,7 +152,7 @@ const SignInScreen = ({ navigation }) => {
 			>
 				<Text style={[styles.text_footer, {
 					color: colors.text
-				}]}>Tên đăng nhập</Text>
+				}]}>Số điện thoại</Text>
 				<View style={styles.action}>
 					<FontAwesome
 						name="user-o"
@@ -151,7 +160,7 @@ const SignInScreen = ({ navigation }) => {
 						size={20}
 					/>
 					<TextInput
-						placeholder="Tên đăng nhập"
+						placeholder="Số điện thoại"
 						placeholderTextColor="#666666"
 						style={[styles.textInput, {
 							color: colors.text
@@ -172,17 +181,11 @@ const SignInScreen = ({ navigation }) => {
 						</Animatable.View>
 						: null}
 				</View>
-				{data.isValidUser ? null :
-					<Animatable.View animation="fadeInLeft" duration={500}>
-						<Text style={styles.errorMsg}>Tên đăng nhập phải dài trên 4 ký tự.</Text>
-					</Animatable.View>
-				}
-
 
 				<Text style={[styles.text_footer, {
 					color: colors.text,
 					marginTop: 35
-				}]}>Mật khẩu</Text>
+				}]}>Mã OTP</Text>
 				<View style={styles.action}>
 					<Feather
 						name="lock"
@@ -190,42 +193,23 @@ const SignInScreen = ({ navigation }) => {
 						size={20}
 					/>
 					<TextInput
-						placeholder="Mật khẩu"
+						placeholder="Mã OTP"
 						placeholderTextColor="#666666"
-						secureTextEntry={data.secureTextEntry ? true : false}
 						style={[styles.textInput, {
 							color: colors.text
 						}]}
 						autoCapitalize="none"
 						onChangeText={(val) => handlePasswordChange(val)}
 					/>
-					<TouchableOpacity
-						onPress={updateSecureTextEntry}
-					>
-						{data.secureTextEntry ?
-							<Feather
-								name="eye-off"
-								color="grey"
-								size={20}
-							/>
-							:
-							<Feather
-								name="eye"
-								color="grey"
-								size={20}
-							/>
-						}
-					</TouchableOpacity>
 				</View>
-				{data.isValidPassword ? null :
-					<Animatable.View animation="fadeInLeft" duration={500}>
-						<Text style={styles.errorMsg}>Mật khẩu có độ dài từ 4 ký tự trở lên.</Text>
-					</Animatable.View>
-				}
-
 
 				<TouchableOpacity>
-					<Text style={{ color: '#036ffc', marginTop: 15 }}>Quên mật khẩu?</Text>
+					<Text 
+						style={{ color: '#036ffc', marginTop: 15 }}
+						onPress={() => { getCode() }}
+					>
+						Nhấn vào để nhận mã OTP
+					</Text>
 				</TouchableOpacity>
 				<View style={styles.button}>
 					<TouchableOpacity
@@ -242,7 +226,7 @@ const SignInScreen = ({ navigation }) => {
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						onPress={() => navigation.navigate('SignInByPhoneScreen')}
+						onPress={() => navigation.navigate('SignInScreen')}
 						style={[styles.signIn, {
 							borderColor: '#036ffc',
 							borderWidth: 1,
@@ -251,7 +235,7 @@ const SignInScreen = ({ navigation }) => {
 					>
 						<Text style={[styles.textSign, {
 							color: '#036ffc'
-						}]}>Đăng nhập bằng số điện thoại</Text>
+						}]}>Đăng nhập bằng tài khoản</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
@@ -272,7 +256,7 @@ const SignInScreen = ({ navigation }) => {
 	);
 };
 
-export default SignInScreen;
+export default SignInByPhoneScreen;
 
 const styles = StyleSheet.create({
 	container: {

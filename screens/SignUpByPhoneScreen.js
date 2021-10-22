@@ -19,75 +19,42 @@ import Feather from 'react-native-vector-icons/Feather';
 import RadioForm from 'react-native-simple-radio-button';
 import APIService from '../utils/APIService';
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpByPhoneScreen = ({ navigation }) => {
 
 	const [data, setData] = React.useState({
 		firstName: '',
 		lastName: '',
 		gender: '',
-		email: '',
-		password: '',
-		confirm_password: '',
+		phoneNumber: '',
 		code: '',
-		check_textInputChange: false,
-		secureTextEntry: true,
-		confirm_secureTextEntry: true,
 	});
 
 	const textInputChange = (val) => {
 		if (val.length !== 0) {
 			setData({
 				...data,
-				email: val,
+				phoneNumber: val,
 				check_textInputChange: true
 			});
 		} else {
 			setData({
 				...data,
-				email: val,
+				phoneNumber: val,
 				check_textInputChange: false
 			});
 		}
 	}
 
-	const handlePasswordChange = (val) => {
-		setData({
-			...data,
-			password: val
-		});
-	}
-
-	const handleConfirmPasswordChange = (val) => {
-		setData({
-			...data,
-			confirm_password: val
-		});
-	}
-
-	const updateSecureTextEntry = () => {
-		setData({
-			...data,
-			secureTextEntry: !data.secureTextEntry
-		});
-	}
-
-	const updateConfirmSecureTextEntry = () => {
-		setData({
-			...data,
-			confirm_secureTextEntry: !data.confirm_secureTextEntry
-		});
-	}
-
 	const getCode = () => {
-		if(data.email == '') {
-			Alert.alert('Lỗi chưa nhập mail', 'Vui lòng nhập mail vào trường tên đăng nhập(email)', [
+		if(data.phoneNumber == '') {
+			Alert.alert('Lỗi chưa nhập mail', 'Vui lòng nhập số điện thoại vào trường Số điện thoại', [
 				{text: 'Okey'}
 			]);
 		}
 		else {
-			APIService.getCodeFromMail(data.email, (success, json) => {
+			APIService.getCodeFromSms(data.phoneNumber, (success, json) => {
                 if (success && json.result) {
-                    return Alert.alert("Vui lòng kiểm tra mail!")
+                    return Alert.alert("Vui lòng kiểm tra tin nhắn!")
                 } else {
                     return Alert.alert("Không gửi được!")
                 }
@@ -96,24 +63,19 @@ const SignUpScreen = ({ navigation }) => {
 	}
 
 	const registerHandle = () => {
-		if(data.firstName == '' || data.lastName == '' || data.gender == '' || data.email == '' || data.password == '' || data.confirm_password == '' || data.code == '') {
+		if(data.firstName == '' || data.lastName == '' || data.gender == '' || data.phoneNumber == '' || data.code == '') {
 			Alert.alert('Lỗi đầu vào!', 'Các trường đăng ký vui lòng không để trống.', [
-				{ text: 'Okay' }
-			]);
-		}
-		else if(data.password != data.confirm_password) {
-			Alert.alert('Mật khẩu không khớp!', 'Vui lòng nhập lại mật khẩu và xác nhận mật khẩu.', [
 				{ text: 'Okay' }
 			]);
 		}
 		else {
 			APIService.signUp({
-				registerType: 'EMAIL',
-				email: data.email,
+				registerType: 'PHONE',
+				email: '',
 				firstName: data.firstName,
 				lastName: data.lastName,
-				password: data.password,
-				phoneNumber:'',
+				password: '',
+				phoneNumber: data.phoneNumber,
 				gender: data.gender,
 				code: data.code
 			},
@@ -215,7 +177,7 @@ const SignUpScreen = ({ navigation }) => {
 
 					<Text style={[styles.text_footer, {
 						marginTop: 35
-					}]}>Tên đăng nhập(email)</Text>
+					}]}>Số điện thoại</Text>
 					<View style={styles.action}>
 						<FontAwesome
 							name="user-o"
@@ -223,7 +185,7 @@ const SignUpScreen = ({ navigation }) => {
 							size={20}
 						/>
 						<TextInput
-							placeholder="Tên đăng nhập(email)"
+							placeholder="Số điện thoại"
 							style={styles.textInput}
 							autoCapitalize="none"
 							onChangeText={(val) => textInputChange(val)}
@@ -239,76 +201,6 @@ const SignUpScreen = ({ navigation }) => {
 								/>
 							</Animatable.View>
 							: null}
-					</View>
-
-					<Text style={[styles.text_footer, {
-						marginTop: 35
-					}]}>Mật khẩu</Text>
-					<View style={styles.action}>
-						<Feather
-							name="lock"
-							color="#05375a"
-							size={20}
-						/>
-						<TextInput
-							placeholder="Mật khẩu"
-							secureTextEntry={data.secureTextEntry ? true : false}
-							style={styles.textInput}
-							autoCapitalize="none"
-							onChangeText={(val) => handlePasswordChange(val)}
-						/>
-						<TouchableOpacity
-							onPress={updateSecureTextEntry}
-						>
-							{data.secureTextEntry ?
-								<Feather
-									name="eye-off"
-									color="grey"
-									size={20}
-								/>
-								:
-								<Feather
-									name="eye"
-									color="grey"
-									size={20}
-								/>
-							}
-						</TouchableOpacity>
-					</View>
-
-					<Text style={[styles.text_footer, {
-						marginTop: 35
-					}]}>Xác nhận mật khẩu</Text>
-					<View style={styles.action}>
-						<Feather
-							name="lock"
-							color="#05375a"
-							size={20}
-						/>
-						<TextInput
-							placeholder="Xác nhận lại mật khẩu"
-							secureTextEntry={data.confirm_secureTextEntry ? true : false}
-							style={styles.textInput}
-							autoCapitalize="none"
-							onChangeText={(val) => handleConfirmPasswordChange(val)}
-						/>
-						<TouchableOpacity
-							onPress={updateConfirmSecureTextEntry}
-						>
-							{data.secureTextEntry ?
-								<Feather
-									name="eye-off"
-									color="grey"
-									size={20}
-								/>
-								:
-								<Feather
-									name="eye"
-									color="grey"
-									size={20}
-								/>
-							}
-						</TouchableOpacity>
 					</View>
 
 					<Text style={[styles.text_footer, {
@@ -373,11 +265,11 @@ const SignUpScreen = ({ navigation }) => {
 								borderWidth: 1,
 								marginTop: 15
 							}]}
-							onPress={() => navigation.navigate('SignUpByPhoneScreen')}
+							onPress={() => navigation.navigate('SignUpScreen')}
 						>
 							<Text style={[styles.textSign, {
 								color: '#036ffc'
-							}]}>Đăng ký bằng số điện thoại</Text>
+							}]}>Đăng ký bằng tài khoản</Text>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>
@@ -386,7 +278,7 @@ const SignUpScreen = ({ navigation }) => {
 	);
 };
 
-export default SignUpScreen;
+export default SignUpByPhoneScreen;
 
 const styles = StyleSheet.create({
 	container: {
