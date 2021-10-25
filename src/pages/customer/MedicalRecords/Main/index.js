@@ -3,7 +3,7 @@ import MRList from './MRList';
 import MRControl from './MRControl';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
-
+import { Grid } from '@material-ui/core';
 // Lấy lịch đăng ký từ db về 
 // const token = document.cookie.slice(6);
 
@@ -156,22 +156,23 @@ export default function Index(props) {
                 <br/>
             </div>
             <div className="row">
-                <div className= "col-xs-12 col-sm-12 col-md-12 col-lg-12" >
-                    {/* Search-Sort */}
-                    <MRControl 
-                        onSearch={onSearch} 
-                        onSort={onSort}
-                        sortBy={sort.by}
-                        sortValue={sort.value}
-                    />
-
+                <Grid container spacing={2}>
+                    <Grid container spacing={2}>
+                        {/* Search-Sort */}
+                        <MRControl 
+                            onSearch={onSearch} 
+                            onSort={onSort}
+                            sortBy={sort.by}
+                            sortValue={sort.value}
+                        />
+                    </Grid>
                     {/* List*/}
                     <MRList 
                         medicalRecords={medicalRecords} 
                         onDelete={onDelete}
                         onFilter={onFilter}
                     />
-                </div>
+                </Grid>
             </div>
         </div>
     );

@@ -5,6 +5,8 @@ import AppointmentControl from './AppointmentControl';
 import { useHistory } from "react-router-dom";
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
+import { Grid } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 // Lấy lịch đăng ký từ db về 
 // const token = document.cookie.slice(6);
@@ -18,26 +20,34 @@ export default function Index(props) {
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     const [sort, setSort] = useState({by: 'name', value: 1});
+    var status = 'PENDING';
 
     var flag = appointments;
+
+    const onStatus = (text) => {
+        status = text;
+        getAppointment();
+    }
 
     useEffect(() => {
         if (isHaveChange) {
             getAppointment();
             onGetGuardian();
         }
-    }, [isHaveChange])
+    }, [status, isHaveChange])
 
     const getAppointment = () => {
+        
         const token = getToken();
         const appointmentList = [];
         APIService.getAppointment(
             token,
-            {},
+            {
+            },
             (success, json) => {
                 if (success && json.result) {
                     json.result.map(item => {
-                        return appointmentList.push(item);
+                        return item.status === status ? appointmentList.push(item) : '';
                     })
                     setAppointments(appointmentList?.map(item => {
                         return {
@@ -232,37 +242,67 @@ export default function Index(props) {
         <div className="container-fluid m-50">
             <div className="text-center">
                 <h1>Đăng ký lịch khám</h1>
-                <br/>
+                <br />
             </div>
             <div className="row">
-                <div className= {isDisplayForm ? "col-xs-4 col-sm-4 col-md-4 col-lg-4" : ''} >
-                    {/*Form*/}
-                    {elmAppointmentForm}
-                </div>
-                <div className= {isDisplayForm ? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"} >
-                    <button 
-                        type="button" 
-                        className="btn btn-primary"
-                        onClick={onToggleForm}
-                    >
-                        <span className="fa fa-plus mr-5"></span>
-                        Thêm lịch hẹn
-                    </button>&nbsp;
-    
-                    {/* Search-Sort */}
-                    <AppointmentControl 
-                        onSearch={onSearch} 
-                        onSort={onSort}
-                        sortBy={sort.by}
-                        sortValue={sort.value}
-                    />
+                <div  >
+                    {isDisplayForm ?
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={4}>
+                                {elmAppointmentForm}
+                            </Grid>
+                            <Grid item xs={12} sm={8}>
 
-                    {/* List*/}
-                    <AppointmentList 
-                        appointments={appointments} 
-                        onDelete={onDelete}
-                        onFilter={onFilter}
-                    />
+                                {/* Search-Sort */}
+                                <AppointmentControl 
+                                    onSearch={onSearch} 
+                                    onSort={onSort}
+                                    sortBy={sort.by}
+                                    sortValue={sort.value}
+                                />
+                                <br/><br />
+                                {/* List*/}
+                                <AppointmentList 
+                                    appointments={appointments} 
+                                    onDelete={onDelete}
+                                    onFilter={onFilter}
+                                    onStatus={onStatus}
+                                />
+                            </Grid>
+                        </Grid>
+                        :
+                        <Grid container spacing={2}>
+                            {elmAppointmentForm}
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={2} >
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={onToggleForm}
+                                    >
+                                        <AddIcon />
+                                        Thêm lịch hẹn
+                                    </button>
+                                </Grid>
+                                <Grid item xs={12} sm={10} >
+                                    {/* Search-Sort */}
+                                    <AppointmentControl 
+                                        onSearch={onSearch} 
+                                        onSort={onSort}
+                                        sortBy={sort.by}
+                                        sortValue={sort.value}
+                                    />
+                                </Grid>
+                            </Grid>
+                            {/* List*/}
+                            <AppointmentList 
+                                appointments={appointments} 
+                                onDelete={onDelete}
+                                onFilter={onFilter}
+                                onStatus={onStatus}
+                            />
+                        </Grid>
+                    }
                 </div>
             </div>
         </div>

@@ -160,7 +160,7 @@ export default function DrawerHeader(props) {
     const name = useSelector(selectName);
 
     const {mark} = props;
-    console.log(mark);
+    // console.log(mark);
 
     const handleDrawerOpen = () => {
         setOpen(true);
