@@ -31,7 +31,6 @@ export default function App() {
 	let mark;
 	CheckToken();
 	const role = useSelector(selectRole);
-	console.log(role)
 	if(role === 'CUSTOMER') {
 		mark = 0;
 	}
