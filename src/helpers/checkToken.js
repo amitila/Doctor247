@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from "react-redux";
-import { updateId, updateName, updateAvatar } from '../store/userSlice';
+import { updateId, updateRole, updateName, updateAvatar } from '../store/userSlice';
 import APIService from '../utils/APIService';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
@@ -19,10 +19,22 @@ const CheckToken = () => {
 				if(success && json.result){
 					setToken(json.result.token);
 					dispatch(updateId(json.result.id));
+					dispatch(updateRole(json.result.role));
 					dispatch(updateName(json.result.customer.lastName));
 					dispatch(updateAvatar(json.result.customer.avatarURL));
 				} else {
-					setStatus(true);
+					// setStatus(true);
+					APIService.doctorCheckToken(token, (success, json) => {
+						if(success && json.result){
+							setToken(json.result.token);
+							dispatch(updateId(json.result.id));
+							dispatch(updateRole(json.result.role));
+							dispatch(updateName(json.result.customer.lastName));
+							dispatch(updateAvatar(json.result.customer.avatarURL));
+						} else {
+							setStatus(true);
+						}
+					}) 
 				}
 			}) 
 		}

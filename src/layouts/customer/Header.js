@@ -14,7 +14,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
-import Logo from '../components/Logo.js';
+import Logo from '../../components/Logo.js';
 import { Link } from 'react-router-dom';
 import DrawerMenu from './DrawerMenu.js';
 import { useMediaQuery, useTheme } from '@material-ui/core';
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function PrimarySearchAppBar() {
+export default function Header() {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -190,9 +190,6 @@ export default function PrimarySearchAppBar() {
 								<Logo />
 							</Link>
 						</Button>
-						<Typography className={classes.title} variant="h6">
-							Doctor247
-						</Typography>
 						<DrawerMenu />
 					</>
 				) : (
@@ -202,9 +199,6 @@ export default function PrimarySearchAppBar() {
 								<Logo />
 							</Link>
 						</Button>
-						<Typography className={classes.title} variant="h6">
-							Doctor247
-						</Typography>
 						<Button color="inherit">
 							<Link className={classes.link} to="/home">Trang chủ</Link>
 						</Button>

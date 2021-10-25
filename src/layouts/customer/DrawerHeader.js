@@ -34,7 +34,7 @@ import { useHistory } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import PersonalIcon from './PersonalIcon';
 import { useSelector, useDispatch } from "react-redux";
-import { selectName, updateName, selectAvatar } from '../../store/userSlice';
+import { selectName, updateName, updateRole, selectAvatar } from '../../store/userSlice';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import MenuItem from '@mui/material/MenuItem';
@@ -152,12 +152,15 @@ const MyMenuItem = withStyles({
     }
 })(MenuItem);
 
-export default function DrawerHeader() {
+export default function DrawerHeader(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [avatar, setAvatar] = React.useState(useSelector(selectAvatar));
     const name = useSelector(selectName);
+
+    const {mark} = props;
+    console.log(mark);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -191,6 +194,7 @@ export default function DrawerHeader() {
         if (cookies.get("token")) {
             cookies.remove("token");
             dispatch(updateName(''));
+            dispatch(updateRole(''));
             return history.push("/signin");
         }
         alert("Bạn vẫn chưa đăng nhập !");
@@ -319,79 +323,141 @@ export default function DrawerHeader() {
                 <Divider />
                 <PersonalIcon handleDrawerClose={handleDrawerClose} name={name} avatar={avatar} />
                 <Divider />
-                <div>
-                    <MenuList>
-                        {[
-                            <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
-                            <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
-                            <div className={classes.link} onClick={()=>history.push("/appointment")}>Lịch khám</div>,
-                            <div className={classes.link} onClick={()=>history.push("/profile")}>Hồ sơ gia đình</div>,
-                            <div className={classes.link} onClick={()=>history.push("/medicalrecords")}>Xem bệnh án</div>,
-                            <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
-                            <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
-                            <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
-                            <div className={classes.link} onClick={()=>history.push("/savedquestion")}>Đã lưu</div>,
-                            <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
-                            // <Link className={classes.link} to="/home">Trang chủ</Link>,
-                            // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
-                            // <Link className={classes.link} to="/appointment">Lịch khám</Link>,
-                            // <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>,
-                            // <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
-                            // <Link className={classes.link} to="/question">Hỏi đáp</Link>,
-                            // <Link className={classes.link} to="/phonebook">Danh bạ</Link>,
-                            // <Link className={classes.link} to="/task">Công việc</Link>
-                        ].map((text, index) => (
-                            <MyMenuItem button key={text} onClick={handleDrawerClose} >
-                                <ListItemIcon>
-                                    {
-                                        [<HomeIcon />, 
-                                        <FormatListNumberedIcon />, 
-                                        <EventIcon />, 
-                                        <AccountBoxIcon />, 
-                                        <ReorderIcon />, 
-                                        <HelpIcon />, 
-                                        <LibraryBooksIcon />, 
-                                        <FolderSpecialIcon />,
-                                        <SaveIcon />,
-                                        <ScheduleIcon />][index]
-                                    }
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </MyMenuItem>
-                        ))}
-                    </MenuList>
-                    <Divider />
-                    <MenuList>
-                        {[
-                            <div className={classes.link} onClick={()=>history.push("/notification")}>Thông báo</div>,
-                            <div className={classes.link} onClick={()=>history.push("/signup")}>Đăng ký</div>,
-                            (name ? 
-                                <div className={classes.link} onClick={onSignOut}>Thoát</div>
-                                : 
-                                <div className={classes.link} onClick={()=>history.push("/signin")}>Đăng nhập</div> 
-                            ),
-                            // <Link className={classes.link} to="/notification">Thông báo</Link>,
-                            // <Link className={classes.link} to="/signin">Đăng nhập</Link>,
-                            // <Link className={classes.link} to="/signup">Đăng ký</Link>,
-                            // <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
-                        ].map((text, index) => (
-                            <MyMenuItem button key={text} onClick={handleDrawerClose} >
-                                <ListItemIcon>
-                                    {
-                                        [<NotificationsActiveIcon />, 
-                                        <LockOpenIcon />,
-                                        (name ?
-                                            <PowerSettingsNewIcon />
-                                            :   
-                                            <ExitToAppIcon />
-                                        )][index]   
-                                    }
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </MyMenuItem>
-                        ))}
-                    </MenuList>
-                </div>
+                {
+                    mark === 0 ? 
+                    <div>
+                        <MenuList>
+                            {[
+                                <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/appointment")}>Lịch khám</div>,
+                                <div className={classes.link} onClick={()=>history.push("/profile")}>Hồ sơ gia đình</div>,
+                                <div className={classes.link} onClick={()=>history.push("/medicalrecords")}>Xem bệnh án</div>,
+                                <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
+                                <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
+                                <div className={classes.link} onClick={()=>history.push("/savedquestion")}>Đã lưu</div>,
+                                <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
+                                // <Link className={classes.link} to="/home">Trang chủ</Link>,
+                                // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
+                                // <Link className={classes.link} to="/appointment">Lịch khám</Link>,
+                                // <Link className={classes.link} to="/profile">Hồ sơ gia đình</Link>,
+                                // <Link className={classes.link} to="/medicalrecords">Xem bệnh án</Link>,
+                                // <Link className={classes.link} to="/question">Hỏi đáp</Link>,
+                                // <Link className={classes.link} to="/phonebook">Danh bạ</Link>,
+                                // <Link className={classes.link} to="/task">Công việc</Link>
+                            ].map((text, index) => (
+                                <MyMenuItem button key={text} onClick={handleDrawerClose} >
+                                    <ListItemIcon>
+                                        {
+                                            [<HomeIcon />, 
+                                            <FormatListNumberedIcon />, 
+                                            <EventIcon />, 
+                                            <AccountBoxIcon />, 
+                                            <ReorderIcon />, 
+                                            <HelpIcon />, 
+                                            <LibraryBooksIcon />, 
+                                            <FolderSpecialIcon />,
+                                            <SaveIcon />,
+                                            <ScheduleIcon />][index]
+                                        }
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </MyMenuItem>
+                            ))}
+                        </MenuList>
+                        <Divider />
+                        <MenuList>
+                            {[
+                                <div className={classes.link} onClick={()=>history.push("/notification")}>Thông báo</div>,
+                                
+                                (name ? 
+                                    <div className={classes.link} onClick={onSignOut}>Thoát</div>
+                                    : 
+                                    <>
+                                        <div className={classes.link} onClick={()=>history.push("/signup")}>Đăng ký</div>,
+                                        <div className={classes.link} onClick={()=>history.push("/signin")}>Đăng nhập</div>  
+                                    </>
+                                ),
+                                // <Link className={classes.link} to="/notification">Thông báo</Link>,
+                                // <Link className={classes.link} to="/signin">Đăng nhập</Link>,
+                                // <Link className={classes.link} to="/signup">Đăng ký</Link>,
+                                // <Link className={classes.link} to="/signin" onClick={onSignOut}>Thoát</Link>
+                            ].map((text, index) => (
+                                <MyMenuItem button key={text} onClick={handleDrawerClose} >
+                                    <ListItemIcon>
+                                        {
+                                            [<NotificationsActiveIcon />, 
+                                            (name ?
+                                                <PowerSettingsNewIcon />
+                                                :   
+                                                <>
+                                                    <LockOpenIcon />,
+                                                    <ExitToAppIcon />
+                                                </>
+                                            )][index]   
+                                        }
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </MyMenuItem>
+                            ))}
+                        </MenuList>
+                    </div>
+                    :
+                    <div>
+                        <MenuList>
+                            {[
+                                <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
+                                <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
+                                <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
+                            ].map((text, index) => (
+                                <MyMenuItem button key={text} onClick={handleDrawerClose} >
+                                    <ListItemIcon>
+                                        {
+                                            [<HomeIcon />, 
+                                            <FormatListNumberedIcon />, 
+                                            <HelpIcon />, 
+                                            <LibraryBooksIcon />, 
+                                            <FolderSpecialIcon />,
+                                            <ScheduleIcon />][index]
+                                        }
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </MyMenuItem>
+                            ))}
+                        </MenuList>
+                        <Divider />
+                        <MenuList>
+                            {[
+                                <div className={classes.link} onClick={()=>history.push("/signup")}>Đăng ký</div>,
+                                (name ? 
+                                    <div className={classes.link} onClick={onSignOut}>Thoát</div>
+                                    : 
+                                    <div className={classes.link} onClick={()=>history.push("/signin")}>Đăng nhập</div> 
+                                ),
+                            ].map((text, index) => (
+                                <MyMenuItem button key={text} onClick={handleDrawerClose} >
+                                    <ListItemIcon>
+                                        {
+                                            [
+                                            <LockOpenIcon />,
+                                            (name ?
+                                                <PowerSettingsNewIcon />
+                                                :   
+                                                <ExitToAppIcon />
+                                            )][index]   
+                                        }
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </MyMenuItem>
+                            ))}
+                        </MenuList>
+                    </div>
+                }
+                
             </Drawer>
             <main
                 className={clsx(checked ? classes.contentRight : classes.content, {

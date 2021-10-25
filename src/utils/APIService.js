@@ -1,8 +1,9 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.3:8080';
+	static urlServerAddress = 'http://192.168.1.2:8080';
 
+// For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
 	};
@@ -119,7 +120,15 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/doctor/${id}`;
 	};
 
-  	// TODO: multipart
+// For doctor 
+
+	static apiDoctorCheckToken = () => {
+		return `${APIService.baseAPI()}doctor/users/check-token`;
+	};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+  	// TODO: For customer
 
 //====================CHECK-TOKEN AND SET NEW TOKEN======================
 
@@ -593,5 +602,21 @@ export default class APIService {
 			callback,
 		);
 	}	
+
+	// TODO: For doctor
+
+//====================CHECK-TOKEN AND SET NEW TOKEN======================
+
+	// api for check-token
+	static doctorCheckToken(token, callback) {
+		WebService.sendJsonPOST(
+			this.apiDoctorCheckToken(),
+			{
+				jwt : token,
+				token
+			},
+			callback,
+		);
+	}
 
 }

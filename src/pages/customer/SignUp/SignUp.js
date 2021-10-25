@@ -88,19 +88,19 @@ export default function SignUp() {
             gender: state.gender,
             code: state.code
         },
-            (success, json) => {
-                if (success && json.result) {
-                    // dispatch(updateEmail(email));
-                    // dispatch(updatePassword(password));
-                    // const timestamp = new Date().getTime();
-                    // const expire = timestamp + (60*60*24*1000*3);
-                    // const expireDate = new Date(expire);
-                    // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-                    return history.push("/signin");
-                } else {
-                    setStatus(true);
-                }
-            })
+        (success, json) => {
+            if (success && json.result) {
+                // dispatch(updateEmail(email));
+                // dispatch(updatePassword(password));
+                // const timestamp = new Date().getTime();
+                // const expire = timestamp + (60*60*24*1000*3);
+                // const expireDate = new Date(expire);
+                // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
+                return history.push("/signin");
+            } else {
+                setStatus(true);
+            }
+        })
     }
 
     const [showPassword, setShowPassword] = React.useState(false);

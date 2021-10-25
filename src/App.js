@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Landing from './components/Landing.js';
+// For customer
 import Notification from './pages/customer/Notification';
 import SignIn from './pages/customer/SignIn';
 import SignUp from './pages/customer/SignUp';
@@ -19,12 +20,29 @@ import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import Home from './pages/customer/Home';
 import CheckToken from './helpers/checkToken';
+// For doctor
+import Doctor from './pages/doctor/Doctor';
+import DoctorProvider from './pages/doctor/DoctorProvider';
+// Both
+import { useSelector } from "react-redux";
+import { selectRole } from './store/userSlice';
 
 export default function App() {
+	let mark;
 	CheckToken();
+	const role = useSelector(selectRole);
+	console.log(role)
+	if(role === 'CUSTOMER') {
+		mark = 0;
+	}
+	else {
+		mark = 1;
+	}
 	return (
 		<Router>
-			<DrawerHeader />
+			{
+				role === 'DOCTOR' ? '' : <DrawerHeader mark={mark} />
+			}
 			<div
 				class="fb-like"
 				data-href="http://192.168.1.2:3000/home"
@@ -35,25 +53,68 @@ export default function App() {
 				data-share="true"
 			></div>
 			<Switch>
-				<Route exact path='/' component={Landing} />
-				<Route exact path='/notification' component={Notification} />
-				<Route exact path='/signin' component={SignIn} />
-				<Route exact path='/signup' component={SignUp} />
-				<Route exact path='/forgotpass' component={ForgotPass} />
-				<Route exact path='/profile' component={Profile} />
-				<Route exact path='/doctors' component={ListDoctors} />
-				<Route exact path='/phonebook' component={PhoneBook} />
-				<Route exact path='/appointment' component={Appointment} />
-				<Route exact path='/speciality' component={Speciality} />
-				<Route exact path='/savedquestion' component={SavedQuestion} />
-				<Route exact path='/task' component={Task} />
-				<Route exact path='/medicalrecords' component={MedicalrRecords} />
-				<Route exact path='/question' component={QuestionAnswer} />
-				<Route exact path='/home' component={Home} />
-				<Redirect to="/signin" />
+				<DoctorProvider>
+					<Route exact path='/' component={Landing} />
+					<Route exact path='/notification' component={Notification} />
+					<Route exact path='/signin' component={SignIn} />
+					<Route exact path='/signup' component={SignUp} />
+					<Route exact path='/forgotpass' component={ForgotPass} />
+					{
+						mark === 0 ? 
+							<>
+								<Route exact path='/profile' component={Profile} />
+								<Route exact path='/savedquestion' component={SavedQuestion} />
+								<Route exact path='/appointment' component={Appointment} />
+								<Route exact path='/medicalrecords' component={MedicalrRecords} />
+							</>
+							: ''
+					}
+					
+					<Route exact path='/phonebook' component={PhoneBook} />
+					<Route exact path='/speciality' component={Speciality} />
+					<Route exact path='/task' component={Task} />
+					<Route exact path='/doctors' component={ListDoctors} />
+					<Route exact path='/question' component={QuestionAnswer} />
+					<Route exact path='/home' component={Home} />
+					<Route exact path='/doctor/home' component={Doctor} />
+					{
+						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : <Redirect to="/home" />
+					}
+				</DoctorProvider>
 			</Switch>
 			<Footer />
+			{/* <DrawerHeader />
+			<div
+				class="fb-like"
+				data-href="http://192.168.1.2:3000/home"
+				data-width=""
+				data-layout="button_count"
+				data-action="like"
+				data-size="large"
+				data-share="true"
+			></div>
+			<DoctorProvider>
+				<Switch>
+					<Route exact path='/' component={Landing} />
+					<Route exact path='/notification' component={Notification} />
+					<Route exact path='/signin' component={SignIn} />
+					<Route exact path='/signup' component={SignUp} />
+					<Route exact path='/forgotpass' component={ForgotPass} />
+					<Route exact path='/profile' component={Profile} />
+					<Route exact path='/doctors' component={ListDoctors} />
+					<Route exact path='/phonebook' component={PhoneBook} />
+					<Route exact path='/appointment' component={Appointment} />
+					<Route exact path='/speciality' component={Speciality} />
+					<Route exact path='/savedquestion' component={SavedQuestion} />
+					<Route exact path='/task' component={Task} />
+					<Route exact path='/medicalrecords' component={MedicalrRecords} />
+					<Route exact path='/question' component={QuestionAnswer} />
+					<Route exact path='/home' component={Home} />
+					<Route exact path='/doctor/home' component={Doctor} />
+					<Redirect to="/signin" />
+				</Switch>
+			</DoctorProvider>
+			<Footer /> */}
 		</Router>
 	);
 }
-

@@ -7,8 +7,10 @@ import Typography from "@material-ui/core/Typography";
 import APIService from "../../../utils/APIService";
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
-import { updatePhone } from "../../../store/userSlice";
+import { updateRole, updatePhone } from "../../../store/userSlice";
 import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import { DoctorContext } from "../../doctor/DoctorProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function AuthPhone() {
+export default function SignInBySms() {
 
 	const classes = useStyles();
 	const [viewOtpForm, setViewOtpForm] = useState(false);
@@ -40,6 +42,8 @@ export default function AuthPhone() {
 		otp: ''
 	});
 	const cookies = new Cookies();
+
+	const { setUserId } = useContext(DoctorContext);
 	
 	const handleChange = (event) => {
 		let target = event.target;
@@ -81,12 +85,21 @@ export default function AuthPhone() {
         else {
             APIService.signInBySms(phoneNumber, code, (success, json) => {
                 if (success && json.result) {
+					// setUserId(json.result.id.toString());
+                	dispatch(updateRole(json.result.role));
 					dispatch(updatePhone(phoneNumber));
 					const timestamp = new Date().getTime();
 					const expire = timestamp + (60*60*24*1000*3);
 					const expireDate = new Date(expire);
 					cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-					return history.push("/home");
+					// return history.push("/home");
+					if(json.result.role === "CUSTOMER"){
+						return history.push("/home");
+					}
+					else if(json.result.role === "DOCTOR"){
+						setUserId(json.result.doctor.id.toString());
+						return history.push("/doctor/home");
+					}
                 } else {
                     return alert("Đã xảy ra lỗi đăng nhập!")
                 }
