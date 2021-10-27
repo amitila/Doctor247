@@ -18,7 +18,7 @@ import Speciality from './pages/customer/Speciality';
 import SavedQuestion from './pages/customer/SavedQuestion';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
-import Home from './pages/customer/Home';
+import HomeScreen from './pages/customer/Home/HomeScreen';
 import CheckToken from './helpers/checkToken';
 // For doctor
 import Doctor from './pages/doctor/Doctor';
@@ -26,6 +26,7 @@ import DoctorProvider from './pages/doctor/DoctorProvider';
 // Both
 import { useSelector } from "react-redux";
 import { selectRole } from './store/userSlice';
+import NotFound from './components/NotFound';
 
 export default function App() {
 	let mark;
@@ -74,8 +75,9 @@ export default function App() {
 					<Route exact path='/task' component={Task} />
 					<Route exact path='/doctors' component={ListDoctors} />
 					<Route exact path='/question' component={QuestionAnswer} />
-					<Route exact path='/home' component={Home} />
+					<Route exact path='/home' component={HomeScreen} />
 					<Route exact path='/doctor/home' component={Doctor} />
+					<Route exact path='/notfound' component={NotFound} />
 					{
 						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : <Redirect to="/home" />
 					}
