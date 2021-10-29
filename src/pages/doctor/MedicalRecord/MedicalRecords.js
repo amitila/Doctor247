@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import './Profile.css';
-import {DoctorContext} from './DoctorProvider';
-
+import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
+import { DoctorContext } from '../Home/DoctorProvider';
+
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -24,7 +24,6 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
@@ -163,37 +162,80 @@ const rows = [
 
 function MedicalRecordList() {
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
-        <TableContainer component={Paper}>
-            <Grid container xs={12} sm={12} spacing={3}>
-                <Grid item xs={8} sm={8} md={8}>
-                    <h3>Danh sách bệnh án</h3>
+        <React.Fragment>
+            <TableContainer component={Paper}>
+                <Grid container xs={12} sm={12} spacing={3}>
+                    <Grid item xs={8} sm={8} md={8}>
+                        <h3>Danh sách bệnh án</h3>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                            Thêm mới
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                <Button variant="outlined" color="primary">
-                        Thêm mới
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell />
+                            <TableCell width="15%">Mã hồ sơ</TableCell>
+                            <TableCell width="15%">Tên bệnh nhân</TableCell>
+                            <TableCell width="15%">Ngày khám</TableCell>
+                            <TableCell width="15%">Trạng thái</TableCell>
+                            <TableCell width="20%">Ghi chú</TableCell>
+                            <TableCell width="20%"></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <Row key={row.name} row={row} />
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Tên bệnh nhân"
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Ngày khám"
+                        defaultValue="2021-09-13"
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Ghi chú"
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        OK
                     </Button>
-                </Grid>
-            </Grid>            
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell width="15%">Mã hồ sơ</TableCell>
-                        <TableCell width="15%">Tên bệnh nhân</TableCell>
-                        <TableCell width="15%">Ngày khám</TableCell>
-                        <TableCell width="15%">Trạng thái</TableCell>
-                        <TableCell width="20%">Ghi chú</TableCell>
-                        <TableCell width="20%"></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row) => (
-                        <Row key={row.name} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    <Button onClick={handleClose} color="primary">
+                        Huỷ
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </React.Fragment>
     );
 }
 
@@ -508,11 +550,11 @@ function MedicalRecordDetail() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Huỷ
-                    </Button>
                     <Button onClick={handleConfirm} color="primary">
                         Xác nhận
+                    </Button>
+                    <Button onClick={handleClose} color="primary">
+                        Huỷ
                     </Button>
                 </DialogActions>
             </Dialog>

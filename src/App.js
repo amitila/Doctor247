@@ -21,8 +21,8 @@ import Footer from './layouts/customer/Footer';
 import HomeScreen from './pages/customer/Home/HomeScreen';
 import CheckToken from './helpers/checkToken';
 // For doctor
-import Doctor from './pages/doctor/Doctor';
-import DoctorProvider from './pages/doctor/DoctorProvider';
+import Doctor from './pages/doctor/Home/Doctor';
+import DoctorProvider from './pages/doctor/Home/DoctorProvider';
 // Both
 import { useSelector } from "react-redux";
 import { selectRole } from './store/userSlice';

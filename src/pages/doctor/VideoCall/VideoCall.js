@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import Button from '@mui/material/Button';
 import { io } from "socket.io-client";
-import {DoctorContext} from './DoctorProvider';
+import { DoctorContext } from '../Home/DoctorProvider';
 import { makeStyles } from '@material-ui/core';
-import userImg from './../../assets/user.png';
+import userImg from '../../../assets/user.png';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import {useLocation} from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
     customer: {

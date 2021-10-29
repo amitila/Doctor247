@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { db } from '../../../firebase/config';
 import { getNowDateTimeCode, getDateTimeShow } from '../../../firebase/service';
 import Message from './Message';
-import { DoctorContext } from '../DoctorProvider';
+import { DoctorContext } from '../Home/DoctorProvider';
 import { GetMessages } from '../../../firebase/useFirestore';
 
 import { useContext, useState, useEffect } from 'react/cjs/react.development';

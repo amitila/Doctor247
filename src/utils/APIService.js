@@ -1,7 +1,7 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.2:8080';
+	static urlServerAddress = 'http://localhost:8081';
 
 // For customer
 	static baseAPI = () => {
@@ -125,6 +125,46 @@ export default class APIService {
 	static apiDoctorCheckToken = () => {
 		return `${APIService.baseAPI()}doctor/users/check-token`;
 	};
+
+    // Doctor Answer URL
+    static apiDoctorAnswer = () => {
+        return `${APIService.baseAPI()}doctor/answer`;
+    }
+
+    // Doctor Appointment URL
+    static apiDoctorAppointment = () => {
+        return `${APIService.baseAPI()}doctor/appointment`;
+    }
+
+	// Doctor Appointment URL
+    static apiDoctorAppointmentById = (id) => {
+        return `${APIService.baseAPI()}doctor/appointment/${id}`;
+    }
+
+	// Doctor Medical Record URL
+	static apiDoctorMedicalRecord = (id) => {
+        return `${APIService.baseAPI()}doctor/medical-record/id=${id}`;
+    }
+
+    // Doctor Question URL
+    static apiDoctorMedicalRecord = () => {
+        return `${APIService.baseAPI()}doctor/medical-record`;
+    }
+
+    // Doctor Profile URL
+    static apiDoctorOperation = () => {
+        return `${APIService.baseAPI()}doctor/operation`;
+    }
+    
+    // Doctor Profile URL
+    static apiDoctorProfile = () => {
+        return `${APIService.baseAPI()}doctor/users/profile`;
+    }
+
+    // Doctor Question URL
+    static apiDoctorQuestion = () => {
+        return `${APIService.baseAPI()}doctor/question`;
+    }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -618,5 +658,87 @@ export default class APIService {
 			callback,
 		);
 	}
+
+	// Get Doctor Appointment
+	static getDoctorAppointment(token, callback) {
+		WebService.sendJsonGET(
+			this.apiDoctorAppointment(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// Get Doctor Appointment by id
+	static getDoctorAppointmentById(token, id, callback) {
+		WebService.sendJsonGET(
+			this.apiDoctorAppointmentById(id),
+			{
+				jwt: token,
+			},
+			callback,
+		);
+	}
+
+	// Get Doctor Medical Records
+	static getDoctorMedicalRecord(token, id, values, callback) {
+		const formData = new FormData();
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		WebService.sendJsonGET(
+			this.apiDoctorMedicalRecord(id),
+			{
+				jwt: token,
+				id,
+				formData
+			},
+			callback,
+		);
+	}
+
+    // Get Doctor Profile
+    static getDoctorProfile(token, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorProfile(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
+
+    // Put Doctor Profile
+    static putDoctorProfile(token, callback) {
+        WebService.sendJsonPUT(
+			this.apiDoctorProfile(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
+
+    // Get Doctor Operation
+    static getDoctorOperation(token, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorOperation(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
+
+    // Put Doctor Operation
+    static putDoctorOperation(token, callback) {
+        WebService.sendJsonPUT(
+			this.apiDoctorOperation(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
 
 }
