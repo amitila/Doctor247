@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
+import ProfileForm from '../forms/ProfileForm/ProfileForm';
 
 const ProfileScreen = ({navigation}) => {
 	return (
 		<View style={styles.container}>
-			<Text>Profile Screen</Text>
-			<Button
+			<ProfileForm/>
+			{/* <Button
 				title="Đăng nhập/Đăng ký"
 				onPress={() => navigation.navigate("SignUpScreen")}
-			/>
+			/> */}
 		</View>
 	);
 };

@@ -1,8 +1,9 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.7:8080';
+	static urlServerAddress = 'http://192.168.1.4:8080';
 
+	// For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
 	};
@@ -119,23 +120,31 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/doctor/${id}`;
 	};
 
-  	// TODO: multipart
+	// For doctor 
 
-//====================CHECK-TOKEN AND SET NEW TOKEN======================
+	static apiDoctorCheckToken = () => {
+		return `${APIService.baseAPI()}doctor/users/check-token`;
+	};
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	// TODO: For customer
+
+	//====================CHECK-TOKEN AND SET NEW TOKEN======================
 
 	// api for check-token
 	static checkToken(token, callback) {
 		WebService.sendJsonPOST(
 			this.apiCheckToken(),
 			{
-				jwt : token,
+				jwt: token,
 				token
 			},
 			callback,
 		);
 	}
-	  
-//====================SIGNIGN======================
+
+	//====================SIGNIGN======================
 	// api for SignIn
 	static signIn(email, password, callback) {
 		WebService.sendJsonPOST(
@@ -171,10 +180,10 @@ export default class APIService {
 		);
 	}
 
-//====================PROFILE======================
+	//====================PROFILE======================
 
 	// api for Get Profile
-	static getProfile(token, callback ) {
+	static getProfile(token, callback) {
 		WebService.sendJsonGET(
 			this.apiProfile(),
 			{
@@ -185,13 +194,23 @@ export default class APIService {
 	}
 
 	// api for Put Profile
-	static putProfile(token, values, callback ) {
+	static putProfile(token, values, callback) {
 		const formData = new FormData();
 		formData.append('firstName', values.firstName);
 		formData.append('lastName', values.lastName);
 		formData.append('gender', values.gender);
 		formData.append('birthday', values.birthday);
-		formData.append('avatar', values.avatar);
+		if (values.avatar) {
+			let uriParams = values.avatar.uri.split('/');
+			const fileName = uriParams[uriParams.length - 1];
+			const fileData = fileName.split('.');
+			const fileType = fileData[fileData.length - 1];
+			formData.append('avatar', {
+				uri: values.avatar.uri,
+				name: `${fileName}`,
+				type: values.avatar.mime ? values.avatar.mime : `image/${fileType}`,
+			});
+		}
 		formData.append('phoneNumber', values.phoneNumber);
 		formData.append('provinceId', values.provinceId);
 		formData.append('address', values.address);
@@ -205,7 +224,7 @@ export default class APIService {
 		);
 	}
 
-//====================SIGNUP======================
+	//====================SIGNUP======================
 
 	// api for SignUp
 	static signUp(values, callback) {
@@ -249,7 +268,7 @@ export default class APIService {
 		);
 	}
 
-//====================APPOINTMENT======================
+	//====================APPOINTMENT======================
 
 	// api for Post Appointment Form
 	static postAppointment(token, values, callback) {
@@ -258,9 +277,20 @@ export default class APIService {
 		formData.append('doctorId', values.doctorId);
 		formData.append('dayTime', values.dayTime);
 		formData.append('description', values.description);
-		values.images.forEach((image, index) => {
-			formData.append(`images[${index}]`, image);
-		  });
+		if (values.images) {
+			values.images.map((image, index) => {
+				let uriParams = image.uri.split('/');
+				const fileName = uriParams[uriParams.length - 1];
+				const fileData = fileName.split('.');
+				const fileType = fileData[fileData.length - 1];
+				formData.append(`images[${index}]`, {
+					uri: image.uri,
+					name: `${fileName}`,
+					type: image.mime ? image.mime : `image/${fileType}`,
+				});
+			});
+			
+		}
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{
@@ -290,7 +320,7 @@ export default class APIService {
 	}
 
 	// api for Get an appoitment by id
-	static getAppointmentById( token, id, callback ) {
+	static getAppointmentById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiAppointmentById(id),
 			{
@@ -301,7 +331,7 @@ export default class APIService {
 	}
 
 	// api for Delete an appoitment by id
-	static deleteAppointmentById( token, id, callback ) {
+	static deleteAppointmentById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiAppointmentById(id),
 			{
@@ -311,10 +341,10 @@ export default class APIService {
 		);
 	}
 
-//====================PROVINCES======================
+	//====================PROVINCES======================
 
 	// api for Get Provinces
-	static getProvinces( callback ) {
+	static getProvinces(callback) {
 		WebService.sendJsonGET(
 			this.apiProvinces(),
 			{
@@ -323,17 +353,27 @@ export default class APIService {
 		);
 	}
 
-//====================GUARDIAN======================
+	//====================GUARDIAN======================
 
 	// api for Post Guardian
-	static postGuardian(token, values, callback ) {
+	static postGuardian(token, values, callback) {
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
 		formData.append('lastName', values.lastName);
 		formData.append('gender', values.gender);
 		formData.append('birthday', values.birthday);
-		formData.append('avatar', values.avatar);
+		if (values.avatar) {
+			let uriParams = values.avatar.uri.split('/');
+			const fileName = uriParams[uriParams.length - 1];
+			const fileData = fileName.split('.');
+			const fileType = fileData[fileData.length - 1];
+			formData.append('avatar', {
+				uri: values.avatar.uri,
+				name: `${fileName}`,
+				type: values.avatar.mime ? values.avatar.mime : `image/${fileType}`,
+			});
+		}
 		formData.append('phoneNumber', values.phoneNumber);
 		formData.append('provinceId', values.provinceId);
 		formData.append('address', values.address);
@@ -348,7 +388,7 @@ export default class APIService {
 	}
 
 	// api for Get Guardian
-	static getGuardian(token, callback ) {
+	static getGuardian(token, callback) {
 		WebService.sendJsonGET(
 			this.apiGuardian(),
 			{
@@ -359,7 +399,7 @@ export default class APIService {
 	}
 
 	// api for Put a Guardian by id
-	static putGuardianById( token, id, values, callback ) {
+	static putGuardianById(token, id, values, callback) {
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
@@ -402,10 +442,10 @@ export default class APIService {
 	// 	);
 	// }
 
-//====================QUESTION======================
+	//====================QUESTION======================
 
 	// api for Get Question My
-	static getQuestionMy(token, callback ) {
+	static getQuestionMy(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestionMy(),
 			{
@@ -413,10 +453,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for All Questions
-	static getQuestion(token, callback ) {
+	static getQuestion(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestion(),
 			{
@@ -424,16 +464,30 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Post A Question
 	static postQuestion(token, values, callback) {
 		const formData = new FormData();
 		formData.append('title', values.title);
 		formData.append('content', values.content);
-		values.images.forEach((image, index) => {
-			formData.append(`images[${index}]`, image);
-		});
+		if (values.images) {
+			values.images.map((image, index) => {
+				let uriParams = image.uri.split('/');
+				const fileName = uriParams[uriParams.length - 1];
+				const fileData = fileName.split('.');
+				const fileType = fileData[fileData.length - 1];
+				formData.append(`images[${index}]`, {
+					uri: image.uri,
+					name: `${fileName}`,
+					type: image.mime ? image.mime : `image/${fileType}`,
+				});
+			});
+			
+		}
+		// values.images.forEach((image, index) => {
+		// 	formData.append(`images[${index}]`, image);
+		// });
 		WebService.sendJsonPOST(
 			this.apiQuestion(),
 			{
@@ -445,7 +499,7 @@ export default class APIService {
 	}
 
 	// api for Put Question By Id
-	static putQuestionById(token, id, values, callback ) {
+	static putQuestionById(token, id, values, callback) {
 		const formData = new FormData();
 		formData.append('title', values.title);
 		formData.append('content', values.content);
@@ -466,7 +520,7 @@ export default class APIService {
 	}
 
 	// api for Delete Question By Id
-	static deleteQuestionById(token, id, callback ) {
+	static deleteQuestionById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiQuestionById(id),
 			{
@@ -476,10 +530,10 @@ export default class APIService {
 		);
 	}
 
-//====================SAVE - UNSAVE QUESTION======================
+	//====================SAVE - UNSAVE QUESTION======================
 
 	// api for Get Saved Question
-	static getSavedQuestion(token, callback ) {
+	static getSavedQuestion(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestionSave(),
 			{
@@ -487,10 +541,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Put Question Save By Id
-	static putQuestionSaveById(token, id, callback ) {
+	static putQuestionSaveById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionSaveById(id),
 			{
@@ -501,7 +555,7 @@ export default class APIService {
 	}
 
 	// api for Put Question UnSave By Id
-	static putQuestionUnSaveById(token, id, callback ) {
+	static putQuestionUnSaveById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiQuestionUnSaveById(id),
 			{
@@ -511,10 +565,10 @@ export default class APIService {
 		);
 	}
 
-//====================LIKE - UNLIKE QUESTION======================
+	//====================LIKE - UNLIKE QUESTION======================
 
 	// api for Put Question Like By Id
-	static putQuestionLikeById(token, id, callback ) {
+	static putQuestionLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionLikeById(id),
 			{
@@ -525,7 +579,7 @@ export default class APIService {
 	}
 
 	// api for Put Question Like By Id
-	static putQuestionUnLikeById(token, id, callback ) {
+	static putQuestionUnLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionUnLikeById(id),
 			{
@@ -535,10 +589,10 @@ export default class APIService {
 		);
 	}
 
-//====================LIKE - UNLIKE ANSWER======================
+	//====================LIKE - UNLIKE ANSWER======================
 
 	// api for Get Answer By Id
-	static getAnswerById(token, id, callback ) {
+	static getAnswerById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiAnswerById(id),
 			{
@@ -546,10 +600,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Put Answer Like By Id
-	static putAnswerLikeById(token, id, callback ) {
+	static putAnswerLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiAnswerLikeById(id),
 			{
@@ -560,7 +614,7 @@ export default class APIService {
 	}
 
 	// api for Put Answer Like By Id
-	static putAnswerUnLikeById(token, id, callback ) {
+	static putAnswerUnLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiAnswerUnLikeById(id),
 			{
@@ -570,10 +624,10 @@ export default class APIService {
 		);
 	}
 
-//====================DOCTOR - LIST======================
+	//====================DOCTOR - LIST======================
 
 	// api for Get Doctor List
-	static getDoctorList(token, callback ) {
+	static getDoctorList(token, callback) {
 		WebService.sendJsonGET(
 			this.apiDoctorList(),
 			{
@@ -581,10 +635,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Doctor By Id
-	static getDoctorById(token, id, callback ) {
+	static getDoctorById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiDoctorById(id),
 			{
@@ -592,6 +646,22 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
+
+	// TODO: For doctor
+
+	//====================CHECK-TOKEN AND SET NEW TOKEN======================
+
+	// api for check-token
+	static doctorCheckToken(token, callback) {
+		WebService.sendJsonPOST(
+			this.apiDoctorCheckToken(),
+			{
+				jwt: token,
+				token
+			},
+			callback,
+		);
+	}
 
 }

@@ -17,6 +17,9 @@ import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
 import Users from '../model/users';
 import APIService from '../utils/APIService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { useDispatch } from "react-redux";
+// import {updateId, updateRole, updateEmail, updatePassword, updateToken } from "../store/userSlice";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -28,6 +31,8 @@ const SignInScreen = ({ navigation }) => {
 		isValidUser: true,
 		isValidPassword: true,
 	});
+
+	// const dispatch = useDispatch();
 
 	const { colors } = useTheme();
 
@@ -99,6 +104,22 @@ const SignInScreen = ({ navigation }) => {
 
 		APIService.signIn(username, password, (success, json) => {
 			if(success && json.result){
+				// dispatch(updateId(json.result.id));
+				// dispatch(updateRole(json.result.role));
+                // dispatch(updateEmail(email));
+                // dispatch(updatePassword(password));
+				// dispatch(updateToken(json.result.token));
+				
+				AsyncStorage.setItem('role', json.result.role);
+				AsyncStorage.setItem('gender', json.result.customer.gender);
+				AsyncStorage.setItem('email', json.result.email);
+				AsyncStorage.setItem('token', json.result.token);
+
+				// AsyncStorage.getItem('token')
+				// .then((value) => {
+				// 	console.log(value)
+				// })
+
 				const foundUser = Users.filter(item => {
 					return username == item.username && password == item.password || success;
 				});

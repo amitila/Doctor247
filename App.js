@@ -114,7 +114,8 @@ const App = () => {
 			} catch (e) {
 				console.log(e);
 			}
-			// console.log('user token: ', userToken);
+			console.log('user token: ', userToken);
+			console.log('token: ', await AsyncStorage.getItem('token'));
 			dispatch({ type: 'LOGIN', id: userName, token: userToken });
 		},
 		signOut: async () => {
@@ -122,6 +123,8 @@ const App = () => {
 			// setIsLoading(false);
 			try {
 				await AsyncStorage.removeItem('userToken');
+				console.log('token: ', await AsyncStorage.getItem('token'));
+				await AsyncStorage.removeItem('token');
 			} catch (e) {
 				console.log(e);
 			}
