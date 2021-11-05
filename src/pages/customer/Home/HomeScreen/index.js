@@ -70,7 +70,7 @@ export default function HomeScreen() {
 	const cookies = new Cookies();
 	const [token, setToken] = React.useState(cookies.get("token"));
 
-	const [status, setStatus] = React.useState(false);
+	// const [status, setStatus] = React.useState(false);
 	useEffect(() => {
 		if(token) {
 			APIService.checkToken(token, (success, json) => {
@@ -85,7 +85,8 @@ export default function HomeScreen() {
 					dispatch(updateId(json.result.id));
 					dispatch(updateName(json.result.customer.lastName));
 				} else {
-					setStatus(true);
+					// setStatus(true);
+					alert('Phiên đã hết hạn, Bạn vui lòng đăng nhập lại!')
 				}
 			}) 
 		}
@@ -113,9 +114,9 @@ export default function HomeScreen() {
 				<link to="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet" />
 			</head>
 			<body>
-				{
+				{/* {
 					status ? <Alert severity="error">Phiên đã hết hạn, bạn vui lòng đăng nhập lại!</Alert> : ''
-				}
+				} */}
 				{/* Navigation */}
 				{/* <nav className="navbar bg-dark navbar-dark navbar-expand-lg">
 					<div className="container">Ami</div>
@@ -256,7 +257,13 @@ export default function HomeScreen() {
 								<img src="img/onlinepay.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Thanh toán trực tuyến</b></h4>
 								<p className={classes.text}>Thanh toán qua cổng thanh toán trực tuyến nhanh gọn lẹ</p>
-								<Link to="#" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								<Link 
+									to={{ pathname: "http://192.168.1.4:8888/order/create_payment_url" }} 
+									className={classNames("btn btn-outline-dark btn-md", classes.button)}
+									target="_blank"
+								>
+										Xem chi tiết
+								</Link>
 							</div>
 						</div>
 					</div>

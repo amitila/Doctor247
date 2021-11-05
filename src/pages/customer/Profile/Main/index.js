@@ -136,6 +136,10 @@ export default function Index(props) {
             toDataURL(data.avatar ? data.avatar: "https://thelifetank.com/wp-content/uploads/2018/08/avatar-default-icon.png")
             .then(dataUrl => {
                 const fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+                console.log(dataUrl)
+                console.log('fileData')
+                console.log(fileData)
+                console.log(typeof(fileData))
                 APIService.putGuardianById(
                     token,
                     data.id,
@@ -175,13 +179,41 @@ export default function Index(props) {
         return result;
     }
 
-    const onDelete = (id) => {
-        const index = findIndex(id);
-        if (index !== -1) {
-            profiles.splice(index, 1);
-            localStorage.setItem('profiles', JSON.stringify(profiles));
-        }
+    const onDelete = (id, type) => {
+        const token = getToken();
+        APIService.getCodeVerifyGuardian(
+            token,
+            {
+                id: id,
+                type: type
+            },
+            (success, json) => {
+                if (success && json.result) {
+                    setIsHaveChange(true);
+                    return alert(" Vui lòng kiểm tra mail/tin nhắn !");
+                } else {
+                    return alert(json.error);
+                }
+            }
+        )
         onCloseForm();
+    }
+
+    const handleConfirmDelete = (id, code) => {
+        const token = getToken();
+        APIService.deleteGuardian(
+            token,
+            id,
+            code,
+            (success, json) => {
+                if (success && json.result) {
+                    setIsHaveChange(true);
+                    return alert(" Xóa THÀNH CÔNG !");
+                } else {
+                    return alert(json.error);
+                }
+            }
+        )
     }
 
     const onUpdate = (id) => {
@@ -226,6 +258,7 @@ export default function Index(props) {
                                 <ProfileList
                                     profiles={profiles}
                                     onDelete={onDelete}
+                                    handleConfirmDelete={handleConfirmDelete}
                                     onUpdate={onUpdate}
                                 />
                             </Grid>
@@ -245,6 +278,7 @@ export default function Index(props) {
                             <ProfileList
                                 profiles={profiles}
                                 onDelete={onDelete}
+                                handleConfirmDelete={handleConfirmDelete}
                                 onUpdate={onUpdate}
                             />
                         </Grid>

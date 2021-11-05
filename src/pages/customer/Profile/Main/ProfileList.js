@@ -10,6 +10,7 @@ export default function ProfileList(props) {
             index={index + 1}
             task={task}
             onDelete={props.onDelete}
+            handleConfirmDelete={props.handleConfirmDelete}
             onUpdate={props.onUpdate}
         />
     });

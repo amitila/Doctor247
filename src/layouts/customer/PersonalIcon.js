@@ -162,7 +162,7 @@ export default function PersonalIcon(props) {
 						lastName: json.result.customer.lastName,
 						birthday: json.result.customer.birthday ? json.result.customer.birthday.slice(0,10) : "1890-10-01",
 						gender: json.result.customer.gender,
-						phoneNumber: json.result.phoneNumber,
+						phoneNumber: json.result.phoneNumber ? json.result.phoneNumber : json.result.customer.contactPhoneNumber,
 						healthInsuranceCode: json.result.customer.healthInsuranceCode ? json.result.customer.healthInsuranceCode : '' ,
 						address: json.result.customer.address ? json.result.customer.address : '',
 						province: json.result.customer.province?.name,
@@ -178,6 +178,8 @@ export default function PersonalIcon(props) {
 	const onSave = (event) => {
         event.preventDefault();
 		const token = getToken();
+		console.log(typeof(url))
+		console.log(url)
         APIService.putProfile(
 			token,
 			{

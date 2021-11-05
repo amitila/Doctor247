@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,7 +6,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
+import PasswordIcon from '@mui/icons-material/Password';
+import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,43 +36,60 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ForgotPassword() {
+export default function ChangePassword() {
     const classes = useStyles();
+    const history = useHistory();
+
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [newPassword_1, setNewPassword_1] = useState('');
+    const [view, setView] = useState(false);
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        if(newPassword !== newPassword_1) {
+            return alert('Mật khẩu cũ không đúng hay hai lần nhập mật khẩu mới không trùng nhau, vui lòng nhập lại!')
+        }
+        else {
+            const token = getToken();
+            APIService.changePassword(
+                token,
+                password,
+                newPassword,
+                (success, json) => {
+                    if (success && json.result) {
+                        alert("Đổi mật khẩu THÀNH CÔNG !");
+                        return history.push('/home')
+                    } else {
+                        return alert("THẤT BẠI !");
+                    }
+                })
+        }  
+    }
 
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <MailTwoToneIcon />
+                    <PasswordIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Email / Số điện thoại đăng ký
+                    Đổi mật khẩu
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} onSubmit={onSubmit}>
                     <TextField
                         className={classes.textField}
                         variant="standard"
                         margin="normal"
                         required
                         fullWidth
-                        id="username"
-                        label="Địa chỉ email / Số điện thoại"
-                        name="username"
-                        autoComplete="username"
-                        autoFocus
-                    />
-                    <TextField
-                        className={classes.textField}
-                        variant="standard"
-                        margin="normal"
-                        required
-                        fullWidth
+                        type= {view ? 'text' : 'password'}
                         id="password"
-                        label="Nhập mật khẩu cũ"
+                        label="Mật khẩu hiện tại"
                         name="password"
                         autoComplete="password"
-                        autoFocus
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <TextField
                         className={classes.textField}
@@ -77,11 +97,12 @@ export default function ForgotPassword() {
                         margin="normal"
                         required
                         fullWidth
+                        type= {view ? 'text' : 'password'}
                         id="newPassword"
                         label="Mật khẩu mới"
                         name="newPassword"
                         autoComplete="newPassword"
-                        autoFocus
+                        onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <TextField
                         className={classes.textField}
@@ -89,12 +110,22 @@ export default function ForgotPassword() {
                         margin="normal"
                         required
                         fullWidth
-                        id="code"
-                        label="Mã OTP"
-                        name="code"
-                        autoComplete="code"
-                        autoFocus
+                        type= {view ? 'text' : 'password'}
+                        id="newPassword_1"
+                        label="Nhập lại mật khẩu mới"
+                        name="newPassword_1"
+                        autoComplete="newPassword_1"
+                        onChange={(e) => setNewPassword_1(e.target.value)}
                     />
+                    <Button
+                        style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
+                        onClick={() => setView(!view)}
+                        // variant="contained"
+                        color="main"
+                        className={classes.submit}
+                    >
+                        <b>{view ? 'Ẩn mật khẩu' : 'Xem rõ'}</b>
+                    </Button>
                     <Button
                         type="submit"
                         fullWidth
@@ -102,7 +133,7 @@ export default function ForgotPassword() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Xác nhận
+                        Xác nhận đổi
                     </Button>
                 </form>
             </div>

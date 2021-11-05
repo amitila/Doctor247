@@ -20,6 +20,7 @@ export default function Index(props) {
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     const [sort, setSort] = useState({by: 'name', value: 1});
+    const [doctorList, setDoctorList] = useState([]);
     var status = 'PENDING';
 
     var flag = appointments;
@@ -33,11 +34,11 @@ export default function Index(props) {
         if (isHaveChange) {
             getAppointment();
             onGetGuardian();
+            getDoctors();
         }
     }, [status, isHaveChange])
 
     const getAppointment = () => {
-        
         const token = getToken();
         const appointmentList = [];
         APIService.getAppointment(
@@ -65,6 +66,36 @@ export default function Index(props) {
                     return console.log("thành công");
                 } else {
                     return alert("Lỗi server!");
+                }
+            }
+        )
+    }
+
+    const getDoctors = () => {
+        const token = getToken();
+        const drList = [];
+        APIService.getDoctorList(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return drList.push(item);
+                    })
+                    setDoctorList(drList?.map(item => {
+                        return {
+                            id: item.doctor.id,
+                            avatar: item.doctor.avatarURL,
+                            name: item.doctor.firstName +' '+ item.doctor.lastName,
+                            specialist: item.doctor.specialized.name,
+                            phone:"0257296632",
+                            year_exp:"5 năm kinh nghiệm",
+                            workplace: item.doctor.operation[0].workplace.name,
+                        }
+                    }))
+                    setIsHaveChange(false);
+                    return console.log("thành công");
+                } else {
+                    return console.log("lỗi server");
                 }
             }
         )
@@ -149,7 +180,7 @@ export default function Index(props) {
                 if (success && json.result) {
                     return 0;
                 } else {
-                    return alert("THẤT BẠI!");
+                    return console.log("THẤT BẠI!");
                 }
             }
         )
@@ -235,6 +266,7 @@ export default function Index(props) {
                 onSubmit={onSubmit} 
                 onCloseForm={onCloseForm} 
                 patientList={patientList}
+                doctorList={doctorList}
                 task={taskEditing}
             /> : '';
             

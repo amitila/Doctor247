@@ -37,9 +37,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectName, updateName, updateRole, selectAvatar } from '../../store/userSlice';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import WorkIcon from '@mui/icons-material/Work';
 import MenuItem from '@mui/material/MenuItem';
 import { withStyles } from "@material-ui/core/styles";
 import SaveIcon from '@mui/icons-material/Save';
+import SettingsIcon from '@mui/icons-material/Settings';
 import APIService from '../../utils/APIService';
 import getToken from '../../helpers/getToken';
 
@@ -336,7 +338,9 @@ export default function DrawerHeader(props) {
                                 <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
                                 <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
+                                <div className={classes.link} onClick={()=>history.push("/service")}>Khám dịch vụ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/savedquestion")}>Đã lưu</div>,
+                                <div className={classes.link} onClick={()=>history.push("/setting")}>Cài đặt</div>,
                                 <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
                                 // <Link className={classes.link} to="/home">Trang chủ</Link>,
                                 // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
@@ -358,7 +362,9 @@ export default function DrawerHeader(props) {
                                             <HelpIcon />, 
                                             <LibraryBooksIcon />, 
                                             <FolderSpecialIcon />,
+                                            <WorkIcon />,
                                             <SaveIcon />,
+                                            <SettingsIcon />,
                                             <ScheduleIcon />][index]
                                         }
                                     </ListItemIcon>
@@ -370,7 +376,6 @@ export default function DrawerHeader(props) {
                         <MenuList>
                             {[
                                 <div className={classes.link} onClick={()=>history.push("/notification")}>Thông báo</div>,
-                                
                                 (name ? 
                                     <div className={classes.link} onClick={onSignOut}>Thoát</div>
                                     : 

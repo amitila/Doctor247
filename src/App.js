@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Landing from './components/Landing.js';
 // For customer
+import Setting from './pages/customer/Setting';
 import Notification from './pages/customer/Notification';
 import SignIn from './pages/customer/SignIn';
 import SignUp from './pages/customer/SignUp';
@@ -15,6 +16,7 @@ import QuestionAnswer from './pages/customer/QuestionAnswer';
 import Appointment from './pages/customer/Appointment';
 import MedicalrRecords from './pages/customer/MedicalRecords';
 import Speciality from './pages/customer/Speciality';
+import Service from './pages/customer/Service';
 import SavedQuestion from './pages/customer/SavedQuestion';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
@@ -66,12 +68,13 @@ export default function App() {
 								<Route exact path='/savedquestion' component={SavedQuestion} />
 								<Route exact path='/appointment' component={Appointment} />
 								<Route exact path='/medicalrecords' component={MedicalrRecords} />
+								<Route exact path='/setting' component={Setting} />
 							</>
 							: ''
 					}
-					
 					<Route exact path='/phonebook' component={PhoneBook} />
 					<Route exact path='/speciality' component={Speciality} />
+					<Route exact path='/service' component={Service} />
 					<Route exact path='/task' component={Task} />
 					<Route exact path='/doctors' component={ListDoctors} />
 					<Route exact path='/question' component={QuestionAnswer} />

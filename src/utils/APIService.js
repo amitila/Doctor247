@@ -1,7 +1,7 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.2:8080';
+	static urlServerAddress = 'http://192.168.1.4:8080';
 
 // For customer
 	static baseAPI = () => {
@@ -10,6 +10,22 @@ export default class APIService {
 
 	static apiCheckToken = () => {
 		return `${APIService.baseAPI()}customer/users/check-token`;
+	};
+
+	static apiChangePassword = () => {
+		return `${APIService.baseAPI()}customer/users/password`;
+	};
+
+	static apiForgotPassword = () => {
+		return `${APIService.baseAPI()}user/forgot-password`;
+	};
+
+	static apiForgotPasswordMail = () => {
+		return `${APIService.baseAPI()}user/forgot-password/mail`;
+	};
+
+	static apiForgotPasswordSms = () => {
+		return `${APIService.baseAPI()}user/forgot-password/sms`;
 	};
 
 	static apiSignIn = () => {
@@ -40,6 +56,22 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/users/profile`;
 	};
 
+	static apiAdd = () => {
+		return `${APIService.baseAPI()}customer/users/add`;
+	};
+
+	static apiGetCodeToAddPhoneNumber = () => {
+		return `${APIService.baseAPI()}customer/users/phoneNumber`;
+	};
+
+	static apiVerifyPhoneNumberBeforeAddEmail = () => {
+		return `${APIService.baseAPI()}customer/users/email/verify`;
+	};
+
+	static apiGetCodeToAddEmail = () => {
+		return `${APIService.baseAPI()}customer/users/email`;
+	};
+
 	static apiAppointment = () => {
 		return `${APIService.baseAPI()}customer/appointment`;
 	};
@@ -56,12 +88,24 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/guardian`;
 	};
 
-	// static apiGuardianSendMail = () => {
-	// 	return `${APIService.baseAPI()}customer/guardian/send-mail`;
-	// };
+	static apiGuardianVerify = () => {
+		return `${APIService.baseAPI()}customer/guardian/delete/verify`;
+	};
+
+	static apiDeleteGuardianById = (id) => {
+		return `${APIService.baseAPI()}customer/guardian/delete/${id}`;
+	};
 
 	static apiGuardianById = (id) => {
 		return `${APIService.baseAPI()}customer/guardian/${id}`;
+	};
+
+	static apiPublicQuestion = () => {
+		return `${APIService.baseAPI()}question`;
+	};
+
+	static apiPublicAnswerById = (id) => {
+		return `${APIService.baseAPI()}question/answer/${id}`;
 	};
 
 	static apiQuestionMy = () => {
@@ -116,6 +160,10 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/doctor/list`;
 	};
 
+	static apiDoctorOperation = () => {
+		return `${APIService.baseAPI()}customer/doctor/operation`;
+	};
+
 	static apiDoctorById = (id) => {
 		return `${APIService.baseAPI()}customer/doctor/${id}`;
 	};
@@ -139,6 +187,59 @@ export default class APIService {
 			{
 				jwt : token,
 				token
+			},
+			callback,
+		);
+	}
+
+//====================PASSWORD======================
+
+	// api for Change Password
+	static changePassword(token, password, newPassword, callback) {
+		WebService.sendJsonPUT(
+			this.apiChangePassword(),
+			{
+				jwt : token,
+				password,
+				newPassword
+			},
+			callback,
+		);
+	}
+
+	// api for Forgot Password
+	static forgotPassword(token, newPassword, code, type, email, phoneNumber, callback) {
+		WebService.sendJsonPUT(
+			this.apiForgotPassword(),
+			{
+				jwt : token,
+				newPassword,
+				code,
+				type,
+				email,
+				phoneNumber
+			},
+			callback,
+		);
+	}
+
+	// api for Forgot Password Sms
+	static forgotPasswordMail(email, callback) {
+		WebService.sendJsonPOST(
+			this.apiForgotPasswordMail(),
+			{
+				email
+			},
+			callback,
+		);
+	}
+
+	// api for Forgot Password Sms
+	static forgotPasswordSms(phoneNumber, callback) {
+		WebService.sendJsonPOST(
+			this.apiForgotPasswordSms(),
+			{
+				phoneNumber
 			},
 			callback,
 		);
@@ -209,6 +310,56 @@ export default class APIService {
 			{
 				jwt: token,
 				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Get code to add phone number
+	static getCodeToAddPhoneNumber(token, password, phoneNumber, callback) {
+		WebService.sendJsonPUT(
+			this.apiGetCodeToAddPhoneNumber(),
+			{
+				jwt: token,
+				password,
+				phoneNumber
+			},
+			callback,
+		);
+	}
+
+	// api for Add phone number or email
+	static addPhoneNumberOrEmail(token, code, callback) {
+		WebService.sendJsonPUT(
+			this.apiAdd(),
+			{
+				jwt: token,
+				code
+			},
+			callback,
+		);
+	}
+
+	// api for Add phone number or email
+	static verifyPhoneNumberBeforeAddEmail(token, callback) {
+		WebService.sendJsonPUT(
+			this.apiVerifyPhoneNumberBeforeAddEmail(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Get code to add email
+	static getCodeToAddEmail(token, password, email, code, callback) {
+		WebService.sendJsonPUT(
+			this.apiGetCodeToAddEmail(),
+			{
+				jwt: token,
+				password,
+				email,
+				code
 			},
 			callback,
 		);
@@ -389,29 +540,52 @@ export default class APIService {
 		);
 	}
 
+	// api for Get code verify to Delete Guardian
+	static getCodeVerifyGuardian(token, values, callback ) {
+		WebService.sendJsonPOST(
+			this.apiGuardianVerify(),
+			{
+				jwt: token,
+				id: values.id,
+				type: values.type
+			},
+			callback,
+		);
+	}
+
 	// api for Delete Guardian
-	// static deleteGuardian(token, values, callback ) {
-	// 	const formData = new FormData();
-	// 	formData.append('guardianName', values.guardianName);
-	// 	formData.append('firstName', values.firstName);
-	// 	formData.append('lastName', values.lastName);
-	// 	formData.append('gender', values.gender);
-	// 	formData.append('birthday', values.birthday);
-	// 	formData.append('avatar', values.avatar);
-	// 	formData.append('phoneNumber', values.phoneNumber);
-	// 	formData.append('provinceId', values.provinceId);
-	// 	formData.append('address', values.address);
-	// 	WebService.sendJsonDELETE(
-	// 		this.apiGuardianSendMail(),
-	// 		{
-	// 			jwt: token,
-	// 			formData
-	// 		},
-	// 		callback,
-	// 	);
-	// }
+	static deleteGuardian(token, id, code, callback ) {
+		WebService.sendJsonPUT(
+			this.apiDeleteGuardianById(id),
+			{
+				jwt: token,
+				code
+			},
+			callback,
+		);
+	}
 
 //====================QUESTION======================
+
+	// api for Get Public Question
+	static getPublicQuestion( callback ) {
+		WebService.sendJsonGET(
+			this.apiPublicQuestion(),
+			{
+			},
+			callback,
+		);
+	}	
+
+	// api for Get Answer By Id
+	static getPublicAnswerById( id, callback ) {
+		WebService.sendJsonGET(
+			this.apiPublicAnswerById(id),
+			{
+			},
+			callback,
+		);
+	}	
 
 	// api for Get Question My
 	static getQuestionMy(token, callback ) {
@@ -587,6 +761,19 @@ export default class APIService {
 			this.apiDoctorList(),
 			{
 				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Get Doctor Operation
+	static getDoctorOperation(token, doctorId , date, callback ) {
+		WebService.sendJsonGET(
+			this.apiDoctorOperation(),
+			{
+				jwt: token,
+				doctorId,
+				date
 			},
 			callback,
 		);

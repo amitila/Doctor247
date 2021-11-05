@@ -22,9 +22,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import DoctorInfo from './DoctorInfo.js';
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import DialogForm from './DialogForm';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -85,7 +86,7 @@ export default function DoctorCard(props) {
 
 	const { task, index } = props;
 
-	const history = useHistory();
+	// const history = useHistory();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
     const openAnchor = Boolean(anchorEl);
@@ -166,10 +167,14 @@ export default function DoctorCard(props) {
 						/>
 					</IconButton>
 
-					<IconButton aria-label="share">
+					{/* <IconButton aria-label="share">
 						<Button variant="contained" color="primary" onClick={()=>history.push("/appointment")} >
 							Đặt khám
 						</Button>
+					</IconButton> */}
+
+					<IconButton aria-label="share">
+						<DialogForm name={task.name} id={task.id}/>
 					</IconButton>
 					<IconButton
 						className={clsx(classes.expand, {

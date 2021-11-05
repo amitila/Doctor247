@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -7,6 +7,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -50,8 +56,30 @@ const useStyles = makeStyles((theme) => ({
 export default function ProfileCard(props) {
 	const classes = useStyles();
 
-	const onDelete = () => {
-		props.onDelete(props.task.id);
+	const [open, setOpen] = React.useState(false);
+	const [code, setCode] = React.useState('');
+	const [type, setType] = React.useState('');
+
+	// const onDelete = () => {
+	// 	props.onDelete(props.task.userTwoId, type);
+	// }
+
+	const handleEmail = () => {
+		setType('EMAIL')
+		props.onDelete(props.task.userTwoId, 'EMAIL');
+		setOpen(false);
+		setOpen(true);
+	}
+
+	const handlePhone = () => {
+		setType('PHONE')
+		props.onDelete(props.task.userTwoId, 'PHONE');
+		setOpen(false);
+		setOpen(true);
+	}
+
+	const handleConfirmDelete = () => {
+		props.handleConfirmDelete(props.task.userTwoId, code);
 	}
 
 	const onUpdate = () => {
@@ -66,6 +94,14 @@ export default function ProfileCard(props) {
 	// 	const yyyy = dmy.getFullYear();
 	// 	return (dd + '/' + mm + '/' + yyyy).toString();
 	// }
+
+	const handleClickOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
 
 	return (
 		<div className={classes.root}>
@@ -127,10 +163,62 @@ export default function ProfileCard(props) {
 								className={classes.delete}
 								type="button"
 								variant="contained"
-								onClick={onDelete}
+								onClick={handleClickOpen}
 							>
 								Xóa thẻ
 							</Button>
+							<Dialog open={open} onClose={handleClose}>
+								<DialogTitle>Hộp xác nhận xóa thẻ hồ sơ</DialogTitle>
+								<DialogContent>
+									{
+										type === '' ?
+										<>
+											<Button
+												style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
+												onClick={handleEmail}
+												// variant="contained"
+												color="main"
+												className={classes.submit}
+											>
+												<b>Nhận mã qua Email</b>
+											</Button>
+											<Button
+												style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
+												onClick={handlePhone}
+												// variant="contained"
+												color="secondary"
+												className={classes.submit}
+											>
+												<b>Nhận mã qua tin nhắn</b>
+											</Button>
+										</>
+										:
+										<>
+											<DialogContentText>
+												Vui lòng nhập mã OTP để xác nhận là bạn muốn xóa thẻ hồ sơ này.
+												**<b>Cảnh báo</b>: Thẻ hồ sơ bị xóa có thể dẫn tới mất mát các thông tin
+												liên quan như hồ sơ bệnh án.
+											</DialogContentText>
+											<TextField
+												autoFocus
+												required
+												margin="dense"
+												id="code"
+												label="Mã OTP"
+												type="code"
+												value={code}
+												fullWidth
+												variant="standard"
+												onChange={(e)=> setCode(e.target.value)}
+											/>
+										</>
+									}
+								</DialogContent>
+								<DialogActions>
+									<Button onClick={handleClose}>Hủy xóa</Button>
+									<Button onClick={handleConfirmDelete}>Xác nhận xóa</Button>
+								</DialogActions>
+							</Dialog>
 						</CardActions>
 					</Grid>
 				</Grid>

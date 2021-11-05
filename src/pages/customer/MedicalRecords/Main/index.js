@@ -48,7 +48,7 @@ export default function Index(props) {
                     setIsHaveChange(false);
                     return console.log("thành công");
                 } else {
-                    return alert("Lỗi server!");
+                    return console.log("lỗi server");
                 }
             }
         )
@@ -94,7 +94,7 @@ export default function Index(props) {
                 if (success && json.result) {
                     return console.log("Lấy thành công");
                 } else {
-                    return alert("THẤT BẠI!");
+                    return console.log("THẤT BẠI!");
                 }
             }
 

@@ -1,20 +1,20 @@
 import React from 'react';
 import { Container, Grid } from '@material-ui/core';
-import SpecialityControlSearch from './SpecialityControlSearch';
-import SpecialityControlSort from './SpecialityControlSort';
+import ServiceControlSearch from './ServiceControlSearch';
+import ServiceControlSort from './ServiceControlSort';
 
-export default function SpecialityControl(props) {
+export default function ServiceControl(props) {
 
     return (
         <Container maxWidth="lg">
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={10} >
-                    <SpecialityControlSearch 
+                    <ServiceControlSearch 
                         onSearch={props.onSearch} 
                     />              
                 </Grid>
                 <Grid item xs={12} sm={2} >
-                    <SpecialityControlSort 
+                    <ServiceControlSort 
                         onSort={props.onSort}
                         sortBy={props.sortBy}
                         sortValue={props.sortValue}

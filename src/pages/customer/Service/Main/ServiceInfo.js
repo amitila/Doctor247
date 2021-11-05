@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function DoctorInfo(props) {
+export default function ServiceInfo(props) {
     const classes = useStyles();
 
     const { task } = props;
@@ -108,16 +108,16 @@ export default function DoctorInfo(props) {
                                 Ths.Bs.
                             </Typography>
                             <Typography variant="h6" component="h2" gutterBottom >
-                                {task.name}
+                                Lô Vỹ Oanh
                             </Typography>
                             <Typography className={classes.pos} color="textSecondary">
                                 Chuyên khoa:
                             </Typography>
                             <Typography variant="h4" component="h2">
-                                {task.specialist}
+                                Hộ sinh mèo
                             </Typography>
                             <Typography className={classes.pos} color="textSecondary">
-                                Mã số: BS00{task.id}
+                                Mã số: BS1002
                             </Typography>
                             <Typography paragraph className={classes.pos} color="textSecondary">
                                 <Rating name="size-medium" precision={0.5} defaultValue={2} />
@@ -165,10 +165,10 @@ export default function DoctorInfo(props) {
                             4. Chuyển đổi giới tính thai nhi cho mèo <br />
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Địa chỉ phòng khám: 222 Trần Hưng Đạo, Q10, TP.HCM
+                            Địa chỉ: 222 Trần Hưng Đạo, Q10, TP.HCM
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Liên hệ: 0257 312 3456 (điện thoại bàn / phòng khám)
+                            Liên hệ: 039 829 6632 (di động) - 0257 312 3456 (điện thoại bàn)
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
                             Hình ảnh bác sĩ:

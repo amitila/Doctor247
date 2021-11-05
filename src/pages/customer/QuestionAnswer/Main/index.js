@@ -54,10 +54,32 @@ export default function Index(props) {
                     setIsHaveChange(false);
                     return console.log("Lấy câu hỏi thành công");
                 } else {
-                    return console.log("Lỗi server !");
+                    APIService.getPublicQuestion((success, json) => {
+                        if (success && json.result) {
+                            json.result.map(item => {
+                                return questionList.push(item);
+                            })
+                            setQuestions(questionList?.map(item => {
+                                return {
+                                    id: item.id,
+                                    updatedAt: item.updatedAt,
+                                    title: item.title,
+                                    content: item.content,
+                                    images: item.images,
+                                    answers: item.answers,
+                                    questionLike: item._count.questionLike,
+                                    liked: item.liked,
+                                    saved: item.saved
+                                }
+                            }))
+                            setIsHaveChange(false);
+                            return console.log("Lấy câu hỏi thành công");
+                        } else {
+                            return console.log("Lỗi server !");
+                        }
+                    })
                 }
-            }
-        )
+            })
     }
 
     const onToggleForm = (event) => {//Add task
