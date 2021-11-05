@@ -1,12 +1,8 @@
 import WebService from './WebService';
 
 export default class APIService {
-<<<<<<< HEAD
 	static urlServerAddress = 'http://192.168.1.4:8080';
-=======
-	static urlServerAddress = 'http://localhost:8081';
->>>>>>> 34d4cd2ac58cac0565fe95b71c45fb2b7cb134a7
-
+	// static urlServerAddress = 'http://localhost:8081';
 // For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -164,7 +160,7 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/doctor/list`;
 	};
 
-	static apiDoctorOperation = () => {
+	static apiDoctorOperationForCustomer = () => {
 		return `${APIService.baseAPI()}customer/doctor/operation`;
 	};
 
@@ -811,9 +807,9 @@ export default class APIService {
 	}	
 
 	// api for Get Doctor Operation
-	static getDoctorOperation(token, doctorId , date, callback ) {
+	static getOperationOfDoctor(token, doctorId , date, callback ) {
 		WebService.sendJsonGET(
-			this.apiDoctorOperation(),
+			this.apiDoctorOperationForCustomer(),
 			{
 				jwt: token,
 				doctorId,
