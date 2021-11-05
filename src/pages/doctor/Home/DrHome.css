@@ -8,7 +8,7 @@
 .home{
     font-family: montserrat;
 }
-nav{
+/* nav{
     background: #0082e6;
     height: 80px;
     width: 100%;
@@ -92,12 +92,6 @@ a:active,a:hover{
 .card-single:hover div span{
     color: #fff;
 }
-
-/* .card-single:last-child h1,
-.card-single:last-child div:last-child span,
-.card-single:last-child div:first-child span{
-    color: #fff;
-} */
 
 .recent-grid{
     margin-top: 3.5rem;
@@ -219,4 +213,5 @@ td .status{
     #check:checked ~ ul{
         left: 0;
     }
-}
+} 
+*/

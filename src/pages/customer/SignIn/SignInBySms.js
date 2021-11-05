@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { updateRole, updatePhone } from "../../../store/userSlice";
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
-import { DoctorContext } from "../../doctor/DoctorProvider";
+import { DoctorContext } from "../../doctor//Home/DoctorProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {

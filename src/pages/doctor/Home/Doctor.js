@@ -1,16 +1,16 @@
-import React, {useState, useContext } from 'react';
+import React, {useState, useContext, useEffect } from 'react';
 import './Doctor.css';
 import DoctorTopNavbar from './DoctorTopNavbar';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import DrBody from './DrBody';
-import VideoCall from './VideoCall';
-import Profile from './Profile';
-import WorkPlan from './WorkPlan';
+import Profile from '../Profile/Profile';
+import WorkPlan from '../WorkPlan/WorkPlan';
+import VideoCall from '../VideoCall/VideoCall';
 
-import ChatRoom from './ChatRoom/ChatRoom';
+import ChatRoom from '../ChatRoom/ChatRoom';
 import { DoctorContext } from './DoctorProvider';
-import MedicalRecords from './MedicalRecords';
-import { useEffect } from 'react/cjs/react.development';
+import MedicalRecords from '../MedicalRecord/MedicalRecords';
+import APIService from '../../../utils/APIService';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -131,7 +131,7 @@ const ShowContent = (props) => {
             <ChatRoom/>
         );
     }
-    else if(props.menuId === props.screenCode.FORM){
+    else if(props.menuId === props.screenCode.VIDEO){
         return(
             <VideoCall/>
         );
@@ -146,11 +146,19 @@ function Doctor() {
 
     const [isShowSidabar, setIsShowSidebar] = useState(false);
 
-    //const [currentMenuItem, setCurrentMenuItem] = useState(4);
-    const {ScreenCode, currentMenuItem ,setCurrentMenuItem, user} = useContext(DoctorContext);
+    const {ScreenCode, currentMenuItem ,setCurrentMenuItem, history, setUserId} = useContext(DoctorContext);
 
-    useEffect(() => {
-    }, [user]);
+    useEffect(() =>{
+        const token = localStorage.getItem("token_doctor247");
+        APIService.getDoctorProfile(token, (success, json) => {
+            if(success && json.result){
+                setUserId(json.result.id.toString());
+            }
+            else{
+                history.push("/login");
+            }
+        });
+    }, []);
 
     const menuRefClick = () => {
         setIsShowSidebar(!isShowSidabar);
@@ -158,7 +166,6 @@ function Doctor() {
 
     return (
         <React.Fragment>
-            <script src="https://kit.fontawesome.com/8d6784f1e8.js" crossorigin="anonymous"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <div className="wrapper">
                 <DoctorTopNavbar onClick={menuRefClick} myname="Dung"/>
@@ -205,8 +212,8 @@ function Doctor() {
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Nhắn tin</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.TEST)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.TEST?classes.currentMenuItem:''].join(' ')} >
+                                <li onClick={() => {setCurrentMenuItem(ScreenCode.VIDEO)}}>
+                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.VIDEO?classes.currentMenuItem:''].join(' ')} >
                                         <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Gọi video</h4>}>
                                             <span className={classes.icon}><i class="fas fa-video"></i></span>
                                         </Tooltip>

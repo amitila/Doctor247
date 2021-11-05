@@ -22,7 +22,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import { useContext } from "react/cjs/react.development";
 import { useContext } from "react";
-import { DoctorContext } from "../../doctor/DoctorProvider";
+import { DoctorContext } from "../../doctor/Home/DoctorProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {

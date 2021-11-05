@@ -1,7 +1,8 @@
 import React from 'react';
-import { useMemo, useState } from 'react/cjs/react.development';
+import { useEffect, useMemo, useState } from 'react/cjs/react.development';
 import Peer from 'peerjs';
-import useFirestore from './../../firebase/useFirestore';
+import useFirestore from '../../../firebase/useFirestore';
+import { useHistory } from "react-router-dom";
 
 const ScreenCode = {
     HOME: 1,
@@ -11,6 +12,7 @@ const ScreenCode = {
     FORM: 5,
     CHAT: 6,
     NOTIFY: 7,
+    VIDEO: 8,
     TEST: 10,
 }
 
@@ -18,7 +20,6 @@ const ContentCode = {
     LIST: 1,
     DETAIL: 2
 }
-
 
 export const DoctorContext =  React.createContext();
 
@@ -31,6 +32,10 @@ export default function DoctorProvider({children}) {
     const [selectedRoomId, setSelectedRoomId] = useState('0');
     const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
     const [limitMsgAmount, setLimitMsgAmount] = useState(10);
+    const [token, setToken] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const history = useHistory();
     
     // const [user, setUser] = useState({
     //     displayName : 'Dung',
@@ -44,8 +49,8 @@ export default function DoctorProvider({children}) {
 
     const roomsCondition = useMemo(() => {
         return {
-            fieldName: 'id',
-            operator: '!=',
+            fieldName: 'members',
+            operator: 'array-contains',
             compareValue: userId
         }
     }, [userId]);
@@ -66,15 +71,15 @@ export default function DoctorProvider({children}) {
         users.find((u) => u.id === userId),
         [userId]
     );
-
-    React.useEffect(() => {
-        setUsername(user?user.name:'test');
-    } ,[user]);
     
     const selectedRoom = useMemo(() => 
         rooms.find((room) => room.id === selectedRoomId),
         [rooms, selectedRoomId]
     );
+
+    useEffect(() => {
+        setUsername(user?user.name:'test');
+    } ,[user]);
 
     return (
         <DoctorContext.Provider 
@@ -102,7 +107,8 @@ export default function DoctorProvider({children}) {
             setSelectedRoomId,
             user, 
             limitMsgAmount,
-            setLimitMsgAmount
+            setLimitMsgAmount,
+            history
         }}>
             {children}
         </DoctorContext.Provider>
