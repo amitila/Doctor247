@@ -127,8 +127,6 @@ export default function QuestionForm(props) {
 		// setState({...state, images: files});
 	}
 
-	
-   
 	return (
 		<div className="panel panel-warning">
 			<div className="panel-heading">
