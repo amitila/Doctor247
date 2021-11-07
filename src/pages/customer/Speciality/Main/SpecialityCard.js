@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	appBar: {
 		position: 'relative',
-		backgroundColor: 'orange',
+		backgroundColor: '#1ce87b',
 	},
 	title: {
 		marginLeft: theme.spacing(2),
@@ -79,7 +79,7 @@ export default function SpecialityCard(props) {
 				<Button variant="outlined" color="primary" >
 					<Avatar 
 						alt="avatar" 
-						src={task.image} 
+						src={task.avatar} 
 						loading="lazy" 
 						variant="square" 
 						style={{width: 300, height: 300}}
@@ -111,9 +111,6 @@ export default function SpecialityCard(props) {
 							</IconButton>
 							<Typography variant="h6" className={classes.title}>
 								Thông tin chuyên khoa
-							</Typography>
-							<Typography variant="h6" className={classes.title}>
-								Các chuyên ngành trực thuộc
 							</Typography>
 						</Toolbar>
 					</AppBar>

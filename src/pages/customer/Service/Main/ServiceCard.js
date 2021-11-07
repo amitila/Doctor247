@@ -12,12 +12,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
-import ServiceInfo from './ServiceInfo.js';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -52,14 +52,16 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: theme.spacing(2),
 		flex: 1,
 	},
+	Title: {
+		marginLeft: theme.spacing(1),
+		flex: 1,
+		fontWeight: 'bold',
+	},
 }));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function ServiceCard(props) {
 	const classes = useStyles();
+	const { task } = props;
 
 	const [open, setOpen] = React.useState(false);
 
@@ -70,8 +72,6 @@ export default function ServiceCard(props) {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	const { task } = props;
 
 	return (
 		<div className={classes.root}>
@@ -103,21 +103,38 @@ export default function ServiceCard(props) {
 						</Button>
 					</IconButton>
 				</CardActions>
-				<Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-					<AppBar className={classes.appBar} >
-						<Toolbar>
-							<IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-								<CloseIcon />
-							</IconButton>
-							<Typography variant="h6" className={classes.title}>
-								Thông tin gói khám
+				<Dialog open={open} onClose={handleClose}>
+        			<DialogTitle>{task.name} - chỉ từ {' '}{task.fee}</DialogTitle>
+					<DialogContent>
+						<DialogContentText>
+							<Typography variant="h6" component="h2" className={classes.Title} gutterBottom >Giới thiệu:</Typography>
+							<Typography paragraph>
+								{task.introduce}
 							</Typography>
-							<Typography variant="h6" className={classes.title}>
-								Các hoạt động đi kèm
+							<Typography variant="h6" component="h2" className={classes.Title} gutterBottom >Nội dung khám:</Typography>
+							<Typography paragraph>
+								{task.content}
 							</Typography>
-						</Toolbar>
-					</AppBar>
-					<ServiceInfo task={task} />
+							<Typography variant="h6" component="h2" className={classes.Title} gutterBottom >Dịch vụ đi kèm:</Typography>
+							<Typography paragraph>
+								{task.service}
+							</Typography>
+						</DialogContentText>
+						<TextField
+							required
+							autoFocus
+							margin="dense"
+							id="phoneNumber"
+							label="Vui lòng để lại số điện thoại để được liên hệ xếp lịch sớm nhất"
+							type="phoneNumber"
+							fullWidth
+							variant="standard"
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant='outlined' color='main' onClick={handleClose}>Thoát</Button>
+						<Button variant='outlined' color='main' onClick={handleClose}>Đăng ký</Button>
+					</DialogActions>
 				</Dialog>
 			</Card>
 		</div>

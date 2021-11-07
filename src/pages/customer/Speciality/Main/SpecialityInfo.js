@@ -8,7 +8,6 @@ import Avatar from '@material-ui/core/Avatar';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import Rating from '@material-ui/lab/Rating';
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -98,39 +97,30 @@ export default function SpecialityInfo(props) {
                                     vertical: 'bottom',
                                     horizontal: 'right',
                                 }}
-                                variant="dot"
+                                // variant="dot"
                             >
                                 <Avatar className={classes.large} alt="Remy Sharp" src={task.avatar} />
                             </StyledBadge>
                         </Grid>
                         <Grid item>
-                            <Typography variant="h6" component="h2">
-                                Ths.Bs.
-                            </Typography>
-                            <Typography variant="h6" component="h2" gutterBottom >
-                                Lô Vỹ Oanh
-                            </Typography>
                             <Typography className={classes.pos} color="textSecondary">
                                 Chuyên khoa:
                             </Typography>
                             <Typography variant="h4" component="h2">
-                                Hộ sinh mèo
+                                {task.name}
                             </Typography>
                             <Typography className={classes.pos} color="textSecondary">
-                                Mã số: BS1002
+                                Mã số: CK1002
                             </Typography>
-                            <Typography paragraph className={classes.pos} color="textSecondary">
-                                <Rating name="size-medium" precision={0.5} defaultValue={2} />
-                            </Typography>
-
+                
                             <Typography paragraph>
                                 <Button color="inherit">
-                                    <Link className={classes.link} to="/home">Chat với bác sĩ</Link>
+                                    <Link className={classes.link} to="/doctors">Danh sách bác sĩ</Link>
                                 </Button>
                             </Typography>
                             <Typography paragraph>
                                 <Button color="inherit">
-                                    <Link className={classes.link} to="/appointment">Đặt lịch khám</Link>
+                                    <Link className={classes.link} to="/home">Về trang chủ</Link>
                                 </Button>
                             </Typography>
                         </Grid>
@@ -138,42 +128,26 @@ export default function SpecialityInfo(props) {
                     <Grid item xs={12} sm={9}>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Giới thiệu:</Typography>
                         <Typography paragraph>
-                            - Bác sĩ Lô Vỹ Oanh hiện nguyên là trưởng khoa khoa Hộ sinh của bệnh viện Nhi Đồng 1 <br />
-                            - Được phong tặng Danh hiệu thầy thuốc ưu tú vào năm 2015 <br />
-                            - Là một trong ba bác sĩ có trên 50 năm kinh nghiệm về đỡ đẻ
+                            {task.introduce}
                         </Typography>
-                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Giờ làm việc:</Typography>
+                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Triệu chứng:</Typography>
                         <Typography paragraph>
-                            Tất cả các ngày trong tuần trừ ngày chủ nhật: <br />
-                            - Buổi sáng: 7h - 12h <br />
-                            - Buổi chiều: 13h - 17h <br />
-                            *Lưu ý: Trong trường hợp khẩn cấp vui lòng liên hệ số điện thoại 0398296632 để được hỗ trợ tức thời
+                            {task.symptom}
                         </Typography>
-                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Quá trình công tác:</Typography>
+                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Điều trị:</Typography>
                         <Typography paragraph >
-                            - Tốt nghiệp trường Đại học y dược TP.HCM năm 1997 <br />
-                            - Là chuyên viên đỡ đẻ siêu cấp tại bệnh viện Nhi đồng 1 năm 2000 <br />
-                            - Là trưởng khoa khoa Hộ sinh từ năm 2005 đến 2021
+                            {task.treatment}
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Chuyên khám và điều trị:
+                            Các bệnh liên quan:
                         </Typography>
                         <Typography paragraph>
-                            1. Bệnh đái tháo đường ở mèo <br />
-                            2. Bệnh đau cơ bụng chùn cơ rún ở mèo <br />
-                            3. Siêu âm thai nhi cho mèo <br />
-                            4. Chuyển đổi giới tính thai nhi cho mèo <br />
+                           {task.related}
                         </Typography>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Địa chỉ: 222 Trần Hưng Đạo, Q10, TP.HCM
-                        </Typography>
-                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Liên hệ: 039 829 6632 (di động) - 0257 312 3456 (điện thoại bàn)
-                        </Typography>
-                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Hình ảnh bác sĩ:
+                            Hình ảnh minh họa:
                             <br />
-                            <img className={classes.image} src={task.avatar} alt="bacsi" />
+                            <img className={classes.image} src={task.images} alt="bacsi" />
                         </Typography>
                     </Grid>
                 </Grid>

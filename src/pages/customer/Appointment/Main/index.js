@@ -7,6 +7,8 @@ import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
 import { Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { useSelector } from "react-redux";
+import { selectName, selectAvatar } from '../../../../store/userSlice';
 
 // Lấy lịch đăng ký từ db về 
 // const token = document.cookie.slice(6);
@@ -234,6 +236,8 @@ export default function Index(props) {
         }
     }
 
+    const name = useSelector(selectName);
+    const avatarURL = useSelector(selectAvatar);
     const onGetGuardian = () => {
         const token = getToken();
         var profileList = [];
@@ -241,7 +245,17 @@ export default function Index(props) {
             token,
             (success, json) => {
                 if (success && json.result) {
-                    json.result.map(item => {
+                    json.result.map((item, index) => {
+                        if(index === 0) {
+                            profileList.push({
+                                userTwoId: '',
+                                userTwo: {
+                                    firstName: name,
+                                    lastName: ' (Tôi)',
+                                    avatarURL: avatarURL
+                                }
+                            })
+                        }
                         return profileList.push(item);
                     })
                     setPatientList(profileList?.map(item => {

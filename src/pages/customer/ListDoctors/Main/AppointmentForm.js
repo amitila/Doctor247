@@ -12,6 +12,8 @@ import Alert from '@material-ui/lab/Alert';
 import UploadImage from '../../../../components/UploadImage';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
+import { useSelector } from "react-redux";
+import { selectName, selectAvatar } from '../../../../store/userSlice';
 
 const useStyles = makeStyles((theme) => ({
 	textSize: {
@@ -210,6 +212,8 @@ export default function AppointmentForm(props) {
 		return date;
 	}
 
+	const name = useSelector(selectName);
+    const avatarURL = useSelector(selectAvatar);
 	useEffect(() => {
 		const token = getToken();
 		var profileList = [];
@@ -217,7 +221,17 @@ export default function AppointmentForm(props) {
 			token,
 			(success, json) => {
 				if (success && json.result) {
-					json.result.map(item => {
+					json.result.map((item, index) => {
+						if(index === 0) {
+                            profileList.push({
+                                userTwoId: '',
+                                userTwo: {
+                                    firstName: name,
+                                    lastName: ' (Tôi)',
+                                    avatarURL: avatarURL
+                                }
+                            })
+                        }
 						return profileList.push(item);
 					})
 					setPatientList(profileList?.map(item => {

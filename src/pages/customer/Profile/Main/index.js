@@ -62,7 +62,7 @@ export default function Index(props) {
                     setIsHaveChange(false);
                     return console.log("thành công");
                 } else {
-                    return alert("Lỗi server!");
+                    return console.log(json.error);
                 }
             }
         )

@@ -26,8 +26,7 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Link } from 'react-router-dom';
 import Logo from '../../components/Logo';
-import { Badge } from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+// import { Badge } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import { MenuList, useMediaQuery, useTheme as Theme } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
@@ -44,6 +43,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
 import APIService from '../../utils/APIService';
 import getToken from '../../helpers/getToken';
+import Notification from './Notification';
 
 const drawerWidth = 240;
 
@@ -228,11 +228,12 @@ export default function DrawerHeader(props) {
                                                 aria-label="show 17 new notifications"
                                                 color="inherit"
                                             >
-                                                <Badge badgeContent={17} color="error">
+                                                {/* <Badge badgeContent={17} color="error">
                                                     <Link className={classes.link} to="/notification">
-                                                        <NotificationsIcon />
+                                                        <Notification />
                                                     </Link>
-                                                </Badge>
+                                                </Badge> */}
+                                                <Notification />
                                             </IconButton>
                                             {/* <p>Thông báo</p> */}
                                         </Typography>
@@ -250,11 +251,12 @@ export default function DrawerHeader(props) {
                                                 aria-label="show 17 new notifications"
                                                 color="inherit"
                                             >
-                                                <Badge badgeContent={17} color="error">
+                                                {/* <Badge badgeContent={17} color="error">
                                                     <Link className={classes.link} to="/notification">
-                                                        <NotificationsIcon />
+                                                        <Notification />
                                                     </Link>
-                                                </Badge>
+                                                </Badge> */}
+                                                <Notification />
                                             </IconButton>
                                             {/* <p>Thông báo</p> */}
                                         </Typography>
@@ -286,11 +288,12 @@ export default function DrawerHeader(props) {
                                     aria-label="show 17 new notifications"
                                     color="inherit"
                                 >
-                                    <Badge badgeContent={17} color="error">
+                                    {/* <Badge badgeContent={17} color="error">
                                         <Link className={classes.link} to="/notification">
-                                            <NotificationsIcon />
+                                            <Notification />
                                         </Link>
-                                    </Badge>
+                                    </Badge> */}
+                                    <Notification />
                                 </IconButton>
                                 {/* <p>Thông báo</p> */}
                             </Typography>
@@ -330,7 +333,7 @@ export default function DrawerHeader(props) {
                     <div>
                         <MenuList>
                             {[
-                                <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/home")} style={{color: '#db5f12'}}>Trang chủ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/appointment")}>Lịch khám</div>,
                                 <div className={classes.link} onClick={()=>history.push("/profile")}>Hồ sơ gia đình</div>,
@@ -354,18 +357,18 @@ export default function DrawerHeader(props) {
                                 <MyMenuItem button key={text} onClick={handleDrawerClose} >
                                     <ListItemIcon>
                                         {
-                                            [<HomeIcon />, 
-                                            <FormatListNumberedIcon />, 
-                                            <EventIcon />, 
-                                            <AccountBoxIcon />, 
-                                            <ReorderIcon />, 
-                                            <HelpIcon />, 
-                                            <LibraryBooksIcon />, 
-                                            <FolderSpecialIcon />,
-                                            <WorkIcon />,
-                                            <SaveIcon />,
-                                            <SettingsIcon />,
-                                            <ScheduleIcon />][index]
+                                            [<HomeIcon style={{color: '#db5f12'}} />, 
+                                            <FormatListNumberedIcon style={{color: '#005bf7'}} />, 
+                                            <EventIcon style={{color: '#005bf7'}} />, 
+                                            <AccountBoxIcon style={{color: '#005bf7'}} />, 
+                                            <ReorderIcon style={{color: '#005bf7'}} />, 
+                                            <HelpIcon style={{color: '#005bf7'}} />, 
+                                            <LibraryBooksIcon style={{color: '#005bf7'}} />, 
+                                            <FolderSpecialIcon style={{color: '#005bf7'}} />,
+                                            <WorkIcon style={{color: '#005bf7'}} />,
+                                            <SaveIcon style={{color: '#005bf7'}} />,
+                                            <SettingsIcon style={{color: '#005bf7'}} />,
+                                            <ScheduleIcon style={{color: '#005bf7'}} />][index]
                                         }
                                     </ListItemIcon>
                                     <ListItemText primary={text} />
@@ -392,13 +395,13 @@ export default function DrawerHeader(props) {
                                 <MyMenuItem button key={text} onClick={handleDrawerClose} >
                                     <ListItemIcon>
                                         {
-                                            [<NotificationsActiveIcon />, 
+                                            [<NotificationsActiveIcon style={{color: '#005bf7'}} />, 
                                             (name ?
-                                                <PowerSettingsNewIcon />
+                                                <PowerSettingsNewIcon style={{color: 'red', backgroundColor: 'orange'}} />
                                                 :   
                                                 <>
-                                                    <LockOpenIcon />,
-                                                    <ExitToAppIcon />
+                                                    <LockOpenIcon style={{color: '#005bf7'}} />,
+                                                    <ExitToAppIcon style={{color: '#005bf7'}} />
                                                 </>
                                             )][index]   
                                         }

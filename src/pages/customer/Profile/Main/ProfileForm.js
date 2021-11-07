@@ -263,7 +263,7 @@ export default function ProfileForm(props) {
 											>
 												<FormControlLabel value="FEMALE" control={<Radio required />} label="Nữ" />
 												<FormControlLabel value="MALE" control={<Radio />} label="Nam" />
-												<FormControlLabel value="ORTHER" control={<Radio />} label="Khác" />
+												{/* <FormControlLabel value="ORTHER" control={<Radio />} label="Khác" /> */}
 											</RadioGroup>
 										</FormControl>
 									</Grid>

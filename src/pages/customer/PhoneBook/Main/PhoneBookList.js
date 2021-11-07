@@ -1,7 +1,8 @@
 import React from 'react';
 import PhoneBookCard from './PhoneBookCard';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +36,7 @@ export default function PhoneBookList(props) {
 
     const { phoneBookCards } = props;
     const elmCards = phoneBookCards.map((task, index) => {
-        return <Grid item xs={12} sm={4} className={classes.root} >
+        return <Grid item xs={12} className={classes.root} >
             <PhoneBookCard
                 // key={task.id}
                 index={index + 1}
@@ -43,6 +44,16 @@ export default function PhoneBookList(props) {
             />
         </Grid>
     });
+
+    //Breakpoints
+	const theme = useTheme();
+	const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const temp = elmCards.reverse();
+    const temp1 = temp;
+    const temp2 = temp;
+    const temp3 = temp;
+    const l = elmCards.length;
 
     return (
         <div>
@@ -76,7 +87,38 @@ export default function PhoneBookList(props) {
                 </tr>
                 </tbody>
             </table>  
-            {elmCards} 
+            <Container maxWidth="lg">
+                {
+                    isMatch ?
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} sm={4} >
+                                {temp1}
+                            </Grid>
+                        </Grid>
+                    :
+                    <Grid container spacing={0}>
+                        <Grid item xs={12} sm={l === 1 ? 8: (l === 2 ? 6 : 4)}>
+                            {/* {elmQuestions.reverse()} */}
+                            {temp1.map((item, index) => {
+                                return index % 3 === 0 ? item : ""
+                            })}
+                        </Grid>
+                        <Grid item xs={12} sm={l === 2 ? 6 : 4}>
+                            {/* {elmQuestions.reverse()} */}
+                            {temp2.map((item, index) => {
+                                return index % 3 === 1 ? item : ""
+                            })}
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            {/* {elmQuestions.reverse()} */}
+                            {temp3.map((item, index) => {
+                                return index % 3 === 2 ? item : ""
+                            })}
+                        </Grid>
+                    </Grid>
+                    
+                }
+            </Container>          
         </div>
     );
 

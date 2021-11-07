@@ -355,7 +355,7 @@ export default function PersonalIcon(props) {
 												>
 													<FormControlLabel value="FEMALE" control={<Radio required />} label="Nữ" />
 													<FormControlLabel value="MALE" control={<Radio />} label="Nam" />
-													<FormControlLabel value="OTHER" control={<Radio />} label="Khác" />
+													{/* <FormControlLabel value="OTHER" control={<Radio />} label="Khác" /> */}
 												</RadioGroup>
 											</FormControl>
 										</Grid>

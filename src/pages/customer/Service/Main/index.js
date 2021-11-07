@@ -7,19 +7,52 @@ export default function Index() {
     // const services = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
     const flag = [
         {
-            "image": "https://cdn.benhvienthucuc.vn/wp-content/uploads/2021/06/Nen-duy-tri-noi-quen-kham-nam-khoa-2-lan-moi-nam.jpg",
+            "image": "https://cdn.bookingcare.vn/fr/w800/2018/09/11/213035bigstock-medicine-doctor-hand-working-w-44541469.jpg",
             "name":"Gói khám sức khỏe tổng quát",
-            "fee":"250.000 VND"
+            "fee":"1.250.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
         },
         {
-            "image": "https://www.osiris-inc.com/wp-content/uploads/2017/10/bac-si-nhan-khoa-17102019.jpg",
+            "image": "https://cdn.bookingcare.vn/fr/w800/2019/03/27/165832sieu-am-thai.jpg",
             "name":"Gói kiểm tra thai nhi",
-            "fee":"500.000 VND"
+            "fee":"500.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
         },
         {
-            "image": "https://vinmec-prod.s3.amazonaws.com/images/20190603_085325_802806_kham-phu-khoa-la-la.max-1800x1800.jpg",
+            "image": "https://login.medlatec.vn//ckfinder/userfiles/images/xet-nghiem-mau-bao-nhieu-tien-03.jpg",
             "name":"Gói xét nghiệm máu các loại bệnh",
-            "fee":"300.000 VND"
+            "fee":"600.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
+        },
+        {
+            "image": "https://benhvienthienduc.vn/media/data/kham-sk-xin-viec.jpg",
+            "name":"Gói khám sức khoẻ hậu Covid-19",
+            "fee":"450.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
+        },
+        {
+            "image": "https://lh3.googleusercontent.com/proxy/DsPr7fMyE7jY6GQLNEVyoj2tAXnwCKO0lz9dgc984tfxLMLXi7KpqIvEfWdHKnRb4vxyrg6u8zC0HRtZ4SDLQWzLAAKC3wzRp7RUCq6K0isVPw87Sk_v_X6dbuIUA11l",
+            "name":"Gói trị liệu và tư vấn tâm lý",
+            "fee":"700.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
+        },
+        {
+            "image": "http://baosonhospital.com/Uploads/images/kham-suc-khoe-tien-hon-nhan.jpg",
+            "name":"Gói tư vấn tâm tư, tình cảm trong hôn nhân",
+            "fee":"300.000 VND",
+            "introduce": `Đang cập nhật`,
+            "content": `Đang cập nhật`,
+            "service": `Đang cập nhật`
         },
     ];
 
