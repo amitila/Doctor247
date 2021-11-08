@@ -7,16 +7,25 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Grid } from '@material-ui/core';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import Button from '@mui/material/Button';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 export default function MRItem(props) {
-	const onDelete = () => {
-		props.onDelete(props.task.id);
-	}
 
 	const { task, index } = props;
+	const [visible, setVisible] = React.useState(task.status);
+
+	const handleChange = (event) => {
+		setVisible(event.target.value);
+		props.handleChangeVisible(task.id, event.target.value);
+	};
+
 	const images = task.images;
 	const dateTime = new Date(task.dateTime);
 	const createdAt = new Date(task.createdAt);
@@ -40,9 +49,9 @@ export default function MRItem(props) {
 			<Accordion 
 				style={
 					index % 2 === 0? 
-						{backgroundColor: "#e3f2fd", margin: 8} 
+						{backgroundColor: "#f0edaa", margin: 8} 
 						: 
-						{backgroundColor: "#fff3e0", margin: 8}
+						{backgroundColor: "#9dedb6", margin: 8}
 				}
 			>
 				<AccordionSummary
@@ -59,11 +68,14 @@ export default function MRItem(props) {
 						</Grid>
 						<Grid item xs={12} sm={5}>
 							<Typography style={{fontSize: 23}}>
-								Tình trạng: {
-												task.status === "PENDING" ? "Đã khám" : ""
+								Chế độ xem: {
+												visible === "PUBLIC" ? "Mọi người" : ""
 											}
 											{
-												task.status === "CUSTOMER_CANCEL" ? "Đợi kết quả" : ""
+												visible === "PRIVATE" ? "Chỉ mình tôi" : ""
+											}
+											{
+												visible === "ONLY_DOCTOR_EXAMINATION" ? "Chỉ bác sĩ khám" : ""
 											}
 							</Typography>
 						</Grid>
@@ -78,7 +90,7 @@ export default function MRItem(props) {
 									alignItems: 'center',
 									justifyContent: 'center'
 								}} 
-								rowspan="8"
+								rowspan="11"
 							>
 								MÃ NHẬN DẠNG:<br/>
 								{task.id}<br /><br />
@@ -92,46 +104,77 @@ export default function MRItem(props) {
 									direction="row" 
 									spacing={50}
 								>
-									<Button 
+									<Box sx={{ minWidth: 120 }}>
+										<FormControl variant="standard" fullWidth>
+											<InputLabel id="demo-simple-select-label"><VisibilityIcon />{' '}Ai xem được</InputLabel>
+											<Select
+												labelId="demo-simple-select-label"
+												id="visible"
+												value={visible}
+												label="Visible"
+												onChange={handleChange}
+											>
+												<MenuItem value={'PUBLIC'}>Mọi người</MenuItem>
+												<MenuItem value={'PRIVATE'}>Chỉ mình tôi</MenuItem>
+												<MenuItem value={'ONLY_DOCTOR_EXAMINATION'}>Chỉ bác sĩ khám</MenuItem>
+											</Select>
+										</FormControl>
+									</Box>
+									{/* <Button 
 										variant="outlined" 
-										startIcon={<DeleteIcon />}
-										onClick={onDelete}
+										startIcon={<VisibilityIcon />}
+										onClick={()=>alert('Chế độ xem')}
 									>
-										<b>Delete</b>
-									</Button>
+										<b>Chế độ xem</b>
+									</Button> */}
 								</Stack>
 							</th>
 							<td>Họ và tên:</td>
-							<td>{task.guardian.firstName + ' ' + task.guardian.lastName}</td>
+							<td>{task.patient}</td>
 						</tr>
 						<tr>
 							<td>Ngày khám bệnh:</td>
-							<td>{getDateTime(createdAt)}</td>
-						</tr>
-						<tr>
-							<td>Ngày trả kết quả:</td>
 							<td>{getDateTime(dateTime)}</td>
 						</tr>
 						<tr>
-							<td>Thông tin bệnh:</td>
+							<td>Ngày trả kết quả:</td>
+							<td>{getDateTime(createdAt)}</td>
+						</tr>
+						<tr>
+							<td>Giờ khám:</td>
 							<td>{getTime(dateTime)}</td>
 						</tr>
 						<tr>
 							<td>Bác sĩ khám:</td>
-							<td>{task.doctor.firstName + ' ' + task.doctor.lastName}</td>
+							<td>{task.doctor + ' _MS:BS00' + task.doctorId}</td>
 						</tr>
 						<tr>
-							<td>Triệu chứng:</td>
-							<td>{task.description}</td>
+							<td>Triệu chứng ban đầu:</td>
+							<td>{task.symptom}</td>
 						</tr>
 						<tr>
-							<td>Tình trạng:</td>
+							<td>Đã chẩn đoán: </td>
+							<td>{task.diagnostic ? 'Viêm gan B' : 'Viêm gan B'}</td>
+						</tr>
+						<tr>
+							<td>Lưu ý của bác sĩ: </td>
+							<td>{task.note ? 'Nên ăn sáng' : 'Nên ăn sáng'}</td>
+						</tr>
+						<tr>
+							<td>Chi phí khám: </td>
+							<td>{task.medicalExpense ? '100.000 VND' : '100.000 VND'}</td>
+						</tr>
+						<tr>
+							<td>Ai có thể xem được:</td>
 							<td>
 								{
-									task.status === "PENDING" ? "Đã khám" : ""
+									visible === "PUBLIC" ? "Mọi người" : ""
 								}
 								{
-									task.status === "CUSTOMER_CANCEL" ? "Đợi kết quả" : ""
+									visible === "PRIVATE" ? "Chỉ mình tôi" : ""
+								}
+								{
+									visible === "ONLY_DOCTOR_EXAMINATION" ? "Chỉ bác sĩ khám" : ""
 								}
 							</td>
 						</tr>
@@ -154,7 +197,7 @@ export default function MRItem(props) {
 										</ImageList>
 									</td>
 									:
-									<td>Không kèm hình</td>
+									<td>Không có đính kèm</td>
 							}
 						</tr>
 					</table>

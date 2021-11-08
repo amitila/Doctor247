@@ -24,23 +24,30 @@ export default function Index(props) {
     const getMedicalRecord = () => {
         const token = getToken();
         const mrList = [];
-        APIService.getAppointment(
+        APIService.getMedicalRecords(
             token,
             {
             },
             (success, json) => {
                 if (success && json.result) {
+                    
                     json.result.map(item => {
+                        
                         return mrList.push(item);
                     })
                     setMedicalRecords(mrList?.map(item => {
+                        console.log("success")
                         return {
-                            id: item.medicalRecordId,
-                            guardian: item.medicalRecord.customer,
-                            doctor: item.doctor,
-                            dateTime: item.day,
-                            description:item.medicalRecord.symptom,
-                            images: item.medicalRecord.images,
+                            id: item.id,
+                            patient: item.customer.firstName + ' ' + item.customer.lastName,
+                            doctor: item.appointment[0].doctor.firstName + ' ' + item.appointment[0].doctor.lastName,
+                            doctorId: item.appointment[0].doctorId,
+                            dateTime: item.appointment[0].day,
+                            symptom: item.symptom,
+                            diagnostic: item.diagnostic,
+                            medicalExpense: item.medicalExpense,
+                            note: item.note,
+                            images: item.images,
                             status: item.status,
                             createdAt: item.createdAt,
                         }
@@ -54,54 +61,39 @@ export default function Index(props) {
         )
     }
 
-    const findIndex = (id) => {
-        let result = -1;
-        medicalRecords.forEach((task, index) => {
-            if(task.id === id) {
-                result = index;
-            }
-        });
-        return result;
-    }
-
-    const onDelete = (id) => {
+    const handleChangeVisible = (id, visible) => {
         const token = getToken();
-        const index = findIndex(id);
-        if(index !== -1) {
-            APIService.deleteAppointmentById(
-                token,
-                id,
-                (success, json) => {
-                    if (success && json.result) {
-                        setIsHaveChange(true);
-                        return console.log("Xóa thành công");
-                    } else {
-                        return alert("THẤT BẠI!");
-                    }
+        const status = visible;
+        APIService.putStatusOfMedicalRecord(
+            token,
+            id,
+            status,
+            (success, json) => {
+                if (success && json.result) {
+                    return console.log("Đổi quyền xem thành công");
+                } else {
+                    return console.log(json.error);
                 }
-    
-            )
-            
-        }
+            } 
+        )
     }
 
-    const onGetAnItem = (id) => {
+    const onGetAMedicalRecord = (id) => {
         const token = getToken();
-        APIService.getAppointmentById(
+        APIService.getMedicalRecordById(
             token,
             id,
             (success, json) => {
                 if (success && json.result) {
-                    return console.log("Lấy thành công");
+                    return console.log("Lấy thành công 1 medical record");
                 } else {
-                    return console.log("THẤT BẠI!");
+                    return console.log(json.error);
                 }
-            }
-
+            } 
         )
     }
 
-    console.log(onGetAnItem(34));
+    console.log(onGetAMedicalRecord(1));
 
     const onFilter = (filterName, filterStatus) => {
         
@@ -169,8 +161,8 @@ export default function Index(props) {
                     {/* List*/}
                     <MRList 
                         medicalRecords={medicalRecords} 
-                        onDelete={onDelete}
                         onFilter={onFilter}
+                        handleChangeVisible={handleChangeVisible}
                     />
                 </Grid>
             </div>

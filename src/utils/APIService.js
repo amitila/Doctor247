@@ -168,6 +168,16 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/doctor/${id}`;
 	};
 
+	// Medical-record
+	static apiMedicalRecord = () => {
+		return `${APIService.baseAPI()}customer/medical-record`;
+	};
+
+	static apiMedicalRecordById = (id) => {
+		return `${APIService.baseAPI()}customer/medical-record/${id}`;
+	};
+
+
 // For doctor 
 
 	static apiDoctorCheckToken = () => {
@@ -830,7 +840,50 @@ export default class APIService {
 		);
 	}	
 
-	// TODO: For doctor
+//====================MEDICAL - RECORD======================
+
+	// api for Get Medical-records
+	static getMedicalRecords(token, values, callback ) {
+		const formData = new FormData();
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('medicalRecordStatus', values.medicalRecordStatus);
+		formData.append('appointmentStatus', values.appointmentStatus);
+		formData.append('customerId', values.customerId);
+		WebService.sendJsonGET(
+			this.apiMedicalRecord(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}	
+
+	// api for Get Medical-record By Id
+	static getMedicalRecordById(token, id, callback ) {
+		WebService.sendJsonGET(
+			this.apiMedicalRecordById(id),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}	
+
+	// api for Put Answer Like By Id
+	static putStatusOfMedicalRecord(token, id, status, callback ) {
+		WebService.sendJsonPUT(
+			this.apiMedicalRecordById(id),
+			{
+				jwt: token,
+				status
+			},
+			callback,
+		);
+	}
+
+////// TODO: For doctor ////////////////////////////////////////////////////////////////////////////////////
 
 //====================CHECK-TOKEN AND SET NEW TOKEN======================
 

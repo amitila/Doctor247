@@ -27,7 +27,7 @@ export default function MRList(props) {
                     key={task.id} 
                     index={index + 1} 
                     task={task} 
-                    onDelete={props.onDelete}
+                    handleChangeVisible={props.handleChangeVisible}
                 />
     });
     
