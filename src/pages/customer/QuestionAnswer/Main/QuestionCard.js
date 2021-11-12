@@ -27,7 +27,6 @@ import ShareBoard from './ShareBoard';
 import { useSelector } from "react-redux";
 import { selectRole } from '../../../../store/userSlice';
 import APIService from '../../../../utils/APIService';
-import getToken from '../../../../helpers/getToken';
  
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -121,11 +120,9 @@ export default function QuestionCard(props) {
 	}
 
     React.useEffect(() => {
-        const token = getToken();
         const replyList = [];
         const id = task.id;
-        APIService.getAnswerById(
-            token,
+        APIService.getPublicAnswerById(
             id,
             (success, json) => {
                 if (success && json.result) {
@@ -317,38 +314,39 @@ export default function QuestionCard(props) {
                         })}
                     </Typography>
                     {
-                        role === 'CUSTOMER' ? '' :
-                        <form>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="specialityName"
-                                name="specialityName"
-                                value={state.specialityName}
-                                onChange={onChange}
-                                label="Bệnh thuộc chuyên khoa"
-                            />
-                            <TextareaAutosize
-                                id="replyContent"
-                                name="replyContent"
-                                className={classes.textSize}
-                                value={state.replyContent}
-                                onChange={onChange}
-                                minRows={3}
-                                placeholder="Trả lời"
-                            ></TextareaAutosize>
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}
-                                onClick={state.replyContent ? handleChangeComment : null}
-                            >
-                                Trả lời
-                            </Button>
-                        </form>
+                        role === 'DOCTOR' ?
+                            <form>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="specialityName"
+                                    name="specialityName"
+                                    value={state.specialityName}
+                                    onChange={onChange}
+                                    label="Bệnh thuộc chuyên khoa"
+                                />
+                                <TextareaAutosize
+                                    id="replyContent"
+                                    name="replyContent"
+                                    className={classes.textSize}
+                                    value={state.replyContent}
+                                    onChange={onChange}
+                                    minRows={3}
+                                    placeholder="Trả lời"
+                                ></TextareaAutosize>
+                                <Button
+                                    type="button"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                    onClick={state.replyContent ? handleChangeComment : null}
+                                >
+                                    Trả lời
+                                </Button>
+                            </form>
+                            : ''
                     }
                 </CardContent>
             </Collapse>

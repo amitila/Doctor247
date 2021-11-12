@@ -73,11 +73,43 @@ export default function Index(props) {
         )
     }
 
+    const getDayOfWeek = (day) => {
+        let dayOfWeek;
+        // eslint-disable-next-line default-case
+        switch (day) {
+            case 'SUNDAY':
+                dayOfWeek = 0;
+                break;
+            case 'MONDAY':
+                dayOfWeek = 1;
+                break;
+            case 'TUESDAY':
+                dayOfWeek = 2;
+                break;
+            case 'WEDNESDAY':
+                dayOfWeek = 3;
+                break;
+            case 'THURSDAY':
+                dayOfWeek = 4;
+                break;
+            case 'FRIDAY':
+                dayOfWeek = 5;
+                break;
+            case 'SATURDAY':
+                dayOfWeek = 6;
+                break;
+            default: 
+                dayOfWeek = -1;
+          }
+        return dayOfWeek;
+    }
+
     const getDoctors = () => {
         const token = getToken();
         const drList = [];
         APIService.getDoctorList(
             token,
+            {},
             (success, json) => {
                 if (success && json.result) {
                     json.result.map(item => {
@@ -91,7 +123,21 @@ export default function Index(props) {
                             specialist: item.doctor.specialized.name,
                             phone:"0257296632",
                             year_exp:"5 năm kinh nghiệm",
-                            workplace: item.doctor.operation[0].workplace.name,
+                            workplace: item.doctor.operation.map(x => {return x.workplace.name}),
+                            operations: item.doctor.operation.map(x => {return {
+                                workplace: x.workplace.name + ', ' + x.workplace.address,
+                                patientPerHalfHour: x.patientPerHalfHour === null ? 0 : x.patientPerHalfHour,
+                                operationHours: x.operationHour.map(y => {return {
+                                    day: y.day,
+                                    dayOfWeek: getDayOfWeek(y.day),
+                                    startTime: y.startTime,
+                                    endTime: y.endTime,
+                                    startTimeVN: new Date(y.startTime),
+                                    endTimeVN: new Date(y.endTime),
+                                    startHour: new Date(y.startTime).getHours() +'h'+ new Date(y.startTime).getMinutes(),
+                                    endHour: new Date(y.endTime).getHours() +'h'+ new Date(y.endTime).getMinutes(),
+                                }})
+                            }}),
                         }
                     }))
                     setIsHaveChange(false);
@@ -173,22 +219,22 @@ export default function Index(props) {
         onCloseForm();
     }
 
-    const onGetAnItem = (id) => {
-        const token = getToken();
-        APIService.getAppointmentById(
-            token,
-            id,
-            (success, json) => {
-                if (success && json.result) {
-                    return 0;
-                } else {
-                    return console.log("THẤT BẠI!");
-                }
-            }
-        )
-    }
+    // const onGetAnItem = (id) => {
+    //     const token = getToken();
+    //     APIService.getAppointmentById(
+    //         token,
+    //         id,
+    //         (success, json) => {
+    //             if (success && json.result) {
+    //                 return 0;
+    //             } else {
+    //                 return console.log("THẤT BẠI!");
+    //             }
+    //         }
+    //     )
+    // }
 
-    console.log(onGetAnItem(34) ? "has an item" : "not found");
+    // console.log(onGetAnItem(34) ? "has an item" : "not found");
 
     const onFilter = (filterName, filterStatus) => {
         

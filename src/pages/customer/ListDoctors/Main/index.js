@@ -3,7 +3,6 @@ import DoctorList from './DoctorList';
 import DoctorControl from './DoctorControl';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
-import getToken from '../../../../helpers/getToken';
 
 export default function Index() {
     // const doctorcards = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
@@ -63,7 +62,6 @@ export default function Index() {
             "workplace":"Bệnh viện đa khoa tỉnh Cà Mau",
         },
     ];
-    console.log(flag)
 
     const [isHaveChange, setIsHaveChange] = useState(true);
     const [doctorcards, setDoctorcards] = useState([]);
@@ -76,15 +74,15 @@ export default function Index() {
     }, [isHaveChange])
 
     const getDoctors = () => {
-        const token = getToken();
         const drList = [];
-        APIService.getDoctorList(
-            token,
+        APIService.getDoctorListPublic(
+            {},
             (success, json) => {
                 if (success && json.result) {
                     json.result.map(item => {
                         return drList.push(item);
                     })
+                    
                     setDoctorcards(drList?.map(item => {
                         return {
                             id: item.doctor.id,
@@ -93,7 +91,7 @@ export default function Index() {
                             specialist: item.doctor.specialized.name,
                             phone:"0257296632",
                             year_exp:"5 năm kinh nghiệm",
-                            workplace: item.doctor.operation[0].workplace.name,
+                            workplace: 'Chưa tạo phòng khám', //item.doctor.operation[0].workplace.name
                         }
                     }))
                     setIsHaveChange(false);

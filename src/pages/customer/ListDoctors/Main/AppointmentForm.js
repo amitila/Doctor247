@@ -76,10 +76,19 @@ const bookingTime = [
 
 export default function AppointmentForm(props) {
 
+	// get current time
+	const getCurrentDate = () => {
+		var dateObj = new Date();
+		var month = dateObj.getMonth() + 1; //months from 1-12
+		var day = dateObj.getDate();
+		var year = dateObj.getFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
+
 	const [state, setState] = useState({
 		id: '',
 		name: '',
-		date: '',
+		date: getCurrentDate(),
 		hour: '',
 		doctor: '',
 		description: '',
@@ -154,15 +163,6 @@ export default function AppointmentForm(props) {
 	useEffect(() => {
 		setInputHour(state.hour);
 	}, [state.hour]);
-
-	// get current time
-	const getCurrentDate = () => {
-		var dateObj = new Date();
-		var month = dateObj.getMonth() + 1; //months from 1-12
-		var day = dateObj.getDate();
-		var year = dateObj.getFullYear();
-		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
-	}
 	
 	// add images
 	const [number, setNumber] = React.useState(4);

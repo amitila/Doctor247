@@ -23,6 +23,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
+import APIService from '../../utils/APIService';
+import getToken from '../../helpers/getToken';
 
 const customTheme = createTheme({
 	palette: {
@@ -86,6 +88,37 @@ export default function Emergency() {
 	};
 
 	const [call, setCall] = React.useState('call_sms');
+	const [openAddPhone, setOpenAddPhone] = React.useState(false);
+	const [phoneNumber, setPhoneNumber] = React.useState('');
+	const [sms, setSms] = React.useState('');
+
+	React.useEffect(() => {
+		const token = getToken();
+		if(token) {
+			APIService.getProfile(token, (success, json) => {
+				if(success && json.result){
+					// console.log(json.result.customer.relativePhoneNumber)
+					return setPhoneNumber(json.result.customer.relativePhoneNumber)
+				}
+			}) 
+		}
+	},[])
+
+	const handleAddRelativePhoneNumber = () => {
+        const token = getToken();
+        APIService.addRelativePhoneNumber(
+            token,
+            phoneNumber,
+            (success, json) => {
+                if (success && json.result) {
+					setOpenAddPhone(false)
+                    return console.log("Thêm thành công!")
+                } else {
+                    return console.log(json.error)
+                }
+            }
+        )
+    }
 
 	return (
 		<>
@@ -113,47 +146,75 @@ export default function Emergency() {
 
 			</SpeedDial>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle><AddIcCallIcon style={{color: 'red'}}/>{' '}Gọi khẩn cấp</DialogTitle>
-				<DialogContent>
-				<DialogContentText>
-					Đây là chức năng vừa cho phép bạn <b>gọi cấp cứu</b> trong trường hợp khẩn cấp và <b>gửi tin nhắn</b> thông báo về cho người thân của bạn
-					trong trường hợp khẩn cấp!
-				</DialogContentText>
-				<FormControl component="fieldset">
-					<RadioGroup
-						aria-label="emergency"
-						defaultValue="call_sms"
-						name="radio-buttons-group"
-						value={call}
-						onChange={(e)=>setCall(e.target.value)}
-					>
-						<FormControlLabel value="call" control={<Radio />} label="Chỉ gọi khẩn cấp" />
-						<FormControlLabel value="sms" control={<Radio />} label="Chỉ thông báo cho người thân" />
-						<FormControlLabel value="call_sms" control={<Radio />} label="Gọi khẩn cấp và thông báo cho người thân" />
-					</RadioGroup>
-				</FormControl>
+				<DialogTitle>
+					<AddIcCallIcon style={{color: 'red'}}/>{' Gọi khẩn cấp ========>>>'}
+					<Button style={{float: 'right'}} onClick={()=>setOpenAddPhone(!openAddPhone)}>{openAddPhone ? 'Quay về' : 'Thêm người thân'}</Button>
+				</DialogTitle>
 				{
-					call === 'call' ? '' :
-						<TextField
-							// autoFocus
-							margin="dense"
-							id="sms"
-							label="Nội dung tin nhắn"
-							type="sms"
-							fullWidth
-							variant="standard"
-						/>
+					openAddPhone ? 
+						<p style={{padding: 10, textAlign: 'center'}}>
+							<TextField
+								// autoFocus
+								required
+								margin="dense"
+								id="phoneNumber"
+								name="phoneNumber"
+								value={phoneNumber}
+								label="Số điện thoại người thân"
+								type="number"
+								fullWidth
+								variant="standard"
+								onChange={(e)=>setPhoneNumber(e.target.value)}
+							/>
+							<Button onClick={handleAddRelativePhoneNumber}>Xác nhận thêm</Button>
+						</p> 
+						:
+						<>
+							<DialogContent>
+								<DialogContentText>
+									Đây là chức năng vừa cho phép bạn <b>gọi cấp cứu</b> trong trường hợp khẩn cấp và <b>gửi tin nhắn</b> thông báo về cho người thân của bạn
+									trong trường hợp khẩn cấp!
+								</DialogContentText>
+								<FormControl component="fieldset">
+									<RadioGroup
+										aria-label="emergency"
+										defaultValue="call_sms"
+										name="radio-buttons-group"
+										value={call}
+										onChange={(e)=>setCall(e.target.value)}
+									>
+										<FormControlLabel value="call_sms" control={<Radio />} label="Gọi khẩn cấp và thông báo cho người thân" />
+										<FormControlLabel value="sms" control={<Radio />} label="Chỉ thông báo cho người thân" />
+										<FormControlLabel value="call" control={<Radio />} label="Chỉ gọi khẩn cấp" />
+									</RadioGroup>
+								</FormControl>
+								{
+									call === 'call' ? '' :
+										<TextField
+											// autoFocus
+											margin="dense"
+											id="sms"
+											name="sms"
+											value={sms}
+											label="Nội dung tin nhắn"
+											type="text"
+											fullWidth
+											variant="standard"
+											onChange={(e)=>setSms(e.target.value)}
+										/>
+								}
+							</DialogContent>
+							<DialogActions>
+								<Button onClick={handleClose}>Thoát</Button>
+								{
+									call === 'sms' ? 
+										<Button onClick={handleClose}>Gửi thông báo</Button>
+										:
+										<Button onClick={handleClose}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
+								}
+							</DialogActions>
+						</>
 				}
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleClose}>Thoát</Button>
-					{
-						call === 'sms' ? 
-							<Button onClick={handleClose}>Gửi thông báo</Button>
-							:
-							<Button onClick={handleClose}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
-					}
-				</DialogActions>
 			</Dialog>
 		</>
 	);

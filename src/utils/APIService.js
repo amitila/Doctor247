@@ -56,6 +56,11 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/users/profile`;
 	};
 
+	// api add relative phonenumber
+	static apiAddRelativePhoneNumber = () => {
+		return `${APIService.baseAPI()}customer/users/relative-phone-number`;
+	};
+
 	static apiAdd = () => {
 		return `${APIService.baseAPI()}customer/users/add`;
 	};
@@ -156,6 +161,10 @@ export default class APIService {
 	};
 
 	// DoctorList
+	static apiDoctorListPublic = () => {
+		return `${APIService.baseAPI()}doctor/list`;
+	};
+
 	static apiDoctorList = () => {
 		return `${APIService.baseAPI()}customer/doctor/list`;
 	};
@@ -225,6 +234,8 @@ export default class APIService {
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+
+	// TODO: Both user 
 
   	// TODO: For customer
 
@@ -410,6 +421,18 @@ export default class APIService {
 				password,
 				email,
 				code
+			},
+			callback,
+		);
+	}
+
+	// api for Add relative phonenumber
+	static addRelativePhoneNumber(token, phoneNumber, callback ) {
+		WebService.sendJsonPUT(
+			this.apiAddRelativePhoneNumber(),
+			{
+				jwt: token,
+				phoneNumber
 			},
 			callback,
 		);
@@ -804,13 +827,39 @@ export default class APIService {
 	}
 
 //====================DOCTOR - LIST======================
+	// api for Get Doctor List Public
+	static getDoctorListPublic(values, callback ) {
+		const formData = new FormData();
+		formData.append('specializedId', values.specializedId);
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('wardId', values.wardId);
+		formData.append('districtId', values.districtId);
+		formData.append('provinceId', values.provinceId);
+		WebService.sendJsonGET(
+			this.apiDoctorListPublic(),
+			{
+				formData
+			},
+			callback,
+		);
+	}	
 
 	// api for Get Doctor List
-	static getDoctorList(token, callback ) {
+	static getDoctorList(token, values, callback ) {
+		const formData = new FormData();
+		formData.append('specializedId', values.specializedId);
+		formData.append('booked', values.booked);
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('wardId', values.wardId);
+		formData.append('districtId', values.districtId);
+		formData.append('provinceId', values.provinceId);
 		WebService.sendJsonGET(
 			this.apiDoctorList(),
 			{
-				jwt: token
+				jwt: token,
+				formData
 			},
 			callback,
 		);
