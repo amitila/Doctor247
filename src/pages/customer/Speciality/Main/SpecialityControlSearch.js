@@ -20,7 +20,7 @@ export default function SpecialitySearchControl(props) {
                 value={keyword} 
                 type="text"
                 className="form-control"
-                placeholder="Nhập các từ khóa về bác sĩ..."
+                placeholder="Từ khóa về chuyên khoa..."
                 onChange={onHandleChange}
             />
             &nbsp;

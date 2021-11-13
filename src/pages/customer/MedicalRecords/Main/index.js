@@ -10,10 +10,9 @@ import { Grid } from '@material-ui/core';
 export default function Index(props) {
     // const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
     const [isHaveChange, setIsHaveChange] = useState(true);
+    const [flag, setFlag] = useState([]);
     const [medicalRecords, setMedicalRecords] = useState([]);
     const [sort, setSort] = useState({by: 'name', value: 1});
-
-    var flag = medicalRecords;
 
     useEffect(() => {
         if (isHaveChange) {
@@ -36,7 +35,22 @@ export default function Index(props) {
                         return mrList.push(item);
                     })
                     setMedicalRecords(mrList?.map(item => {
-                        console.log("success")
+                        return {
+                            id: item.id,
+                            patient: item.customer.firstName + ' ' + item.customer.lastName,
+                            doctor: item.appointment[0].doctor.firstName + ' ' + item.appointment[0].doctor.lastName,
+                            doctorId: item.appointment[0].doctorId,
+                            dateTime: item.appointment[0].day,
+                            symptom: item.symptom,
+                            diagnostic: item.diagnostic,
+                            medicalExpense: item.medicalExpense,
+                            note: item.note,
+                            images: item.images,
+                            status: item.status,
+                            createdAt: item.createdAt,
+                        }
+                    }))
+                    setFlag(mrList?.map(item => {
                         return {
                             id: item.id,
                             patient: item.customer.firstName + ' ' + item.customer.lastName,
@@ -78,43 +92,57 @@ export default function Index(props) {
         )
     }
 
-    const onGetAMedicalRecord = (id) => {
-        const token = getToken();
-        APIService.getMedicalRecordById(
-            token,
-            id,
-            (success, json) => {
-                if (success && json.result) {
-                    return console.log("Lấy thành công 1 medical record");
-                } else {
-                    return console.log(json.error);
-                }
-            } 
-        )
-    }
+    // const onGetAMedicalRecord = (id) => {
+    //     const token = getToken();
+    //     APIService.getMedicalRecordById(
+    //         token,
+    //         id,
+    //         (success, json) => {
+    //             if (success && json.result) {
+    //                 return console.log("Lấy thành công 1 medical record");
+    //             } else {
+    //                 return console.log(json.error);
+    //             }
+    //         } 
+    //     )
+    // }
 
-    console.log(onGetAMedicalRecord(1));
+    // console.log(onGetAMedicalRecord(1));
 
-    const onFilter = (filterName, filterStatus) => {
-        
+    const onFilter = (filterId, filterPatient, filterDoctor, filterDateTime, filterCreatedAt) => {
+       
         let temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
+            const id = '#' + task.id;
+            return id.toLowerCase().indexOf(filterId.toLowerCase()) !== -1;
         });
-        
+
         temp = temp.filter((task) => {
-            if(filterStatus === '-1' || filterStatus === -1){
-                return task;
-            }else{
-                return task.status === (parseInt(filterStatus, 10) === 1 ? true : false);
-            }
+            return task.patient.toLowerCase().indexOf(filterPatient.toLowerCase()) !== -1;
         });
+
+        temp = temp.filter((task) => {
+            return task.doctor.toLowerCase().indexOf(filterDoctor.toLowerCase()) !== -1;
+        });
+
+        temp = temp.filter((task) => {
+            return task.dateTime.toLowerCase().indexOf(filterDateTime.toLowerCase()) !== -1;
+        });
+
+        temp = temp.filter((task) => {
+            return task.createdAt.toLowerCase().indexOf(filterCreatedAt.toLowerCase()) !== -1;
+        });
+
         setMedicalRecords(temp);
     }
 
     const onSearch = (keyword)=>{
-        console.log(flag);
         const temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            const id = '#' + task.id;
+            const guardianName = task.patient;
+            const doctorName = task.doctor;
+            return  id.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    guardianName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    doctorName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ;
         });
         setMedicalRecords(temp);
     }
@@ -126,18 +154,11 @@ export default function Index(props) {
         })
         if(sortBy === 'name'){
             const typeName = flag.sort((a, b) => {
-                if(a.name > b.name) return sortValue;
-                else if(a.name < b.name) return - sortValue;
+                if(a.patient > b.patient) return sortValue;
+                else if(a.patient < b.patient) return - sortValue;
                 else return 0;
             });
             setMedicalRecords(typeName);
-        }else{
-            const typeStatus = flag.sort((a, b) => {
-                if(a.status > b.status) return -sortValue;
-                else if(a.status < b.status) return sortValue;
-                else return 0;
-            });
-            setMedicalRecords(typeStatus);
         }
     }
    

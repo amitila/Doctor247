@@ -19,7 +19,7 @@ export default function DoctorList(props) {
     const [state, setState] = React.useState({
         filterName : '',
         filterPhone : '',
-        filterSpecialist : -1, //all:-1, active:1, hide:0
+        filterSpecialist : '',
         filterWorkplace: ''
     });
 
@@ -37,7 +37,7 @@ export default function DoctorList(props) {
         console.log(state);
     }
 
-    const { doctorcards } = props;
+    const { doctorcards, specialized } = props;
     const elmCards = doctorcards.map((task, index) => {
         return <Grid item xs={12} sm={4} className={classes.root} >
             <DoctorCard
@@ -47,7 +47,7 @@ export default function DoctorList(props) {
             />
         </Grid>
     });
-
+    
     return (
         <div>
             <table className="table table-borderd table-hover mt-15">
@@ -87,9 +87,12 @@ export default function DoctorList(props) {
                             placeholder="Nhập chuyên khoa..."
                             onChange={onChange}
                         >
-                            <option value="-1">All</option>
-                            <option value="0">Hide</option>
-                            <option value="1">Active</option>
+                            <option value={''}>Tất cả</option>
+                            {
+                                specialized?.map(item => {
+                                    return <option value={item.name}>{item.name}</option>
+                                })
+                            }
                         </select>
                     </td>
                     <td>

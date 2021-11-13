@@ -20,13 +20,13 @@ export default function PhoneBookSearchControl(props) {
                 value={keyword} 
                 type="text"
                 className="form-control"
-                placeholder="Nhập các từ khóa về bác sĩ..."
+                placeholder="Tên bệnh viên, số điện thoại..."
                 onChange={onHandleChange}
             />
             &nbsp;
             <span className="input-group-btn">
                 <button className="btn btn-primary" type="button" onClick={onSearch}>
-                    <SearchIcon /> Tìm kiếm
+                    <SearchIcon /> Tìm nhanh
                 </button>
             </span>
         </div>

@@ -26,8 +26,8 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = withStyles((theme) => ({
 	root: {
-		'&:focus': {
-			backgroundColor: theme.palette.primary.main,
+		'&:hover': {
+			backgroundColor: theme.palette.info.light,
 			'& .MuiListItemIcon-root, & .MuiListItemText-primary': {
 				color: theme.palette.common.white,
 			},
@@ -48,6 +48,7 @@ export default function ServiceSortControl(props) {
 
 	const onClick = (sortBy, sortValue) => {
 		props.onSort(sortBy, sortValue);
+		setAnchorEl(null);
 	}
 
 	return (
@@ -73,6 +74,12 @@ export default function ServiceSortControl(props) {
 				</StyledMenuItem>
 				<StyledMenuItem>
 					<Button onClick={() => onClick('name', 1)} >Z-A</Button>
+				</StyledMenuItem>
+				<StyledMenuItem>
+					<Button onClick={() => onClick('fee', -1)} >Gía rẻ</Button>
+				</StyledMenuItem>
+				<StyledMenuItem>
+					<Button onClick={() => onClick('fee', 1)} >Giá cao</Button>
 				</StyledMenuItem>
 			</StyledMenu>
 		</span>

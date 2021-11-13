@@ -5,8 +5,11 @@ import { Grid } from '@material-ui/core'
 export default function MRList(props) {
 
     const [state, setState] = React.useState({
-        filterName : '',
-        filterStatus : -1 //all:-1, active:1, hide:0
+        filterId : '',
+        filterPatient : '',
+        filterDoctor : '',
+        filterDateTime : '',
+        filterCreatedAt : '',
     });
 
     const onChange = (event) => {
@@ -14,8 +17,11 @@ export default function MRList(props) {
         let name = target.name;
         let value = target.value;
         props.onFilter(
-            name === 'filterName' ? value : state.filterName,
-            name === 'filterStatus' ? value : state.filterStatus
+            name === 'filterId' ? value : state.filterId,
+            name === 'filterPatient' ? value : state.filterPatient,
+            name === 'filterDoctor' ? value : state.filterDoctor,
+            name === 'filterDateTime' ? value : state.filterDateTime,
+            name === 'filterCreatedAt' ? value : state.filterCreatedAt,   
         )
         setState(prevState => ({...prevState, [name]: value}));
         console.log(state);
@@ -30,55 +36,127 @@ export default function MRList(props) {
                     handleChangeVisible={props.handleChangeVisible}
                 />
     });
-    
+
+    const unique = (arr) => {
+        var newArr = []
+        for (var i = 0; i < arr.length; i++) {
+            if (newArr.indexOf(arr[i]) === -1) {
+                newArr.push(arr[i])
+            }
+        }
+        return newArr
+    }
+
+    const filterPatientArr = medicalRecords?.map(item => {
+        return item.patient;
+    })
+    const filterDoctorArr = medicalRecords?.map(item => {
+        return item.doctor;
+    })
+    const filterDateTimeArr = medicalRecords?.map(item => {
+        return item.dateTime;
+    })
+    const filterCreatedAt = medicalRecords?.map(item => {
+        return item.createdAt;
+    })
+
     return (
         <>
             <table className="table table-borderd table-hover mt-15">
                 <thead>
                     <tr>
-                        <th className="text-center" >Hồ sơ số</th>
-                        <th className="text-center">Họ và tên</th>
-                        <th className="text-center">Quan hệ</th>
-                        <th className="text-center">Ngày khám bệnh</th>
+                        <th className="text-center" >Mã nhận dạng</th>
+                        <th className="text-center">Bệnh nhân</th>
+                        <th className="text-center">Bác sĩ</th>
+                        <th className="text-center">Ngày khám</th>
                         <th className="text-center">Ngày trả kết quả</th>
-                        <th className="text-center">Thông tin bệnh</th>
-                        <th className="text-center">Tình trạng</th>
-                        <th className="text-center">Tài liệu đính kèm</th>
                     </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td></td>
                     <td>
-                        <input 
-                            type="text" 
-                            className="form-control" 
-                            name="filterName"
-                            //value={state.filterName}
+                        <select 
+                            className="form-control"
+                            name="filterId"
+                            value={state.filterId}
                             onChange={onChange}
-                        />
+                        >
+                            <option value={''} >Tất cả</option>
+                            {
+                                medicalRecords?.map(item => {
+                                    return <option value={item.id} >#{item.id}</option>
+                                })
+                            }
+                        </select>
                     </td>
                     <td>
                         <select 
                             className="form-control"
-                            name="filterStatus"
-                            //value={state.filterStatus}
+                            name="filterPatient"
+                            value={state.filterPatient}
                             onChange={onChange}
                         >
-                            <option value="-1">All</option>
-                            <option value="0">Hide</option>
-                            <option value="1">Active</option>
+                            <option value={''} >Tất cả</option>
+                            {
+                                unique(filterPatientArr).map(item => {
+                                    return <option value={item} >{item}</option>
+                                })
+                            }
                         </select>
                     </td>
-                    <td></td>
+                    <td>
+                        <select 
+                            className="form-control"
+                            name="filterDoctor"
+                            value={state.filterDoctor}
+                            onChange={onChange}
+                        >
+                            <option value={''} >Tất cả</option>
+                            {
+                                unique(filterDoctorArr).map(item => {
+                                    return <option value={item} >{item}</option>
+                                })
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select 
+                            className="form-control"
+                            name="filterDateTime"
+                            value={state.filterDateTime}
+                            onChange={onChange}
+                        >
+                            <option value={''} >Tất cả</option>
+                            {
+                                unique(filterDateTimeArr).map(item => {
+                                    return <option value={item.slice(0,10)} >{item.slice(0,10)}</option>
+                                })
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select 
+                            className="form-control"
+                            name="filterCreatedAt"
+                            value={state.filterCreatedAt}
+                            onChange={onChange}
+                        >
+                            <option value={''} >Tất cả</option>
+                            {
+                                unique(filterCreatedAt).map(item => {
+                                    return <option value={item.slice(0,10)} >{item.slice(0,10)}</option>
+                                })
+                            }
+                        </select>
+                    </td>
                 </tr>
                 </tbody> 
             </table>  
             <Grid container spacing={5}>
-                <Grid item xs={12} sm={10}>
+                <Grid item xs={12} sm={11}>
                     {elmTasks}
                 </Grid>
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={1}>
                    
                 </Grid>
             </Grid>

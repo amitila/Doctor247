@@ -42,19 +42,19 @@ export default function AppointmentList(props) {
                         label="Tình trạng"
                         onChange={(event)=>onStatus(event.target.value)}
                     >
-                        <MenuItem value='PENDING'>Chờ bác sĩ</MenuItem>
+                        <MenuItem value='PENDING'>Chờ khám</MenuItem>
+                        <MenuItem value='DOING'>Đang khám</MenuItem>
+                        <MenuItem value='DONE'>Hoàn thành</MenuItem>
                         <MenuItem value='DOCTOR_CANCEL'>Bác sĩ từ chối</MenuItem>
                         <MenuItem value='CUSTOMER_CANCEL'>Tôi đã hủy</MenuItem>
-                        <MenuItem value='DONE'>Hoàn thành</MenuItem>
-                        <MenuItem value='DOING'>Đang khám</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
             <Grid container spacing={5}>
-                <Grid item xs={12} sm={10}>
+                <Grid item xs={12} sm={11}>
                     {elmTasks}
                 </Grid>
-                <Grid item xs={12} sm={2}>
+                <Grid item xs={12} sm={1}>
                     
                 </Grid>
             </Grid>

@@ -7,7 +7,7 @@ import { getMath } from '../../../../helpers/getDistanceFromCurrent';
 
 export default function Index() {
     // const phoneBookCards = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
-    const flag = [
+    const [flag, setFlag] = useState([
         {
             "name": "Phú Yên – Bệnh Viện Đa Khoa Tỉnh Phú Yên",
             "phoneNumber": "0963361414",
@@ -55,44 +55,51 @@ export default function Index() {
             "phoneNumber": "0964951515",
             "lat": 14.3558789,
             "lng": 107.996474,
+            "distance" : 0
         },
         {
             "name": "Cà Mau – Bệnh Viện Đa Khoa Tỉnh Cà Mau",
             "phoneNumber": "0967731818",
             "lat": 9.1713151,
             "lng": 105.1584296,
+            "distance" : 0
         },
         {
             "name": "Tp. Hồ Chí Minh – Bệnh Viện Chợ Rẫy",
             "phoneNumber": "0969871010",
             "lat": 10.757836156223908,
             "lng": 106.65952201026082,
+            "distance" : 0
         },
         {
             "name": "Tp. Hồ Chí Minh – Bệnh Viện Thống Nhất",
             "phoneNumber": "0969861010",
             "lat": 10.791557174281282, 
             "lng": 106.6534321967672,
+            "distance" : 0
         },
         {
             "name": "Tp. Hồ Chí Minh – Bệnh Viện Chấn Thương Chỉnh Hình",
             "phoneNumber": "0967841010",
             "lat": 10.7898283398828,
             "lng": 106.65339502785093,
+            "distance" : 0
         },
         {
             "name": "Tp. Hồ Chí Minh – Bệnh Viện Nhi Đồng 1",
             "phoneNumber": "0967681010",
             "lat": 10.773450774007289, 
             "lng": 106.66912892941775,
+            "distance" : 0
         },
         {
             "name": "Tp. Hồ Chí Minh – Bệnh Viện Nhi Đồng 2",
             "phoneNumber": "0967671010",
             "lat": 10.78508641002898, 
             "lng": 106.70140126608159,
+            "distance" : 0
         },
-    ];
+    ]);
 
     const [phoneBookCards, setPhoneBookCards] = useState(flag);
     const [sort, setSort] = useState({ by: 'name', value: 1 });
@@ -125,13 +132,19 @@ export default function Index() {
                     }
                 }))
             })
-        }, isSearch ? 25000 : 20000)
+        }, isSearch ? 70000 : 50000)
     })
 
     useEffect(() => {
         getLocation((lat, lng) => {
             console.log('getLocation1')
             setPhoneBookCards(phoneBookCards.map(item => {
+                return {
+                    ...item,
+                    distance: getMath(lat, lng, item.lat, item.lng)
+                }
+            }))
+            setFlag(phoneBookCards.map(item => {
                 return {
                     ...item,
                     distance: getMath(lat, lng, item.lat, item.lng)
@@ -172,6 +185,14 @@ export default function Index() {
             const typeName = flag.sort((a, b) => {
                 if (a.name < b.name) return sortValue;
                 else if (a.name > b.name) return - sortValue;
+                else return 0;
+            });
+            setPhoneBookCards(typeName);
+        } else if (sortBy === 'distance') {
+            const typeName = flag.sort((a, b) => {
+                console.log(a.distance)
+                if (parseInt(a.distance) < parseInt(b.distance)) return sortValue;
+                else if (parseInt(a.distance) > parseInt(b.distance)) return - sortValue;
                 else return 0;
             });
             setPhoneBookCards(typeName);

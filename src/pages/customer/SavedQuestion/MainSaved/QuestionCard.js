@@ -24,6 +24,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { TextField } from '@material-ui/core';
 import AnswerCard from './AnswerCard';
 import ShareBoard from './ShareBoard';
+import { useSelector } from "react-redux";
+import { selectRole } from '../../../../store/userSlice';
+import APIService from '../../../../utils/APIService';
  
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -70,6 +73,8 @@ export default function QuestionCard(props) {
         likeCounter: props.task.questionLike,
         mark: task.liked
     });
+    const [isHaveChange, setIsHaveChange] = React.useState(false);
+    const [replies, setReplies] = React.useState([]);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -84,6 +89,49 @@ export default function QuestionCard(props) {
 		// }
 		setState(prevState => ({...prevState, [name]: value}));
 	}
+
+    React.useEffect(() => {
+        const replyList = [];
+        const id = task.id;
+        APIService.getPublicAnswerById(
+            id,
+            (success, json) => {
+                if (success && json.result) {
+                    json.result.map(item => {
+                        return replyList.push(item);
+                    })
+                    return setReplies(replyList?.map(item => {
+                        return {
+                            id: item.id,
+                            doctorId: item.doctorId,
+                            questionId: item.questionId,
+                            updatedAt: item.updatedAt,
+                            doctorName: item.doctor.firstName + ' ' + item.doctor.lastName,
+                            doctorAvatar: item.doctor.avatarURL,
+                            specialized: item.specialized.name,
+                            specializedId: item.specializedId,
+                            specialityName: item.specialized.name,
+                            replyContent: item.content,
+                            liked: item.liked,
+                            likeCounter: item._count.answerLike,
+                        }
+                    }))
+                } else {
+                    return console.log("THẤT BẠI");
+                }
+            })
+        if(isHaveChange === false) {
+            replies.map(reply => {
+                var elmComment = <Grid container spacing={2}>
+                    <AnswerCard  
+                        reply={reply}
+                    />
+                </Grid>;
+                setComments(prevComment => [...prevComment, elmComment]);
+                return setIsHaveChange(true)
+            }) 
+        }
+    },[isHaveChange, replies, task.id])
 
     const handleChangeComment = (e) => {
         var elmComment = <Grid container spacing={2}>
@@ -107,9 +155,6 @@ export default function QuestionCard(props) {
         setAnchorEl(null);
     };
 
-    const date = new Date();
-    const currentTime = date.getHours() +':'+ date.getMinutes() +'  '+ date.getDate() +'/'+ (date.getMonth() + 1) +'/'+ date.getFullYear() ;
-
     const onUnSave = () => {
         props.onUnSave(props.task.id);
         handleClose();
@@ -123,6 +168,8 @@ export default function QuestionCard(props) {
             mark: state.mark ? false : true
         });
     }
+
+    const role = useSelector(selectRole);
 
     return (
         <Card sx={{ maxWidth: 400 }} className={classes.card} >
@@ -160,7 +207,7 @@ export default function QuestionCard(props) {
                    </div>
                 }
                 title={<b>CÂU HỎI</b>}
-                subheader={currentTime}
+                subheader={task.updatedAt.slice(0,10)}
             />
             <Typography variant="h5" className={classes.title} >
                 <b>{task.title}</b>
@@ -218,37 +265,41 @@ export default function QuestionCard(props) {
                             </Box>
                         })}
                     </Typography>
-                    <form>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="specialityName"
-                            name="specialityName"
-                            value={state.specialityName}
-                            onChange={onChange}
-                            label="Bệnh thuộc chuyên khoa"
-                        />
-                        <TextareaAutosize
-                            id="replyContent"
-                            name="replyContent"
-                            className={classes.textSize}
-                            value={state.replyContent}
-                            onChange={onChange}
-                            minRows={3}
-                            placeholder="Trả lời"
-                        ></TextareaAutosize>
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={state.replyContent ? handleChangeComment : null}
-                        >
-                            Trả lời
-                        </Button>
-                    </form>
+                    {
+                        role === 'DOCTOR' ?
+                            <form>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="specialityName"
+                                    name="specialityName"
+                                    value={state.specialityName}
+                                    onChange={onChange}
+                                    label="Bệnh thuộc chuyên khoa"
+                                />
+                                <TextareaAutosize
+                                    id="replyContent"
+                                    name="replyContent"
+                                    className={classes.textSize}
+                                    value={state.replyContent}
+                                    onChange={onChange}
+                                    minRows={3}
+                                    placeholder="Trả lời"
+                                ></TextareaAutosize>
+                                <Button
+                                    type="button"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                    onClick={state.replyContent ? handleChangeComment : null}
+                                >
+                                    Trả lời
+                                </Button>
+                            </form>
+                            : ''
+                    }
                 </CardContent>
             </Collapse>
         </Card>

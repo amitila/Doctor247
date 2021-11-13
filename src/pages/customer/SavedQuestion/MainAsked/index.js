@@ -10,10 +10,9 @@ import getToken from '../../../../helpers/getToken';
 export default function Index(props) {
     // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
     const [isHaveChange, setIsHaveChange] = useState(true);
+    const [flag, setFlag] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [sort, setSort] = useState({ by: 'name', value: 1 });
-
-    var flag = questions;
 
     useEffect(() => {
         if (isHaveChange) {
@@ -32,6 +31,19 @@ export default function Index(props) {
                         return questionList.push(item);
                     })
                     setQuestions(questionList?.map(item => {
+                        return {
+                            id: item.id,
+                            updatedAt: item.updatedAt,
+                            title: item.title,
+                            content: item.content,
+                            images: item.images,
+                            answers: item.answers,
+                            questionLike: item._count.questionLike,
+                            liked: item.liked,
+                            saved: item.saved,
+                        }
+                    }))
+                    setFlag(questionList?.map(item => {
                         return {
                             id: item.id,
                             updatedAt: item.updatedAt,
@@ -128,8 +140,6 @@ export default function Index(props) {
     }
 
     const onSearch = (keyword) => {
-        //setKeyword(keyword);
-        console.log(flag);
         let temp = flag.filter((task) => {
             return task.title.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 || task.content.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
@@ -149,13 +159,13 @@ export default function Index(props) {
                 else return 0;
             });
             setQuestions(typeName);
-        } else {
-            // const typeStatus = flag.sort((a, b) => {
-            //     if(a.status > b.status) return -sortValue;
-            //     else if(a.status < b.status) return sortValue;
-            //     else return 0;
-            // });
-            // setQuestions(typeStatus);
+        } else if (sortBy === 'questionLike') {
+            const typeName = flag.sort((a, b) => {
+                if (a.questionLike > b.questionLike) return sortValue;
+                else if (a.questionLike < b.questionLike) return - sortValue;
+                else return 0;
+            });
+            setQuestions(typeName);
         }
     }
 

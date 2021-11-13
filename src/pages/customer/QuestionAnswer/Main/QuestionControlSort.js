@@ -26,8 +26,8 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = withStyles((theme) => ({
 	root: {
-		'&:focus': {
-			backgroundColor: theme.palette.primary.main,
+		'&:hover': {
+			backgroundColor: theme.palette.info.light,
 			'& .MuiListItemIcon-root, & .MuiListItemText-primary': {
 				color: theme.palette.common.white,
 			},
@@ -48,6 +48,7 @@ export default function QuestionSortControl(props) {
 
 	const onClick = (sortBy, sortValue) => {
 		props.onSort(sortBy, sortValue);
+		setAnchorEl(null);
 	}
 
 	return (
@@ -75,10 +76,10 @@ export default function QuestionSortControl(props) {
 					<Button onClick={() => onClick('title', -1)} >Z-A</Button>
 				</StyledMenuItem>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('status', 1)} >Active</Button>
+					<Button onClick={() => onClick('questionLike', 1)} >Yêu thích</Button>
 				</StyledMenuItem>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('status', -1)} >Hide</Button>
+					<Button onClick={() => onClick('questionLike', -1)} >Không yêu thích</Button>
 				</StyledMenuItem>
 			</StyledMenu>
 		</span>

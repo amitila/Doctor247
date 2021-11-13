@@ -20,12 +20,13 @@ export default function MRSearchControl(props) {
                 value={keyword}
                 type="text"
                 className="form-control"
-                placeholder="Nhập từ khóa..."
+                placeholder="Tên bệnh nhân, bác sĩ khám, mã hồ sơ (ví dụ: #1)..."
                 onChange={onHandleChange}
             />
+            &nbsp;
             <span className="input-group-btn">
                 <button className="btn btn-primary" type="button" onClick={onSearch}>
-                    <SearchIcon /> Tìm kiếm
+                    <SearchIcon /> Tìm nhanh
                 </button>
             </span>
         </div>

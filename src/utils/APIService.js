@@ -8,6 +8,10 @@ export default class APIService {
 		return `${APIService.urlServerAddress}/api/`;
 	};
 
+	static apiSpecialized = () => {
+		return `${APIService.baseAPI()}specialized`;
+	};
+
 	static apiCheckToken = () => {
 		return `${APIService.baseAPI()}customer/users/check-token`;
 	};
@@ -236,6 +240,17 @@ export default class APIService {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 	// TODO: Both user 
+
+//====================GET SPECIALIZED======================
+	// api for Get Profile
+	static getSpecialized(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiSpecialized(),
+			{
+			},
+			callback,
+		);
+	}
 
   	// TODO: For customer
 
@@ -641,10 +656,16 @@ export default class APIService {
 //====================QUESTION======================
 
 	// api for Get Public Question
-	static getPublicQuestion( callback ) {
+	static getPublicQuestion( values, callback ) {
+		const formData = new FormData();
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('keyword', values.keyword);
+		formData.append('specializedId', values.specializedId);
 		WebService.sendJsonGET(
 			this.apiPublicQuestion(),
 			{
+				formData
 			},
 			callback,
 		);

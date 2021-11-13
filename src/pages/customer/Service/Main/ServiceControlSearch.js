@@ -20,7 +20,7 @@ export default function ServiceSearchControl(props) {
                 value={keyword} 
                 type="text"
                 className="form-control"
-                placeholder="Nhập các từ gói khám..."
+                placeholder="Tên gói khám, dịch vụ khám..."
                 onChange={onHandleChange}
             />
             &nbsp;

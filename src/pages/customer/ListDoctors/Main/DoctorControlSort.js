@@ -26,8 +26,8 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = withStyles((theme) => ({
 	root: {
-		'&:focus': {
-			backgroundColor: theme.palette.primary.main,
+		'&:hover': {
+			backgroundColor: theme.palette.info.light,
 			'& .MuiListItemIcon-root, & .MuiListItemText-primary': {
 				color: theme.palette.common.white,
 			},
@@ -48,6 +48,7 @@ export default function DoctorSortControl(props) {
 
 	const onClick = (sortBy, sortValue) => {
 		props.onSort(sortBy, sortValue);
+		setAnchorEl(null);
 	}
 
 	return (
@@ -68,17 +69,11 @@ export default function DoctorSortControl(props) {
 				open={Boolean(anchorEl)}
 				onClose={handleClose}
 			>
-				<StyledMenuItem>
-					<Button onClick={() => onClick('name', 1)} >A-Z</Button>
+				<StyledMenuItem onClick={() => onClick('name', 1)}>
+					A-Z
 				</StyledMenuItem>
-				<StyledMenuItem>
-					<Button onClick={() => onClick('name', -1)} >Z-A</Button>
-				</StyledMenuItem>
-				<StyledMenuItem>
-					<Button onClick={() => onClick('status', 1)} >Active</Button>
-				</StyledMenuItem>
-				<StyledMenuItem>
-					<Button onClick={() => onClick('status', -1)} >Hide</Button>
+				<StyledMenuItem onClick={() => onClick('name', -1)}>
+					Z-A
 				</StyledMenuItem>
 			</StyledMenu>
 		</span>

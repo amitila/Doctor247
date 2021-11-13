@@ -14,17 +14,19 @@ export default function Index(props) {
     const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
     const [isHaveChange, setIsHaveChange] = useState(true);
+    const [specialized, setSpecialized] = useState([]);
+    const [flag, setFlag] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
     const [taskEditing, setTaskEditing] = useState(null);
     //const [filter, setFilter] = useState({name: '', status: -1});
     //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({ by: 'name', value: 1 });
-    var flag = questions;
 
     useEffect(() => {
         if (isHaveChange) {
             getQuestion()
+            getSpecialized()
         }
     }, [isHaveChange])
 
@@ -51,15 +53,43 @@ export default function Index(props) {
                             saved: item.saved
                         }
                     }))
+                    setFlag(questionList?.map(item => {
+                        return {
+                            id: item.id,
+                            updatedAt: item.updatedAt,
+                            title: item.title,
+                            content: item.content,
+                            images: item.images,
+                            answers: item.answers,
+                            questionLike: item._count.questionLike,
+                            liked: item.liked,
+                            saved: item.saved
+                        }
+                    }))
                     setIsHaveChange(false);
                     return console.log("Lấy câu hỏi thành công");
                 } else {
-                    APIService.getPublicQuestion((success, json) => {
+                    APIService.getPublicQuestion(
+                        {},
+                        (success, json) => {
                         if (success && json.result) {
                             json.result.map(item => {
                                 return questionList.push(item);
                             })
                             setQuestions(questionList?.map(item => {
+                                return {
+                                    id: item.id,
+                                    updatedAt: item.updatedAt,
+                                    title: item.title,
+                                    content: item.content,
+                                    images: item.images,
+                                    answers: item.answers,
+                                    questionLike: item._count.questionLike,
+                                    liked: item.liked,
+                                    saved: item.saved
+                                }
+                            }))
+                            setFlag(questionList?.map(item => {
                                 return {
                                     id: item.id,
                                     updatedAt: item.updatedAt,
@@ -245,12 +275,27 @@ export default function Index(props) {
             console.log("Lỗi like");
         }
     }
+
+    const getSpecialized = () => {
+        APIService.getSpecialized(
+            {},
+            (success, json) => {
+                if (success && json.result) { 
+                    setSpecialized(json.result.map(item => {
+                        return {
+                            id: item.id,
+                            name: item.name,
+                        }
+                    }))
+                    return console.log("Lấy chuyên khoa thành công");
+                } else {
+                    return console.log("lỗi server");
+                }
+            }
+        )
+    }
     
-    const onFilter = (filterTitle, filterContent) => {
-        // setFilter({
-        //     name : filterName,
-        //     status : filterStatus
-        // });
+    const onFilter = (filterTitle, filterContent, filterSpecialist) => {
 
         let temp = flag.filter((task) => {
             return task.title.toLowerCase().indexOf(filterTitle.toLowerCase()) !== -1;
@@ -260,19 +305,15 @@ export default function Index(props) {
             return task.content.toLowerCase().indexOf(filterContent.toLowerCase()) !== -1;
         });
 
-        // temp = temp.filter((task) => {
-        //     if(filterStatus === '-1' || filterStatus === -1){
-        //         return task;
-        //     }else{
-        //         return task.status === (parseInt(filterStatus, 10) === 1 ? true : false);
-        //     }
-        // });
+        temp = temp.filter((task) => {
+            return task.title.toLowerCase().indexOf(filterSpecialist.toLowerCase()) !== -1 || task.content.toLowerCase().indexOf(filterSpecialist.toLowerCase()) !== -1;
+        });
+
         setQuestions(temp);
     }
 
     const onSearch = (keyword) => {
-        //setKeyword(keyword);
-        console.log(flag);
+
         let temp = flag.filter((task) => {
             return task.title.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 || task.content.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
@@ -292,13 +333,13 @@ export default function Index(props) {
                 else return 0;
             });
             setQuestions(typeName);
-        } else {
-            // const typeStatus = flag.sort((a, b) => {
-            //     if(a.status > b.status) return -sortValue;
-            //     else if(a.status < b.status) return sortValue;
-            //     else return 0;
-            // });
-            // setQuestions(typeStatus);
+        } else if (sortBy === 'questionLike') {
+            const typeName = flag.sort((a, b) => {
+                if (a.questionLike > b.questionLike) return sortValue;
+                else if (a.questionLike < b.questionLike) return - sortValue;
+                else return 0;
+            });
+            setQuestions(typeName);
         }
     }
 
@@ -341,6 +382,7 @@ export default function Index(props) {
                                     onSave={onSave}
                                     onUpdateLike={onUpdateLike}
                                     onFilter={onFilter}
+                                    specialized={specialized}
                                 />
 
                             </Grid>
@@ -378,6 +420,7 @@ export default function Index(props) {
                                 onSave={onSave}
                                 onUpdateLike={onUpdateLike}
                                 onFilter={onFilter}
+                                specialized={specialized}
                             />
                         </Grid>
                     }

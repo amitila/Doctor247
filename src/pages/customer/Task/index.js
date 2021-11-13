@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Inndex() {
 	const classes = useStyles();
     
+    //// Code for confirming success, failed
     const [isHaveAlert, setIsHaveAlert] = React.useState(false);
     const [alert, setAlert] = React.useState('');
     
@@ -32,6 +33,7 @@ export default function Inndex() {
         setIsHaveAlert(false)
         return setAlert({ number: '', sms: ''})
     }
+    /////
 
 	return (
 		<div className={classes.root}>

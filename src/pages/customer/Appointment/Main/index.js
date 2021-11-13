@@ -17,6 +17,7 @@ export default function Index(props) {
     const history = useHistory();
     // const flag = (localStorage && localStorage.getItem('appointments')) ? JSON.parse(localStorage.getItem('appointments')) : [];
     const [isHaveChange, setIsHaveChange] = useState(true);
+    const [flag, setFlag] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [patientList, setPatientList] = useState([]);
     const [isDisplayForm, setIsDisplayForm] = useState(false);
@@ -25,7 +26,7 @@ export default function Index(props) {
     const [doctorList, setDoctorList] = useState([]);
     var status = 'PENDING';
 
-    var flag = appointments;
+    // var flag = appointments;
 
     const onStatus = (text) => {
         status = text;
@@ -53,6 +54,18 @@ export default function Index(props) {
                         return item.status === status ? appointmentList.push(item) : '';
                     })
                     setAppointments(appointmentList?.map(item => {
+                        return {
+                            id: item.medicalRecordId,
+                            guardian: item.medicalRecord.customer,
+                            doctor: item.doctor,
+                            dateTime: item.day,
+                            description:item.medicalRecord.symptom,
+                            images: item.medicalRecord.images,
+                            status: item.status,
+                            createdAt: item.createdAt,
+                        }
+                    }))
+                    setFlag(appointmentList?.map(item => {
                         return {
                             id: item.medicalRecordId,
                             guardian: item.medicalRecord.customer,
@@ -238,24 +251,28 @@ export default function Index(props) {
 
     const onFilter = (filterName, filterStatus) => {
         
-        let temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
-        });
+        // let temp = flag.filter((task) => {
+        //     return task.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1;
+        // });
         
-        temp = temp.filter((task) => {
-            if(filterStatus === '-1' || filterStatus === -1){
-                return task;
-            }else{
-                return task.status === (parseInt(filterStatus, 10) === 1 ? true : false);
-            }
-        });
-        setAppointments(temp);
+        // temp = temp.filter((task) => {
+        //     if(filterStatus === '-1' || filterStatus === -1){
+        //         return task;
+        //     }else{
+        //         return task.status === (parseInt(filterStatus, 10) === 1 ? true : false);
+        //     }
+        // });
+        // setAppointments(temp);
     }
 
     const onSearch = (keyword)=>{
-        console.log(flag);
         const temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            const id = '#' + task.id;
+            const guardianName = task.guardian.firstName + ' ' + task.guardian.lastName;
+            const doctorName = task.doctor.firstName + ' ' + task.doctor.lastName;
+            return  id.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    guardianName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    doctorName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ;
         });
         setAppointments(temp);
     }
@@ -267,18 +284,11 @@ export default function Index(props) {
         })
         if(sortBy === 'name'){
             const typeName = flag.sort((a, b) => {
-                if(a.name > b.name) return sortValue;
-                else if(a.name < b.name) return - sortValue;
+                if(a.guardian.lastName > b.guardian.lastName) return sortValue;
+                else if(a.guardian.lastName < b.guardian.lastName) return - sortValue;
                 else return 0;
             });
             setAppointments(typeName);
-        }else{
-            const typeStatus = flag.sort((a, b) => {
-                if(a.status > b.status) return -sortValue;
-                else if(a.status < b.status) return sortValue;
-                else return 0;
-            });
-            setAppointments(typeStatus);
         }
     }
 

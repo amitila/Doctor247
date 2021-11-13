@@ -28,7 +28,7 @@ export default function QuestionList(props) {
     const [state, setState] = React.useState({
         filterTitle : '',
         filterContent : '',
-        filterSpecialist : -1 //all:-1, active:1, hide:0
+        filterSpecialist : ''
     });
 
     const onChange = (event) => {
@@ -44,7 +44,7 @@ export default function QuestionList(props) {
         console.log(state);
     }
  
-    const {questions} = props;
+    const {questions, specialized} = props;
     const elmQuestions = questions.map((task, index) => {
         return <Grid item xs={12} className={classes.root} >
                     <QuestionCard
@@ -62,7 +62,8 @@ export default function QuestionList(props) {
 
     //Breakpoints
 	const theme = useTheme();
-	const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+	const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+    // const tablet = useMediaQuery(theme.breakpoints.up('md'));
 
     const temp = elmQuestions.reverse();
     const temp1 = temp;
@@ -76,7 +77,7 @@ export default function QuestionList(props) {
                 <thead>
                     <tr>
                         <th className={classes.wordColor}>Tiêu đề (tên bệnh)</th>
-                        <th className={classes.wordColor}>Nội dung</th>
+                        <th className={classes.wordColor}>Mô tả (triệu chứng)</th>
                         <th className={classes.wordColor}>Chuyên khoa</th>
                     </tr>
                 </thead>
@@ -87,7 +88,7 @@ export default function QuestionList(props) {
                             type="text" 
                             className="form-control" 
                             name="filterTitle"
-                            placeholder="Nhập tên bệnh cần tìm...(như đau đầu, sốt,...)"
+                            placeholder="Tiêu đề câu hỏi..."
                             onChange={onChange}
                         />
                     </td>
@@ -96,7 +97,7 @@ export default function QuestionList(props) {
                             type="text" 
                             className="form-control" 
                             name="filterContent"
-                            placeholder="Nhập những từ liên quan tới bệnh...(như ê nhứt, nóng,...)"
+                            placeholder="Mô tả bệnh..."
                             onChange={onChange}
                         />
                     </td>
@@ -104,12 +105,15 @@ export default function QuestionList(props) {
                         <select 
                             className="form-control"
                             name="filterSpecialist"
-                            placeholder="Nhập chuyên khoa...(như nội khoa, ngoại khoa,...)"
+                            placeholder="Nhập chuyên khoa..."
                             onChange={onChange}
                         >
-                            <option value="0">Tai Mũi Họng</option>
-                            <option value="1">Răng Hàm Măt</option>
-                            <option value="2">Chấn thương chỉnh hình</option>
+                            <option value={''}>Tất cả</option>
+                            {
+                                specialized?.map(item => {
+                                    return <option value={item.name}>{item.name}</option>
+                                })
+                            }
                         </select>
                     </td>
                 </tr>
@@ -117,34 +121,33 @@ export default function QuestionList(props) {
             </table>  
             <Container maxWidth="lg">
                 {
-                    isMatch ?
+                    mobile ?
                         <Grid container spacing={1}>
-                            <Grid item xs={12} sm={4} >
+                            <Grid item xs={12} sm={12} >
                                 {temp1}
                             </Grid>
                         </Grid>
                     :
-                    <Grid container spacing={0}>
-                        <Grid item xs={12} sm={l === 1 ? 8: (l === 2 ? 6 : 4)}>
-                            {/* {elmQuestions.reverse()} */}
-                            {temp1.map((item, index) => {
-                                return index % 3 === 0 ? item : ""
-                            })}
-                        </Grid>
-                        <Grid item xs={12} sm={l === 2 ? 6 : 4}>
-                            {/* {elmQuestions.reverse()} */}
-                            {temp2.map((item, index) => {
-                                return index % 3 === 1 ? item : ""
-                            })}
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            {/* {elmQuestions.reverse()} */}
-                            {temp3.map((item, index) => {
-                                return index % 3 === 2 ? item : ""
-                            })}
-                        </Grid>
-                    </Grid>
-                    
+                        <Grid container spacing={0}>
+                            <Grid item xs={12} sm={l === 1 ? 8: (l === 2 ? 6 : 4)}>
+                                {/* {elmQuestions.reverse()} */}
+                                {temp1.map((item, index) => {
+                                    return index % 3 === 0 ? item : ""
+                                })}
+                            </Grid>
+                            <Grid item xs={12} sm={l === 2 ? 6 : 4}>
+                                {/* {elmQuestions.reverse()} */}
+                                {temp2.map((item, index) => {
+                                    return index % 3 === 1 ? item : ""
+                                })}
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                {/* {elmQuestions.reverse()} */}
+                                {temp3.map((item, index) => {
+                                    return index % 3 === 2 ? item : ""
+                                })}
+                            </Grid>
+                        </Grid>   
                 }
             </Container>          
         </div>

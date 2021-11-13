@@ -60,7 +60,7 @@ export default function AppointmentItem(props) {
 						<Grid item xs={12} sm={5}>
 							<Typography style={{fontSize: 23}}>
 								Tình trạng lịch: {
-													task.status === "PENDING" ? "Chờ bác sĩ" : ""
+													task.status === "PENDING" ? "Chờ khám" : ""
 												}
 												{
 													task.status === "CUSTOMER_CANCEL" ? "Đã xóa" : ""
@@ -128,7 +128,7 @@ export default function AppointmentItem(props) {
 							<td>Tình trạng:</td>
 							<td>
 								{
-									task.status === "PENDING" ? "Chờ bác sĩ" : ""
+									task.status === "PENDING" ? "Chờ khám" : ""
 								}
 								{
 									task.status === "CUSTOMER_CANCEL" ? "Đã xóa" : ""

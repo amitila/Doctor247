@@ -172,7 +172,11 @@ export default function Index() {
 
     const onSearch = (keyword) => {
         let temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    task.introduce.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    task.symptom.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    task.treatment.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                    task.related.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
         setSpecialities(temp);
     }

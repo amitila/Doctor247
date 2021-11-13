@@ -26,8 +26,8 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = withStyles((theme) => ({
 	root: {
-		'&:focus': {
-			backgroundColor: theme.palette.primary.main,
+		'&:hover': {
+			backgroundColor: theme.palette.info.light,
 			'& .MuiListItemIcon-root, & .MuiListItemText-primary': {
 				color: theme.palette.common.white,
 			},
@@ -48,6 +48,7 @@ export default function PhoneBookSortControl(props) {
 
 	const onClick = (sortBy, sortValue) => {
 		props.onSort(sortBy, sortValue);
+		setAnchorEl(null);
 	}
 
 	return (
@@ -69,10 +70,16 @@ export default function PhoneBookSortControl(props) {
 				onClose={handleClose}
 			>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('name', -1)} >A-Z</Button>
+					<Button onClick={() => onClick('name', 1)} >A-Z</Button>
 				</StyledMenuItem>
 				<StyledMenuItem>
-					<Button onClick={() => onClick('name', 1)} >Z-A</Button>
+					<Button onClick={() => onClick('name', -1)} >Z-A</Button>
+				</StyledMenuItem>
+				<StyledMenuItem>
+					<Button onClick={() => onClick('distance', 1)} >Gần nhất</Button>
+				</StyledMenuItem>
+				<StyledMenuItem>
+					<Button onClick={() => onClick('distance', -1)} >Xa nhất</Button>
 				</StyledMenuItem>
 			</StyledMenu>
 		</span>

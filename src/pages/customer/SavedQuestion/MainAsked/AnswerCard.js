@@ -9,15 +9,17 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import Favorite from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import Button from '@material-ui/core/Button';
-import { useHistory } from "react-router-dom";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@material-ui/core/Button';
+import { useHistory } from "react-router-dom";
+// import DialogForm from './DialogForm';
+import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -58,6 +60,8 @@ export default function AnswerCard(props) {
 	const classes = useStyles();
 	const history = useHistory();
 
+	const {reply} = props;
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
     const openAnchor = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -67,12 +71,56 @@ export default function AnswerCard(props) {
         setAnchorEl(null);
     };
 
+	const [mark, setMark] = React.useState(reply.liked);
+	const [likeCounter, setLikeCounter] = React.useState(reply.likeCounter);
+
+	const handleCountLike = () => {
+        onUpdateLike(mark, reply.id);
+		setMark(mark ? false : true)
+		setLikeCounter(mark ? likeCounter - 1 : likeCounter + 1)
+    }
+
+	const onUpdateLike = (mark, id) => {
+        const token = getToken();
+        if(mark === false) {
+            APIService.putAnswerLikeById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        // setIsHaveChange(true);
+                        return console.log("Like THÀNH CÔNG !");
+                    } else {
+                        return console.log("Like THẤT BẠI !");
+                    }
+                }
+            )
+        }
+        else if(mark) {
+            APIService.putAnswerUnLikeById(
+                token,
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        // setIsHaveChange(true);
+                        return console.log("UnLike THÀNH CÔNG !");
+                    } else {
+                        return console.log("UnLike THẤT BẠI !");
+                    }
+                }
+            )
+        }
+        else{
+            console.log("Lỗi like");
+        }
+    }
+
 	return (
 		<div className={classes.root}>
 			<Card>
 				<CardHeader
 					avatar={
-						<Avatar alt="avatar" src={''} loading="lazy" />
+						<Avatar alt="avatar" src={reply.doctorAvatar} loading="lazy" />
 					}
 					action={
 						<div>
@@ -102,22 +150,32 @@ export default function AnswerCard(props) {
 							</Menu>
 						</div>
 					}
-					title={'BS.Phạm Văn Tâm'} //"BS.Phạm Văn Tâm "
-					subheader={"Chuyên khoa truyền nhiễm"} //"Chuyên khoa truyền nhiễm"
+					title={'BS.' + reply.doctorName} //"BS.Phạm Văn Tâm "
+					subheader={"Chuyên khoa " + reply.specialized} //"Chuyên khoa truyền nhiễm"
 				/>
 				<CardContent className={classes.content}>
 						<Typography variant="h6" component="h6">
-							{"Loại bệnh: " + props.state.specialityName}
+							{"Loại bệnh: " + reply.specialityName}
 						</Typography>
 						<Typography >
-							{props.state.replyContent}
+							{reply.replyContent}
+						</Typography>
+						<br />
+						<Typography >
+							{ 'Đã trả lời vào ngày: ' + reply.updatedAt.slice(0,10)}
 						</Typography>
 				</CardContent>
 				<CardActions disableSpacing>
 					<IconButton aria-label="add to favorites">
 						<FormControlLabel
-							control={<Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} name="checkedH" />}
-							label="Cảm ơn"
+							onClick={handleCountLike}
+							control={<Checkbox 
+										icon={<FavoriteIcon />} 
+										checkedIcon={<FavoriteIcon />} 
+										name="checkedH" 
+										checked={mark ? true : false}
+									/>}
+							label={likeCounter + " Cảm ơn"}
 						/>
 					</IconButton>
 					<IconButton
@@ -126,6 +184,9 @@ export default function AnswerCard(props) {
 						<Button variant="contained" color="primary" onClick={()=>history.push("/appointment")} >
 							Đặt khám
 						</Button>
+						{/* <IconButton aria-label="share">
+							<DialogForm name={reply.doctorName} id={reply.doctorId}/>
+						</IconButton> */}
 					</IconButton>
 				</CardActions>
 			</Card>

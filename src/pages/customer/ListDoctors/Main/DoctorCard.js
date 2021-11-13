@@ -84,7 +84,7 @@ export default function DoctorCard(props) {
 		setOpen(false);
 	};
 
-	const { task, index } = props;
+	const { task } = props;
 
 	// const history = useHistory();
 
@@ -126,7 +126,6 @@ export default function DoctorCard(props) {
 								onClose={handleAnchor}
 							>
 								<MenuItem onClick={handleAnchor}>Thông tin bác sĩ</MenuItem>
-								<MenuItem onClick={handleAnchor}>Đặt lịch khám</MenuItem>
 								<MenuItem onClick={handleAnchor}>Chat với bác sĩ</MenuItem>
 								<MenuItem onClick={handleAnchor}>Theo dõi</MenuItem>
 							</Menu>
@@ -139,7 +138,7 @@ export default function DoctorCard(props) {
 					<CardContent className={classes.content}>
 						<Typography variant="h6" component="h6">
 							{/* Mã số: BS1002 */}
-							{"Mã số: " + index}
+							{"Mã số: BS100" + task.id}
 						</Typography>
 						<Typography variant="h5" component="h2">
 							{/* <b>Truyền nhiễm</b> */}

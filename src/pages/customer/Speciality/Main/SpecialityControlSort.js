@@ -27,7 +27,7 @@ const StyledMenu = withStyles({
 const StyledMenuItem = withStyles((theme) => ({
 	root: {
 		'&:focus': {
-			backgroundColor: theme.palette.primary.main,
+			backgroundColor: theme.palette.info.light,
 			'& .MuiListItemIcon-root, & .MuiListItemText-primary': {
 				color: theme.palette.common.white,
 			},
@@ -48,6 +48,7 @@ export default function SpecialitySortControl(props) {
 
 	const onClick = (sortBy, sortValue) => {
 		props.onSort(sortBy, sortValue);
+		setAnchorEl(null);
 	}
 
 	return (
