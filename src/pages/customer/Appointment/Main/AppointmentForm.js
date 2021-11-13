@@ -304,9 +304,9 @@ export default function AppointmentForm(props) {
 			const temp = bookingTime.filter(function(element){
 				return element.patientPerHalfHour > 0;
 			})
-			setBookingTime(sortBookingTime(temp));
+			setBookingTime(sortBookingTime(temp, state.date));
 		}
-	}, [bookingTime, bookedTime, isChecked])
+	}, [bookingTime, bookedTime, isChecked, state.date])
 	
 	return (
 		<div className="panel panel-warning">
