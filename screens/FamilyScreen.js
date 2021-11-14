@@ -56,7 +56,6 @@ const FamilyScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
-        console.log(isHaveChange)
 		if (isHaveChange) {
 			AsyncStorage.getItem('token')
 				.then((token) => {
@@ -83,14 +82,14 @@ const FamilyScreen = ({ navigation }) => {
 										bhyt: item.userTwo.healthInsuranceCode,
 										address: item.userTwo.address,
 										province: item.userTwo.province.name,
-										provinceId: item.userTwo.province.id,
+                                        provinceId: item.userTwo.province.id,
 										avatar: item.userTwo.avatarURL,
 									}
 								}))
 								setIsHaveChange(false)
 								return console.log("thành công");
 							} else {
-								return console.log("Failed");
+								return console.log(json.error);
 							}
 						}
 					)
@@ -113,7 +112,7 @@ const FamilyScreen = ({ navigation }) => {
                 </View>
                 {
                     profiles.map((item, i) => {
-                        return (
+                        if(open) return (
                             <Card key={i}>
                                 <Card.Title>
                                     <SafeAreaView style={styles.container}>

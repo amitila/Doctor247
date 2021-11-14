@@ -135,7 +135,6 @@ const ProfileForm = ({ navigation }) => {
 							setDate(json.result.customer.birthday ? json.result.customer.birthday.slice(0, 10) : "1890-10-01")
 							if (data.avatar && data.gender) { setIsHaveChange(0) }
 							else { setIsHaveChange(1) }
-							// AsyncStorage.setItem('token', json.result.token);
 							return console.log('success')
 						}
 					})
@@ -392,6 +391,7 @@ const styles = StyleSheet.create({
 	header: {
 		flex: 0.6,
 		justifyContent: 'flex-end',
+		alignItems: 'center',
 		paddingHorizontal: 80,
 		paddingBottom: 18
 	},

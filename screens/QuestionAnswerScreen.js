@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, CheckBox } fro
 import { Card, ListItem, Button, Avatar, CheckBox as Like } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import QuestionForm from '../forms/QuestionForm/QuestionForm';
+import AnswerForm from '../forms/AnswerForm/AnswerForm';
 import APIService from '../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -31,11 +32,17 @@ const QuestionAnswerScreen = ({ navigation }) => {
     const [isSelected, setSelection] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [open, setOpen] = useState(true);
+    const [openComment, setOpenComment] = useState(true);
     const [isHaveChange, setIsHaveChange] = useState(true);
 
     const onClose = () => {
         setIsHaveChange(true)
         setOpen(true)
+    }
+
+    const onCloseComment = () => {
+        setIsHaveChange(true)
+        setOpenComment(true)
     }
 
     useEffect(() => {
@@ -74,6 +81,33 @@ const QuestionAnswerScreen = ({ navigation }) => {
 		}
 	}, [isHaveChange])
 
+    const [info, setInfo] = useState({
+        id: '',
+        updatedAt: '',
+        title: '',
+        content: '',
+        images: '',
+        answers: '',
+        questionLike: '',
+        liked: '',
+        saved: ''
+    })
+
+    const showComment = (id, updatedAt, title, content, images, answers, questionLike, liked, saved) => {
+        setOpenComment(false)
+        setInfo({
+            id: id ? id : '',
+            updatedAt: updatedAt ? updatedAt : '',
+            title: title ? title : '',
+            content: content ? content : '',
+            images: images ? images : '',
+            answers: answers ? answers : '',
+            questionLike: questionLike ? questionLike : '',
+            liked: liked ? liked : '',
+            saved: saved ? saved : ''
+        })
+    }
+
     return (
         <ScrollView>
             <View style={styles.containerView}>
@@ -86,9 +120,14 @@ const QuestionAnswerScreen = ({ navigation }) => {
                     /> : <QuestionForm onClose={onClose} />
                 }
             </View>
+            <View style={styles.containerView}>
+                {
+                    openComment ? null : <AnswerForm onCloseComment={onCloseComment} info={info} />
+                }
+            </View>
             {
                 questions.map((item, i) => {
-                    return (
+                    if(open && openComment) return (
                         <Card key={i}>
                             <Card.Title>
                                 <SafeAreaView style={styles.container}>
@@ -101,6 +140,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                 </SafeAreaView>
                                 <View style={styles.container}>
                                     <Like
+                                        title='3'
                                         checkedIcon={<Icon 
                                             name="heart" 
                                             color="red" 
@@ -112,7 +152,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                             size={20} 
                                         />}
                                         checked={isSelected}
-                                        onPress={() => setSelection(!isSelected)}
+                                        onPress={() => setSelection(isSelected)}
                                     />
                                 </View>
                             </Card.Title>
@@ -129,7 +169,18 @@ const QuestionAnswerScreen = ({ navigation }) => {
                             }
                             <View>
                                 <Button
-                                    icon={<Icon name='code' color='#ffffff' />}
+                                    // icon={<Icon name='code' color='#ffffff' />}
+                                    onPress={()=>showComment(
+                                        item.id,
+                                        item.updatedAt,
+                                        item.title,
+                                        item.content,
+                                        item.images,
+                                        item.answers,
+                                        item.questionLike,
+                                        item.liked,
+                                        item.saved
+                                    )}
                                     buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                                     title='Xem bình luận' 
                                 />

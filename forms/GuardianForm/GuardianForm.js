@@ -52,7 +52,6 @@ const GuardianForm = (props) => {
 		tempAvatar: null
 	});
 
-	const [profiles, setProfiles] = useState([]);
 	const [date, setDate] = useState('1999-08-18');
 	const [selectedValue, setSelectedValue] = useState('');
 	const [isHaveChange, setIsHaveChange] = useState(-1)
@@ -303,7 +302,7 @@ const GuardianForm = (props) => {
 					<View style={styles.action}>
 						<Picker
 							selectedValue={selectedValue}
-							style={{ height: 50, width: 150 }}
+							style={{ height: 50, width: 250 }}
 							onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
 						>
 							{
@@ -367,7 +366,7 @@ const GuardianForm = (props) => {
 						>
 							<Text style={[styles.textSign, {
 								color: '#036ffc'
-							}]}>Hủy bỏ</Text>
+							}]}>Quay về</Text>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>
@@ -386,6 +385,7 @@ const styles = StyleSheet.create({
 	header: {
 		flex: 0.6,
 		justifyContent: 'flex-end',
+		alignItems: 'center',
 		paddingHorizontal: 80,
 		paddingBottom: 18
 	},

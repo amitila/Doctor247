@@ -25,63 +25,6 @@ import APIService from '../../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 
-// const doctorList = [
-// 	{
-// 		"id": 1,
-// 		"avatar": "https://scr.vn/wp-content/uploads/2020/08/H%C3%ACnh-g%C3%A1i-%C4%91%E1%BA%B9p-t%C3%B3c-d%C3%A0i-ng%E1%BA%A7u.jpg",
-// 		"name":"Phạm Văn Tâm",
-// 		"specialist":"Hộ sinh",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Phú Yên",
-// 	},
-// 	{
-// 		"id": 2,
-// 		"avatar": "https://scontent.fdad3-3.fna.fbcdn.net/v/t1.6435-1/p200x200/131681340_1481021602288952_4789182916497722736_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=7206a8&_nc_ohc=g2HQF7aitUkAX8zWNDg&_nc_ht=scontent.fdad3-3.fna&oh=3a805ed14aec1de39bc0282d9d666040&oe=6169179B",
-// 		"name":"Trương Ngọc Sơn",
-// 		"specialist":"Đỡ đẻ",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Bình Định",
-// 	},
-// 	{
-// 		"id": 3,
-// 		"avatar": "https://scontent.fdad3-1.fna.fbcdn.net/v/t1.6435-9/83145022_2582872185325534_3147554001050927104_n.jpg?_nc_cat=102&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=zrwXYEUztVQAX_H8sKo&_nc_ht=scontent.fdad3-1.fna&oh=b937a0c46bf99e866922c5cea196b624&oe=61691DA8",
-// 		"name":"Nguyễn Thị Nhật Trang",
-// 		"specialist":"Bắt trẻ",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Gia Lai",
-// 	},
-// 	{
-// 		"id": 4,
-// 		"avatar": "https://scontent.fdad3-1.fna.fbcdn.net/v/t1.6435-9/124669208_2809353256006939_673331700560413121_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=MB2HXftCRdEAX8bRdKK&_nc_ht=scontent.fdad3-1.fna&oh=decb596ec9faa7353ceedc16dcd1ed78&oe=616716F2",
-// 		"name":"Hồ Thủy Tiên",
-// 		"specialist":"Bồng trẻ",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Kon Tum",
-// 	},
-// 	{
-// 		"id": 5,
-// 		"avatar": "https://scontent.fdad3-2.fna.fbcdn.net/v/t1.6435-9/201103803_1438456426488093_549275820607158497_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=nIyhnoZks2IAX_uWrmW&_nc_ht=scontent.fdad3-2.fna&oh=b300a45d6b0cf7b3f792753705a9cdb0&oe=616A3139",
-// 		"name":"Đào Dương Long",
-// 		"specialist":"Bê trẻ",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Lâm Đồng",
-// 	},
-// 	{
-// 		"id": 6,
-// 		"avatar": "https://scontent.fdad3-2.fna.fbcdn.net/v/t1.6435-9/131909241_1812545618901498_5480970132946194661_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=174925&_nc_ohc=tlPkNxi4YAgAX-TctWx&_nc_ht=scontent.fdad3-2.fna&oh=68fed41cbe62466e84aff03c9685d9c8&oe=61676948",
-// 		"name":"Đào Thị Việt Hà",
-// 		"specialist":"Rinh trẻ",
-// 		"phone":"0257296632",
-// 		"year_exp":"5 năm kinh nghiệm",
-// 		"workplace":"Bệnh viện đa khoa tỉnh Cà Mau",
-// 	},
-// ];
-
 const bookingTime = [
 	'07h30 - 08h00',
 	'08h30 - 09h00',
@@ -99,15 +42,7 @@ const bookingTime = [
 	"16h30 - 17h00",
 ];
 
-// const patientList = [
-//     { name: 'Trương Ngọc Sơn', id: 1 },
-// 	{ name: 'Nguyễn Thị Nhật Trang', id: 2 },
-// 	{ name: 'Phạm Văn Tâm', id: 3 },
-// 	{ name: 'Lê Văn Hân', id: 4 },
-// 	{ name: 'Hoàng Văn Dũng', id: 5 },
-// ];
-
-const AppointmentForm = (props) => {
+const BookingForm = (props) => {
 	
 	const [data, setData] = useState({
 		id: '',
@@ -121,13 +56,12 @@ const AppointmentForm = (props) => {
 		dayTime: '',
 	});
 
-	const { patients, doctorcards } = props;
-	
+	const { patients, doctorId } = props;
+
 	const [date, setDate] = useState('2021-11-11');
 	const [hour, setHour] = useState('');
 	const [dateTime, setDateTime] = useState(new Date())
 	const [selectedGuardian, setSelectedGuardian] = useState(patients[0].userTwoId ? patients[0].userTwoId : '' );
-	const [selectedDoctor, setSelectedDoctor] = useState(doctorcards[0].id ? doctorcards[0].id : '');
 	const [isHaveChange, setIsHaveChange] = useState(-1)
 	const [images, setImages] = useState({
 		image_1: '',
@@ -171,7 +105,7 @@ const AppointmentForm = (props) => {
 					token,
 					{
 						guardianId: selectedGuardian,
-						doctorId: selectedDoctor,
+						doctorId: doctorId,
 						dayTime: dateTime.toString(),
 						description: data.description,
 						images: arrImage,
@@ -225,7 +159,7 @@ const AppointmentForm = (props) => {
 		<View style={styles.container}>
 			<StatusBar backgroundColor='#036ffc' barStyle="light-content" />
 			<View style={styles.header}>
-				<Text style={styles.text_header}>Đăng ký khám</Text>
+				<Text style={styles.text_header}>Đặt lịch khám</Text>
 			</View>
 			<Animatable.View
 				animation="fadeInUpBig"
@@ -268,23 +202,6 @@ const AppointmentForm = (props) => {
 							{
 								bookingTime.map((item, index) => {
 									return <Picker.Item label={item} value={item} key={index} />
-								})
-							}
-						</Picker>
-					</View>
-
-					<Text style={[styles.text_footer, {
-						marginTop: 35
-					}]}>Bác sĩ</Text>
-					<View style={styles.action}>
-						<Picker
-							selectedValue={selectedDoctor}
-							style={{ height: 50, width: 300 }}
-							onValueChange={(itemValue, itemIndex) => setSelectedDoctor(itemValue)}
-						>
-							{
-								doctorcards.map((item, index) => {
-									return <Picker.Item label={item.name+' _MS:BS00'+item.id} value={item.id} key={index} />
 								})
 							}
 						</Picker>
@@ -372,7 +289,7 @@ const AppointmentForm = (props) => {
 	);
 };
 
-export default AppointmentForm;
+export default BookingForm;
 
 const styles = StyleSheet.create({
 	container: {
@@ -381,10 +298,10 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		flex: 0.6,
-		justifyContent: 'flex-end',
 		alignItems: 'center',
-		paddingHorizontal: 80,
-		paddingBottom: 18
+		justifyContent: 'center',
+		paddingHorizontal: 0,
+		paddingBottom: 0
 	},
 	footer: {
 		flex: Platform.OS === 'ios' ? 3 : 5,

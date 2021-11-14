@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
 	useTheme,
@@ -15,16 +15,40 @@ import {
 	DrawerContentScrollView,
 	DrawerItem
 } from '@react-navigation/drawer';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import { AuthContext } from '../components/context';
+import APIService from '../utils/APIService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function DrawerContent(props) {
+
+	const [data, setData] = useState({
+		firstName: '',
+		lastName: '',
+		avatar: '',
+	})
 
 	const paperTheme = useTheme();
 
 	const { signOut, toggleTheme } = React.useContext(AuthContext);
+
+	useEffect(() => {
+		AsyncStorage.getItem('token')
+			.then((token) => {
+				return APIService.getProfile(token, (success, json) => {
+					if (success && json.result) {
+						// dispatch(updateAvatar(json.result.customer.avatarURL));
+						// setOpen(true);
+						setData({
+							firstName: json.result.customer.firstName,
+							lastName: json.result.customer.lastName,
+							avatar: json.result.customer.avatarURL,
+						});
+						return console.log('success')
+					}
+				})
+			})
+	}, [])
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -34,23 +58,24 @@ export function DrawerContent(props) {
 						<View style={{ flexDirection: 'row', marginTop: 15 }}>
 							<Avatar.Image
 								source={{
-									uri: 'https://lh3.googleusercontent.com/Cw_4j9FPOsUNG3jUVG16Fmh3_dHfSQ34Z_POHauZQICVcSIWe4Y5OZJSDoj1enJW7FaknRXVWXGGwjq82ww6OTIsKtd-pFvS9o_xgA5mG72pAfCbfe2fbM_3Ubiyj3aCW1zTvZBQyNey7_E8_75WBOms4prr_qsA9VgAhgx0fYp-NzHbvJpfccbd6fivpiAYSIq3Q-lnxq7dO9yILqOGlFE32CKZj21meKCu47nm9aCa8XVA2N-AlGFgmkhS95UgTtrUKbiwFeHyCr3GBvf3bFAL0Oyr0yqryROxYK0Ghd_QOCk8gOr_C0wiGqRVZlefXPXCTY3iL1Lnk384zDo007vLuYz_JMk9cadXqItDtgFIrQ_n4C6ASV6H-onv1UN2inATi6XDyBUme98-RpfIAsPNL5Z76jhLTid5qFjZuQQnWg6hOee3ny3N47C2iHljRtDlQXDXFHK4_mc4R2SRz-FxXegJHIYMn2aPaWm3fPQXljdbZISsl62Ahf42xlk1masoDrTeHDMzuhb4SAhYF1-J5ti3jqz_H1CKDlx3MPIZn7k64QE-M-fvvc4AufLtQMB7IQQeFT2MNZLTzQ3NAaS8mPBstFgFlcgC2ZrbXio8tNVuB2eXbZ9VObI2pNeyqopGugdKLKsLKeP7CxPhhGydx2enEqBqMJVhltvClXuj3tJc5iQSY900TcB0SUeCeBgZFEEhzQEkpmLiEl-EFNtVEQ=s500-no?authuser=0'
+									uri: data.avatar ? data.avatar : 'https://lh3.googleusercontent.com/f5tEpqTxxRxqCelMN1iN7kFlkv0ilHwvfg2DibOhvFVGryRNsxQA6iKoYhZ6YcFSP-yOXm4bZO2hLd3mBM_EFabTsm_59vneDggIOa8GTgJYZGV2IHmtA1lPnJNsgZ_YhCD6Y4rP15nGEYV79DKUZaNaHxhk6-S_9U0pCikIwPfcDbrEah-287x2DrgLskIZ3GwbtlAOIps3JMtRoD4Q14S1OzYIm_TlcAHkcZJSFbJ0ww_8kH8rirqxtU2Oi-Oo39Wwop3r1TXEm39r19CDGRhA47_TvydegHWbNxXOiU8JWN_WPfRCPDTozZ8lX0zmBRUdAybLUjFsjPRHUJ6V6h-mXH-UchjrUiridBwepeoF5qR0iz5XBl8_bDg8shvqbHniuVk5hDetv-e0adQMF1o5sQdv3LzLqtskBmbfRUSsTT67_NVYOC9Auvqxhtf1Fmjnv5U5bfj1DAhC1N9v1OCVBobzbbGcCw6u4J3111w-x4k50Y4u9d5GkdqwDPPnuud2udm2AfAtGj06YsUPH6YcZ_ZkdwgKfaQQYMOQJpoaD-Ng8Bb-gxfjrmSo-Zb0v6hFzxGnVGbig8EKeaEdd9W8OWmESoFwJVlOLRyXZkbfh_rG6daURul2UxJmYpNGXW4lOyHn81tnsXGiglDcdANskL0eCVCCkt85G6C2A38hQM8QEWeijiQBTwDcB9_MH__RKNWMVz3Kza2Row8GTN0eng=s500-no?authuser=0',
 								}}
 								size={50}
+								
 							/>
 							<View style={{ marginLeft: 15, flexDirection: 'column' }}>
-								<Title style={styles.title}>Doctor247</Title>
-								<Caption style={styles.caption}>Ứng dụng y tế</Caption>
+								<Title style={styles.title}>{data.firstName + ' ' + data.lastName}</Title>
+								<Caption style={styles.caption}>Chào buổi sáng</Caption>
 							</View>
 						</View>
 
 						<View style={styles.row}>
 							<View style={styles.section}>
-								<Paragraph style={[styles.paragraph, styles.caption]}>800</Paragraph>
-								<Caption style={styles.caption}>Theo dõi</Caption>
+								<Paragraph style={[styles.paragraph, styles.caption]}>20</Paragraph>
+								<Caption style={styles.caption}>Lần đặt khám</Caption>
 							</View>
 							<View style={styles.section}>
-								<Paragraph style={[styles.paragraph, styles.caption]}>1000</Paragraph>
+								<Paragraph style={[styles.paragraph, styles.caption]}>30</Paragraph>
 								<Caption style={styles.caption}>Đánh giá</Caption>
 							</View>
 						</View>

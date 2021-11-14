@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
 									name="star" 
 									color="purple" 
 									size={50} 
-									onPress={() => alert('Button Clicked!')}
+									onPress={() => navigation.navigate('Chuyên khoa y tế')}
 								/>
 								<View>
 									<Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold' }}>Khoa</Text>
@@ -111,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
 									name="address-book" 
 									color="#e19dfa" 
 									size={50} 
-									onPress={() => alert('Button Clicked!')}
+									onPress={() => navigation.navigate('Danh bạ khẩn cấp')}
 								/>
 								<View>
 									<Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold' }}>Danh bạ</Text>

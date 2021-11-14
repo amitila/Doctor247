@@ -147,14 +147,14 @@ const QuestionForm = (props) => {
 						<Avatar
 							size="xlarge"
 							source={{
-								uri: images.image_1 ? images.image_1.uri : 'https://lh3.googleusercontent.com/QIYAVw5x9e7lADnIim0yHKNQu9lHHGVa-XT2EFX_xxbAK0yLVZXB_3ycPGy9nrrIskV5Q30HA7CvOVZcmK17NdQ13rhVpUV9yiQYKcxLb2_PhphzH21zlvyLeWPa86sGdaXr_FK-jotVXZRWmgD1EDQWBwi6lo2mhrM19oDKsTJZUhvG49t4B6nQ661uapkmUjha0FMRQxomkHdAfYSOYtZ2VlsMnBcrhJrWLywuv82-J5i_7av7OU7BYhZitY67zbWBRjU5qX03Awgk8_P3kgYowY0ccVBXGsex4fi0JIK03wprEEgVerQFWasop13RHjz47YYLcN4QY9ATYfQz4I2-aPEPvphaiAKGDGQfMPqXbdUZkkjiKd5Su3768S0M_Abk5MAm_EgRPUh7i1ifKWGOJWnm08ogUxi7ET8DVpRkEl_nzUkBOXGC_-Y8kBt_S1HvVM5E1TePsuRLinak56WF0pSHJq9vjfasi5wcyu2quFx4drtZfXCrnrFM_1DAbRZNWGznzouYqoeV80GHox8GgE1Wt9M3pJ9lc5NcPu48Bamzk96IEUfNCIaIEs3uI3FUKwlgkIlj7WIuOWpP779RIuzL7cuYvOK59iJa1KXAsUVHMe5uSA7byiUqM0AxwXDBuAjL07LBbkUOsfVgUoqvm6khxPoe4OiyhmVgf2xyE9YwYy_LaUI4chxSViz5fAj2FyoNoAuNMF2dLYWAsbzywg=w274-h312-no?authuser=0',
+								uri: images.image_1 ? images.image_1.uri : 'https://lh3.googleusercontent.com/J75ZIT3AoS_hrXIvMRCVToYdTx-xNRDjgCAjhhDYLf5viwskkWy3jFqKEqjdw8bgQveU_BJiXM4bOf7dshSzT8BVdfaXHhKdrzjt6XeCer_oTH9zPJBdnkiwerGRTNpfsf_oUgSRXD1iU7NibaBxxM9iYzrBPO75fGWS5w8uJJoDOJWJSpOadVxk3ui8v1bEWRTVpwZBOHQDi25TdzXJHljF_GJFE8Sh8VLibRyGrRvewn_BwDci3LgStNiTOMAsrXfKj02eT27sGKTXboQOo-NhDHiZn3yyZNE-lKm5G6_SDXjcfioRVjDcr_fnHhWp3976LCEP_RfAxe_ZGq9b5_OgeQVPPrjrtAVb4N6noG1cJNEHMWbR7MpPp7oaa2lel8blP8rVs4PktQdgTyVjg0skCPZtG_mG1QHsSAe9sT0vB_-6m9HyHUmlf0bfEzHQj1Nh9GhIGtb7aH0DN1hLm1ug5hpsQimCMd-m7m40TjaU5iSYd6Rj0UuiuFUT022M9xGPIDj_Fhc1FsB6PIgFzZZIXywU8hcts5f01tTPtlUg3E0MYSV3dhonBk1UZqRE9EJ01vTae20lnETgZX_I_f6tt1hf98roJzxkrhBWqXPXsc-FZqgvyMc-LLyep1qvz36vxCbIVXiLYKm1mxqn7gYwdrIyR_5in5Wd6M4y9h97xpXtr7PrvS34ZvNq5LpAM7F0wljHNynF4xZ8hYeW2Izkmg=w584-h664-no?authuser=0',
 							}}
 							onPress={() => { pickImageFromLibrary_1() }}
 						/>	
 						<Avatar
 							size="xlarge"
 							source={{
-								uri: images.image_2 ? images.image_2.uri : 'https://lh3.googleusercontent.com/QIYAVw5x9e7lADnIim0yHKNQu9lHHGVa-XT2EFX_xxbAK0yLVZXB_3ycPGy9nrrIskV5Q30HA7CvOVZcmK17NdQ13rhVpUV9yiQYKcxLb2_PhphzH21zlvyLeWPa86sGdaXr_FK-jotVXZRWmgD1EDQWBwi6lo2mhrM19oDKsTJZUhvG49t4B6nQ661uapkmUjha0FMRQxomkHdAfYSOYtZ2VlsMnBcrhJrWLywuv82-J5i_7av7OU7BYhZitY67zbWBRjU5qX03Awgk8_P3kgYowY0ccVBXGsex4fi0JIK03wprEEgVerQFWasop13RHjz47YYLcN4QY9ATYfQz4I2-aPEPvphaiAKGDGQfMPqXbdUZkkjiKd5Su3768S0M_Abk5MAm_EgRPUh7i1ifKWGOJWnm08ogUxi7ET8DVpRkEl_nzUkBOXGC_-Y8kBt_S1HvVM5E1TePsuRLinak56WF0pSHJq9vjfasi5wcyu2quFx4drtZfXCrnrFM_1DAbRZNWGznzouYqoeV80GHox8GgE1Wt9M3pJ9lc5NcPu48Bamzk96IEUfNCIaIEs3uI3FUKwlgkIlj7WIuOWpP779RIuzL7cuYvOK59iJa1KXAsUVHMe5uSA7byiUqM0AxwXDBuAjL07LBbkUOsfVgUoqvm6khxPoe4OiyhmVgf2xyE9YwYy_LaUI4chxSViz5fAj2FyoNoAuNMF2dLYWAsbzywg=w274-h312-no?authuser=0',
+								uri: images.image_2 ? images.image_2.uri : 'https://lh3.googleusercontent.com/J75ZIT3AoS_hrXIvMRCVToYdTx-xNRDjgCAjhhDYLf5viwskkWy3jFqKEqjdw8bgQveU_BJiXM4bOf7dshSzT8BVdfaXHhKdrzjt6XeCer_oTH9zPJBdnkiwerGRTNpfsf_oUgSRXD1iU7NibaBxxM9iYzrBPO75fGWS5w8uJJoDOJWJSpOadVxk3ui8v1bEWRTVpwZBOHQDi25TdzXJHljF_GJFE8Sh8VLibRyGrRvewn_BwDci3LgStNiTOMAsrXfKj02eT27sGKTXboQOo-NhDHiZn3yyZNE-lKm5G6_SDXjcfioRVjDcr_fnHhWp3976LCEP_RfAxe_ZGq9b5_OgeQVPPrjrtAVb4N6noG1cJNEHMWbR7MpPp7oaa2lel8blP8rVs4PktQdgTyVjg0skCPZtG_mG1QHsSAe9sT0vB_-6m9HyHUmlf0bfEzHQj1Nh9GhIGtb7aH0DN1hLm1ug5hpsQimCMd-m7m40TjaU5iSYd6Rj0UuiuFUT022M9xGPIDj_Fhc1FsB6PIgFzZZIXywU8hcts5f01tTPtlUg3E0MYSV3dhonBk1UZqRE9EJ01vTae20lnETgZX_I_f6tt1hf98roJzxkrhBWqXPXsc-FZqgvyMc-LLyep1qvz36vxCbIVXiLYKm1mxqn7gYwdrIyR_5in5Wd6M4y9h97xpXtr7PrvS34ZvNq5LpAM7F0wljHNynF4xZ8hYeW2Izkmg=w584-h664-no?authuser=0',
 							}}
 							onPress={() => { pickImageFromLibrary_2() }}
 						/>						
@@ -184,7 +184,7 @@ const QuestionForm = (props) => {
 						>
 							<Text style={[styles.textSign, {
 								color: '#036ffc'
-							}]}>Hủy bỏ</Text>
+							}]}>Quay về</Text>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
 	header: {
 		flex: 0.6,
 		justifyContent: 'flex-end',
+		alignItems: 'center',
 		paddingHorizontal: 80,
 		paddingBottom: 18
 	},

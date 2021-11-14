@@ -27,6 +27,8 @@ import DoctorListScreen from './screens/DoctorListScreen';
 import AppointmentScreen from './screens/AppointmentScreen';
 import QuestionAnswerScreen from './screens/QuestionAnswerScreen';
 import FamilyScreen from './screens/FamilyScreen';
+import PhoneBookScreen from './screens/PhoneBookScreen';
+import SpecialityScreen from './screens/SpecialityScreen';
 
 //  import AsyncStorage from '@react-native-community/async-storage';
 
@@ -175,6 +177,8 @@ const App = () => {
 							<Drawer.Screen name="Lịch khám" component={AppointmentScreen} />
 							<Drawer.Screen name="Hỏi đáp cùng bác sĩ" component={QuestionAnswerScreen} />
 							<Drawer.Screen name="Hồ sơ gia đình" component={FamilyScreen} />
+							<Drawer.Screen name="Danh bạ khẩn cấp" component={PhoneBookScreen} />
+							<Drawer.Screen name="Chuyên khoa y tế" component={SpecialityScreen} />
 						</Drawer.Navigator>
 					)
 						:

@@ -113,6 +113,7 @@ const SignInScreen = ({ navigation }) => {
 				AsyncStorage.setItem('role', json.result.role);
 				AsyncStorage.setItem('gender', json.result.customer.gender);
 				AsyncStorage.setItem('email', json.result.email);
+				AsyncStorage.setItem('avatarURL', json.result.customer.avatarURL);
 				AsyncStorage.setItem('token', json.result.token);
 
 				// AsyncStorage.getItem('token')

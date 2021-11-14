@@ -46,6 +46,7 @@
     "react-native-base64": "^0.2.1",
     "react-native-check-box": "^2.1.7",
     "react-native-datepicker": "^1.7.2",
+    "react-native-dialog": "^9.2.0",
     "react-native-elements": "^3.4.2",
     "react-native-fetch-blob": "^0.10.8",
     "react-native-file-type": "^1.0.0",
