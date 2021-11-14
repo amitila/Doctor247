@@ -17,7 +17,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { useHistory } from "react-router-dom";
 import APIService from '../../../../utils/APIService';
-import Alert from '@mui/material/Alert';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import getToken from '../../../../helpers/getToken';
