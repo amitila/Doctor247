@@ -13,42 +13,49 @@ export default function Index() {
             "phoneNumber": "0963361414",
             "lat": 13.1092808,
             "lng": 109.2970928,
+            "distance" : 0
         },
         {
             "name": "Phú Yên – Bệnh Viện Điều Dưỡng Và Phục Hồi Chức Năng",
             "phoneNumber": "0963351414",
             "lat": 13.171919202996422, 
             "lng": 109.29366292562965,
+            "distance" : 0
         },
         {
             "name": "Phú Yên – Bệnh Viện Mắt Phú Yên",
             "phoneNumber": "0963201414",
             "lat": 13.090611546235369, 
             "lng": 109.31840597522388,
+            "distance" : 0
         },
         {
             "name": "Phú Yên – Bệnh Viện Sản Nhi Phú Yên",
             "phoneNumber": "0963301414",
             "lat": 13.092414289950959, 
             "lng": 109.30236695261658,
+            "distance" : 0
         },
         {
             "name": "Phú Yên – Trung Tâm Da Liễu Phú Yên",
             "phoneNumber": "0963181414",
             "lat": 13.091558740610596, 
             "lng": 109.292201367958,
+            "distance" : 0
         },
         {
             "name": "Khánh Hòa – Bệnh Viện Đa Khoa Tỉnh Khánh Hòa",
             "phoneNumber": "0965371515",
             "lat": 12.2486775,
             "lng": 109.1900883,
+            "distance" : 0
         },
         {
             "name": "Lâm Đồng – Bệnh Viện Đa Khoa Lâm Đồng",
             "phoneNumber": "0964591515",
             "lat": 11.5481015,
             "lng": 107.8073639,
+            "distance" : 0
         },
         {
             "name": "Kon Tum – Bệnh Viện Đa Khoa Tỉnh Kon Tum",
