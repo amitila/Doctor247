@@ -210,24 +210,22 @@ export default function SignUp() {
                                 </FormControl>
                             </Grid>
                         </Grid>
-                        {
-                            state.registerType === 'PHONE' ?
+                        <>
                             <Grid item xs={12}>
-                                <TextField
-                                    className={classes.textField}
-                                    variant="standard"
-                                    required
-                                    fullWidth
-                                    id="phoneNumber"
-                                    label="Số điện thoại"
-                                    name="phoneNumber"
-                                    type="number"
-                                    onChange={onChange}
-                                    autoComplete="current-phoneNumber"
-                                />
-                            </Grid> :
-                            <>
-                                <Grid item xs={12}>
+                            {
+                                state.registerType === 'PHONE' ?
+                                    <TextField
+                                        className={classes.textField}
+                                        variant="standard"
+                                        required
+                                        fullWidth
+                                        id="phoneNumber"
+                                        label="Số điện thoại"
+                                        name="phoneNumber"
+                                        type="number"
+                                        onChange={onChange}
+                                        autoComplete="current-phoneNumber"
+                                    /> :
                                     <TextField
                                         className={classes.textField}
                                         variant="standard"
@@ -240,30 +238,30 @@ export default function SignUp() {
                                         onChange={onChange}
                                         autoComplete="email"
                                     />
+                            }
+                            </Grid>
+                            <Grid container item xs={12}>
+                                <Grid item sm={11}>
+                                    <TextField
+                                        className={classes.textField}
+                                        variant="standard"
+                                        required
+                                        fullWidth
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        label="Mật khẩu"
+                                        name="password"
+                                        onChange={onChange}
+                                        autoComplete="current-password"
+                                    />
                                 </Grid>
-                                <Grid container item xs={12}>
-                                    <Grid item sm={11}>
-                                        <TextField
-                                            className={classes.textField}
-                                            variant="standard"
-                                            required
-                                            fullWidth
-                                            type={showPassword ? "text" : "password"}
-                                            id="password"
-                                            label="Mật khẩu"
-                                            name="password"
-                                            onChange={onChange}
-                                            autoComplete="current-password"
-                                        />
-                                    </Grid>
-                                    <Grid item sm={1}>
-                                        <Box style={{ marginTop: 15, marginLeft: 3, border: "solid" }} onClick={handleClickShowPassword}>
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </Box>
-                                    </Grid>   
-                                </Grid>
-                            </>
-                        }
+                                <Grid item sm={1}>
+                                    <Box style={{ marginTop: 15, marginLeft: 3, border: "solid" }} onClick={handleClickShowPassword}>
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </Box>
+                                </Grid>   
+                            </Grid>
+                        </>
                         <Grid container item xs={12}>
                             <Grid item sm={7}>
                                 <TextField

@@ -13,6 +13,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -47,6 +55,13 @@ const useStyles = makeStyles((theme) => ({
 			backgroundColor: '#FF0101',
 		}
 	},
+	create: {
+		backgroundColor: 'green',
+		color: 'white',
+		"&:hover": {
+			backgroundColor: 'green',
+		},
+	},
 	avatar: {
 		width: 125,
 		height: 125,
@@ -57,8 +72,10 @@ export default function ProfileCard(props) {
 	const classes = useStyles();
 
 	const [open, setOpen] = React.useState(false);
+	const [openCreate, setOpenCreate] = React.useState(false);
 	const [code, setCode] = React.useState('');
 	const [type, setType] = React.useState('');
+	const [codeWindow, setCodeWindow] = React.useState(true);
 
 	// const onDelete = () => {
 	// 	props.onDelete(props.task.userTwoId, type);
@@ -82,6 +99,16 @@ export default function ProfileCard(props) {
 		props.handleConfirmDelete(props.task.userTwoId, code);
 	}
 
+	const verifyGuardianUser = () => {
+		props.verifyGuardianUser(state);
+		setCodeWindow(false)
+	}
+
+	const handleConfirmGuardianUser = () => {
+		props.handleConfirmGuardianUser(state);
+		handleCloseCreate();
+	}
+
 	const onUpdate = () => {
 		props.onUpdate(props.task.id);
 	}
@@ -102,6 +129,38 @@ export default function ProfileCard(props) {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	const handleClickOpenCreate = () => {
+		setCodeWindow(true);
+		setOpenCreate(true);
+	};
+
+	const handleCloseCreate = () => {
+		setOpenCreate(false);
+	};
+
+	const [state, setState] = React.useState({
+        password: '',
+        guardiantId: task.userTwoId,
+		guardianName: task.firstName +' '+ task.lastName,
+        type: 'EMAIL',
+        email: task.email,
+        phoneNumber: task.phoneNumber,
+        code: '',
+        guardiantPassword: '',
+    })
+
+	const [showPassword, setShowPassword] = React.useState(false);
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const onChange = (event) => {
+        let target = event.target;
+        let name = target.name;
+        let value = target.value;
+        setState(prevState => ({ ...prevState, [name]: value }));
+    }
 
 	return (
 		<div className={classes.root}>
@@ -167,6 +226,7 @@ export default function ProfileCard(props) {
 							>
 								Xóa thẻ
 							</Button>
+							{/* Dialog for delete guardian */}
 							<Dialog open={open} onClose={handleClose}>
 								<DialogTitle>Hộp xác nhận xóa thẻ hồ sơ</DialogTitle>
 								<DialogContent>
@@ -217,6 +277,176 @@ export default function ProfileCard(props) {
 								<DialogActions>
 									<Button onClick={handleClose}>Hủy xóa</Button>
 									<Button onClick={handleConfirmDelete}>Xác nhận xóa</Button>
+								</DialogActions>
+							</Dialog>
+							&nbsp;
+							<Button
+								className={classes.create}
+								type="button"
+								variant="contained"
+								onClick={handleClickOpenCreate}
+							>
+								Chuyển đổi
+							</Button>
+							{/* Dialog for transfer guardian to new customer */}
+							<Dialog open={openCreate} onClose={handleCloseCreate}>
+								<DialogTitle style={{textAlign: 'center'}}>
+									Tính năng chuyển đổi người được bạn giám hộ thành khách hàng chính thức của Doctor247
+								</DialogTitle>
+								<DialogContent>
+									<form className={classes.form} onSubmit={()=>alert('Chuyển đổi')} >
+										<Grid container spacing={2}>
+											<Grid spacing={5} className={classes.rowgender} >
+												<Grid item xs={12}>
+													<FormControl required className={classes.gender} component="fieldset">
+														<FormLabel component="legend" style={{marginTop: 20}}>Lựa chọn email / số điện thoại để tạo tài khoản:</FormLabel>
+														<RadioGroup
+															row aria-label="gender"
+															name="type"
+															value={state.type}
+															onChange={onChange}
+														>
+															<FormControlLabel value="EMAIL" control={<Radio required />} label="Email" />
+															<FormControlLabel value="PHONE" control={<Radio />} label="Số điện thoại" />
+														</RadioGroup>
+													</FormControl>
+												</Grid>
+											</Grid>
+											<Grid item xs={12} sm={6}>
+												<TextField
+													className={classes.textField}
+													autoComplete="fname"
+													variant="standard"
+													required
+													fullWidth
+													id="firstName"
+													value={state.guardianName}
+													label="Họ và tên đệm"
+													name="firstName"
+													onChange={onChange}
+													// autoFocus
+												/>
+											</Grid>
+											<>
+												<Grid item xs={12} sm={6}>
+												{
+													state.type === 'PHONE' ?
+														<TextField
+															className={classes.textField}
+															variant="standard"
+															required
+															fullWidth
+															id="phoneNumber"
+															value={state.phoneNumber}
+															label="Số điện thoại"
+															name="phoneNumber"
+															type="number"
+															onChange={onChange}
+															autoComplete="current-phoneNumber"
+														/> :
+														<TextField
+															className={classes.textField}
+															variant="standard"
+															required
+															fullWidth
+															id="email"
+															value={state.email}
+															label="Địa chỉ email"
+															name="email"
+															type="email"
+															onChange={onChange}
+															autoComplete="email"
+														/>
+												}
+												</Grid>
+												<Grid container item xs={12} sm={8}>
+													<Grid item sm={11}>
+														<TextField
+															className={classes.textField}
+															variant="standard"
+															required
+															fullWidth
+															type={showPassword ? "text" : "password"}
+															id="password"
+															label="Mật khẩu của tài khoản người giám hộ"
+															name="password"
+															onChange={onChange}
+															autoComplete="current-password"
+														/>
+													</Grid>
+													<Grid item sm={1}>
+														<Box style={{ marginTop: 15, marginLeft: 3, border: "solid" }} onClick={handleClickShowPassword}>
+															{showPassword ? <VisibilityOff /> : <Visibility />}
+														</Box>
+													</Grid>  
+													<Grid item sm={5}>
+														<Button
+															style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
+															onClick={verifyGuardianUser}
+															variant="contained"
+															color="secondary"
+															className={classes.submit}
+														>
+															<b>Nhận mã</b>
+														</Button>
+													</Grid>
+												</Grid>
+											</>
+											{
+												codeWindow ? null :
+													<>
+														<p style={{textAlign: 'center', marginTop: 20, fontSize: 18}} >
+															<b>{'-------------- Nhập mã OTP và mật khẩu mới --------------'}</b>
+														</p>
+														<Grid container item xs={12}>
+															<Grid item sm={7}>
+																<TextField
+																	className={classes.textField}
+																	variant="standard"
+																	required
+																	fullWidth
+																	id="code"
+																	label="Mã OTP"
+																	name="code"
+																	type="number"
+																	onChange={onChange}
+																	autoComplete="current-code"
+																/>
+															</Grid>
+															<Grid container item xs={12} sm={8}>
+																<Grid item sm={11}>
+																	<TextField
+																		className={classes.textField}
+																		variant="standard"
+																		required
+																		fullWidth
+																		type={showPassword ? "text" : "password"}
+																		id="password"
+																		label="Tạo mật khẩu"
+																		name="guardiantPassword"
+																		onChange={onChange}
+																		autoComplete="current-password"
+																	/>
+																</Grid>
+																<Grid item sm={1}>
+																	<Box style={{ marginTop: 15, marginLeft: 3, border: "solid" }} onClick={handleClickShowPassword}>
+																		{showPassword ? <VisibilityOff /> : <Visibility />}
+																	</Box>
+																</Grid>   
+															</Grid>
+														</Grid>
+													</>
+											}
+										</Grid>
+									</form>
+								</DialogContent>
+								<DialogActions>
+									{
+										codeWindow ? 
+											<Button onClick={handleCloseCreate}>Hủy chuyển đổi</Button>
+											:
+											<Button onClick={handleConfirmGuardianUser}>Xác nhận chuyển đổi</Button>
+									}
 								</DialogActions>
 							</Dialog>
 						</CardActions>

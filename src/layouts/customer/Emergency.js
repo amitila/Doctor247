@@ -90,7 +90,7 @@ export default function Emergency() {
 	const [call, setCall] = React.useState('call_sms');
 	const [openAddPhone, setOpenAddPhone] = React.useState(false);
 	const [phoneNumber, setPhoneNumber] = React.useState('');
-	const [sms, setSms] = React.useState('');
+	const [sms, setContent] = React.useState('');
 
 	React.useEffect(() => {
 		const token = getToken();
@@ -113,6 +113,38 @@ export default function Emergency() {
                 if (success && json.result) {
 					setOpenAddPhone(false)
                     return console.log("Thêm thành công!")
+                } else {
+                    return console.log(json.error)
+                }
+            }
+        )
+    }
+
+	const handleAddRelativePhoneNumberAndSms = () => {
+        const token = getToken();
+        APIService.setEmergencySms(
+            token,
+            phoneNumber,
+			sms,
+            (success, json) => {
+                if (success && json.result) {
+					setOpenAddPhone(false)
+                    return console.log("Thêm số điện thoại và nội dung thông điệp khẩn cấp thành công!")
+                } else {
+                    return console.log(json.error)
+                }
+            }
+        )
+    }
+
+	const handleSendEmergencySms = () => {
+        const token = getToken();
+        APIService.sendEmergencySms(
+            token,
+            (success, json) => {
+                if (success && json.result) {
+					handleClose()
+                    return alert("Đã phát đi thông điệp khẩn cấp!")
                 } else {
                     return console.log(json.error)
                 }
@@ -152,7 +184,7 @@ export default function Emergency() {
 				</DialogTitle>
 				{
 					openAddPhone ? 
-						<p style={{padding: 10, textAlign: 'center'}}>
+						<p style={{padding: 15, textAlign: 'center'}}>
 							<TextField
 								// autoFocus
 								required
@@ -166,7 +198,25 @@ export default function Emergency() {
 								variant="standard"
 								onChange={(e)=>setPhoneNumber(e.target.value)}
 							/>
-							<Button onClick={handleAddRelativePhoneNumber}>Xác nhận thêm</Button>
+							<Button onClick={handleAddRelativePhoneNumber}>
+								{phoneNumber ? 'Xác nhận đổi' : 'Xác nhận thêm' }
+							</Button>
+							<TextField
+								// autoFocus
+								required
+								margin="dense"
+								id="sms"
+								name="sms"
+								value={sms}
+								label="Thông điệp khẩn cấp"
+								type="text"
+								fullWidth
+								variant="standard"
+								onChange={(e)=>setContent(e.target.value)}
+							/>
+							<Button onClick={handleAddRelativePhoneNumberAndSms}>
+								{sms ? 'Đổi thông điệp' : 'Thêm thông điệp' }
+							</Button>
 						</p> 
 						:
 						<>
@@ -188,29 +238,14 @@ export default function Emergency() {
 										<FormControlLabel value="call" control={<Radio />} label="Chỉ gọi khẩn cấp" />
 									</RadioGroup>
 								</FormControl>
-								{
-									call === 'call' ? '' :
-										<TextField
-											// autoFocus
-											margin="dense"
-											id="sms"
-											name="sms"
-											value={sms}
-											label="Nội dung tin nhắn"
-											type="text"
-											fullWidth
-											variant="standard"
-											onChange={(e)=>setSms(e.target.value)}
-										/>
-								}
 							</DialogContent>
 							<DialogActions>
 								<Button onClick={handleClose}>Thoát</Button>
 								{
 									call === 'sms' ? 
-										<Button onClick={handleClose}>Gửi thông báo</Button>
+										<Button onClick={handleSendEmergencySms}>Gửi thông báo</Button>
 										:
-										<Button onClick={handleClose}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
+										<Button onClick={handleSendEmergencySms}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
 								}
 							</DialogActions>
 						</>

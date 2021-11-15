@@ -12,6 +12,8 @@ export default function ProfileList(props) {
             onDelete={props.onDelete}
             handleConfirmDelete={props.handleConfirmDelete}
             onUpdate={props.onUpdate}
+            verifyGuardianUser={props.verifyGuardianUser}
+            handleConfirmGuardianUser={props.handleConfirmGuardianUser}
         />
     });
 

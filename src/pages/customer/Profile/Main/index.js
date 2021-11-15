@@ -51,7 +51,7 @@ export default function Index(props) {
                             birthday: item.userTwo.birthday.slice(0, 10),
                             birthdayVN: getBirthdayVN(item.userTwo.birthday),
                             gender: item.userTwo.gender,
-                            phoneNumber: item.userTwo.phoneNumber,
+                            phoneNumber: item.userTwo.contactPhoneNumber,
                             bhyt: item.userTwo.healthInsuranceCode,
                             address: item.userTwo.address,
                             province: item.userTwo.province.name,
@@ -216,6 +216,51 @@ export default function Index(props) {
         )
     }
 
+    const verifyGuardianUser = (data) => {
+        const token = getToken();
+        // Send code verify
+        APIService.verifyGuardianUser(
+            token,
+            {
+                password: data.password,
+                guardiantId: data.guardiantId,
+                type: data.type,
+                email: data.email,
+                phoneNumber: data.phoneNumber
+            },
+            (success, json) => {
+                if (success && json.result) {
+                    return alert('Đã gửi code')
+                } else {
+                    return alert("Không gửi được!");
+                }
+            })
+    }
+
+    const handleConfirmGuardianUser = (data) => {
+        const token = getToken();
+        // Confirm create guardian user
+        APIService.postGuardianUser(
+            token,
+            {
+                password: data.password,
+                guardiantId: data.guardiantId,
+                type: data.type,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                code: data.code,
+                guardiantPassword: data.guardiantPassword
+            },
+            (success, json) => {
+                if (success && json.result) {
+                    setIsHaveChange(true);
+                    return alert('Xác nhận tạo user mới')
+                } else {
+                    return alert("Chuyển đổi THẤT BẠI!");
+                }
+            })
+    }
+
     const onUpdate = (id) => {
         const index = findIndex(id);
         const taskEditing = profiles[index];
@@ -259,6 +304,8 @@ export default function Index(props) {
                                     profiles={profiles}
                                     onDelete={onDelete}
                                     handleConfirmDelete={handleConfirmDelete}
+                                    verifyGuardianUser={verifyGuardianUser}
+                                    handleConfirmGuardianUser={handleConfirmGuardianUser}
                                     onUpdate={onUpdate}
                                 />
                             </Grid>
@@ -279,6 +326,8 @@ export default function Index(props) {
                                 profiles={profiles}
                                 onDelete={onDelete}
                                 handleConfirmDelete={handleConfirmDelete}
+                                verifyGuardianUser={verifyGuardianUser}
+                                handleConfirmGuardianUser={handleConfirmGuardianUser}
                                 onUpdate={onUpdate}
                             />
                         </Grid>

@@ -49,8 +49,6 @@ export default function AddEmail() {
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
 
-    const [auth, setAuth] = useState(false);
-
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -61,20 +59,6 @@ export default function AddEmail() {
         confirmAddEmail();
         setOpen(false);
     };
-
-    const verifyPhone = () => {
-        const token = getToken();
-        APIService.verifyPhoneNumberBeforeAddEmail(
-            token, 
-            (success, json) => {
-            if (success && json.result) {
-                alert('Vui lòng kiểm tra tin nhắn')
-                return setAuth(true)
-            } else {
-                return alert("Không gửi được")
-            }
-        })
-    }
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -119,98 +103,63 @@ export default function AddEmail() {
                 <Typography component="h1" variant="h5">
                     Thêm email cho tài khoản
                 </Typography>
-                {
-                    auth ? 
-                        <form className={classes.form} onSubmit={onSubmit}>
-                            <TextField
-                                className={classes.textField}
-                                variant="standard"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="password"
-                                label="Tạo mật khẩu"
-                                name="password"
-                                autoComplete="password"
-                                onChange={(e)=>setPassword(e.target.value)}
-                            />
-                            <TextField
-                                className={classes.textField}
-                                variant="standard"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email được"
-                                name="email"
-                                autoComplete="email"
-                                onChange={(e)=>setEmail(e.target.value)}
-                            />
-                            {/* <Button
-                                style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
-                                onClick={getCode}
-                                // variant="contained"
-                                color="secondary"
-                                className={classes.submit}
-                            >
-                                <b>Nhận mã</b>
-                            </Button> */}
-                            <TextField
-                                className={classes.textField}
-                                variant="standard"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="code"
-                                label="Mã OTP đã gửi về tin nhắn cho bạn"
-                                name="code"
-                                autoComplete="code"
-                                onChange={(e)=>setCode(e.target.value)}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}
-                            >
-                                Xác nhận
-                            </Button>
-                            <Dialog open={open} onClose={handleClose}>
-                                <DialogTitle>Nhập mã kích hoạt trong email</DialogTitle>
-                                <DialogContent>
-                                <DialogContentText>
-                                    Để xác nhận thêm email này vào tài khoản của bạn, vui lòng nhập mã xác thực đã được gửi từ ứng dụng vào mail của bạn
-                                </DialogContentText>
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="code"
-                                        label="Mã OTP"
-                                        type="code"
-                                        fullWidth
-                                        variant="standard"
-                                        onChange={(e) => setCode(e.target.value)}
-                                    />
-                                    </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={handleClose}>Hủy xác nhận</Button>
-                                    <Button onClick={handleClose}>Xác nhận</Button>
-                                </DialogActions>
-                            </Dialog>
-                        </form>
-                    :
+                <form className={classes.form} onSubmit={onSubmit}>
+                    <TextField
+                        className={classes.textField}
+                        variant="standard"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="password"
+                        label="Mật khẩu hiện tại"
+                        name="password"
+                        autoComplete="password"
+                        onChange={(e)=>setPassword(e.target.value)}
+                    />
+                    <TextField
+                        className={classes.textField}
+                        variant="standard"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email được thêm"
+                        name="email"
+                        autoComplete="email"
+                        onChange={(e)=>setEmail(e.target.value)}
+                    />
                     <Button
-                        type="button"
+                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={verifyPhone}
                     >
-                        Nhận mã xác thực số điện thoại qua tin nhăn
+                        Xác nhận
                     </Button>
-                }
+                    <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>Nhập mã kích hoạt trong email</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText>
+                            Để xác nhận thêm email này vào tài khoản của bạn, vui lòng nhập mã xác thực đã được gửi từ ứng dụng vào mail của bạn
+                        </DialogContentText>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="code"
+                                label="Mã OTP"
+                                type="code"
+                                fullWidth
+                                variant="standard"
+                                onChange={(e) => setCode(e.target.value)}
+                            />
+                            </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Hủy xác nhận</Button>
+                            <Button onClick={handleClose}>Xác nhận</Button>
+                        </DialogActions>
+                    </Dialog>
+                </form>
             </div>
         </Container>
     );

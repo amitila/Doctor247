@@ -7,6 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
 import { useHistory } from "react-router-dom";
@@ -44,8 +49,18 @@ export default function AddPhoneNumber() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [code, setCode] = useState('');
 
-    const onSubmit = (event) => {
-        event.preventDefault();
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        confirmAddPhoneNumber();
+        setOpen(false);
+    };
+
+    const confirmAddPhoneNumber = (event) => {
         const token = getToken();
         APIService.addPhoneNumberOrEmail(
             token, 
@@ -60,7 +75,8 @@ export default function AddPhoneNumber() {
         })
     }
 
-    const getCode = () => {
+    const onSubmit = (event) => {
+        event.preventDefault();
         if(password && phoneNumber) {
             const token = getToken();
             APIService.getCodeToAddPhoneNumber(
@@ -69,6 +85,7 @@ export default function AddPhoneNumber() {
                 phoneNumber, 
                 (success, json) => {
                 if (success && json.result) {
+                    handleClickOpen()
                     return alert("Vui lòng kiểm tra tin nhắn!")
                 } else {
                     return alert("Không gửi được")
@@ -116,27 +133,6 @@ export default function AddPhoneNumber() {
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                     <Button
-                        style={{ marginTop: 15, marginLeft: 3, border: "solid" }} 
-                        onClick={getCode}
-                        // variant="contained"
-                        color="secondary"
-                        className={classes.submit}
-                    >
-                        <b>Nhận mã</b>
-                    </Button>
-                    <TextField
-                        className={classes.textField}
-                        variant="standard"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="code"
-                        label="Mã OTP được gửi đến số điện thoại bạn vừa thêm"
-                        name="code"
-                        autoComplete="code"
-                        onChange={(e) => setCode(e.target.value)}
-                    />
-                    <Button
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -145,6 +141,28 @@ export default function AddPhoneNumber() {
                     >
                         Xác nhận
                     </Button>
+                    <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>Nhập mã kích hoạt trong email</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText>
+                            Để xác nhận thêm số điện thoại này vào tài khoản của bạn, vui lòng nhập mã xác thực đã được gửi từ ứng dụng vào số điện thoại của bạn
+                        </DialogContentText>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="code"
+                                label="Mã OTP"
+                                type="code"
+                                fullWidth
+                                variant="standard"
+                                onChange={(e) => setCode(e.target.value)}
+                            />
+                            </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Hủy xác nhận</Button>
+                            <Button onClick={handleClose}>Xác nhận</Button>
+                        </DialogActions>
+                    </Dialog>
                 </form>
             </div>
         </Container>

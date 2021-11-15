@@ -65,6 +65,14 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/users/relative-phone-number`;
 	};
 
+	static apiSetEmergencySms = () => {
+		return `${APIService.baseAPI()}customer/users/emergency-sms`;
+	};
+
+	static apiSendEmergencySms = () => {
+		return `${APIService.baseAPI()}customer/users/send-emergency-sms`;
+	};
+
 	static apiAdd = () => {
 		return `${APIService.baseAPI()}customer/users/add`;
 	};
@@ -107,6 +115,15 @@ export default class APIService {
 
 	static apiGuardianById = (id) => {
 		return `${APIService.baseAPI()}customer/guardian/${id}`;
+	};
+
+	// api add user for guardian
+	static apiGuardianUser = () => {
+		return `${APIService.baseAPI()}customer/guardian/user`;
+	};
+
+	static apiGuardianUserVerify = () => {
+		return `${APIService.baseAPI()}customer/guardian/user/verify`;
 	};
 
 	static apiPublicQuestion = () => {
@@ -323,11 +340,11 @@ export default class APIService {
 	  
 //====================SIGNIGN======================
 	// api for SignIn
-	static signIn(email, password, callback) {
+	static signIn(username, password, callback) {
 		WebService.sendJsonPOST(
 			this.apiSignIn(),
 			{
-				email,
+				username,
 				password,
 			},
 			callback,
@@ -448,6 +465,30 @@ export default class APIService {
 			{
 				jwt: token,
 				phoneNumber
+			},
+			callback,
+		);
+	}
+
+	// api for Set Emergency Sms
+	static setEmergencySms(token, phoneNumber, content, callback ) {
+		WebService.sendJsonPUT(
+			this.apiSetEmergencySms(),
+			{
+				jwt: token,
+				phoneNumber,
+				content
+			},
+			callback,
+		);
+	}
+
+	// api for Send Emergency Sms
+	static sendEmergencySms(token, callback ) {
+		WebService.sendJsonPUT(
+			this.apiSendEmergencySms(),
+			{
+				jwt: token
 			},
 			callback,
 		);
@@ -648,6 +689,44 @@ export default class APIService {
 			{
 				jwt: token,
 				code
+			},
+			callback,
+		);
+	}
+
+	// api for Guardian User
+	static postGuardianUser( token, values, callback ) {
+		const formData = new FormData();
+		formData.append('password', values.password);
+		formData.append('guardiantId', values.guardiantId);
+		formData.append('type', values.type);
+		formData.append('email', values.email);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('code', values.code);
+		formData.append('guardiantPassword', values.guardiantPassword);
+		WebService.sendJsonPOST(
+			this.apiGuardianUser(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Verify Guardian User
+	static verifyGuardianUser( token, values, callback ) {
+		const formData = new FormData();
+		formData.append('password', values.password);
+		formData.append('guardiantId', values.guardiantId);
+		formData.append('type', values.type);
+		formData.append('email', values.email);
+		formData.append('phoneNumber', values.phoneNumber);
+		WebService.sendJsonPOST(
+			this.apiGuardianUserVerify(),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);

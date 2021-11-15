@@ -118,9 +118,9 @@ export default function SignIn() {
                         required
                         fullWidth
                         id="email"
-                        label="Địa chỉ email"
+                        label="Tên đăng nhập"
                         name="email"
-                        type="email"
+                        type="text"
                         onChange={handleChangeEmail}
                         autoComplete="email"
                         autoFocus
