@@ -27,13 +27,15 @@ export function DrawerContent(props) {
 		lastName: '',
 		avatar: '',
 	})
+	const [isHaveChange, setIsHaveChange] = useState(true);
 
 	const paperTheme = useTheme();
 
 	const { signOut, toggleTheme } = React.useContext(AuthContext);
 
 	useEffect(() => {
-		AsyncStorage.getItem('token')
+		if(isHaveChange) {
+			AsyncStorage.getItem('token')
 			.then((token) => {
 				return APIService.getProfile(token, (success, json) => {
 					if (success && json.result) {
@@ -44,11 +46,13 @@ export function DrawerContent(props) {
 							lastName: json.result.customer.lastName,
 							avatar: json.result.customer.avatarURL,
 						});
+						setIsHaveChange(false);
 						return console.log('success')
 					}
 				})
 			})
-	}, [])
+		}
+	}, [isHaveChange])
 
 	return (
 		<View style={{ flex: 1 }}>

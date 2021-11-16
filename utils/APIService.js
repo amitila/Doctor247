@@ -282,11 +282,11 @@ export default class APIService {
 
 	//====================SIGNIGN======================
 	// api for SignIn
-	static signIn(email, password, callback) {
+	static signIn(username, password, callback) {
 		WebService.sendJsonPOST(
 			this.apiSignIn(),
 			{
-				email,
+				username,
 				password,
 			},
 			callback,

@@ -19,46 +19,53 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import RadioForm from 'react-native-radio-form';
 import { Avatar } from 'react-native-elements';
-import DatePicker from './DatePicker';
 import moment from 'moment';
 import APIService from '../../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import getTimeFromOperationOfDoctor from  '../../helpers/getTimeFromOperationOfDoctor';
+import sortBookingTime from '../../helpers/sortBookingTime';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-const bookingTime = [
-	'07h30 - 08h00',
-	'08h30 - 09h00',
-	'09h30 - 10h00',
-	'10h30 - 11h00',
-	'11h00 - 11h30',
-	'11h30 - 12h00',
-	'13h00 - 13h30',
-	"13h30 - 14h00",
-	'14h00 - 14h30',
-	'14h30 - 15h00',
-	'15h00 - 15h30',
-	'15h30 - 16h00',
-	'16h00 - 16h30',
-	"16h30 - 17h00",
-];
+// var bookingTime = [];
+// for (let x = 7; x < 21; x ++) {
+// 	for(let y = 0; y < 2; y++) {
+// 		if(y === 0) bookingTime.push(`${x}h00 - ${x}h30`);
+// 		else bookingTime.push(`${x}h30 - ${x +1 }h00`);
+// 	}
+// }
 
 const BookingForm = (props) => {
-	
+
+	const { patients, infoOfDoctor } = props;
+	const [bookingTime, setBookingTime] = useState([]);
+	const [bookedTime, setBookedTime] = useState([]);
+	const [isChecked, setIsChecked] = useState(true);
+
+	// get current time
+	const getCurrentDate = () => {
+		var dateObj = new Date();
+		var month = dateObj.getMonth() + 1; //months from 1-12
+		var day = dateObj.getDate();
+		var year = dateObj.getFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
+
 	const [data, setData] = useState({
 		id: '',
 		name: '',
-		date: '',
+		date: getCurrentDate(),
 		hour: '',
+		workplace: '',
 		doctor: '',
 		description: '',
-		guardianId: props.id,
+		imagesView: [],
+		guardianId: '',
 		doctorId: '',
 		dayTime: '',
+		imagesSend: [],
 	});
 
-	const { patients, doctorId } = props;
-
-	const [date, setDate] = useState('2021-11-11');
 	const [hour, setHour] = useState('');
 	const [dateTime, setDateTime] = useState(new Date())
 	const [selectedGuardian, setSelectedGuardian] = useState(patients[0].userTwoId ? patients[0].userTwoId : '' );
@@ -95,7 +102,71 @@ const BookingForm = (props) => {
 		}
 	};
 	//////////////////////////
+
+	const getBookedAppointmentToDoctor = () => {
+		const doctorId = infoOfDoctor.id;
+		AsyncStorage.getItem('token')
+			.then((token) => {
+				APIService.getDoctorOperation(
+					token,
+					doctorId,
+					dateTime,
+					(success, json) => {
+						if (success && json.result) {
+							// console.log(json.result)
+							setBookedTime(json.result?.map(item => {
+								const dateTemp = new Date(item);
+								const hour = dateTemp.getHours();
+								const minute = dateTemp.getMinutes();
+								const result = `${hour}h${minute}`;
+								return {
+									hour,
+									minute,
+									result
+								};
+							}));
+		
+							return console.log("Lấy lịch thành công");
+						} else {
+							return console.log("Không lấy được lịch");
+						}
+					}
+				)
+			})
+    }
+
+	const getBookingTimeForPatient = () => {
+		const dayOfWeek = dateTime.getDay();
+		bookingTime.length = 0;
+		setData({ ...data, hour:'', workplace:'' });
+		let ami = [];
+		infoOfDoctor.operations?.map(operation => {
+			// console.log('Operationnnnnnnnnnnnnnnn')
+			const workplace = operation.workplace;
+			const patientPerHalfHour = operation.patientPerHalfHour;
+			operation?.operationHours.map(operationHour => {
+				// console.log('OperationHourrrrrrrrrr')
+				if(dayOfWeek === operationHour.dayOfWeek) {
+					// console.log('dayOfWeekkkkkkkkkkk')
+					let temp = [];
+					temp = getTimeFromOperationOfDoctor(operationHour.startHour, operationHour.endHour, workplace, patientPerHalfHour);
+					ami = ami.concat(temp);
+				}
+				return 0;
+			})
+			setIsChecked(true);
+			return setBookingTime(ami);
+		})
+	}
+
+	useEffect(() => {
+		getBookedAppointmentToDoctor();
+		getBookingTimeForPatient();
+	}, [dateTime]);
+
 	const registerHandle = () => {
+		dateTime.setHours(parseInt(hour.slice(0,2)));
+		dateTime.setMinutes(parseInt(hour.slice(3,5)));
 		AsyncStorage.getItem('token')
 			.then((token) => {
 				const arrImage = [];
@@ -105,7 +176,7 @@ const BookingForm = (props) => {
 					token,
 					{
 						guardianId: selectedGuardian,
-						doctorId: doctorId,
+						doctorId: infoOfDoctor.id,
 						dayTime: dateTime.toString(),
 						description: data.description,
 						images: arrImage,
@@ -123,37 +194,59 @@ const BookingForm = (props) => {
 			})
 	}
 
-	const getBirthday = () => {
-		var birthday = new Date();
-		var value = date;
-		birthday.setDate(parseInt(value.slice(8, 10)));
-		birthday.setMonth(parseInt(value.slice(5, 7)) - 1);
-		birthday.setFullYear(parseInt(value.slice(0, 4)));
-		return birthday;
-	}
-
-	const handleChangeDate = (selectedDate) => {
-		var month = selectedDate.getMonth() + 1; //months from 1-12
-		var day = selectedDate.getDate();
-		var year = selectedDate.getFullYear();
-		console.log(year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
-		return setDate(year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
-		// setDate(selectedDate.slice(0,10))
-		// return console.log(selectedDate.toString().slice(0,10))
-	}
-
 	useEffect(() => {
-		if(date) {
-			dateTime.setDate(parseInt(date.slice(8,10)));
-			dateTime.setMonth(parseInt(date.slice(5,7) -1));
-			dateTime.setFullYear(parseInt(date.slice(0,4)));
+		if(bookingTime.length && isChecked) {
+			// let temp = bookingTime;
+			bookedTime?.map(booked => {
+				const result = booked.result;
+				bookingTime?.map((boooking, index) => {
+					const booktime = boooking.time.slice(0, 5);
+					const mark = booktime.includes(result);
+					if(mark) {
+						bookingTime[index] = {
+							time: bookingTime[index].time,
+							workplace: bookingTime[index].workplace,
+							patientPerHalfHour: bookingTime[index].patientPerHalfHour - 1
+						}
+					}
+					return 0;
+				})
+				return 0;
+			})
+			setIsChecked(false);
+			const temp = bookingTime.filter(function(element){
+				return element.patientPerHalfHour > 0;
+			})
+			setBookingTime(sortBookingTime(temp, dateTime));
+			// console.log('Đã sorted')
 		}
-		if(hour) {
-			dateTime.setHours(parseInt(hour.slice(0,2)));
-			dateTime.setMinutes(parseInt(hour.slice(3,5)));
-			dateTime.setSeconds(0);
+	}, [bookingTime, isChecked, dateTime])
+
+	//Ngày khám
+	const [isPickerShow, setIsPickerShow] = useState(false);
+	const [openHour, setOpenHour] = useState(false);
+
+	const showPicker = () => {
+		setIsPickerShow(true);
+		setOpenHour(true);
+	};
+
+	const changeSelectedDate = (event, value) => {
+		if(value) {
+			setDateTime(value);
+			if (Platform.OS === 'android') {
+				setIsPickerShow(false);
+			}
 		}
-	},[date, hour])
+		else setIsPickerShow(false);
+	};
+
+	const getSelectedDate = () => {
+		var month = dateTime.getMonth() + 1; //months from 1-12
+		var day = dateTime.getDate();
+		var year = dateTime.getFullYear();
+		return (year + "-" + (month < 10 ? '0' + month : month) + "-" + day);
+	}
 
 	return (
 		<View style={styles.container}>
@@ -166,6 +259,11 @@ const BookingForm = (props) => {
 				style={styles.footer}
 			>
 				<ScrollView>
+					<Text style={[styles.text_footer, {
+							marginTop: 0,
+							marginBottom: 5,
+							textAlign: 'center',
+					}]}>BS.{infoOfDoctor.name} _ MS:BS100{infoOfDoctor.doctorId}</Text>
 					<Text style={[styles.text_footer, {
 						marginTop: 0
 					}]}>Khám cho ai</Text>
@@ -187,26 +285,60 @@ const BookingForm = (props) => {
 						marginTop: 35
 					}]}>Ngày khám</Text>
 					<View style={styles.action}>
-						<DatePicker date={getBirthday()} handleChangeDate={handleChangeDate} />
+						{/* Display the selected date */}
+						<View  style={{width: 300}}>
+							{/* The button that used to trigger the date picker */}
+							{!isPickerShow && (
+								<View style={styles.btnContainer}>
+									<Button title={dateTime ? getSelectedDate() : "Chọn ngày"} color="purple" onPress={showPicker} />
+								</View>
+							)}
+						</View>
+						{/* The date picker */}
+						{isPickerShow && (
+							<DateTimePicker
+								minimumDate={new Date()}
+								value={dateTime}
+								mode={'date'}
+								display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+								is24Hour={true}
+								onChange={changeSelectedDate}
+								style={styles.datePicker}
+							/>
+						)}
 					</View>
-
+					
 					<Text style={[styles.text_footer, {
 						marginTop: 35
 					}]}>Giờ khám</Text>
-					<View style={styles.action}>
-						<Picker
-							selectedValue={hour}
-							style={{ height: 50, width: 300 }}
-							onValueChange={(itemValue, itemIndex) => setHour(itemValue)}
-						>
-							{
-								bookingTime.map((item, index) => {
-									return <Picker.Item label={item} value={item} key={index} />
-								})
-							}
-						</Picker>
-					</View>
-
+					{
+						openHour ? <>
+										<View style={styles.action}>
+											<Picker
+												selectedValue={hour}
+												style={{ height: 50, width: 300 }}
+												onValueChange={(itemValue, itemIndex) => setHour(itemValue)}
+												enabled={bookingTime.length ? true : false}
+											>
+												{
+													bookingTime.length ? bookingTime.map((item, index) => {
+														return <Picker.Item label={item.time} value={item.time} key={index} />
+													}) : <Picker.Item label={'Hết lịch'} value={''} key={''} />
+												} 
+											</Picker>
+										</View> 
+										<View style={{marginTop: 10}}>
+											{
+												hour ? bookingTime.map((item, index) => {
+													if(item.time === hour) return <Text key={index}>Tại {item.workplace}</Text>
+												}) : <Text>Chưa có nơi khám</Text>
+											}
+										</View>	
+									</>
+									: 
+									<Text>Vui lòng chọn ngày trước</Text>
+					}
+					
 					<Text style={[styles.text_footer, {
 						marginTop: 30
 					}]}>Lý do đăng ký khám</Text>
@@ -372,5 +504,33 @@ const styles = StyleSheet.create({
 	},
 	images: {
 		flexDirection: 'row',
-	}
+	},
+	containerDateTime: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		flex: 1,
+		justifyContent: 'center',
+		padding: 50,
+	},
+	pickedDateContainer: {
+		padding: 20,
+		backgroundColor: '#eee',
+		borderRadius: 10,
+	},
+	pickedDate: {
+		fontSize: 18,
+		color: 'black',
+	},
+	btnContainer: {
+		padding: 30,
+	},
+	// This only works on iOS
+	datePicker: {
+		width: 320,
+		height: 260,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'flex-start',
+	},
 });

@@ -17,6 +17,7 @@ import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
 import Users from '../model/users';
 import APIService from '../utils/APIService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignInByPhoneScreen = ({ navigation }) => {
 
@@ -109,6 +110,13 @@ const SignInByPhoneScreen = ({ navigation }) => {
 
 		APIService.signInBySms(username, password, (success, json) => {
 			if (success && json.result) {
+
+				AsyncStorage.setItem('role', json.result.role);
+				AsyncStorage.setItem('gender', json.result.customer.gender);
+				AsyncStorage.setItem('email', json.result.email);
+				AsyncStorage.setItem('avatarURL', json.result.customer.avatarURL);
+				AsyncStorage.setItem('token', json.result.token);
+
 				const foundUser = Users.filter(item => {
 					return username == item.username && password == item.password || success;
 				});
@@ -201,6 +209,17 @@ const SignInByPhoneScreen = ({ navigation }) => {
 						autoCapitalize="none"
 						onChangeText={(val) => handlePasswordChange(val)}
 					/>
+					{data.check_textInputChange ?
+							<Animatable.View
+								animation="bounceIn"
+							>
+								<Feather
+									name="check-circle"
+									color="green"
+									size={20}
+								/>
+							</Animatable.View>
+							: null}
 				</View>
 
 				<TouchableOpacity>

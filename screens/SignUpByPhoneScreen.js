@@ -26,7 +26,11 @@ const SignUpByPhoneScreen = ({ navigation }) => {
 		lastName: '',
 		gender: '',
 		phoneNumber: '',
+		password: '',
+		confirm_password: '',
 		code: '',
+		secureTextEntry: true,
+		confirm_secureTextEntry: true,
 	});
 
 	const textInputChange = (val) => {
@@ -43,6 +47,34 @@ const SignUpByPhoneScreen = ({ navigation }) => {
 				check_textInputChange: false
 			});
 		}
+	}
+
+	const updateSecureTextEntry = () => {
+		setData({
+			...data,
+			secureTextEntry: !data.secureTextEntry
+		});
+	}
+
+	const updateConfirmSecureTextEntry = () => {
+		setData({
+			...data,
+			confirm_secureTextEntry: !data.confirm_secureTextEntry
+		});
+	}
+
+	const handlePasswordChange = (val) => {
+		setData({
+			...data,
+			password: val
+		});
+	}
+
+	const handleConfirmPasswordChange = (val) => {
+		setData({
+			...data,
+			confirm_password: val
+		});
 	}
 
 	const getCode = () => {
@@ -74,7 +106,7 @@ const SignUpByPhoneScreen = ({ navigation }) => {
 				email: '',
 				firstName: data.firstName,
 				lastName: data.lastName,
-				password: '',
+				password: data.password,
 				phoneNumber: data.phoneNumber,
 				gender: data.gender,
 				code: data.code
@@ -201,6 +233,76 @@ const SignUpByPhoneScreen = ({ navigation }) => {
 								/>
 							</Animatable.View>
 							: null}
+					</View>
+
+					<Text style={[styles.text_footer, {
+						marginTop: 35
+					}]}>Mật khẩu</Text>
+					<View style={styles.action}>
+						<Feather
+							name="lock"
+							color="#05375a"
+							size={20}
+						/>
+						<TextInput
+							placeholder="Mật khẩu"
+							secureTextEntry={data.secureTextEntry ? true : false}
+							style={styles.textInput}
+							autoCapitalize="none"
+							onChangeText={(val) => handlePasswordChange(val)}
+						/>
+						<TouchableOpacity
+							onPress={updateSecureTextEntry}
+						>
+							{data.secureTextEntry ?
+								<Feather
+									name="eye-off"
+									color="grey"
+									size={20}
+								/>
+								:
+								<Feather
+									name="eye"
+									color="grey"
+									size={20}
+								/>
+							}
+						</TouchableOpacity>
+					</View>
+
+					<Text style={[styles.text_footer, {
+						marginTop: 35
+					}]}>Xác nhận mật khẩu</Text>
+					<View style={styles.action}>
+						<Feather
+							name="lock"
+							color="#05375a"
+							size={20}
+						/>
+						<TextInput
+							placeholder="Xác nhận lại mật khẩu"
+							secureTextEntry={data.confirm_secureTextEntry ? true : false}
+							style={styles.textInput}
+							autoCapitalize="none"
+							onChangeText={(val) => handleConfirmPasswordChange(val)}
+						/>
+						<TouchableOpacity
+							onPress={updateConfirmSecureTextEntry}
+						>
+							{data.secureTextEntry ?
+								<Feather
+									name="eye-off"
+									color="grey"
+									size={20}
+								/>
+								:
+								<Feather
+									name="eye"
+									color="grey"
+									size={20}
+								/>
+							}
+						</TouchableOpacity>
 					</View>
 
 					<Text style={[styles.text_footer, {
