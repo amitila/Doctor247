@@ -143,10 +143,7 @@ export default function AnswerCard(props) {
 								open={openAnchor}
 								onClose={handleAnchor}
 							>
-								<MenuItem onClick={handleAnchor}>Thông tin bác sĩ</MenuItem>
-								<MenuItem onClick={handleAnchor}>Đặt lịch khám</MenuItem>
-								<MenuItem onClick={handleAnchor}>Chat với bác sĩ</MenuItem>
-								<MenuItem onClick={handleAnchor}>Theo dõi</MenuItem>
+								<MenuItem onClick={()=>history.push(`/doctor/${reply.doctorId}`)}>Thông tin bác sĩ</MenuItem>
 							</Menu>
 						</div>
 					}

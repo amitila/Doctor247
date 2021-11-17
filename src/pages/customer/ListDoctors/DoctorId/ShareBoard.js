@@ -8,7 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { blue } from '@mui/material/colors';
-import ShareIcon from '@mui/icons-material/Share';
+// import ShareIcon from '@mui/icons-material/Share';
 import { 
 		FacebookIcon, 
 		FacebookMessengerIcon, 
@@ -51,7 +51,7 @@ function SimpleDialog(props) {
 							{
 								[
 									<FacebookShareButton
-										url={`${originUrl}/question/${id}`}
+										url={`${originUrl}/doctor/${id}`}
 										quote="Ứng dụng Doctor247 - Chia sẻ để trải nghiệm"
 										hashtag="#doctor247"
 									>
@@ -59,20 +59,20 @@ function SimpleDialog(props) {
 									</FacebookShareButton>,
 									<FacebookMessengerShareButton
 										appId={911966642758365}
-										url={`${originUrl}/question/${id}`}
+										url={`${originUrl}/doctor/${id}`}
 										redirectUri={`${originUrl}/home`}
 										to=""
 									>
 										<FacebookMessengerIcon />
 									</FacebookMessengerShareButton>,
 									<LineShareButton
-										url={`${originUrl}/question/${id}`}
+										url={`${originUrl}/doctor/${id}`}
 										title ="Ứng dụng Doctor247"
 									>
 										<LineIcon />
 									</LineShareButton>,
 									<TelegramShareButton
-										url={`${originUrl}/question/${id}`}
+										url={`${originUrl}/doctor/${id}`}
 										title ="Ứng dụng Doctor247"
 									>
 										<TelegramIcon />
@@ -110,7 +110,8 @@ export default function ShareBoard(props) {
 
 	return (
 		<div>
-			<ShareIcon onClick={handleClickOpen} />
+			{/* <ShareIcon onClick={handleClickOpen} /> */}
+			<b onClick={handleClickOpen} >Chia sẻ</b>
 			<SimpleDialog
 				selectedValue={selectedValue}
 				open={open}

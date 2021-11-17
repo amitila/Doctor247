@@ -65,7 +65,9 @@ const useStyles = makeStyles((theme) => ({
 export default function QuestionCard(props) {
     const classes = useStyles();
     const {task} = props;
+    const [isHaveChange, setIsHaveChange] = React.useState(false);
     const [expanded, setExpanded] = React.useState(false);
+    const [replies, setReplies] = React.useState([]);
     const [comments, setComments] = React.useState([]);
     const [state, setState] = React.useState({
         specialityName: '',
@@ -73,8 +75,6 @@ export default function QuestionCard(props) {
         likeCounter: props.task.questionLike,
         mark: task.liked
     });
-    const [isHaveChange, setIsHaveChange] = React.useState(false);
-    const [replies, setReplies] = React.useState([]);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -155,8 +155,21 @@ export default function QuestionCard(props) {
         setAnchorEl(null);
     };
 
+    // const date = new Date();
+    // const currentTime = date.getHours() +':'+ date.getMinutes() +'  '+ date.getDate() +'/'+ (date.getMonth() + 1) +'/'+ date.getFullYear() ;
+
     const onDelete = () => {
         props.onDelete(props.task.id);
+        handleClose();
+    }
+
+    const onUpdate = () => {
+        props.onUpdate(props.task.id);
+        handleClose();
+    }
+
+    const onSave = () => {
+        props.onSave(props.task.id);
         handleClose();
     }
 
@@ -202,12 +215,18 @@ export default function QuestionCard(props) {
                             open={open}
                             onClose={handleClose}
                         >
+                            <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem>
                             <MenuItem onClick={onDelete}>Xóa bài</MenuItem>
+                            {
+                                task.saved ? <MenuItem>Bài đã lưu</MenuItem>
+                                            :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
+                            }
+                            
                         </Menu>
                    </div>
                 }
                 title={<b>CÂU HỎI</b>}
-                subheader={task.updatedAt.slice(0,10)}
+                subheader={task.updatedAt?.slice(0,10)}
             />
             <Typography variant="h5" className={classes.title} >
                 <b>{task.title}</b>

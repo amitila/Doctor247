@@ -5,19 +5,23 @@ import Landing from './components/Landing.js';
 // For customer
 import Setting from './pages/customer/Setting';
 import Notification from './pages/customer/Notification';
-import SignIn from './pages/customer/SignIn';
+import SignIn from './pages/both/SignIn';
 import SignUp from './pages/customer/SignUp';
 import ForgotPass from './components/ForgotPass';
 import Profile from './pages/customer/Profile';
 import ListDoctors from './pages/customer/ListDoctors';
+import DoctorId from './pages/customer/ListDoctors/DoctorId/index.js';
 import PhoneBook from './pages/customer/PhoneBook';
 import DrawerHeader from './layouts/customer/DrawerHeader';
 import QuestionAnswer from './pages/customer/QuestionAnswer';
+import QuestionId from './pages/customer/QuestionAnswer/QuestionId/index.js';
 import Appointment from './pages/customer/Appointment';
 import MedicalrRecords from './pages/customer/MedicalRecords';
 import Speciality from './pages/customer/Speciality';
 import Service from './pages/customer/Service';
 import SavedQuestion from './pages/customer/SavedQuestion';
+import Chat from './pages/customer/Chat';
+import Videocall from './pages/customer/Videocall';
 import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import HomeScreen from './pages/customer/Home/HomeScreen';
@@ -67,8 +71,10 @@ export default function App() {
 								<Route exact path='/profile' component={Profile} />
 								<Route exact path='/savedquestion' component={SavedQuestion} />
 								<Route exact path='/appointment' component={Appointment} />
-								<Route exact path='/medicalrecords' component={MedicalrRecords} />
+								<Route exact path='/medicalrecord' component={MedicalrRecords} />
 								<Route exact path='/setting' component={Setting} />
+								<Route exact path='/doctors/chat-to-doctor' component={Chat} />
+								<Route exact path='/doctors/videocall-to-doctor' component={Videocall} />
 							</>
 							: ''
 					}
@@ -76,13 +82,15 @@ export default function App() {
 					<Route exact path='/speciality' component={Speciality} />
 					<Route exact path='/service' component={Service} />
 					<Route exact path='/task' component={Task} />
-					<Route exact path='/doctors' component={ListDoctors} />
+					<Route exact path='/doctor' component={ListDoctors} />
+					<Route exact path='/doctor/:id' component={DoctorId} />
 					<Route exact path='/question' component={QuestionAnswer} />
+					<Route exact path='/question/:id' component={QuestionId} />
 					<Route exact path='/home' component={HomeScreen} />
 					<Route exact path='/doctor/home' component={Doctor} />
 					<Route exact path='/notfound' component={NotFound} />
 					{
-						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : <Redirect to="/home" />
+						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : null
 					}
 				</DoctorProvider>
 			</Switch>

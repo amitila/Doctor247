@@ -3,6 +3,7 @@ import DoctorList from './DoctorList';
 import DoctorControl from './DoctorControl';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
+import { Link } from 'react-router-dom';
 
 export default function Index() {
     // const doctorcards = (localStorage && localStorage.getItem('tasks')) ? JSON.parse(localStorage.getItem('tasks')) : [];
@@ -190,6 +191,13 @@ export default function Index() {
         <div className="container-fluid m-50">
             <div className="text-center">
                 <h1>Danh sách y bác sĩ</h1>
+                {
+                    flag.map(item => {
+                        return  <p key={item.id}>
+                            <Link to={`/doctor/${item.id}`}></Link>
+                        </p>
+                    })
+                }
                 <br />
             </div>
             <div className="row">

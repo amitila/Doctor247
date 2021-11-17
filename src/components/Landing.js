@@ -3,7 +3,7 @@ import { Redirect } from 'react-router';
 
 const Landing = () => {
     return (
-        <Redirect to='/login' />
+        <Redirect to='/signin' />
     )
 }
 

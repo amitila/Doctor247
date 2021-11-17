@@ -244,7 +244,7 @@ export default function QuestionCard(props) {
                     />
                 </IconButton>
                 <IconButton aria-label="share">
-                    <ShareBoard />
+                    <ShareBoard id={task.id} />
                 </IconButton>
                 <ExpandMore
                     expand={expanded}

@@ -7,6 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
+import { Link } from 'react-router-dom';
 
 // const token = document.cookie.slice(6);
 
@@ -354,6 +355,13 @@ export default function Index(props) {
         <div className="container-fluid m-50">
             <div className="text-center">
                 <h1>Bệnh nhân hỏi - Bác sĩ trả lời</h1>
+                {
+                    flag.map(item => {
+                        return  <p key={item.id}>
+                            <Link to={`/question/${item.id}`}></Link>
+                        </p>
+                    })
+                }
                 <br />
             </div>
             <div className="row">

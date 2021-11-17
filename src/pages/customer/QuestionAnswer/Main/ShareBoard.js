@@ -23,8 +23,10 @@ import {
 const medias = ['Facebook', 'Messenger', 'Line', 'Telegram'];
 
 function SimpleDialog(props) {
-	const { onClose, selectedValue, open } = props;
-
+	const { onClose, selectedValue, open, id } = props;
+	const currentUrl = window.location.href;
+	const originUrl = window.location.origin;
+	
 	const handleClose = () => {
 		onClose(selectedValue);
 	};
@@ -50,7 +52,7 @@ function SimpleDialog(props) {
 							{
 								[
 									<FacebookShareButton
-										url="http://192.168.1.5:3000/question"
+										url={`${currentUrl}/${id}`}
 										quote="Ứng dụng Doctor247 - Chia sẻ để trải nghiệm"
 										hashtag="#doctor247"
 									>
@@ -58,20 +60,20 @@ function SimpleDialog(props) {
 									</FacebookShareButton>,
 									<FacebookMessengerShareButton
 										appId={911966642758365}
-										url="https://amitila.github.io/TaskManagers/"
-										redirectUri="http://192.168.1.5:3000/home"
+										url={`${currentUrl}/${id}`}
+										redirectUri={`${originUrl}/home`}
 										to=""
 									>
 										<FacebookMessengerIcon />
 									</FacebookMessengerShareButton>,
 									<LineShareButton
-										url="http://192.168.1.5:3000/question"
+										url={`${currentUrl}/${id}`}
 										title ="Ứng dụng Doctor247"
 									>
 										<LineIcon />
 									</LineShareButton>,
 									<TelegramShareButton
-										url="http://192.168.1.5:3000/question"
+										url={`${currentUrl}/${id}`}
 										title ="Ứng dụng Doctor247"
 									>
 										<TelegramIcon />
@@ -94,10 +96,10 @@ SimpleDialog.propTypes = {
 	selectedValue: PropTypes.string.isRequired,
 };
 
-export default function ShareBoard() {
+export default function ShareBoard(props) {
 	const [open, setOpen] = React.useState(false);
 	const [selectedValue, setSelectedValue] = React.useState(medias[1]);
-
+	const {id} = props;
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -114,6 +116,7 @@ export default function ShareBoard() {
 				selectedValue={selectedValue}
 				open={open}
 				onClose={handleClose}
+				id={id}
 			/>
 		</div>
 	);
