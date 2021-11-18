@@ -263,7 +263,7 @@ const BookingForm = (props) => {
 							marginTop: 0,
 							marginBottom: 5,
 							textAlign: 'center',
-					}]}>BS.{infoOfDoctor.name} _ MS:BS100{infoOfDoctor.doctorId}</Text>
+					}]}>BS.{infoOfDoctor.name} _ MS:BS100{infoOfDoctor.id}</Text>
 					<Text style={[styles.text_footer, {
 						marginTop: 0
 					}]}>Khám cho ai</Text>

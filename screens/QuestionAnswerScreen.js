@@ -46,7 +46,6 @@ const QuestionAnswerScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
-        console.log(isHaveChange)
 		if (isHaveChange) {
 			AsyncStorage.getItem('token')
 				.then((token) => {
@@ -140,7 +139,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                 </SafeAreaView>
                                 <View style={styles.container}>
                                     <Like
-                                        title='3'
+                                        title={item.questionLike}
                                         checkedIcon={<Icon 
                                             name="heart" 
                                             color="red" 
@@ -151,7 +150,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                             color="pink" 
                                             size={20} 
                                         />}
-                                        checked={isSelected}
+                                        checked={item.liked ? item.liked : isSelected}
                                         onPress={() => setSelection(isSelected)}
                                     />
                                 </View>

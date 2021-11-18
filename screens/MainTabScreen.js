@@ -7,8 +7,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
 import NotificationScreen from './NotificationScreen';
-import ReminderScreen from './ReminderScreen';
+import MedicalRecordScreen from './MedicalRecordScreen';
 import ProfileScreen from './ProfileScreen';
+import EmergencyScreen from './EmergencyScreen';
 
 const HomeStack = createStackNavigator();
 const NotificationStack = createStackNavigator();
@@ -32,14 +33,14 @@ const MainTabScreen = () => (
 			}}
 		/>
 		<Tab.Screen
-			name="Reminder"
+			name="MedicalRecord"
 			display={false}
-			component={ReminderScreen}
+			component={MedicalRecordScreen}
 			options={{
-				tabBarLabel: 'Nhắc lịch',
+				tabBarLabel: 'Bệnh án',
 				tabBarColor: '#036ffc',
 				tabBarIcon: ({ color }) => (
-					<Icon name="alarm" color={color} size={28} />
+					<Icon name="book" color={color} size={28} />
 				),
 			}}
 		/>
@@ -62,6 +63,17 @@ const MainTabScreen = () => (
 				tabBarColor: '#036ffc',
 				tabBarIcon: ({ color }) => (
 					<Icon name="ios-person" color={color} size={26} />
+				),
+			}}
+		/>
+		<Tab.Screen
+			name="Emergency"
+			component={EmergencyScreen}
+			options={{
+				tabBarLabel: 'Khẩn cấp',
+				tabBarColor: '#036ffc',
+				tabBarIcon: ({ color }) => (
+					<Icon name="add" color={color} size={26} />
 				),
 			}}
 		/>

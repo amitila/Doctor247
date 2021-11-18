@@ -25,8 +25,99 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const AnswerForm = (props) => {
 	
 	const [question, setQuestion] = useState(props.info);
-	const [answers, setAnswers] = useState([]);
-	const [isSelected, setSelection] = useState(false);
+	const [replies, setReplies] = useState([]);
+	const [isHaveChange, setIsHaveChange] = useState(true);
+	const [isSelected, setSelection] = useState(question.liked);
+
+	useEffect(() => {
+		if (isHaveChange) {
+			AsyncStorage.getItem('token')
+				.then((token) => {
+					const replyList = [];
+					const id = question.id;
+					APIService.getPublicAnswerById(
+						id,
+						(success, json) => {
+							if (success && json.result) {
+								json.result.map(item => {
+									return replyList.push(item);
+								})
+								return setReplies(replyList?.map(item => {
+									return {
+										id: item.id,
+										doctorId: item.doctorId,
+										questionId: item.questionId,
+										updatedAt: item.updatedAt,
+										doctorName: item.doctor.firstName + ' ' + item.doctor.lastName,
+										doctorAvatar: item.doctor.avatarURL,
+										specialized: item.specialized.name,
+										specializedId: item.specializedId,
+										specialityName: item.specialized.name,
+										replyContent: item.content,
+										liked: item.liked,
+										likeCounter: item._count.answerLike,
+									}
+								}))
+							} else {
+								return console.log("THẤT BẠI");
+							}
+						})
+				})
+		}
+	}, [isHaveChange])
+
+	const getDateTime = (dmy) => {
+        const dd = dmy.getDate();
+        const mm = dmy.getMonth() + 1;
+        const yyyy = dmy.getFullYear();
+        return (dd + '/' + mm + '/' + yyyy).toString();
+    }
+
+	const handleChageLike = () => {
+		const id = question.id;
+		onUpdateQuestionLike(isSelected, id);
+		setSelection(isSelected ? false : true)
+	}
+
+	const onUpdateQuestionLike = (mark, id) => {
+        if(mark === false) {
+			AsyncStorage.getItem('token')
+				.then((token) => {
+				APIService.putQuestionLikeById(
+					token,
+					id,
+					(success, json) => {
+						if (success && json.result) {
+							setIsHaveChange(true);
+							return console.log("Like THÀNH CÔNG !");
+						} else {
+							return console.log("Like THẤT BẠI !");
+						}
+					}
+				)
+			})
+        }
+        else if(mark) {
+			AsyncStorage.getItem('token')
+				.then((token) => {
+				APIService.putQuestionUnLikeById(
+					token,
+					id,
+					(success, json) => {
+						if (success && json.result) {
+							setIsHaveChange(true);
+							return console.log("UnLike THÀNH CÔNG !");
+						} else {
+							return console.log("UnLike THẤT BẠI !");
+						}
+					}
+				)
+			})
+        }
+        else{
+            console.log("Lỗi like");
+        }
+    }
 
 	return (
 		<View style={styles.container}>
@@ -63,7 +154,7 @@ const AnswerForm = (props) => {
 										size={20} 
 									/>}
 									checked={isSelected}
-									onPress={() => setSelection(!isSelected)}
+									onPress={() => handleChageLike()}
 								/>
 							</View>
 						</Card.Title>
@@ -87,48 +178,48 @@ const AnswerForm = (props) => {
 					</View>
 
 					{
-						answers?.map((item, i) => {
+						replies?.map((item, i) => {
 							return (
 								<Card key={i}>
 									<Card.Title>
-										<SafeAreaView style={styles.container}>
+										<SafeAreaView style={styles.containerQuestion}>
 											<Avatar
 												rounded
-												source={{uri: item.avatar}}
+												source={{uri: item.doctorAvatar}}
 												size="medium"
 											/>
 										</SafeAreaView>
 										{'\n'}
-										<SafeAreaView style={styles.container}>
+										<SafeAreaView style={styles.containerQuestion}>
 											<Text>
-												BS.{item.name}
+												BS.{item.doctorName}
 											</Text>
 											<Text>
-												Mã số: BS100{item.id}
-											</Text>
-											<Text>
-												Chuyên khoa {item.specialist}
+												Mã số: BS100{item.doctorId} | {item.specialized}
 											</Text>
 										</SafeAreaView>
 									</Card.Title>
 									{/* <Card.Divider /> */}
 									<Card.Divider />
-										<SafeAreaView style={styles.container}>
+										<SafeAreaView style={{alignItems: 'center', marginBottom: 5}}>
 											<Text>
 												Loại bệnh: {item.specialized}
 											</Text>
-											<Text>
-												{item.content}
+											<Text style={{color: '#6d6e6a'}}>
+												Lời khuyên bác sĩ:
 											</Text>
-											<Text>
-												Cập nhật từ: {item.updatedAt}
+											<Text style={{marginTop: 2, marginBottom: 2, fontSize: 16, color: '#6b1e28'}}>
+												{item.replyContent}
+											</Text>
+											<Text style={{color: '#6d6e6a'}}>
+												Cập nhật từ: {getDateTime(new Date(item.updatedAt))}
 											</Text>
 										</SafeAreaView>
 									<Card.Divider />
 									<View>
 										<Button
 											// icon={<Icon name='code' color='#ffffff' />}
-											onPress={()=>showBookForm(patients, doctorId)}
+											// onPress={()=>showBookForm(patients, doctorId)}
 											buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
 											title='Đặt khám' />
 									</View>

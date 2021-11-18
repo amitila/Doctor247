@@ -189,7 +189,7 @@ const ProfileForm = ({ navigation }) => {
 						/> */}
 						<View style={styles.avatar}>
 							<UploadImage url={data.avatar ? data.avatar : 'https://img.favpng.com/21/13/5/user-profile-default-computer-icons-network-video-recorder-png-favpng-7dPZA8WRdY80Uw3bdMWkEN4fR.jpg'} getUri={getUri} />
-							<Text style={{ marginVertical: 20, fontSize: 16 }}>Xin chào, Bé Con</Text>
+							<Text style={{ marginVertical: 20, fontSize: 16 }}>Xin chào, {data.firstName + ' ' + data.lastName}</Text>
 						</View>
 					</View>
 

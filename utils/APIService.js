@@ -65,6 +65,18 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/users/relative-phone-number`;
 	};
 
+	static apiSetEmergencySms = () => {
+		return `${APIService.baseAPI()}customer/users/emergency-sms`;
+	};
+
+	static apiGetEmergencySms = () => {
+		return `${APIService.baseAPI()}customer/users/emergency-sms`;
+	};
+
+	static apiSendEmergencySms = () => {
+		return `${APIService.baseAPI()}customer/users/send-emergency-sms`;
+	};
+
 	static apiAdd = () => {
 		return `${APIService.baseAPI()}customer/users/add`;
 	};
@@ -417,6 +429,41 @@ export default class APIService {
 			{
 				jwt: token,
 				phoneNumber
+			},
+			callback,
+		);
+	}
+
+	// api for Set Emergency Sms
+	static setEmergencySms(token, phoneNumber, content, callback ) {
+		WebService.sendJsonPUT(
+			this.apiSetEmergencySms(),
+			{
+				jwt: token,
+				phoneNumber,
+				content
+			},
+			callback,
+		);
+	}
+
+	// api for Set Emergency Sms
+	static getEmergencySms(token, callback ) {
+		WebService.sendJsonGET(
+			this.apiGetEmergencySms(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+	}
+
+	// api for Send Emergency Sms
+	static sendEmergencySms(token, callback ) {
+		WebService.sendJsonPUT(
+			this.apiSendEmergencySms(),
+			{
+				jwt: token
 			},
 			callback,
 		);

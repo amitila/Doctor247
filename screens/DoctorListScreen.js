@@ -5,6 +5,7 @@ import APIService from '../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from "react-native-dialog";
 import BookingForm from '../forms/BookingForm/BookingForm';
+import DoctorInfoForm from '../forms/DoctorInfoForm/DoctorInfoForm';
 
 // const doctors = [
 //     {
@@ -42,6 +43,7 @@ const DoctorListScreen = ({ navigation }) => {
     const [doctorcards, setDoctorcards] = useState([]);
     const [patients, setPatients] = useState([]);
     const [open, setOpen] = useState(true);
+    const [openDoctorForm, setOpenDoctorForm] = useState(true);
     const [isHaveChange, setIsHaveChange] = useState(true);
 
     useEffect(() => {
@@ -150,13 +152,14 @@ const DoctorListScreen = ({ navigation }) => {
         setVisible(false);
     };
 
-    const handleDelete = () => {
-        setVisible(false);
-    };
-
     const onClose = () => {
         setIsHaveChange(true)
         setOpen(true)
+    }
+
+    const onCloseDoctorForm = () => {
+        setIsHaveChange(true)
+        setOpenDoctorForm(true)
     }
 
     const showBookForm = (a, b, c) => {
@@ -168,7 +171,47 @@ const DoctorListScreen = ({ navigation }) => {
         })
     }
 
-    const [infoOfDoctor, setInfoOfDoctor] = React.useState('');
+    const showDoctorForm = (a, b, c) => {
+        setOpenDoctorForm(false)
+        setBookForm({
+            patients: a ? a : [],
+            doctorId: b ? b : '',
+            doctorName: c ? c : ''
+        })
+    }
+
+    const [infoOfDoctor, setInfoOfDoctor] = React.useState({});
+
+    const getWeekday = (day) => {
+        let weekday;
+        // eslint-disable-next-line default-case
+        switch (day) {
+            case 'SUNDAY':
+                weekday = 'Chủ nhật';
+                break;
+            case 'MONDAY':
+                weekday = 'Thứ 2';
+                break;
+            case 'TUESDAY':
+                weekday = 'Thứ 3';
+                break;
+            case 'WEDNESDAY':
+                weekday = 'Thứ 4';
+                break;
+            case 'THURSDAY':
+                weekday = 'Thứ 5';
+                break;
+            case 'FRIDAY':
+                weekday = 'Thứ 6';
+                break;
+            case 'SATURDAY':
+                weekday = 'Thứ 7';
+                break;
+            default: 
+                weekday = '';
+          }
+        return weekday;
+    }
 
     const getDayOfWeek = (day) => {
         let dayOfWeek;
@@ -216,15 +259,27 @@ const DoctorListScreen = ({ navigation }) => {
                                 avatar: item.doctor.avatarURL,
                                 name: item.doctor.firstName +' '+ item.doctor.lastName,
                                 specialist: item.doctor.specialized.name,
-                                phone:"0257296632",
-                                year_exp:"5 năm kinh nghiệm",
+                                phone:"",
+                                year_exp:"",
+                                birthday: item.doctor.birthday,
+                                gender: item.doctor.gender,
+                                province: item.doctor.province,
+                                introduce: item.doctor.introduce,
+                                workHistory: item.doctor.workHistory,
                                 workplace: item.doctor.operation.map(x => {return x.workplace.name}),
                                 operations: item.doctor.operation.map(x => {return {
-                                    workplace: x.workplace.name + ', ' + x.workplace.address,
+                                    workplace: x.workplace.name,
+                                    workplaceContact: x.workplace.contactPhoneNumber,
+                                    workplaceAddress: x.workplace.address + ' ( ' + x.workplace.ward.name + ', ' + x.workplace.ward.district.name + ', ' + x.workplace.ward.district.province.name + ' )',
+                                    coordinates: {
+                                        latitude: x.workplace.latitude,
+                                        longitude: x.workplace.longitude
+                                    },
                                     patientPerHalfHour: x.patientPerHalfHour === null ? 0 : x.patientPerHalfHour,
                                     operationHours: x.operationHour.map(y => {return {
                                         day: y.day,
                                         dayOfWeek: getDayOfWeek(y.day),
+                                        weekday: getWeekday(y.day),
                                         startTime: y.startTime,
                                         endTime: y.endTime,
                                         startTimeVN: new Date(y.startTime),
@@ -249,20 +304,22 @@ const DoctorListScreen = ({ navigation }) => {
                 {
                     open ? null : <BookingForm onClose={onClose} patients={bookForm.patients} infoOfDoctor={infoOfDoctor} />
                 }
+                {
+                    openDoctorForm ? null : <DoctorInfoForm onClose={onCloseDoctorForm} infoOfDoctor={infoOfDoctor} />
+                }
             </View>
             <Dialog.Container visible={visible}>
-                <Dialog.Title>Thông tin bác sĩ {info.name}</Dialog.Title>
+                <Dialog.Title style={{textAlign: 'center'}}>Thông tin bác sĩ {info.name}</Dialog.Title>
                 <Dialog.Description>
-                    Amiiiiii
+                    {/* Info of dialog */}
                 </Dialog.Description>
-                <Dialog.Button label="Hủy bỏ" onPress={handleCancel} />
-                <Dialog.Button label="Đặt khám" onPress={handleDelete} />
+                <Dialog.Button label="Quay về" onPress={handleCancel} />
             </Dialog.Container>
             {
                 doctorcards.map((item, i) => {
                     const doctorId = item.id;
                     const doctorName = item.name;
-                    if (open) return (
+                    if (open && openDoctorForm) return (
                         <Card key={i}>
                             <Card.Title>
                                 <SafeAreaView style={styles.container}>
@@ -286,7 +343,7 @@ const DoctorListScreen = ({ navigation }) => {
                                 </SafeAreaView>
                             </Card.Title>
                             {/* <Card.Divider /> */}
-                            <View>
+                            {/* <View>
                                 <Button title="Thông tin bác sĩ" onPress={()=>showDialog(
                                     item.id,
                                     item.avatar,
@@ -296,6 +353,11 @@ const DoctorListScreen = ({ navigation }) => {
                                     item.year_exp,
                                     item.workplace
                                 )} />
+                            </View> */}
+                            <View>
+                                <Button 
+                                    title="Thông tin bác sĩ" 
+                                    onPress={()=>showDoctorForm(patients, doctorId, doctorName)} />
                             </View>
                             <Card.Divider />
                             <View>
@@ -339,4 +401,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row'
 	},
+    avatar: {
+        alignItems: 'center',
+        textAlign: 'center',
+    }
 });
