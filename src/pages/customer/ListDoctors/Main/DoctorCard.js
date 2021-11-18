@@ -155,7 +155,14 @@ export default function DoctorCard(props) {
 						</Typography>
 						<Typography className={classes.pos} color="textSecondary">
 							{/* Phòng khám Đa Khoa Amila */}
-							{task.workplace}
+							{
+								task.workplace.map((item, index) => {
+									if(index === task.workplace.length - 1) {
+										return item
+									}
+									return item + ', '
+								})
+							}
 						</Typography>
 					</CardContent>
 				</Button>
@@ -195,9 +202,6 @@ export default function DoctorCard(props) {
 							</IconButton>
 							<Typography variant="h6" className={classes.title}>
 								Thông tin bác sĩ
-							</Typography>
-							<Typography variant="h6" className={classes.title}>
-								Bài viết về bệnh
 							</Typography>
 							<Typography variant="h6" className={classes.title}>
 								Phản hồi từ bệnh nhân

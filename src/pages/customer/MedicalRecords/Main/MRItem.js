@@ -90,7 +90,7 @@ export default function MRItem(props) {
 									alignItems: 'center',
 									justifyContent: 'center'
 								}} 
-								rowspan="11"
+								rowspan="12"
 							>
 								MÃ NHẬN DẠNG:<br/>
 								{task.id}<br /><br />
@@ -149,20 +149,66 @@ export default function MRItem(props) {
 							<td>{task.doctor + ' _MS:BS00' + task.doctorId}</td>
 						</tr>
 						<tr>
-							<td>Triệu chứng ban đầu:</td>
-							<td>{task.symptom}</td>
+							<td>Triệu chứng:</td>
+							{
+								task.symptom.length > 0 ? 
+									<td>
+										{
+											task.symptom.map((item, index) => {
+												if(index === task.symptom.length - 1 ) {
+													return item;
+												}
+												return item + ', '
+											})
+										}
+									</td>
+									:
+									<td>Không có</td>
+							}
 						</tr>
 						<tr>
 							<td>Đã chẩn đoán: </td>
-							<td>{task.diagnostic ? 'Viêm gan B' : 'Viêm gan B'}</td>
+							{
+								task.diagnostic.length > 0 ? 
+									<td>
+										{
+											task.diagnostic.map((item, index) => {
+												if(index === task.diagnostic.length - 1 ) {
+													return item;
+												}
+												return item + ', '
+											})
+										}
+									</td>
+									:
+									<td>Không có</td>
+							}
+						</tr>
+						<tr>
+							<td>Thuốc dùng: </td>
+							{
+								task.dose.length > 0 ? 
+									<td>
+										{
+											task.dose.map((item, index) => {
+												if(index === task.dose.length -1 ) {
+													return item;
+												}
+												return item + ', '
+											})
+										}
+									</td>
+									:
+									<td>Không có</td>
+							}
 						</tr>
 						<tr>
 							<td>Lưu ý của bác sĩ: </td>
-							<td>{task.note ? 'Nên ăn sáng' : 'Nên ăn sáng'}</td>
+							<td>{task.note ? task.note : 'Không có'}</td>
 						</tr>
 						<tr>
 							<td>Chi phí khám: </td>
-							<td>{task.medicalExpense ? '100.000 VND' : '100.000 VND'}</td>
+							<td>{task.medicalExpense ? task.medicalExpense : 'Không có'}</td>
 						</tr>
 						<tr>
 							<td>Ai có thể xem được:</td>

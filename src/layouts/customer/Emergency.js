@@ -91,50 +91,63 @@ export default function Emergency() {
 	const [openAddPhone, setOpenAddPhone] = React.useState(false);
 	const [phoneNumber, setPhoneNumber] = React.useState('');
 	const [sms, setContent] = React.useState('');
+	const [isHaveChange, setIsHaveChange] = React.useState(true);
 
 	React.useEffect(() => {
 		const token = getToken();
-		if(token) {
-			APIService.getProfile(token, (success, json) => {
-				if(success && json.result){
-					// console.log(json.result.customer.relativePhoneNumber)
-					return setPhoneNumber(json.result.customer.relativePhoneNumber)
+		if(token && isHaveChange) {
+			APIService.getEmergencySms(
+				token,
+				(success, json) => {
+					if (success && json.result) {
+						setPhoneNumber(json.result.emergencyPhoneNumber)
+						setContent(json.result.emergencyContent)
+						setIsHaveChange(false)
+						return console.log("Lấy số điện thoại và nội dung thông điệp khẩn cấp thành công!")
+					} else {
+						return console.log(json.error)
+					}
 				}
-			}) 
+			)
 		}
-	},[])
+	},[isHaveChange])
 
-	const handleAddRelativePhoneNumber = () => {
-        const token = getToken();
-        APIService.addRelativePhoneNumber(
-            token,
-            phoneNumber,
-            (success, json) => {
-                if (success && json.result) {
-					setOpenAddPhone(false)
-                    return console.log("Thêm thành công!")
-                } else {
-                    return console.log(json.error)
-                }
-            }
-        )
-    }
+	// const handleAddRelativePhoneNumber = () => {
+    //     const token = getToken();
+    //     APIService.addRelativePhoneNumber(
+    //         token,
+    //         phoneNumber,
+    //         (success, json) => {
+    //             if (success && json.result) {
+	// 				setOpenAddPhone(false)
+    //                 return console.log("Thêm thành công!")
+    //             } else {
+    //                 return console.log(json.error)
+    //             }
+    //         }
+    //     )
+    // }
 
 	const handleAddRelativePhoneNumberAndSms = () => {
         const token = getToken();
-        APIService.setEmergencySms(
-            token,
-            phoneNumber,
-			sms,
-            (success, json) => {
-                if (success && json.result) {
-					setOpenAddPhone(false)
-                    return console.log("Thêm số điện thoại và nội dung thông điệp khẩn cấp thành công!")
-                } else {
-                    return console.log(json.error)
-                }
-            }
-        )
+		if(phoneNumber) {
+			APIService.setEmergencySms(
+				token,
+				phoneNumber,
+				sms ? sms : 'Tôi đang gặp nạn!',
+				(success, json) => {
+					if (success && json.result) {
+						setIsHaveChange(true)
+						return setOpenAddPhone(false)
+					} else {
+						return console.log(json.error)
+					}
+				}
+			)
+		}
+		else {
+			alert('Vui lòng nhập số điện thoại khẩn cấp!')
+		} 
     }
 
 	const handleSendEmergencySms = () => {
@@ -198,12 +211,12 @@ export default function Emergency() {
 								variant="standard"
 								onChange={(e)=>setPhoneNumber(e.target.value)}
 							/>
-							<Button onClick={handleAddRelativePhoneNumber}>
+							{/* <Button onClick={handleAddRelativePhoneNumber}>
 								{phoneNumber ? 'Xác nhận đổi' : 'Xác nhận thêm' }
-							</Button>
+							</Button> */}
 							<TextField
 								// autoFocus
-								required
+								// required
 								margin="dense"
 								id="sms"
 								name="sms"
@@ -215,7 +228,7 @@ export default function Emergency() {
 								onChange={(e)=>setContent(e.target.value)}
 							/>
 							<Button onClick={handleAddRelativePhoneNumberAndSms}>
-								{sms ? 'Đổi thông điệp' : 'Thêm thông điệp' }
+								{phoneNumber ? 'Đổi thông tin' : 'Thêm thông tin' }
 							</Button>
 						</p> 
 						:
@@ -223,7 +236,7 @@ export default function Emergency() {
 							<DialogContent>
 								<DialogContentText>
 									Đây là chức năng vừa cho phép bạn <b>gọi cấp cứu</b> trong trường hợp khẩn cấp và <b>gửi tin nhắn</b> thông báo về cho người thân của bạn
-									trong trường hợp khẩn cấp!
+									trong trường hợp khẩn cấp! (Tối đa 2 tin nhắn / 1 ngày)
 								</DialogContentText>
 								<FormControl component="fieldset">
 									<RadioGroup

@@ -125,7 +125,7 @@ export default function DoctorInfo(props) {
 
                             <Typography paragraph>
                                 <Button color="inherit">
-                                    <Link className={classes.link} to="/home">Chat với bác sĩ</Link>
+                                    <Link className={classes.link} to={`/doctor/${task.id}/chat-to-doctor`}>Chat với bác sĩ</Link>
                                 </Button>
                             </Typography>
                             <Typography paragraph>
@@ -138,23 +138,51 @@ export default function DoctorInfo(props) {
                     <Grid item xs={12} sm={9}>
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Giới thiệu:</Typography>
                         <Typography paragraph>
-                            - Bác sĩ Lô Vỹ Oanh hiện nguyên là trưởng khoa khoa Hộ sinh của bệnh viện Nhi Đồng 1 <br />
+                            {
+								task.introduce.length ? task.introduce.map((item, index) => {
+									return <Typography>{`- ${item}`}<br/></Typography>
+								}) : 'Đang cập nhật'
+							}
+                            {/* - Bác sĩ Lô Vỹ Oanh hiện nguyên là trưởng khoa khoa Hộ sinh của bệnh viện Nhi Đồng 1 <br />
                             - Được phong tặng Danh hiệu thầy thuốc ưu tú vào năm 2015 <br />
-                            - Là một trong ba bác sĩ có trên 50 năm kinh nghiệm về đỡ đẻ
+                            - Là một trong ba bác sĩ có trên 50 năm kinh nghiệm về đỡ đẻ */}
                         </Typography>
+
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Giờ làm việc:</Typography>
                         <Typography paragraph>
-                            Tất cả các ngày trong tuần trừ ngày chủ nhật: <br />
+                            {
+                                task.operations.length ? task.operations.map((item, index) => {
+                                    return <Typography>
+                                                <b>{`${index+1}. Tại ${item.workplace} : `}</b><br/>
+                                                {
+                                                    item.operationHours ? item.operationHours.map(item => {
+                                                        return <Typography>
+                                                            {`- ${item.weekday} : ${item.startHour} - ${item.endHour}`}<br/>
+                                                        </Typography>
+                                                    }) : 'Không có'
+                                                }
+                                                {`*Ghi chú: Mỗi giờ chỉ nhận tối đa ${item.patientPerHalfHour} bệnh nhân `}<br/>
+                                            </Typography>
+                                }) : 'Đang cập nhật'
+                            }
+                            {/* Tất cả các ngày trong tuần trừ ngày chủ nhật: <br />
                             - Buổi sáng: 7h - 12h <br />
                             - Buổi chiều: 13h - 17h <br />
-                            *Lưu ý: Trong trường hợp khẩn cấp vui lòng liên hệ số điện thoại 0398296632 để được hỗ trợ tức thời
+                            *Lưu ý: Trong trường hợp khẩn cấp vui lòng liên hệ số điện thoại 0398296632 để được hỗ trợ tức thời */}
                         </Typography>
+
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >Quá trình công tác:</Typography>
                         <Typography paragraph >
-                            - Tốt nghiệp trường Đại học y dược TP.HCM năm 1997 <br />
+                            {
+								task.workHistory.length ? task.workHistory.map((item, index) => {
+									return <Typography>{`- ${item}`}<br/></Typography>
+								}) : 'Đang cập nhật'
+							}
+                            {/* - Tốt nghiệp trường Đại học y dược TP.HCM năm 1997 <br />
                             - Là chuyên viên đỡ đẻ siêu cấp tại bệnh viện Nhi đồng 1 năm 2000 <br />
-                            - Là trưởng khoa khoa Hộ sinh từ năm 2005 đến 2021
+                            - Là trưởng khoa khoa Hộ sinh từ năm 2005 đến 2021 */}
                         </Typography>
+
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
                             Chuyên khám và điều trị:
                         </Typography>
@@ -164,12 +192,22 @@ export default function DoctorInfo(props) {
                             3. Siêu âm thai nhi cho mèo <br />
                             4. Chuyển đổi giới tính thai nhi cho mèo <br />
                         </Typography>
+
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Địa chỉ phòng khám: 222 Trần Hưng Đạo, Q10, TP.HCM
+                            Nơi làm việc: 
                         </Typography>
-                        <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
-                            Liên hệ: 0257 312 3456 (điện thoại bàn / phòng khám)
+                        <Typography paragraph>
+                            {
+                                task.operations.length ? task.operations.map((item, index) => {
+                                    return <Typography>
+                                                <b>{`${index+1}. ${item.workplace} : `}</b><br/>
+                                                {`  - Liên lạc: ${item.workplaceContact ? item.workplaceContact : 'Chưa cập nhật'}`}<br/>
+                                                {`  - Địa chỉ: ${item.workplaceAddress}`}<br/>
+                                            </Typography>
+                                }) : 'Đang cập nhật'
+                            }
                         </Typography>
+                        
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >
                             Hình ảnh bác sĩ:
                             <br />

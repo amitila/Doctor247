@@ -73,8 +73,8 @@ export default function App() {
 								<Route exact path='/appointment' component={Appointment} />
 								<Route exact path='/medicalrecord' component={MedicalrRecords} />
 								<Route exact path='/setting' component={Setting} />
-								<Route exact path='/doctors/chat-to-doctor' component={Chat} />
-								<Route exact path='/doctors/videocall-to-doctor' component={Videocall} />
+								<Route exact path='/doctor/:id/chat-to-doctor' component={Chat} />
+								<Route exact path='/doctor/:id/videocall-to-doctor' component={Videocall} />
 							</>
 							: ''
 					}

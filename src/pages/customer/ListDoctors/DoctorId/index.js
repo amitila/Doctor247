@@ -13,6 +13,37 @@ export default function Index({match}) {
     const [doctorcards, setDoctorcards] = useState('');
     const history = useHistory();
 
+    const getWeekday = (day) => {
+        let weekday;
+        // eslint-disable-next-line default-case
+        switch (day) {
+            case 'SUNDAY':
+                weekday = 'Chủ nhật';
+                break;
+            case 'MONDAY':
+                weekday = 'Thứ 2';
+                break;
+            case 'TUESDAY':
+                weekday = 'Thứ 3';
+                break;
+            case 'WEDNESDAY':
+                weekday = 'Thứ 4';
+                break;
+            case 'THURSDAY':
+                weekday = 'Thứ 5';
+                break;
+            case 'FRIDAY':
+                weekday = 'Thứ 6';
+                break;
+            case 'SATURDAY':
+                weekday = 'Thứ 7';
+                break;
+            default: 
+                weekday = '';
+          }
+        return weekday;
+    }
+
     const getDayOfWeek = (day) => {
         let dayOfWeek;
         // eslint-disable-next-line default-case
@@ -55,26 +86,38 @@ export default function Index({match}) {
 						const item = json.result;
 						setDoctorcards({
 							id: item.doctor.id,
-							avatar: item.doctor.avatarURL,
-							name: item.doctor.firstName +' '+ item.doctor.lastName,
-							specialist: item.doctor.specialized.name,
-							phone:"0257296632",
-							year_exp:"5 năm kinh nghiệm",
-							workplace: item.doctor.operation.map(x => {return x.workplace.name}),
-							operations: item.doctor.operation.map(x => {return {
-								workplace: x.workplace.name + ', ' + x.workplace.address,
-								patientPerHalfHour: x.patientPerHalfHour === null ? 0 : x.patientPerHalfHour,
-								operationHours: x.operationHour.map(y => {return {
-									day: y.day,
-									dayOfWeek: getDayOfWeek(y.day),
-									startTime: y.startTime,
-									endTime: y.endTime,
-									startTimeVN: new Date(y.startTime),
-									endTimeVN: new Date(y.endTime),
-									startHour: new Date(y.startTime).getHours() +'h'+ new Date(y.startTime).getMinutes(),
-									endHour: new Date(y.endTime).getHours() +'h'+ new Date(y.endTime).getMinutes(),
-								}})
-							}}),
+                            avatar: item.doctor.avatarURL,
+                            name: item.doctor.firstName +' '+ item.doctor.lastName,
+                            specialist: item.doctor.specialized.name,
+                            phone:"",
+                            year_exp:"",
+                            birthday: item.doctor.birthday,
+                            gender: item.doctor.gender,
+                            province: item.doctor.province,
+                            introduce: item.doctor.introduce,
+                            workHistory: item.doctor.workHistory,
+                            workplace: item.doctor.operation.map(x => {return x.workplace.name}),
+                            operations: item.doctor.operation.map(x => {return {
+                                workplace: x.workplace.name,
+                                workplaceContact: x.workplace.contactPhoneNumber,
+                                workplaceAddress: x.workplace.address + ' ( ' + x.workplace.ward.name + ', ' + x.workplace.ward.district.name + ', ' + x.workplace.ward.district.province.name + ' )',
+                                coordinates: {
+                                    latitude: x.workplace.latitude,
+                                    longitude: x.workplace.longitude
+                                },
+                                patientPerHalfHour: x.patientPerHalfHour === null ? 0 : x.patientPerHalfHour,
+                                operationHours: x.operationHour.map(y => {return {
+                                    day: y.day,
+                                    dayOfWeek: getDayOfWeek(y.day),
+                                    weekday: getWeekday(y.day),
+                                    startTime: y.startTime,
+                                    endTime: y.endTime,
+                                    startTimeVN: new Date(y.startTime),
+                                    endTimeVN: new Date(y.endTime),
+                                    startHour: new Date(y.startTime).getHours() +'h'+ new Date(y.startTime).getMinutes(),
+                                    endHour: new Date(y.endTime).getHours() +'h'+ new Date(y.endTime).getMinutes(),
+                                }})
+                            }}),
 						})
 						setIsHaveChange(false);
 						return console.log("thành công");
