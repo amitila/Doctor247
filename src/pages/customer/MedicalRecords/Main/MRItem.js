@@ -146,7 +146,7 @@ export default function MRItem(props) {
 						</tr>
 						<tr>
 							<td>Bác sĩ khám:</td>
-							<td>{task.doctor + ' _MS:BS00' + task.doctorId}</td>
+							<td>{task.doctor + ' _MS:BS100' + task.doctorId}</td>
 						</tr>
 						<tr>
 							<td>Triệu chứng:</td>

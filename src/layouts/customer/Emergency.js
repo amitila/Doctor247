@@ -257,8 +257,10 @@ export default function Emergency() {
 								{
 									call === 'sms' ? 
 										<Button onClick={handleSendEmergencySms}>Gửi thông báo</Button>
-										:
-										<Button onClick={handleSendEmergencySms}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
+										: call === 'call_sms' ?
+											<Button onClick={handleSendEmergencySms}><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi và gửi</a></Button>
+											:
+											<Button><a style={{textDecoration: 'none', color: 'red', fontWeight: 'bold'}} href="tel:115">Gọi ngay</a></Button>
 								}
 							</DialogActions>
 						</>

@@ -261,7 +261,7 @@ export default function Index() {
         });
 
         temp = temp.filter((task) => {
-            return task.workplace.toLowerCase().indexOf(filterWorkplace.toLowerCase()) !== -1;
+            return task.workplace.join().toLowerCase().indexOf(filterWorkplace.toLowerCase()) !== -1;
         });
 
         temp = temp.filter((task) => {
@@ -273,7 +273,7 @@ export default function Index() {
 
     const onSearch = (keyword) => {
         let temp = flag.filter((task) => {
-            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 || task.workplace.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 || task.workplace.join().toLowerCase().indexOf(keyword.toLowerCase()) !== -1;;
         });
         setDoctorcards(temp);
     }

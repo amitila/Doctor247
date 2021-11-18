@@ -105,7 +105,7 @@ export default function DoctorInfo(props) {
                         </Grid>
                         <Grid item>
                             <Typography variant="h6" component="h2">
-                                Ths.Bs.
+                                BS.
                             </Typography>
                             <Typography variant="h6" component="h2" gutterBottom >
                                 {task.name}
