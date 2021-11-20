@@ -18,6 +18,10 @@ function DoctorTopNavbar(props) {
         setAnchorEl(null);
     };
 
+    const handleChangePassword = () => {
+        setAnchorEl(null);
+    }
+
     const handleLogout = () => {
         localStorage.removeItem("token_doctor247");
         history.push("/login");
@@ -36,7 +40,7 @@ function DoctorTopNavbar(props) {
 
                 <div className="menu">
                     <div className="logo">
-                        "Doctor 247"
+                        Doctor 247
                     </div>
                     <div className="right_menu">
                         <ul>
@@ -49,9 +53,8 @@ function DoctorTopNavbar(props) {
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
                                 >
-                                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    <MenuItem onClick={handleChangePassword}>Đổi mật khẩu</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                                 </Menu>
                             </li>
                         </ul>

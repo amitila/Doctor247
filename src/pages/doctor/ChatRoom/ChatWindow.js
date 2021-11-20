@@ -71,20 +71,10 @@ const MessageListStyled = styled.div`
 `;
 
 function ChatWindow() {
-    const [open, setOpen] = useState(false);
     const [inputMessage, setInputMessage] = useState('');
     const [limitAmount, setLimitAmount] = useState(10);
 
-    const photoURL2 = "https://img.flaticon.com/icons/png/512/149/149071.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF";
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const {selectedRoom, user} = useContext(DoctorContext);
+    const { selectedRoom, userInfo, rooms } = useContext(DoctorContext);
 
     const roomCondition = useMemo(() => ({
         fieldName: 'roomId',
@@ -94,22 +84,22 @@ function ChatWindow() {
 
     const messages = GetMessages(roomCondition, limitAmount);
 
-    useEffect( () => {
+    useEffect(() => {
         var s = document.getElementById("msg-panel");
         s.addEventListener("scroll", (event) => {
-            if (Math.abs(s.scrollTop) >= Math.abs(s.scrollHeight-600)){
+            if (Math.abs(s.scrollTop) >= Math.abs(s.scrollHeight - 600)) {
                 if (limitAmount < selectedRoom.length) {
                     setLimitAmount(limitAmount + 10);
                 }
             }
         });
-    },[messages]);
+    }, [messages]);
 
     useEffect(() => {
         setLimitAmount(10);
         var s = document.getElementById("msg-panel");
         s.scrollTo(0, 0);
-    }, [selectedRoom.id])
+    }, [selectedRoom.id]);
 
     const handleOnSubmit = () => {
         if (inputMessage === '') {
@@ -118,12 +108,12 @@ function ChatWindow() {
         updateDoc(doc(db, "rooms", selectedRoom.id), {
             "length": selectedRoom.length + 1
         });
-        setDoc(doc(db, "messages", getNowDateTimeCode() + user.id), {
+        setDoc(doc(db, "messages", getNowDateTimeCode() + userInfo.id.toString()), {
             text: inputMessage,
-            uid: user.id,
-            photoURL: user.photoURL,
+            uid: userInfo.id.toString(),
+            photoURL: '',
             roomId: selectedRoom.id,
-            displayName: user.name, 
+            displayName: userInfo.name,
             createdAt: getNowDateTimeCode()
         });
         setInputMessage('');
@@ -136,45 +126,45 @@ function ChatWindow() {
                     <p className="header__title">{selectedRoom.name}</p>
                     <span className="header__description">{selectedRoom.description}</span>
                 </div>
-                <i style={{fontSize:'25px'}} className="fas fa-video"></i>
+                {/* <i style={{ fontSize: '25px' }} className="fas fa-video"></i> */}
             </HeaderStyled>
             <ContentStyled>
                 <MessageListStyled id="msg-panel">
                     {
-                        messages.map((msg) =>                            
+                        messages.map((msg) =>
                             <Message
-                                align={(msg.uid === user.id) ?'right':'left'}
+                                align={(msg.uid === userInfo.id.toString()) ? 'right' : 'left'}
                                 text={msg.text}
                                 photoURL={msg.photoURL}
                                 displayName={msg.displayName}
                                 createdAt={getDateTimeShow(msg.createdAt)}
-                            />                                
+                            />
                         )
                     }
                 </MessageListStyled>
 
-                    <Grid container spacing={3} style={{marginTop: '10px'}}>
-                        <Grid item xs={10} sm={10}>
-                            <OutlinedInput
-                                onKeyPress={(e) => {
-                                    if(e.key === "Enter"){
-                                        e.preventDefault();
-                                        handleOnSubmit();
-                                    }
-                                }}
-                                style={{backgroundColor: 'white'}}
-                                onChange={(e) => setInputMessage(e.target.value)} 
-                                id="msg" 
-                                fullWidth
-                                multiline
-                                placeholder="Nhập tin nhắn"
-                                value={inputMessage}
-                            />
-                        </Grid>
-                        <Grid item xs={2} sm={2}>
-                            <Button onClick={handleOnSubmit} variant="contained" color="primary">Gửi</Button>
-                        </Grid>
+                <Grid container spacing={3} style={{ marginTop: '10px' }}>
+                    <Grid item xs={10} sm={10}>
+                        <OutlinedInput
+                            onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    handleOnSubmit();
+                                }
+                            }}
+                            style={{ backgroundColor: 'white' }}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            id="msg"
+                            fullWidth
+                            multiline
+                            placeholder="Nhập tin nhắn"
+                            value={inputMessage}
+                        />
                     </Grid>
+                    <Grid item xs={2} sm={2}>
+                        <Button onClick={handleOnSubmit} variant="contained" color="primary">Gửi</Button>
+                    </Grid>
+                </Grid>
             </ContentStyled>
         </WrapperStyled>
     );

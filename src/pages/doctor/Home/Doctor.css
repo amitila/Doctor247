@@ -26,7 +26,7 @@
 }
 
 .top_navbar .hamburger{
-    width: 80px;
+    width: 60px;
     background: #004d40;
     position: relative;
     font-size: 28px;
@@ -78,6 +78,7 @@
     color: #004d40;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-size: large;
 }
 
 .top_navbar .menu .right_menu ul li{

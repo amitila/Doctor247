@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import Button from '@mui/material/Button';
-import { io } from "socket.io-client";
 import { DoctorContext } from '../Home/DoctorProvider';
 import { makeStyles } from '@material-ui/core';
 import userImg from '../../../assets/user.png';
@@ -19,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             background: "#e0ffe9",
             color: '#004d40'
-         },
+        },
     },
     info: {
         display: 'flex',
@@ -55,8 +54,8 @@ const useStyles = makeStyles((theme) => ({
     },
     fromVideo: {
         position: 'absolute',
-        top: '465px',
-        left: '715px',
+        top: '69px',
+        left: '16px',
         border: '5px solid #3f51b5',
         width: '200px',
         height: '117px',
@@ -71,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 function UserDiv(props) {
     const classes = useStyles();
-    return(
+    return (
         <div className={classes.customer} onClick={props.callVideo}>
             <div className={classes.info}>
                 <img className={classes.infoImg} src={userImg} width="40px" height="40px" alt=""></img>
@@ -85,110 +84,152 @@ function UserDiv(props) {
 }
 
 export default function VideoCall(props) {
-    const {username, peer, isCalling, setIsCalling} = useContext(DoctorContext);
+    const { peer, listOnlineUsers, setListOnlineUsers, callingUserId, setCallingUserId, userInfo, socket, openStream, playStream, closeStream, currentCall, setCurrentCall } = useContext(DoctorContext);
 
-    const myPeerId = useRef('');
-
-    const [listOnlineUsers, setListOnlineUsers] = useState([]);
-
-    const [callingUser, setCallingUser] = useState('');
-
-    const socket = io('http://localhost:5000/');
+    const [isCallSend, setIsCallSend] = useState(false);
+    const [isCallAccept, setIsCallAccept] = useState(false);
+    const [isCalling, setIsCalling] = useState(false);
+    const [isCallBusy, setIsCallBusy] = useState(false);
+    const [waitingUserId, setWaitingUserId] = useState(0);
+    const [waitingPeerId, setWaitingPeerId] = useState('');
+    const [currentCallSend, setCurrentCallSend] = useState(null);
 
     const classes = useStyles();
 
-    useState(() => {
-        socket.emit('GET_ONLINE_USERS');
-    },[]);
-
     socket.on('LIST_ONLINE_USERS', listUsers => {
-        setListOnlineUsers(listUsers);
+        setListOnlineUsers(listUsers);;
     });
 
     socket.on('HAS_NEW_USER', user => {
-        console.log('has new user ');
         setListOnlineUsers(listOnlineUsers.concat([user]));
     });
 
-    socket.on('END_CALL_TO', usernameTo => {
-        if(usernameTo === callingUser){
+    socket.on('ACCEPT_CALL', userId => {
+        if(callingUserId === userId){
+            setIsCallAccept(true);
+        }
+    });
+
+    socket.on('END_CALL_FROM', (fromId, toId) => {
+        if (fromId === callingUserId) {
+            setCallingUserId(0);
             setIsCalling(false);
-            setCallingUser('');
-        }
-        console.log(usernameTo);
-    });
-
-    socket.on('HAS_DISCONNECTED', id => {
-        const index = listOnlineUsers.findIndex(user => user.name === id);
-        if(index >= 0){
-            setListOnlineUsers(listOnlineUsers.filter(user => user.name !== id));
         }
     });
 
-    const openStream = () => {
-        const config = {audio: true, video: true};
-        return navigator.mediaDevices.getUserMedia(config);
-    }
+    socket.on('CALL', (fromId, toId) => {
+        if (toId === userInfo.id){
+            if(isCalling){
+                socket.emit('USER_BUSY', toId);
+            }
+            else{
+                setWaitingUserId(fromId);
+            }
+        }
+    });
 
-    const playStream = (idVideoTag, stream) => {
-        const video = document.getElementById(idVideoTag);
-        video.srcObject = stream;
-        video.play();
-    }
+    socket.on('USER_BUSY', userId => {
+        if(userId === callingUserId && isCallSend){
+            setCallingUserId(0);
+            console.log('user busy');
+            setIsCallSend(false);
+            setIsCallBusy(true);
+        }
+    });
 
+    socket.on('HAS_DISCONNECTED', userId => {
+        const index = listOnlineUsers.findIndex(user => user.id === userId);
+        if (index >= 0) {
+            setListOnlineUsers(listOnlineUsers.filter(user => user.id !== userId));
+        }
+        if (userId === callingUserId){
+            setCallingUserId(0);
+        }
+    });
+
+    // get param when open new window
     const location = useLocation();
     useEffect(() => {
-        peer.on('open', (id) => {
-            console.log(id);
-            myPeerId.current = id;
-            socket.emit('SIGN_UP_USER', {name: username, id: myPeerId.current});
-        });
+        socket.emit('GET_ONLINE_USERS');
         openStream()
-        .then(stream => {
-            playStream('localStream', stream);
-        });
+            .then(stream => {
+                playStream('localStream', stream);
+            });
         //const query = new URLSearchParams(useLocation().search);
-
+        console.log('location');
         console.log(location);
     }, []);
 
-    const handleEndCall = () => {
-        if(isCalling){
-            setIsCalling(false);
-            setCallingUser('');
-            socket.emit('END_CALL_FROM', username);
+    useEffect(() => {
+        if(isCallBusy){
+            console.log('Người dùng đang bận.');
+            setIsCallBusy(false);
         }
+    }, [isCallBusy]);
+    
+    useEffect(() => {
+        if(isCallSend && isCallAccept && callingUserId > 0 && waitingPeerId !== ''){
+            openStream()
+            .then(stream => {
+                playStream('localStream', stream);
+                const call = peer.call(waitingPeerId, stream);
+                call.on('stream', (remoteStream) => {
+                    playStream('remoteStream', remoteStream);
+                });
+                setIsCalling(true);
+                setCurrentCallSend(call);
+                setWaitingPeerId('');
+            });
+            setIsCallSend(false);
+            setIsCallAccept(false);
+            console.log('call out ok');
+        }
+        else if(!isCallSend && isCallAccept && callingUserId > 0 && currentCall !== null){
+            openStream()
+                .then(stream => {
+                    playStream('localStream', stream);
+                    currentCall.answer(stream);
+                    currentCall.on('stream', (remoteStream) => {
+                        playStream('remoteStream', remoteStream);
+                    });
+                    setIsCalling(true);
+                });
+            setIsCallAccept(false);
+            console.log('call int ok');
+        }
+        else if (!isCallSend && !isCallAccept && callingUserId === 0 && waitingUserId === 0){
+            closeStream('remoteStream');
+            console.log('call end');
+        }
+    }, [isCallSend, isCallAccept, callingUserId, currentCall, waitingPeerId, waitingUserId]);
+
+    const handleAnswerCall = () => {
+        socket.emit('ACCEPT_CALL', userInfo.id);
+        setIsCallAccept(true);
+        setCallingUserId(waitingUserId);
+        setWaitingUserId(0);
+    }
+    const handleCancelCall = () => {
+        socket.emit('END_CALL_FROM', userInfo.id, callingUserId);
+        setWaitingUserId(0);
+    }
+    const handleEndCall = () => {
+        socket.emit('END_CALL_FROM', userInfo.id, callingUserId);
+        setIsCalling(false);
+        setCallingUserId(0);
     }
 
-    const handleCallVideoClick = (toId, toName) => {
-        if(isCalling){
+    const handleCallStart = (toPeerId, toId, toName) => {
+        if (callingUserId > 0) {
+            alert("Bạn đang ở trong cuộc gọi.");
             return;
         }
-        setIsCalling(true);
-        setCallingUser(toName);
-        openStream()
-        .then(stream => {
-            playStream('localStream', stream);
-            const call = peer.call(toId, stream);
-            call.on('stream', (remoteStream) => {
-                playStream('remoteStream', remoteStream);
-            });
-        });
+        setWaitingPeerId(toPeerId);
+        setCallingUserId(toId);
+        socket.emit('CALL', userInfo.id, toId);
+        setIsCallSend(true);
     }
     
-    peer.on('call', (call) => {
-        setIsCalling(true);
-        console.log('answer');
-        openStream()
-        .then(stream => {            
-            call.answer(stream);
-            playStream('localStream', stream);
-            call.on('stream', (remoteStream) => {
-                playStream('remoteStream', remoteStream);
-            });
-        })
-    });
-
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
@@ -199,19 +240,27 @@ export default function VideoCall(props) {
                         <br /><br />
                         <video id="localStream" className={classes.fromVideo} controls autoPlay> </video>
                         <br /><br />
-                        {isCalling?
-                            <Button onClick={handleEndCall} variant="contained" color="secondary">Kết thúc</Button>
-                            :null
+                        {callingUserId > 0 ?
+                            <Button onClick={handleEndCall} variant="contained" color="secondary">Kết thúc cuộc gọi</Button>
+                            : null
                         }
+                        {waitingUserId > 0 ?
+                            <span>
+                                <Button onClick={handleAnswerCall} variant="contained" color="primary">Trả lời</Button>
+                                <Button onClick={handleCancelCall} variant="contained" color="secondary">Từ chối</Button>
+                            </span>
+                            : null
+                        }
+                        {/* <Button variant="contained" onClick={() => {console.log({isCallSend, isCallAccept, callingUserId, currentCall, waitingPeerId, waitingUserId, isCalling, isCallBusy});}}>Check</Button> */}
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={4} md={4}>
                     <Paper className={classes.userPaper}>
-                        <Button onClick={() => {console.log(listOnlineUsers)}}>Danh sách người dùng</Button>
+                        <Button onClick={() => { console.log(listOnlineUsers) }}>Danh sách người dùng</Button>
                         {listOnlineUsers.map((user) => (
-                            user.name!==username?
-                            <UserDiv username={user.name} peerId={user.id} callVideo={() => handleCallVideoClick(user.id, user.name)}/>
-                            :null
+                            user.id !== userInfo.id ?
+                                <UserDiv username={user.name} peerId={user.peerId} callVideo={() => handleCallStart(user.peerId, user.id, user.name)} />
+                                : null
                         ))}
                     </Paper>
                 </Grid>

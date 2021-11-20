@@ -18,44 +18,80 @@ const io = require("socket.io")(server, {
 	}
 })
 
-const listUsers = [];
+const listOnlineUsers = [];
+const listCallingUserIds = [];
 
 io.on("connection", (socket) => {
 
     socket.on('SIGN_UP_USER', user => {
-        var isExist = listUsers.some(u => u.name === user.name);
+        var isExist = listOnlineUsers.some(u => u.id === user.id);
 
         if(!isExist){
-            socket.peerId = user.name;
-            listUsers.push(user);
+            socket.peerId = user.peerId;
+            listOnlineUsers.push(user);
+            io.emit('LIST_ONLINE_USERS', listOnlineUsers);
+            
             console.log('HAS_NEW_USER: ' + user.name);
-            console.log('length: ' + listUsers.length);
+            console.log('users_length: ' + listOnlineUsers.length);
             //socket.broadcast.emit('HAS_NEW_USER', user);
-            //socket.emit('LIST_ONLINE_USERS', listUsers);
+            //socket.emit('LIST_ONLINE_USERS', listOnlineUsers);
             //io.emit('HAS_NEW_USER', user);
-            io.emit('LIST_ONLINE_USERS', listUsers);
         }        
     });
 
     socket.on('GET_ONLINE_USERS', () => {
-        io.emit('LIST_ONLINE_USERS', listUsers);
+        io.emit('LIST_ONLINE_USERS', listOnlineUsers);
     });
 
-    socket.on('END_CALL_FROM', username => {
-        console.log('call end: ' + username);
-        io.emit('END_CALL_TO', username);
+    socket.on('END_CALL_FROM', (fromId, toId) => {
+        io.emit('END_CALL_FROM', fromId, toId);
+        const indexFrom = listCallingUserIds.findIndex(id => id === fromId);
+        const indexTo = listCallingUserIds.findIndex(id => id === toId);
+        if(indexFrom >= 0){
+            listCallingUserIds.splice(indexFrom, 1);
+        }
+        if(indexTo >= 0){
+            listCallingUserIds.splice(indexTo, 1);
+        }
     });
+
+    socket.on('CALL', (fromId, toId) => {
+        const indexFrom = listCallingUserIds.findIndex(id => id === fromId);
+        const indexTo = listCallingUserIds.findIndex(id => id === toId);
+        if (indexFrom < 0){
+            listCallingUserIds.push(fromId);
+        }
+        if (indexTo < 0){
+            listCallingUserIds.push(toId);
+            io.emit('CALL', fromId, toId);
+        }
+        else {
+            io.emit('END_CALL_FROM', toId, fromId);
+            listCallingUserIds.splice(indexFrom, 1);
+        }
+        console.log('listCallingUserIds: ');
+        console.log(listCallingUserIds);
+    });
+    
+    socket.on('ACCEPT_CALL', userId => {
+        io.emit('ACCEPT_CALL', userId);
+    });
+
+    socket.on('GET_CALLING_USERS', toId => {
+        io.emit('GET_CALLING_USERS', toId, listCallingUserIds);
+    }); 
 
     socket.on('disconnect' , () => {
-        const index = listUsers.findIndex(user => user.name === socket.peerId);
+        const index = listOnlineUsers.findIndex(user => user.peerId === socket.peerId);
+        const user = listOnlineUsers.find(x => x.peerId === socket.peerId);
         if(index >= 0){
-            listUsers.splice(index, 1);
-            io.emit('HAS_DISCONNECTED', socket.peerId);
-            console.log('index: ' + socket.peerId);
-            console.log('socket.peerId: ' + socket.peerId);
-            console.log('length: ' + listUsers.length);
+            listOnlineUsers.splice(index, 1);
+            io.emit('HAS_DISCONNECTED', user.id);
+            console.log('HAS_DISCONNECTED: ' + user.id);
+            //console.log('socket.peerId: ' + socket.peerId);
+            console.log('length: ' + listOnlineUsers.length);
         }
-    })
+    });
 })
 
-server.listen(5000, () => console.log("server is running on port 5000"))
+server.listen(5000, () => console.log("server is running on port 5000"));

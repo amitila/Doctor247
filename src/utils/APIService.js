@@ -3,6 +3,31 @@ import WebService from './WebService';
 export default class APIService {
 	static urlServerAddress = 'http://192.168.1.7:8080';
 	// static urlServerAddress = 'http://localhost:8081';
+// For visitor
+static baseAPI = () => {
+	return `${APIService.urlServerAddress}/api/`;
+};
+
+static apiAnswer = (id) => {
+	return `${APIService.baseAPI()}question/answer/${id}`;
+};
+
+static apiDoctorList = (id) => {
+	return `${APIService.baseAPI()}doctor/list`;
+};
+
+static apiQuestion = () => {
+	return `${APIService.baseAPI()}question`;
+};
+
+static apiSignIn = () => {
+	return `${APIService.baseAPI()}user/login`;
+};
+
+static apiSpecialized = () => {
+	return `${APIService.baseAPI()}specialized`;
+};
+
 // For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -211,13 +236,7 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
 
-
-// For doctor 
-
-	static apiDoctorCheckToken = () => {
-		return `${APIService.baseAPI()}doctor/users/check-token`;
-	};
-
+// For doctor
     // Doctor Answer URL
     static apiDoctorAnswer = () => {
         return `${APIService.baseAPI()}doctor/answer`;
@@ -228,14 +247,14 @@ export default class APIService {
         return `${APIService.baseAPI()}doctor/appointment`;
     }
 
-	// Doctor Appointment URL
+	// Doctor Appointment By Id URL
     static apiDoctorAppointmentById = (id) => {
         return `${APIService.baseAPI()}doctor/appointment/${id}`;
     }
 
-	// Doctor Medical Record URL
-	static apiDoctorMedicalRecord = (id) => {
-        return `${APIService.baseAPI()}doctor/medical-record/id=${id}`;
+	// Doctor Medical Record By Id URL
+	static apiDoctorMedicalRecordId = (id) => {
+        return `${APIService.baseAPI()}doctor/medical-record/${id}`;
     }
 
     // Doctor Question URL
@@ -247,6 +266,11 @@ export default class APIService {
     static apiDoctorOperation = () => {
         return `${APIService.baseAPI()}doctor/operation`;
     }
+
+    // Doctor Profile URL by id
+    static apiDoctorOperationById = (id) => {
+        return `${APIService.baseAPI()}doctor/operation/{id}?id=${id}`;
+    }
     
     // Doctor Profile URL
     static apiDoctorProfile = () => {
@@ -257,6 +281,22 @@ export default class APIService {
     static apiDoctorQuestion = () => {
         return `${APIService.baseAPI()}doctor/question`;
     }
+
+	// Doctor Work Place URL
+    static apiDoctorWorkPlace = () => {
+        return `${APIService.baseAPI()}doctor/work-place`;
+    }
+
+	// Doctor Work Place My URL
+    static apiDoctorWorkPlaceMy = () => {
+        return `${APIService.baseAPI()}doctor/work-place/my`;
+    }
+
+	// Doctor Work Place My URL
+    static apiDoctorWorkPlaceManager = () => {
+        return `${APIService.baseAPI()}doctor/work-place/manage`;
+    }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -272,6 +312,56 @@ export default class APIService {
 			callback,
 		);
 	}
+
+	// Get Answer
+	static getAnswer(id, values, callback) {
+		const formData = new FormData();
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('sortBy', values.keyword);
+		WebService.sendJsonGET(
+			this.apiAnswer(id),
+			{
+				formData
+			},
+			callback,
+		);
+	}
+	
+	// Get Answer
+	static getDoctorList(values, callback) {
+		const formData = new FormData();
+		formData.append('specializedId', values.specializedId);
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('wardId', values.wardId);
+		formData.append('districtId', values.districtId);
+		formData.append('provinceId', values.provinceId);
+		WebService.sendJsonGET(
+			this.apiDoctorList(),
+			{
+				formData
+			},
+			callback,
+		);
+	}
+
+	// Get Question
+	static getQuestion(values, callback) {
+		const formData = new FormData();
+		formData.append('skip', values.skip);
+		formData.append('take', values.take);
+		formData.append('keyword', values.keyword);
+		formData.append('specializedId', values.specializedId);
+		WebService.sendJsonGET(
+			this.apiQuestion(),
+			{
+				formData
+			},
+			callback,
+		);
+	}
+
 
   	// TODO: For customer
 
@@ -1063,6 +1153,21 @@ export default class APIService {
 		);
 	}
 
+	// POST Doctor Answer
+	static postDoctorAnswer(token, questionId, content, specializedId, callback) {
+
+		WebService.sendJsonPOST(
+			this.apiDoctorAnswer(),
+			{
+				jwt: token,
+				content,
+				questionId,
+				specializedId
+			},
+			callback,
+		);
+	}
+
 	// Get Doctor Appointment
 	static getDoctorAppointment(token, callback) {
 		WebService.sendJsonGET(
@@ -1085,13 +1190,13 @@ export default class APIService {
 		);
 	}
 
-	// Get Doctor Medical Records
-	static getDoctorMedicalRecord(token, id, values, callback) {
+	// Get Doctor Medical Record
+	static getDoctorMedicalRecordById(token, id, values, callback) {
 		const formData = new FormData();
 		formData.append('skip', values.skip);
 		formData.append('take', values.take);
 		WebService.sendJsonGET(
-			this.apiDoctorMedicalRecord(id),
+			this.apiDoctorMedicalRecordId(id),
 			{
 				jwt: token,
 				id,
@@ -1100,6 +1205,82 @@ export default class APIService {
 			callback,
 		);
 	}
+
+	// Put Doctor Medical Record
+	static putDoctorMedicalRecordById(token, id, values, callback) {
+		const formData = new FormData();
+		formData.append('height', values.height);
+		formData.append('weight', values.weight);
+		formData.append('bodyTemperature', values.bodyTemperature);
+		formData.append('bloodPressure', values.bloodPressure);
+		formData.append('heartBeat', values.heartBeat);
+		formData.append('bloodGroup', values.bloodGroup);
+		formData.append('diagnostic', values.diagnostic);
+		formData.append('note', values.note);
+		formData.append('medicalExpense', values.medicalExpense);
+		WebService.sendJsonPUT(
+			this.apiDoctorMedicalRecordId(id),
+			{
+				jwt: token,
+				id,
+				formData
+			},
+			callback,
+		);
+	}
+
+    // Get Doctor Operation
+    static getDoctorOperation(token, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorOperation(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Operation by id
+    static getDoctorOperationById(token, id, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorOperationById(id),
+			{
+				jwt: token,
+				id
+			},
+			callback,
+		);
+    }
+
+    // Put Doctor Operation
+    static putDoctorOperation(token, values, callback) {
+		const formData = new FormData();
+		if(values.addList){
+			values.addList.forEach((e, index) => {
+				formData.append(`addList[${index}]`, JSON.stringify(e));
+			});
+		}
+		if(values.updateList){
+			values.updateList.forEach((e, index) => {
+				formData.append(`updateList[${index}]`, JSON.stringify(e));
+			});
+		}
+		if(values.deleteList){
+			values.deleteList.forEach((e, index) => {
+				formData.append(`deleteList[${index}]`, JSON.stringify(e));
+			});
+		}
+		formData.append('id', values.id);
+		console.log(formData.get("id"));
+        WebService.sendJsonPUT(
+			this.apiDoctorOperation(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+    }
 
     // Get Doctor Profile
     static getDoctorProfile(token, callback) {
@@ -1113,7 +1294,12 @@ export default class APIService {
     }
 
     // Put Doctor Profile
-    static putDoctorProfile(token, callback) {
+    static putDoctorProfile(token, values, callback) {
+		const formData = new FormData();
+		formData.append('firstName', values.firstName);
+		formData.append('lastName', values.lastName);
+		formData.append('gender', values.gender);
+		formData.append('birthday', values.birthday);
         WebService.sendJsonPUT(
 			this.apiDoctorProfile(),
 			{
@@ -1123,10 +1309,10 @@ export default class APIService {
 		);
     }
 
-    // Get Doctor Operation
-    static getDoctorOperation(token, callback) {
+	// Get Doctor Question
+    static getDoctorQuestion(token, callback) {
         WebService.sendJsonGET(
-			this.apiDoctorOperation(),
+			this.apiDoctorQuestion(),
 			{
 				jwt: token
 			},
@@ -1134,12 +1320,91 @@ export default class APIService {
 		);
     }
 
-    // Put Doctor Operation
-    static putDoctorOperation(token, callback) {
-        WebService.sendJsonPUT(
-			this.apiDoctorOperation(),
+	// Get Doctor Work Place
+    static getDoctorWorkPlace(token, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorWorkPlace(),
 			{
 				jwt: token
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Work Place
+    static getDoctorWorkPlaceMy(token, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorWorkPlaceMy(),
+			{
+				jwt: token
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Work Place
+    static getDoctorWorkPlaceManager(token, status, data, callback) {
+		let query = {}
+		if(data.skip){
+			query = {
+				...query,
+				skip: data.skip
+			}
+		}
+		if(data.take){
+			query = {
+				...query,
+				take: data.take
+			}
+		}
+		if(data.keyword){
+			query = {
+				...query,
+				keyword: data.keyword
+			}
+		}
+
+        WebService.sendJsonGET(
+			this.apiDoctorWorkPlaceManager(),
+			{
+				jwt: token,
+				status,
+				...query
+			},
+			callback,
+		);
+    }
+
+	// Post Doctor Work Place
+    static postDoctorWorkPlace(token, values, callback) {
+		const formData = new FormData();
+		formData.append('name', values.name);
+		formData.append('address', values.address);
+		formData.append('images', values.images);
+
+        WebService.sendJsonPOST(
+			this.apiDoctorWorkPlace(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+    }
+
+	// Put Doctor Work Place
+    static putDoctorWorkPlace(token, values, callback) {
+		const formData = new FormData();
+		formData.append('id', values.id);
+		formData.append('status', values.status);
+		formData.append('name', values.name);
+		formData.append('address', values.address);
+
+        WebService.sendJsonPUT(
+			this.apiDoctorWorkPlace(),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);

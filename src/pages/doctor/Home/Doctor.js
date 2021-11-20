@@ -4,13 +4,15 @@ import DoctorTopNavbar from './DoctorTopNavbar';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import DrBody from './DrBody';
 import Profile from '../Profile/Profile';
-import WorkPlan from '../WorkPlan/WorkPlan';
+import TimeTable from '../TimeTable/TimeTable';
 import VideoCall from '../VideoCall/VideoCall';
 
 import ChatRoom from '../ChatRoom/ChatRoom';
 import { DoctorContext } from './DoctorProvider';
 import MedicalRecords from '../MedicalRecord/MedicalRecords';
 import APIService from '../../../utils/APIService';
+import WorkPlace from '../WorkPlace/WorkPlace';
+import QuestionList from '../QA/QuestionList';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
     },
     ul_li_a: {
         color: '#fff',
-        fontSize: '18px',
-        padding: '20px 20px',
+        fontSize: '14px',
+        padding: '10px 15px',
         display: 'flex',
         alignItems: 'center',
+        textAlign: 'center',
         marginBottom: '1px',
         whiteSpace: 'nowrap',
         transition: 'all 0.5s ease',
@@ -57,8 +60,8 @@ const useStyles = makeStyles((theme) => ({
         color: '#004d40'
     },
     icon: {
-        marginRight: '15px',
-        fontSize: '28px'
+        fontSize: '24px',
+        width: '27px'
     },
     title: {
         display: 'block'
@@ -68,14 +71,14 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         marginTop: '40px',
-        width: 'calc(100% - 225px)',
-        marginLeft: '225px',
+        width: 'calc(100% - 210px)',
+        marginLeft: '210px',
         padding: '20px',
         transition: 'all 0.5s ease'
     },
     containerX: {
-        width: 'calc(100% - 80px)',
-        marginLeft: '80px'
+        width: 'calc(100% - 60px)',
+        marginLeft: '60px'
     },
     content: {
         border: '1px solid #e0f2f1',
@@ -88,19 +91,18 @@ const useStyles = makeStyles((theme) => ({
         display: 'none'
     },
     sidebar: {
-        width: '250px',
         height: '100%',
         position: 'fixed',
-        top: '60px',
+        top: '20px',
         left: '0',
         background: '#004d40',
         transition: 'all 0.5s ease'
     },
     sidebarOpen: {
-        width: '250px'
+        width: '200px'
     },
     sidebarClose: {
-        width: '80px'
+        width: '60px'
     }
 }));
 
@@ -111,19 +113,29 @@ const ShowContent = (props) => {
             <DrBody/>
         );
     }
-    else if(props.menuId === props.screenCode.MEDICAL_RECORDS){
+    else if(props.menuId === props.screenCode.MEDICAL_RECORD){
         return(
             <MedicalRecords/>
         );
     }
-    else if(props.menuId === props.screenCode.WORK_PLAN){
+    else if(props.menuId === props.screenCode.TIMETABLE){
         return(
-            <WorkPlan/>
+            <TimeTable/>
+        );
+    }
+    else if(props.menuId === props.screenCode.WORK_PLACE){
+        return(
+            <WorkPlace/>
+        );
+    }
+    else if(props.menuId === props.screenCode.QA){
+        return(
+            <QuestionList/>
         );
     }
     else if (props.menuId === props.screenCode.PROFILE) {
         return (
-            <Profile />
+            <Profile/>
         );
     }
     else if(props.menuId === props.screenCode.CHAT){
@@ -184,29 +196,45 @@ function Doctor() {
                             <ul style={{paddingLeft:'0'}}>
                                 <li onClick={() => {setCurrentMenuItem(ScreenCode.HOME)}}>
                                     <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.HOME?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Trang chủ</h4>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Trang chủ</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORDS)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.MEDICAL_RECORDS?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Quản lý bệnh án</h4>}>
+                                <li onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORD)}}>
+                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.MEDICAL_RECORD?classes.currentMenuItem:''].join(' ')} >
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
                                             <span className={classes.icon}><i class="fas fa-book-medical"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Quản lý bệnh án</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.WORK_PLAN)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.WORK_PLAN?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Lịch làm việc</h4>}>
+                                <li onClick={() => {setCurrentMenuItem(ScreenCode.TIMETABLE)}}>
+                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.TIMETABLE?classes.currentMenuItem:''].join(' ')} >
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thời gian biểu</h6>}>
                                             <span className={classes.icon}><i class="fas fa-calendar-alt"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Lịch làm việc</span>
+                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Thời gian biểu</span>
+                                    </a>
+                                </li>
+                                <li onClick={() => {setCurrentMenuItem(ScreenCode.WORK_PLACE)}}>
+                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.WORK_PLACE?classes.currentMenuItem:''].join(' ')} >
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Nơi làm việc</h6>}>
+                                            <span className={classes.icon}><i class="fas fa-map-marker-alt"></i></span>
+                                        </Tooltip>
+                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Nơi làm việc</span>
+                                    </a>
+                                </li>
+                                <li onClick={() => {setCurrentMenuItem(ScreenCode.QA)}}>
+                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.QA?classes.currentMenuItem:''].join(' ')} >
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Hỏi đáp</h6>}>
+                                            <span className={classes.icon}><i class="fas fa-question-circle"></i></span>
+                                        </Tooltip>
+                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Hỏi đáp</span>
                                     </a>
                                 </li>
                                 <li onClick={() => {setCurrentMenuItem(ScreenCode.CHAT)}}>
                                     <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.CHAT?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Nhắn tin</h4>}>
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Nhắn tin</h6>}>
                                             <span className={classes.icon}><i class="far fa-comments"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Nhắn tin</span>
@@ -214,7 +242,7 @@ function Doctor() {
                                 </li>
                                 <li onClick={() => {setCurrentMenuItem(ScreenCode.VIDEO)}}>
                                     <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.VIDEO?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Gọi video</h4>}>
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Gọi video</h6>}>
                                             <span className={classes.icon}><i class="fas fa-video"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Gọi video</span>
@@ -222,7 +250,7 @@ function Doctor() {
                                 </li>
                                 <li onClick={() => {setCurrentMenuItem(ScreenCode.PROFILE)}}>
                                     <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.PROFILE?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Thông tin cá nhân</h4>}>
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thông tin cá nhân</h6>}>
                                             <span className={classes.icon}><i class="fas fa-user-edit"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Thông tin cá nhân</span>
@@ -230,18 +258,10 @@ function Doctor() {
                                 </li>
                                 <li onClick={() => {setCurrentMenuItem(ScreenCode.NOTIFY)}}>
                                     <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.NOTIFY?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Thông báo</h4>}>
+                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thông báo</h6>}>
                                             <span className={classes.icon}><i class="fas fa-bell"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar?classes.title:classes.hideTitle}>Thông báo</span>
-                                    </a>
-                                </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.FORM)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.FORM?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h4 style={{ color: "lightblue" }}>Form đăng ký</h4>}>
-                                            <span className={classes.icon}><i className="fab fa-delicious"></i></span>
-                                        </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Form đăng ký</span>
                                     </a>
                                 </li>
                             </ul>

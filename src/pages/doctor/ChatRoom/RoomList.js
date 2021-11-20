@@ -1,7 +1,6 @@
 import { Typography } from 'antd';
 import React, { useContext, useMemo } from 'react';
 import { DoctorContext } from '../Home/DoctorProvider';
-import useFirestore from '../../../firebase/useFirestore';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';

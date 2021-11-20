@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
 import { DoctorContext } from '../Home/DoctorProvider';
@@ -25,6 +25,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import APIService from '../../../utils/APIService';
+
+const token = localStorage.getItem("token_doctor247");
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     editIcon: {
         fontSize: '25px',
         marginLeft: '10px',
-        cursor: 'pointer',
         '&:hover': {
             color: '#004d40'
          },
@@ -64,10 +66,72 @@ function createData(name, id, date, status, note,) {
     };
 }
 
+function getStatus(status){
+    if(status === "DONE"){
+        return "Đã khám";
+    }
+    else if(status === "PENDING"){
+        return "Chưa khám";
+    }
+    else if(status === "DOING"){
+        return "Đang khám";
+    }
+}
+
+function createMedicalRecords(appointments){
+    let result = [];
+    appointments.forEach(element => {
+        return result.push(
+            {
+                aid: element.id,
+                id: element.medicalRecord.id,
+                date: element.day.substring(0, 16).replace('T',' '),
+                status: element.status,
+                note: element.medicalRecord.note,
+                name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
+                customer: {
+                    id: element.medicalRecord.customer.id,
+                    name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
+                    address: element.medicalRecord.customer.address,
+                    avatarURL: element.medicalRecord.customer.avatarURL,
+                    dob: element.medicalRecord.customer.birthday,
+                    phone: element.medicalRecord.customer.contactPhoneNumber,
+                    gender: element.medicalRecord.customer.gender
+                },
+                medicalRecord: {
+                    id: element.medicalRecord.id,
+                    status: element.medicalRecord.status,
+                    images: element.medicalRecord.images,
+                    diagnostic: element.medicalRecord.diagnostic,
+                    symptom: element.medicalRecord.symptom,
+                    note: element.medicalRecord.note,
+                    cost: element.medicalRecord.medicalExpense
+                },
+                history: null,
+                doctorId: element.doctorId,
+                clinic: element.workplace.name,
+                height: element.medicalRecord.height,
+                weight: element.medicalRecord.weight,
+                bodyTemperature: element.medicalRecord.bodyTemperature,
+                bloodPressure: element.medicalRecord.bloodPressure,
+                heartBeat: element.medicalRecord.heartBeat,
+                bloodGroup: element.medicalRecord.bloodGroup,
+            }
+        );
+    });
+    return result;
+}
+
 function Row(props) {
-    const { row } = props;
+    const { setContentId } = props;
+    const { row, setAppointmentSelect } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
+
+    const handleClickDetail = () => {
+        setAppointmentSelect(row);
+        setContentId(ContentCode.DETAIL);
+    }
 
     return (
         <React.Fragment>
@@ -80,9 +144,11 @@ function Row(props) {
                 <TableCell >{row.id}</TableCell>
                 <TableCell >{row.name}</TableCell>
                 <TableCell >{row.date}</TableCell>
-                <TableCell >{row.status}</TableCell>
+                <TableCell >{getStatus(row.status)}</TableCell>
                 <TableCell >{row.note}</TableCell>
-                <TableCell> <CreateButton/> </TableCell>
+                <TableCell> 
+                    <Button variant="outlined" color="primary" onClick={handleClickDetail}>Chi tiết</Button>
+                </TableCell>
             </TableRow>
             {(row.history===null)?null:
             <TableRow>
@@ -142,25 +208,7 @@ Row.propTypes = {
     }).isRequired,
 };
 
-function CreateButton(props) {
-    const {setContentId, ContentCode} = useContext(DoctorContext);
-    return (
-        <Button variant="contained" color="primary" onClick={() => setContentId(ContentCode.DETAIL)}>Chi tiết</Button>
-    )
-}
-
-const rows = [
-    createData('Jadon Sancho', 210930125, '2021/09/02', 'Chưa khám', ''),
-    createData('Granit Xhaka', 210932684, '2021/08/30', 'Chưa khám', ''),
-    createData('Erling Haaland', 210939003, '2021/08/24', 'Chưa khám', ''),
-    createData('Thogan Hazard', 210926452, '2021/08/16', 'Chưa khám', ''),
-    createData('Luka Modric', 210932611, '2021/08/06', 'Đang điều trị', ''),
-    createData('James Harrison', 210932611, '2021/08/06', 'Đang điều trị', ''),
-    createData('Marcos Alonso', 210932611, '2021/08/06', 'Đang điều trị', ''),
-    createData('Jordan Lukaku', 210932611, '2021/08/06', 'Đã điều trị', '')
-];
-
-function MedicalRecordList() {
+function MedicalRecordList(props) {
 
     const [open, setOpen] = React.useState(false);
 
@@ -180,9 +228,6 @@ function MedicalRecordList() {
                         <h3>Danh sách bệnh án</h3>
                     </Grid>
                     <Grid item xs={4}>
-                        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                            Thêm mới
-                        </Button>
                     </Grid>
                 </Grid>
                 <Table aria-label="collapsible table">
@@ -198,8 +243,8 @@ function MedicalRecordList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <Row key={row.name} row={row} />
+                        {props.appointmentList.map((data) => (
+                            <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect}/>
                         ))}
                     </TableBody>
                 </Table>
@@ -239,31 +284,63 @@ function MedicalRecordList() {
     );
 }
 
-function MedicalRecordDetail() {
+function MedicalRecordDetail(props) {
+    const { appointmentSelect } = props;
     const classes = useStyles();
 
-    const [patientHeight, setPatientHeight] = useState('171 cm');
+    const defaultAvatarUrl = "https://banner2.cleanpng.com/20180326/wuq/kisspng-social-media-avatar-photography-digital-media-clip-profile-5ab915ee900719.55262584152207921459.jpg";
 
-    const [patientWeight, setPatientWeight] = useState('62 kg');
+    const [doctorName, setDoctorName] = useState('');
+    const [patientHeight, setPatientHeight] = useState('');
+    const [patientWeight, setPatientWeight] = useState('');
+    const [patientBodyTemperature, setPatientBodyTemperature] = useState('');
+    const [patientBloodPressure, setPatientBloodPressure] = useState('');
+    const [patientHeartbeat, setPatientHeartbeat] = useState('');
+    const [patientBloodGroup, setPatientBloodGroup] = useState('');
+    const [diagnosticResult, setDiagnosticResult] = useState('');
+    const [note, setNote] = useState('');
 
-    const [patientBodyTemperature, setPatientBodyTemperature] = useState('31 C');
+    const [patientHeight2, setPatientHeight2] = useState(appointmentSelect.height===null? '' : appointmentSelect.height + '');
+    const [patientWeight2, setPatientWeight2] = useState(appointmentSelect.weight===null? '' : appointmentSelect.weight + '');
+    const [patientBodyTemperature2, setPatientBodyTemperature2] = useState(appointmentSelect.bodyTemperature===null? '' : appointmentSelect.bodyTemperature + '');
+    const [patientBloodPressure2, setPatientBloodPressure2] = useState(appointmentSelect.bloodPressure===null ? '' : appointmentSelect.bloodPressure + '');
+    const [patientHeartbeat2, setPatientHeartbeat2] = useState(appointmentSelect.heartBeat===null ? '' : appointmentSelect.heartBeat + '');
+    const [patientBloodGroup2, setPatientBloodGroup2] = useState(appointmentSelect.bloodGroup===null ? '' : appointmentSelect.bloodGroup + '');
+    const [diagnosticResult2, setDiagnosticResult2] = useState(appointmentSelect.medicalRecord.diagnostic.join(', ') + '');
+    const [note2, setNote2] = useState(appointmentSelect.medicalRecord.note===null ? '' : appointmentSelect.medicalRecord.note + '');
 
-    const [patientBloodPressure, setPatientBloodPressure] = useState('120/80 mmHg');
+    const [medicalStatus, setMedicalStatus] = useState(appointmentSelect.status);
 
-    const [patientHeartbeat, setPatientHeartbeat] = useState('80 lần/phút');
-
-    const [patientBodyStats, setPatientBodyStats] = useState({
-        patientHeight: '171 cm',
-        patientWeight: '62 kg',
-        patientBodyTemperature: '31 C',
-        patientBloodPressure: '120/80 mmHg',
-        patientHeartbeat: '80 lần/phút',
-    });
+    const [imgList, setImgList] = useState([
+        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+    ]);
     
     const [isEditBodyStats, setIsEditBodyStats] = useState(false);
 
+    useEffect(() => {
+        APIService.getDoctorList(token, (success, json) => {
+            if (success && json.result) {
+                json.result.map(data => {
+                    if(data.doctor.id === appointmentSelect.doctorId){
+                        setDoctorName("Bác sĩ " + data.doctor.firstName + " " + data.doctor.lastName);
+                    }
+                })
+            }
+        });
+        console.log('appointmentSelect');
+        console.log(appointmentSelect);
+    }, []);
+
     const handleEditBodyStats = () => {
-        setIsEditBodyStats(true);
+        if(medicalStatus === 'PENDING'){
+            setIsEditBodyStats(true);
+        }
+        else{
+            console.log(appointmentSelect);
+        }
     }
     
     const handleClose = () => {
@@ -271,13 +348,45 @@ function MedicalRecordDetail() {
     };
 
     const handleConfirm = () => {
-        setPatientBodyStats({
-            patientHeight: patientHeight,
-            patientWeight: patientWeight,
-            patientBodyTemperature: patientBodyTemperature,
-            patientBloodPressure: patientBloodPressure,
-            patientHeartbeat: patientHeartbeat,
-        })
+        // APIService.putDoctorMedicalRecordById(
+        //     token,
+        //     appointmentSelect.medicalRecord.id,
+        //     {
+        //         height: patientHeight,
+        //         weight: patientWeight,
+        //         bodyTemperature: patientBodyTemperature,
+        //         bloodPressure: patientBloodPressure,
+        //         heartBeat: patientHeartbeat,
+        //         bloodGroup: patientBloodGroup,
+        //         diagnostic: [diagnosticResult],
+        //         note: note,
+        //         medicalExpense: appointmentSelect.medicalRecord.cost + '',
+        //     },
+        //     (success, json) => {
+        //         if(success && json.result){
+        //             setMedicalStatus('DOING');
+        //             setPatientHeight2(patientHeight);
+        //             setPatientWeight2(patientWeight);
+        //             setPatientBodyTemperature2(patientBodyTemperature);
+        //             setPatientBloodPressure2(patientBloodPressure);
+        //             setPatientHeartbeat2(patientHeartbeat);
+        //             setPatientBloodGroup2(patientBloodGroup);
+        //             setDiagnosticResult2(diagnosticResult);
+        //             setNote2(note);
+        //         }
+        //     });
+        console.log({
+            height: patientHeight,
+            weight: patientWeight,
+            bodyTemperature: patientBodyTemperature,
+            bloodPressure: patientBloodPressure,
+            heartBeat: patientHeartbeat,
+            bloodGroup: patientBloodGroup,
+            diagnostic: [diagnosticResult],
+            note: note,
+            medicalExpense: appointmentSelect.medicalRecord.cost + ''
+        });
+
         setIsEditBodyStats(false);
     }
 
@@ -292,24 +401,15 @@ function MedicalRecordDetail() {
                                 <Avatar
                                     className={classes.largeAvatar}
                                     alt="Remy Sharp"
-                                    src="https://file.hstatic.net/1000231532/file/mo_hinh_doraemon_chinh_hang_gundam_store_vn_aff780d8c0f8454bbdd0de44ee8b7d91_grande.jpg"
+                                    src={appointmentSelect.customer.avatarURL===null?defaultAvatarUrl:appointmentSelect.customer.avatarURL}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
                                 style={{marginTop: "20px"}}
                                     id="standard-read-only-input"
-                                    label="Họ tên"
-                                    defaultValue="Dũng Hoàng"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                />
-                                <TextField
-                                style={{marginTop: "20px"}}
-                                    id="standard-read-only-input"
                                     label="Giới tính"
-                                    defaultValue="Nam"
+                                    defaultValue={appointmentSelect.customer.gender==="MALE"?"Nam":"Nữ"}
                                     InputProps={{
                                         readOnly: true,
                                     }}
@@ -318,7 +418,7 @@ function MedicalRecordDetail() {
                                 style={{marginTop: "20px"}}
                                     id="standard-read-only-input"
                                     label="Ngày sinh"
-                                    defaultValue="1990/01/01"
+                                    defaultValue={appointmentSelect.customer.dob.substring(0,10)}
                                     InputProps={{
                                         readOnly: true,
                                     }}
@@ -326,20 +426,30 @@ function MedicalRecordDetail() {
                             </Grid>
                             <Grid item xs={12} style={{marginLeft: '10px'}}>
                                 <TextField
-                                    style={{marginTop: "20px"}}
+                                    id="standard-read-only-input"
+                                    label="Họ tên"
+                                    fullWidth
+                                    defaultValue={appointmentSelect.customer.name}
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} style={{marginLeft: '10px'}}>
+                                <TextField
                                     id="standard-read-only-input"
                                     label="SĐT"
                                     fullWidth
-                                    defaultValue="0325145641"
+                                    defaultValue={appointmentSelect.customer.phone}
                                     InputProps={{
                                         readOnly: true,
                                     }}
                                 />
                                 <TextField
-                                style={{marginTop: "20px"}}
+                                    style={{ marginTop: "20px" }}
                                     id="standard-read-only-input"
                                     label="Địa chỉ"
-                                    defaultValue="12 đường 147 phường Linh Trung"
+                                    defaultValue={appointmentSelect.customer.address}
                                     multiline
                                     fullWidth
                                     InputProps={{
@@ -347,59 +457,30 @@ function MedicalRecordDetail() {
                                     }}
                                 />
                                 <TextField
-                                    style={{marginTop: "20px"}}
+                                    style={{ marginTop: "20px" }}
                                     id="standard-read-only-input"
-                                    label="Ghi chú"
+                                    label="Ghi chú của bệnh nhân"
+                                    defaultValue="Không"
                                     multiline
                                     fullWidth
-                                    defaultValue="Bệnh nhân bị cao huyết áp. Lấy toa và tự mua thuốc."
                                     InputProps={{
                                         readOnly: true,
                                     }}
-                                />                                
+                                />
                             </Grid>
-                            <br/>
+                            <br />
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={12} md={8}>
-                    <Paper >
-                        <h3>Tình trạng</h3>
-                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
-                            <TextField
-                                id="standard-read-only-input"
-                                label="Lý do khám"
-                                defaultValue="Chóng mặt"
-                                multiline
-                                style={{width:'95%'}}
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                        </Grid>
-                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
-                            <TextField
-                                id="standard-read-only-input"
-                                label="Than phiền của bệnh nhân"
-                                defaultValue="Chóng mặt, chỉ uống emalapril mà không sử dụng Thizide"
-                                multiline
-                                style={{width:'95%'}}
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                        </Grid>
-                        <br/><br/>
-                    </Paper>
 
+                <Grid item xs={12} sm={12} md={8}>
                     <Paper style={{marginTop: "20px"}}>
                         <h3>Thông tin đăng ký khám</h3>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
                                 id="standard-read-only-input"
                                 label="Thời gian đăng ký"
-                                defaultValue="Thứ 7 16:00 23/09/2021"
-                                multiline
+                                defaultValue={appointmentSelect.date}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -410,7 +491,7 @@ function MedicalRecordDetail() {
                             <TextField
                                 id="standard-read-only-input"
                                 label="Địa điểm khám"
-                                defaultValue="Bệnh viện A, số 150 Hoàng Minh Giám, quận Tân Bình"
+                                defaultValue={appointmentSelect.clinic}
                                 multiline
                                 style={{width:'95%'}}
                                 InputProps={{
@@ -422,7 +503,44 @@ function MedicalRecordDetail() {
                             <TextField
                                 id="standard-read-only-input"
                                 label="Lý do khám"
-                                defaultValue="Buồn nôn, đau bụng"
+                                defaultValue={appointmentSelect.medicalRecord.symptom.join(", ")}
+                                multiline
+                                style={{width:'95%'}}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                        </Grid>
+                        <br/><br/>
+                    </Paper>
+
+                    <Paper >
+                        <h3>Tình trạng</h3>
+                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
+                            <TextField
+                                id="standard-read-only-input"
+                                label="Tình trạng"
+                                defaultValue={getStatus(appointmentSelect.status)}
+                                style={{width:'95%'}}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                        </Grid>
+                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
+                            <TextField
+                                label="Khám bởi"
+                                value={doctorName}
+                                style={{width:'95%'}}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                        </Grid>
+                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
+                            <TextField
+                                label="Kết quả chẩn đoán"
+                                value={diagnosticResult2}
                                 multiline
                                 style={{width:'95%'}}
                                 InputProps={{
@@ -432,9 +550,8 @@ function MedicalRecordDetail() {
                         </Grid>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
-                                label="Loại khám"
-                                defaultValue="Khám lâm sàng chung"
+                                label="Ghi chú của bác sĩ"
+                                value={note2}
                                 multiline
                                 style={{width:'95%'}}
                                 InputProps={{
@@ -446,15 +563,14 @@ function MedicalRecordDetail() {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={12}>
+                <Grid item xs={12} sm={12} md={4}>
                     <Paper style={{marginTop: "20px"}}>
                         <span style={{display: 'inline-block'}}><h3>Các chỉ số cơ thể</h3></span>
-                        <i className={["fas fa-pencil-alt", classes.editIcon].join(' ')} onClick={handleEditBodyStats}></i>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
+                                id="standard-read-only-height"
                                 label="Chiều cao"
-                                value={patientBodyStats.patientHeight}
+                                value={patientHeight2}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -463,9 +579,9 @@ function MedicalRecordDetail() {
                         </Grid>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
+                                id="standard-read-only-weight"
                                 label="Cân nặng"
-                                value={patientBodyStats.patientWeight}
+                                value={patientWeight2}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -474,9 +590,9 @@ function MedicalRecordDetail() {
                         </Grid>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
+                                id="standard-read-only-bodyTemperature"
                                 label="Thân nhiệt"
-                                value={patientBodyStats.patientBodyTemperature}
+                                value={patientBodyTemperature2}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -485,9 +601,9 @@ function MedicalRecordDetail() {
                         </Grid>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
+                                id="standard-read-only-bloodPressure"
                                 label="Huyết áp"
-                                value={patientBodyStats.patientBloodPressure}
+                                value={patientBloodPressure2}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -496,9 +612,20 @@ function MedicalRecordDetail() {
                         </Grid>
                         <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
                             <TextField
-                                id="standard-read-only-input"
+                                id="standard-read-only-heartBeat"
                                 label="Nhịp tim"
-                                value={patientBodyStats.patientHeartbeat}
+                                value={patientHeartbeat2}
+                                style={{width:'95%'}}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                        </Grid>
+                        <Grid container xs={12} md={12} spacing={3} style={{marginTop: "20px", marginLeft: "20px"}}>
+                            <TextField
+                                id="standard-read-only-bloodGroup"
+                                label="Nhóm máu"
+                                value={patientBloodGroup2}
                                 style={{width:'95%'}}
                                 InputProps={{
                                     readOnly: true,
@@ -506,54 +633,96 @@ function MedicalRecordDetail() {
                             />
                         </Grid>
                     </Paper>
+
+                    <Button style={{marginTop: "25px"}} variant="outlined" color="primary" fullWidth onClick={handleEditBodyStats}>
+                        Nhập hồ sơ
+                        <i className={["fas fa-pencil-alt", classes.editIcon].join(' ')} ></i>
+                    </Button>
+                        
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={8}>
+                    <Paper style={{marginTop: "20px"}}>
+                        <h3>Một số hình ảnh</h3>
+                        {
+                            imgList.map(imgSrc => 
+                                <img src={imgSrc} style={{margin: '3%'}} width="44%" height="300" alt=""></img>
+                            )
+                        }
+                    </Paper>
                 </Grid>
 
             </Grid>
             <Dialog open={isEditBodyStats} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Các chỉ số sức khoẻ</DialogTitle>
+                <DialogTitle id="form-dialog-title">Nhập hồ sơ bệnh án</DialogTitle>
                 <DialogContent>
+                    <span style={{display: 'inline-block'}}><h5>Các chỉ số cơ thể</h5></span>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Chiều cao"
+                        label="Chiều cao (đơn vị: cm)"
                         onChange={(e) => setPatientHeight(e.target.value)}
-                        defaultValue={patientBodyStats.patientHeight}
+                        value={patientHeight}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
-                        label="Cân nặng"
+                        label="Cân nặng (đơn vị: kg)"
                         onChange={(e) => setPatientWeight(e.target.value)}
-                        defaultValue={patientBodyStats.patientWeight}
+                        value={patientWeight}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
-                        label="Thân nhiệt"
+                        label="Thân nhiệt (đơn vị: độ C)"
                         onChange={(e) => setPatientBodyTemperature(e.target.value)}
-                        defaultValue={patientBodyStats.patientBodyTemperature}
+                        value={patientBodyTemperature}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
-                        label="Huyết áp"
+                        label="Huyết áp (đơn vị: mmHg)"
                         onChange={(e) => setPatientBloodPressure(e.target.value)}
-                        defaultValue={patientBodyStats.patientBloodPressure}
+                        value={patientBloodPressure}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
-                        label="Nhịp tim"
+                        label="Nhịp tim (đơn vị: lần/phút)"
                         onChange={(e) => setPatientHeartbeat(e.target.value)}
-                        defaultValue={patientBodyStats.patientHeartbeat}
+                        value={patientHeartbeat}
                         fullWidth
                     />
+                    <TextField
+                        margin="dense"
+                        label="Nhóm máu"
+                        onChange={(e) => setPatientBloodGroup(e.target.value)}
+                        value={patientBloodGroup}
+                        fullWidth
+                    />
+                    <span style={{display: 'inline-block', marginTop: "20px"}}><h5>Kết quả</h5></span>
+                    <TextField
+                        margin="dense"
+                        label="Kết quả chẩn đoán"
+                        multiline
+                        value={diagnosticResult}
+                        onChange={(e) => setDiagnosticResult(e.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                    margin="dense"
+                    label="Ghi chú của bác sĩ"
+                    multiline
+                    onChange={(e) => setNote(e.target.value)}
+                    value={note}
+                    fullWidth
+                />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleConfirm} color="primary">
+                    <Button onClick={handleConfirm} color="primary" variant="outlined">
                         Xác nhận
                     </Button>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={handleClose} color="secondary" variant="outlined">
                         Huỷ
                     </Button>
                 </DialogActions>
@@ -570,12 +739,12 @@ const ContentCode = {
 const ShowContent = (props) => {
     if(props.contentId === ContentCode.LIST){
         return (
-            <MedicalRecordList/>
+            <MedicalRecordList setContentId={props.setContentId} appointmentList={props.appointmentList} setAppointmentSelect={props.setAppointmentSelect}/>
         );
     }
     else if(props.contentId === ContentCode.DETAIL){
         return(
-            <MedicalRecordDetail/>
+            <MedicalRecordDetail appointmentSelect={props.appointmentSelect}/>
         );
     }
 }
@@ -583,20 +752,38 @@ const ShowContent = (props) => {
 
 
 export default function MedicalRecords(props) {
-    const {contentId, setContentId, ContentCode} = useContext(DoctorContext);
+
+    const [contentId, setContentId] = useState(ContentCode.LIST);
+    const [appointmentJson, setAppointmentJson] = useState([]);
+    const [appointmentList, setAppointmentList] = useState([]);
+    const [appointmentSelect, setAppointmentSelect] = useState();
+
+    useEffect(() => {
+        APIService.getDoctorAppointment(token, (success, json) => {
+            if (success && json.result) {
+                setAppointmentJson(json.result);
+                console.log('setAppointmentJson');
+                console.log(json.result);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        setAppointmentList(createMedicalRecords(appointmentJson));
+    }, [appointmentJson]);
 
     return (
         <React.Fragment>
             <div>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={12}>
-                        <ShowContent contentId={contentId}/>
+                        <ShowContent setContentId={setContentId} contentId={contentId} appointmentList={appointmentList} appointmentSelect={appointmentSelect} setAppointmentSelect={setAppointmentSelect} />
                     </Grid>
                     {/* <Grid xs={12} md={12}>
                         <Calendar/>
                     </Grid> */}
                     <Grid xs={12} md={12} style={{marginTop: "100px"}}>
-                        <Button variant="contained" hidden={contentId === ContentCode.LIST} onClick={() => setContentId(ContentCode.LIST)}>
+                        <Button variant="contained" color="default" hidden={contentId === ContentCode.LIST} onClick={() => setContentId(ContentCode.LIST)}>
                             Return to List
                         </Button>
                     </Grid>

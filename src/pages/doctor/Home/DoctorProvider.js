@@ -1,18 +1,21 @@
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react/cjs/react.development';
 import Peer from 'peerjs';
+import { io } from "socket.io-client";
 import useFirestore from '../../../firebase/useFirestore';
 import { useHistory } from "react-router-dom";
+import APIService from '../../../utils/APIService';
 
 const ScreenCode = {
     HOME: 1,
-    MEDICAL_RECORDS: 2,
-    WORK_PLAN: 3,
-    PROFILE: 4,
-    FORM: 5,
+    MEDICAL_RECORD: 2,
+    TIMETABLE: 3,
+    WORK_PLACE: 4,
+    PROFILE: 5,
     CHAT: 6,
     NOTIFY: 7,
     VIDEO: 8,
+    QA: 9,
     TEST: 10,
 }
 
@@ -21,95 +24,176 @@ const ContentCode = {
     DETAIL: 2
 }
 
-export const DoctorContext =  React.createContext();
+export const DoctorContext = React.createContext();
 
-export default function DoctorProvider({children}) {
+export default function DoctorProvider({ children }) {
     const [currentMenuItem, setCurrentMenuItem] = useState(ScreenCode.HOME);
     const [userId, setUserId] = useState('0');
     const [username, setUsername] = useState('Bin');
-    const [isCalling, setIsCalling] = useState(false);
     const [isAddRoomVisible, setIsAddRoomVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('0');
     const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
     const [limitMsgAmount, setLimitMsgAmount] = useState(10);
-    const [token, setToken] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [workPlaceList, setWorkPlaceList] = useState([]);
+    const [currentCall, setCurrentCall] = useState(null);
 
     const history = useHistory();
-    
-    // const [user, setUser] = useState({
-    //     displayName : 'Dung',
-    //     id : '1',
-    //     photoURL : 'https://pdp.edu.vn/wp-content/uploads/2021/01/anh-avatar-dep-dai-dien-facebook-zalo.jpg'
-    // });
 
+    const token = localStorage.getItem("token_doctor247");
+
+    // for video call ->
+    const [userInfo, setUserInfo] = useState({
+        name: '',
+        id: 0,
+        avatarURL: null
+    });
+    const [listOnlineUsers, setListOnlineUsers] = useState([]);
+    const [myPeerId, setMyPeerId] = useState('');
+    const [callingUserId, setCallingUserId] = useState(-1);
     const peer = new Peer();
-    
+
+    const socket = io('http://localhost:5000/');
+
+    const openStream = () => {
+        const config = { audio: false, video: true };
+        return navigator.mediaDevices.getUserMedia(config);
+    }
+    const playStream = (idVideoTag, stream) => {
+        const video = document.getElementById(idVideoTag);
+        video.srcObject = stream;
+        video.play();
+    }
+
+    const closeStream = (idVideoTag) => {
+        const video = document.getElementById(idVideoTag);
+        video.srcObject = null;
+    }
+    // for video call <-
+
     const [contentId, setContentId] = useState(ContentCode.LIST);
 
     const roomsCondition = useMemo(() => {
         return {
             fieldName: 'members',
             operator: 'array-contains',
-            compareValue: userId
+            compareValue: userInfo.id.toString()
         }
-    }, [userId]);
+    }, [userInfo.id]);
 
     const userCondition = useMemo(() => {
         return {
             fieldName: 'id',
             operator: '!=',
-            compareValue: userId
+            compareValue: userInfo.id.toString()
         }
-    }, [userId]);
+    }, [userInfo.id]);
 
     const users = useFirestore("users", userCondition);
 
     const rooms = useFirestore('rooms', roomsCondition);
 
     const user = useMemo(() =>
-        users.find((u) => u.id === userId),
-        [userId]
+        users.find((u) => u.id === userInfo.id.toString()),
+        [userInfo.id]
     );
-    
-    const selectedRoom = useMemo(() => 
+
+    const selectedRoom = useMemo(() =>
         rooms.find((room) => room.id === selectedRoomId),
         [rooms, selectedRoomId]
     );
 
     useEffect(() => {
-        setUsername(user?user.name:'test');
-    } ,[user]);
+        console.log('selectedRoom');
+        console.log(selectedRoom);
+    }, [selectedRoom])
+
+    useEffect(() => {
+        console.log('userInfo.id');
+        console.log(userInfo.id);
+        APIService.getDoctorProfile(token, (success, json) => {
+            if (success && json.result) {
+                setUserInfo({
+                    id: json.result.id,
+                    name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
+                    avatarURL: json.result.doctor.avatar
+                });
+                console.log('my info:');
+                console.log({
+                    id: json.result.id,
+                    name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
+                    avatarURL: json.result.doctor.avatar
+                });
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        setUsername(userInfo.name);
+        if (userInfo.id !== 0 && listOnlineUsers.length === 0) {
+            peer.on('open', (id) => {
+                console.log(id);
+                setMyPeerId(id);
+                socket.emit('SIGN_UP_USER', {
+                    name: userInfo.name,
+                    id: userInfo.id,
+                    avatarURL: userInfo.avatarURL,
+                    peerId: id,
+                });
+            });
+        }
+    }, [userInfo.id, listOnlineUsers]);
+    
+    peer.on('call', (call) => {
+        setCurrentCall(call);
+    });
+
+    const getWorkPlaceName = (id) => {
+        const wp = workPlaceList.find(x => x.id === id);
+        //const type = wp.type === 'HOSPITAL'? 'Bệnh viện ': 'Phòng Khám ';
+        return wp.name;
+    }
 
     return (
-        <DoctorContext.Provider 
-        value={{
-            username,
-            setUsername,
-            userId,
-            setUserId,
-            isCalling,
-            setIsCalling,
-            currentMenuItem,
-            setCurrentMenuItem,
-            ScreenCode,
-            contentId,
-            setContentId,
-            ContentCode,
-            peer,
-            rooms, 
-            selectedRoom,
-            isAddRoomVisible, 
-            setIsAddRoomVisible,
-            isVideoCallVisible,
-            setIsVideoCallVisible,
-            selectedRoomId, 
-            setSelectedRoomId,
-            user, 
-            limitMsgAmount,
-            setLimitMsgAmount,
-            history
-        }}>
+        <DoctorContext.Provider
+            value={{
+                userInfo,
+                username,
+                setUsername,
+                userId,
+                setUserId,
+                callingUserId,
+                setCallingUserId,
+                currentCall,
+                setCurrentCall,
+                currentMenuItem,
+                setCurrentMenuItem,
+                ScreenCode,
+                contentId,
+                setContentId,
+                ContentCode,
+                listOnlineUsers,
+                setListOnlineUsers,
+                peer,
+                myPeerId,
+                socket,
+                openStream,
+                playStream,
+                closeStream,
+                rooms,
+                selectedRoom,
+                isAddRoomVisible,
+                setIsAddRoomVisible,
+                isVideoCallVisible,
+                setIsVideoCallVisible,
+                selectedRoomId,
+                setSelectedRoomId,
+                user,
+                limitMsgAmount,
+                setLimitMsgAmount,
+                history,
+                workPlaceList,
+                getWorkPlaceName
+            }}>
             {children}
         </DoctorContext.Provider>
     );
