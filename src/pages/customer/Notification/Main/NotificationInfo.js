@@ -103,8 +103,8 @@ export default function DoctorInfo(props) {
                             </StyledBadge>
                         </Grid>
                         <Grid item>
-                            <Typography variant="h6" component="h2">
-                                Sở y tế thành phố HCM
+                            <Typography variant="h6" component="h2" style={{marginTop: 10}}>
+                                <b>Doctor247</b>
                             </Typography>
                             <Typography paragraph>
                                 <Button color="inherit">
@@ -119,8 +119,11 @@ export default function DoctorInfo(props) {
                         </Grid>
                     </Grid>
                     <Grid item xs={12} sm={9}>  
-                        <Typography paragraph>
-                            {`
+                        <Typography paragraph style={{marginTop: 20, fontSize: 30, textAlign: 'center', fontWeight: 'bold'}}>
+                            {task.title} 
+                        </Typography>
+                        <Typography paragraph style={{marginTop: 20, fontSize: 25, textAlign: 'center'}}>
+                            {/* {`
                                 Sở Y tế TP.HCM đã có đề xuất về điều kiện cấp “thẻ xanh COVID” nhằm áp dụng trong giai đoạn tới.
 
                                 Thông tin từ Sở Y tế TP.HCM cho biết, Sở y tế, Sở TT-TT, Sở Kế hoạch và Đầu tư đã có buổi làm việc nhằm thống nhất quan điểm để tham mưu UBND TP.HCM về triển khai thí điểm áp dụng "Thẻ xanh COVID" trong giai đoạn phục hồi kinh tế trên địa bàn TP.HCM.
@@ -138,7 +141,8 @@ export default function DoctorInfo(props) {
                                 Đối với các trường hợp tự làm xét nghiệm, tự cách ly tại nhà và được trạm y tế phường, xã, thị trấn hoặc tổ trưởng tổ dân phố, nhân dân hoặc các tổ y tế chăm sóc F0 tại nhà do các trường đại học y khoa hoặc các tổ chức thiện nguyện đảm trách xác nhận là đúng thì được xem như đã hoàn thành thời gian cách ly tại nhà.
                                 
                                 Nguồn: suckhoedoisong.vn
-                            `}
+                            `} */}
+                            {task.content}
                         </Typography>
                     </Grid>
                 </Grid>

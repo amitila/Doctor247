@@ -32,6 +32,8 @@ export default function NotificationCard(props) {
 
 	const { task, index } = props;
 
+	console.log(task)
+
 	return (
 		<Box style={{width: '100%'}} >
 			<CssBaseline />

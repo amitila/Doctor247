@@ -189,8 +189,8 @@ export default function ProfileCard(props) {
 										<br />
 										Số điện thoại: {task.phoneNumber}
 										<br />
-										Email: {task.email}
-										<br />
+										{/* Email: {task.email}
+										<br /> */}
 										Tỉnh/TP: {task.province}
 										<br />
 										Địa chỉ: {task.address}
@@ -275,8 +275,8 @@ export default function ProfileCard(props) {
 									}
 								</DialogContent>
 								<DialogActions>
-									<Button onClick={handleClose}>Hủy xóa</Button>
-									<Button onClick={handleConfirmDelete}>Xác nhận xóa</Button>
+									<Button variant="contained" color='secondary' onClick={handleClose}>Hủy xóa</Button>
+									<Button variant="contained" color='primary' onClick={handleConfirmDelete}>Xác nhận xóa</Button>
 								</DialogActions>
 							</Dialog>
 							&nbsp;
@@ -443,9 +443,9 @@ export default function ProfileCard(props) {
 								<DialogActions>
 									{
 										codeWindow ? 
-											<Button onClick={handleCloseCreate}>Hủy chuyển đổi</Button>
+											<Button variant="contained" color='secondary' onClick={handleCloseCreate}>Hủy chuyển đổi</Button>
 											:
-											<Button onClick={handleConfirmGuardianUser}>Xác nhận chuyển đổi</Button>
+											<Button variant="contained" color='primary' onClick={handleConfirmGuardianUser}>Xác nhận chuyển đổi</Button>
 									}
 								</DialogActions>
 							</Dialog>

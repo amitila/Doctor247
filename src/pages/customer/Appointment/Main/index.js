@@ -406,6 +406,12 @@ export default function Index(props) {
                         </Grid>
                     }
                 </div>
+                {
+                    appointments.length ? null : 
+                    <div className="text-center">          
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                    </div>
+                }
             </div>
         </div>
     );

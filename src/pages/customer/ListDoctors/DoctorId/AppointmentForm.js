@@ -316,7 +316,7 @@ export default function AppointmentForm(props) {
 	},[])
 
 	useEffect(() => {
-		if(bookingTime.length && bookedTime.length && isChecked) {
+		if(bookingTime.length && isChecked) {
 			// let temp = bookingTime;
 			bookedTime?.map(booked => {
 				const result = booked.result;

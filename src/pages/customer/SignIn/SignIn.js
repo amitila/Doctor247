@@ -171,7 +171,7 @@ export default function SignIn() {
                         </Grid>
                         <Grid item>
                             <LinkTo to="/signup" variant="body2">
-                                {"Tôi chưa có tài khoản? Đăng ký"}
+                                Tôi chưa có tài khoản? Đăng ký
                             </LinkTo>
                         </Grid>
                     </Grid>

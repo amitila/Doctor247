@@ -45,7 +45,7 @@ export default function Index(props) {
                             id: item.id,
                             userTwoId: item.userTwoId,
                             relationship: item.name,
-                            email: 'ami@gmail.com',
+                            email: '',
                             firstName: item.userTwo.firstName,
                             lastName: item.userTwo.lastName,
                             birthday: item.userTwo.birthday.slice(0, 10),
@@ -136,10 +136,10 @@ export default function Index(props) {
             toDataURL(data.avatar ? data.avatar: "https://thelifetank.com/wp-content/uploads/2018/08/avatar-default-icon.png")
             .then(dataUrl => {
                 const fileData = dataURLtoFile(dataUrl, "imageName.jpg");
-                console.log(dataUrl)
-                console.log('fileData')
-                console.log(fileData)
-                console.log(typeof(fileData))
+                // console.log(dataUrl)
+                // console.log('fileData')
+                // console.log(fileData)
+                // console.log(typeof(fileData))
                 APIService.putGuardianById(
                     token,
                     data.id,
@@ -333,6 +333,12 @@ export default function Index(props) {
                         </Grid>
                     }
                 </div>
+                {
+                    profiles.length ? null : 
+                    <div className="text-center">          
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                    </div>
+                }
             </div>
         </div>
     );

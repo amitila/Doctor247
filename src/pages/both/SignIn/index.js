@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
     const classes = useStyles();
-    const [formLogin, setFormLogin] = React.useState(false);
+    const [formLogin, setFormLogin] = React.useState(true);
     const onToggleForm = (event) => {
         setFormLogin(!formLogin);
     }
