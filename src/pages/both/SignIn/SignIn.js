@@ -126,7 +126,7 @@ export default function SignIn() {
                         autoFocus
                     />
                     <Grid container xs={12}>
-                        <Grid item sm={11}>
+                        <Grid item sm={12} style={{position: 'relative'}}>
                             <TextField
                                 className={classes.textField}
                                 variant="standard"
@@ -140,9 +140,7 @@ export default function SignIn() {
                                 onChange={handleChangePass}
                                 autoComplete="current-password"
                             />
-                        </Grid>
-                        <Grid item sm={1}>
-                            <Box style={{marginTop: 30, marginLeft: 3, border: "solid"}} onClick={handleClickShowPassword}>
+                            <Box style={{border: "solid", position: 'absolute', right: 10, top: '40%', borderRadius: '8px'}} onClick={handleClickShowPassword}>
                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                             </Box>
                         </Grid>
