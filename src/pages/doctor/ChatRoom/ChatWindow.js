@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { db } from '../../../firebase/config';
 import { getNowDateTimeCode, getDateTimeShow } from '../../../firebase/service';
 import Message from './Message';
-import { DoctorContext } from '../Home/DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 import { GetMessages } from '../../../firebase/useFirestore';
 
 import { useContext, useState, useEffect } from 'react/cjs/react.development';
@@ -74,7 +74,7 @@ function ChatWindow() {
     const [inputMessage, setInputMessage] = useState('');
     const [limitAmount, setLimitAmount] = useState(10);
 
-    const { selectedRoom, userInfo, rooms } = useContext(DoctorContext);
+    const { selectedRoom, userInfo, rooms } = useContext(AppContext);
 
     const roomCondition = useMemo(() => ({
         fieldName: 'roomId',

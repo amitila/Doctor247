@@ -8,7 +8,7 @@ import TimeTable from '../TimeTable/TimeTable';
 import VideoCall from '../VideoCall/VideoCall';
 
 import ChatRoom from '../ChatRoom/ChatRoom';
-import { DoctorContext } from './DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 import MedicalRecords from '../MedicalRecord/MedicalRecords';
 import APIService from '../../../utils/APIService';
 import WorkPlace from '../WorkPlace/WorkPlace';
@@ -158,7 +158,7 @@ function Doctor() {
 
     const [isShowSidabar, setIsShowSidebar] = useState(false);
 
-    const {ScreenCode, currentMenuItem ,setCurrentMenuItem, history, setUserId} = useContext(DoctorContext);
+    const {ScreenCode, currentMenuItem ,setCurrentMenuItem, history, setUserId} = useContext(AppContext);
 
     useEffect(() =>{
         // const token = localStorage.getItem("token_doctor247");

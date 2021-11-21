@@ -22,7 +22,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import { useContext } from "react/cjs/react.development";
 import { useContext } from "react";
-import { DoctorContext } from "../../doctor/Home/DoctorProvider";
+import { AppContext } from "../../../store/AppProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -56,7 +56,7 @@ export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const cookies = new Cookies();
 
-    const { setUserId } = useContext(DoctorContext);
+    const { setUserId } = useContext(AppContext);
 
     const handleClickShowPassword = () => {
        setShowPassword(!showPassword);

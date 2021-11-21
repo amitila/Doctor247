@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
-import { DoctorContext } from '../Home/DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
@@ -26,8 +26,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import APIService from '../../../utils/APIService';
+import getToken from '../../../helpers/getToken';
 
-const token = localStorage.getItem("token_doctor247");
+// const token = localStorage.getItem("token_doctor247");
+const token = getToken();
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -321,8 +323,10 @@ function MedicalRecordDetail(props) {
     const [isEditBodyStats, setIsEditBodyStats] = useState(false);
 
     useEffect(() => {
-        APIService.getDoctorList(token, (success, json) => {
+        APIService.getDoctorListPublic({}, (success, json) => {
             if (success && json.result) {
+                console.log('getDoctorListPublic');
+                console.log(json.result);
                 json.result.map(data => {
                     if(data.doctor.id === appointmentSelect.doctorId){
                         setDoctorName("Bác sĩ " + data.doctor.firstName + " " + data.doctor.lastName);

@@ -2,10 +2,10 @@ import React from 'react';
 import { useEffect, useMemo, useState } from 'react/cjs/react.development';
 import Peer from 'peerjs';
 import { io } from "socket.io-client";
-import useFirestore from '../../../firebase/useFirestore';
+import useFirestore from '../firebase/useFirestore';
 import { useHistory } from "react-router-dom";
-import APIService from '../../../utils/APIService';
-import getToken from '../../../helpers/getToken';
+import APIService from '../utils/APIService';
+import getToken from '../helpers/getToken';
 
 const ScreenCode = {
     HOME: 1,
@@ -25,9 +25,9 @@ const ContentCode = {
     DETAIL: 2
 }
 
-export const DoctorContext = React.createContext();
+export const AppContext = React.createContext();
 
-export default function DoctorProvider({ children }) {
+export default function AppProvider({ children }) {
     const [currentMenuItem, setCurrentMenuItem] = useState(ScreenCode.HOME);
     const [userId, setUserId] = useState('0');
     const [username, setUsername] = useState('Bin');
@@ -40,7 +40,7 @@ export default function DoctorProvider({ children }) {
 
     const history = useHistory();
 
-    // const token = localStorage.getItem("token_doctor247");
+    const doctorToken = localStorage.getItem("token_doctor247");
 
     // for video call ->
     const [userInfo, setUserInfo] = useState({
@@ -110,8 +110,6 @@ export default function DoctorProvider({ children }) {
 
     useEffect(() => {
         const token = getToken();
-        console.log('userInfo.id');
-        console.log(userInfo.id);
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
                 setUserInfo({
@@ -134,12 +132,6 @@ export default function DoctorProvider({ children }) {
                             name: json.result.customer.firstName + " " + json.result.customer.lastName,
                             avatarURL: json.result.customer.avatarURL ? json.result.customer.avatarURL : ''
                         });
-                        console.log('my info:');
-                        console.log({
-                            id: json.result.id,
-                            name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
-                            avatarURL: json.result.doctor.avatar
-                        });
                     } else {
                         console.log('Không lấy được thông tin bệnh nhân')
                     }
@@ -150,7 +142,7 @@ export default function DoctorProvider({ children }) {
 
     useEffect(() => {
         setUsername(userInfo.name);
-        if (userInfo.id !== 0 && listOnlineUsers.length === 0) {
+        if (userInfo.id !== 0) {
             peer.on('open', (id) => {
                 console.log(id);
                 setMyPeerId(id);
@@ -175,7 +167,7 @@ export default function DoctorProvider({ children }) {
     }
 
     return (
-        <DoctorContext.Provider
+        <AppContext.Provider
             value={{
                 userInfo,
                 username,
@@ -216,7 +208,7 @@ export default function DoctorProvider({ children }) {
                 getWorkPlaceName
             }}>
             {children}
-        </DoctorContext.Provider>
+        </AppContext.Provider>
     );
 }
 

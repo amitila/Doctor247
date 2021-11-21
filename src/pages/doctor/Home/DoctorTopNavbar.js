@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { DoctorContext } from './DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 import './Doctor.css';
 
 function DoctorTopNavbar(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const { history } = useContext(DoctorContext);
+    const { history } = useContext(AppContext);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);

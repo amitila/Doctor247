@@ -29,10 +29,12 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 
 import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
+import getToken from '../../../helpers/getToken';
 
 const axios = require("axios");
 
-const token = localStorage.getItem("token_doctor247");
+// const token = localStorage.getItem("token_doctor247");
+const token = getToken();
 
 const AntTabs = withStyles({
     root: {

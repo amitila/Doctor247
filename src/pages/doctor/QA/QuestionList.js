@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
-import { DoctorContext } from '../Home/DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
@@ -30,8 +30,10 @@ import Icon from '@material-ui/core/Icon';
 import SendIcon from '@material-ui/icons/Send';
 
 import APIService from '../../../utils/APIService';
+import getToken from '../../../helpers/getToken';
 
-const token = localStorage.getItem("token_doctor247");
+// const token = localStorage.getItem("token_doctor247");
+const token = getToken();
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -328,7 +330,7 @@ export default function QuestionList(props) {
     const [specializations, setSpecializationsList] = useState([]);
 
     useEffect(() => {
-        APIService.getQuestion({}, (success, json) => {
+        APIService.getPublicQuestion({}, (success, json) => {
             if (success && json.result) {
                 console.log('getQuestion');
                 console.log(json.result);

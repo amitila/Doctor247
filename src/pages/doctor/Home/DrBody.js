@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import userImg from '../../../assets/user.png';
 import '../../../App.css';
-import { DoctorContext } from '../Home/DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from "prop-types";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import APIService from '../../../utils/APIService';
+import getToken from '../../../helpers/getToken';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -130,9 +131,10 @@ function CustomizedTables(props) {
 
 export default function DrBody() {
     const classes = useStyles();
-    const token = localStorage.getItem("token_doctor247");
+    // const token = localStorage.getItem("token_doctor247");
+    const token = getToken();
 
-    const { ScreenCode, setCurrentMenuItem } = useContext(DoctorContext);
+    const { ScreenCode, setCurrentMenuItem } = useContext(AppContext);
 
     const [appointmentList, setAppointmentList] = useState([]);
 

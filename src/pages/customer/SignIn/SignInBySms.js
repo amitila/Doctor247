@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { updateRole, updatePhone } from "../../../store/userSlice";
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
-import { DoctorContext } from "../../doctor//Home/DoctorProvider";
+import { AppContext } from "../../../store/AppProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,7 +43,7 @@ export default function SignInBySms() {
 	});
 	const cookies = new Cookies();
 
-	const { setUserId } = useContext(DoctorContext);
+	const { setUserId } = useContext(AppContext);
 	
 	const handleChange = (event) => {
 		let target = event.target;

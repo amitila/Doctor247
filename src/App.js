@@ -28,7 +28,7 @@ import HomeScreen from './pages/customer/Home/HomeScreen';
 import CheckToken from './helpers/checkToken';
 // For doctor
 import Doctor from './pages/doctor/Home/Doctor';
-import DoctorProvider from './pages/doctor/Home/DoctorProvider';
+import AppProvider from './store/AppProvider';
 // Both
 import { useSelector } from "react-redux";
 import { selectRole } from './store/userSlice';
@@ -59,7 +59,7 @@ export default function App() {
 				data-share="true"
 			></div>
 			<Switch>
-				<DoctorProvider>
+				<AppProvider>
 					<Route exact path='/' component={Landing} />
 					<Route exact path='/notification' component={Notification} />
 					<Route exact path='/signin' component={SignIn} />
@@ -92,7 +92,7 @@ export default function App() {
 					{
 						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : null
 					}
-				</DoctorProvider>
+				</AppProvider>
 			</Switch>
 			{
 				role === 'DOCTOR' ? null : <Footer />
@@ -107,7 +107,7 @@ export default function App() {
 				data-size="large"
 				data-share="true"
 			></div>
-			<DoctorProvider>
+			<AppProvider>
 				<Switch>
 					<Route exact path='/' component={Landing} />
 					<Route exact path='/notification' component={Notification} />
@@ -127,7 +127,7 @@ export default function App() {
 					<Route exact path='/doctor/home' component={Doctor} />
 					<Redirect to="/signin" />
 				</Switch>
-			</DoctorProvider>
+			</AppProvider>
 			<Footer /> */}
 		</Router>
 	);

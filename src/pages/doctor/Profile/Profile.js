@@ -17,6 +17,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import CustomImage from '../../../components/Image';
+import getToken from '../../../helpers/getToken';
 
 const axios = require("axios");
 
@@ -80,7 +81,8 @@ function Profile(props) {
         note: ''
     });
 
-    const token = localStorage.getItem("token_doctor247");
+    // const token = localStorage.getItem("token_doctor247");
+    const token = getToken();
     useEffect(() => {
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {

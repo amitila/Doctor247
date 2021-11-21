@@ -1,6 +1,6 @@
 import { Typography } from 'antd';
 import React, { useContext, useMemo } from 'react';
-import { DoctorContext } from '../Home/DoctorProvider';
+import { AppContext } from '../../../store/AppProvider';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RoomList(props) {
-    const { user, setIsVideoCallVisible, setIsAddRoomVisible, setSelectedRoomId, rooms } = useContext(DoctorContext);
+    const { user, setIsVideoCallVisible, setIsAddRoomVisible, setSelectedRoomId, rooms } = useContext(AppContext);
 
     const classes = useStyles();
 

@@ -1144,6 +1144,18 @@ export default class APIService {
 
 //====================CHECK-TOKEN AND SET NEW TOKEN======================
 
+	// api for check-token
+	static doctorCheckToken(token, callback) {
+		WebService.sendJsonPOST(
+			this.apiDoctorCheckToken(),
+			{
+				jwt : token,
+				token
+			},
+			callback,
+		);
+	}
+
 	// POST Doctor Answer
 	static postDoctorAnswer(token, questionId, content, specializedId, callback) {
 

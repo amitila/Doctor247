@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import Button from '@mui/material/Button';
-import { DoctorContext } from '../../../doctor/Home/DoctorProvider';
+import { AppContext } from '../../../../store/AppProvider';
 import { makeStyles } from '@material-ui/core';
 import userImg from '../../../../assets/user.png';
 import Paper from '@material-ui/core/Paper';
@@ -84,7 +84,7 @@ function UserDiv(props) {
 }
 
 export default function VideoCall(props) {
-    const { peer, listOnlineUsers, setListOnlineUsers, callingUserId, setCallingUserId, userInfo, socket, openStream, playStream, closeStream, currentCall, setCurrentCall } = useContext(DoctorContext);
+    const { peer, listOnlineUsers, setListOnlineUsers, callingUserId, setCallingUserId, userInfo, socket, openStream, playStream, closeStream, currentCall, setCurrentCall } = useContext(AppContext);
 
     const [isCallSend, setIsCallSend] = useState(false);
     const [isCallAccept, setIsCallAccept] = useState(false);
