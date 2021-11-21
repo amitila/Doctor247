@@ -125,7 +125,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                 }
             </View>
             {
-                questions.map((item, i) => {
+                questions?.map((item, i) => {
                     if(open && openComment) return (
                         <Card key={i}>
                             <Card.Title>
@@ -138,21 +138,23 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                     </Text>
                                 </SafeAreaView>
                                 <View style={styles.container}>
-                                    <Like
-                                        title={item.questionLike}
-                                        checkedIcon={<Icon 
-                                            name="heart" 
-                                            color="red" 
-                                            size={20} 
-                                        />}
-                                        uncheckedIcon={<Icon 
-                                            name="heart" 
-                                            color="pink" 
-                                            size={20} 
-                                        />}
-                                        checked={item.liked ? item.liked : isSelected}
-                                        onPress={() => setSelection(isSelected)}
-                                    />
+                                    <Text>
+                                        <Like
+                                            title={item.questionLike.toString()}
+                                            checkedIcon={<Icon 
+                                                name="heart" 
+                                                color="red" 
+                                                size={20} 
+                                            />}
+                                            uncheckedIcon={<Icon 
+                                                name="heart" 
+                                                color="pink" 
+                                                size={20} 
+                                            />}
+                                            checked={item.liked ? item.liked : isSelected}
+                                            onPress={() => setSelection(isSelected)}
+                                        />
+                                    </Text>
                                 </View>
                             </Card.Title>
                             <Card.Divider />
@@ -162,7 +164,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                 </Text>
                             </View>
                             {
-                                item.images.map((image, index) => {
+                                item.images?.map((image, index) => {
                                     return <Card.Image key={index} source={{uri: image}} /> 
                                 })
                             }

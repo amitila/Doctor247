@@ -4,6 +4,7 @@ import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import GuardianForm from '../forms/GuardianForm/GuardianForm';
 import APIService from '../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Dialog from "react-native-dialog";
 
 // const people = [
 //     {
@@ -72,7 +73,7 @@ const FamilyScreen = ({ navigation }) => {
 										id: item.id,
 										userTwoId: item.userTwoId,
 										relationship: item.name,
-										email: 'ami@gmail.com',
+										email: '',
 										firstName: item.userTwo.firstName,
 										lastName: item.userTwo.lastName,
 										birthday: item.userTwo.birthday.slice(0, 10),
@@ -97,6 +98,20 @@ const FamilyScreen = ({ navigation }) => {
 		}
 	}, [isHaveChange])
 
+    const [visible, setVisible] = useState(false);
+
+    const showDialog = () => {
+        setVisible(true);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
+
+    const handleDelete = () => {
+        setVisible(false);
+    };
+
     return (
         <>
             <ScrollView>
@@ -109,6 +124,16 @@ const FamilyScreen = ({ navigation }) => {
                             onPress={()=>setOpen(false)}
                         /> : <GuardianForm onClose={onClose} />
                     }
+                </View>
+                <View style={styles.container}>
+                    <Dialog.Container visible={visible}>
+                        <Dialog.Title>Tạo tài khoản mới</Dialog.Title>
+                        <Dialog.Description>
+                            Bạn có muốn tạo tài khoản mới cho amiiii
+                        </Dialog.Description>
+                        <Dialog.Button label="Cancel" onPress={handleCancel} />
+                        <Dialog.Button label="Delete" onPress={handleDelete} />
+                    </Dialog.Container>
                 </View>
                 {
                     profiles.map((item, i) => {
@@ -139,15 +164,15 @@ const FamilyScreen = ({ navigation }) => {
                                     <Text style={{ marginBottom: 10 }}>
                                         Giới tính: {item.gender == 'MALE' ? 'Nữ' : 'Nam'}
                                     </Text>
-                                    <Text style={{ marginBottom: 10 }}>
+                                    {/* <Text style={{ marginBottom: 10 }}>
                                         Mã số BHYT: {item.bhyt}
                                     </Text>
                                     <Text style={{ marginBottom: 10 }}>
                                         Số điện thoại: {item.phoneNumber}
-                                    </Text>
-                                    <Text style={{ marginBottom: 10 }}>
+                                    </Text> */}
+                                    {/* <Text style={{ marginBottom: 10 }}>
                                         Email: {item.email}
-                                    </Text>
+                                    </Text> */}
                                     <Text style={{ marginBottom: 10 }}>
                                         Tỉnh: {item.province}
                                     </Text>
@@ -156,13 +181,10 @@ const FamilyScreen = ({ navigation }) => {
                                     </Text>
                                     <View style={styles.containerView}>
                                         <Button
+                                            onPress={showDialog}
                                             // icon={<Icon name='code' color='#ffffff' />}
                                             buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                            title='Cập nhật thông tin' />
-                                        <Button
-                                            // icon={<Icon name='code' color='#ffffff' />}
-                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                            title='Xóa thẻ' /> 
+                                            title={`Tạo tài khoản cho ${item.firstName + ' ' + item.lastName}`} />
                                     </View>
                                 </View>
                             </Card>

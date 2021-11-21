@@ -171,8 +171,8 @@ const App = () => {
 						<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
 							<Drawer.Screen name="Ứng dụng Doctor 247" component={MainTabScreen} />
 							<Drawer.Screen name="Hỗ trợ" component={SupportScreen} />
-							<Drawer.Screen name="Thiết lập" component={SettingsScreen} />
-							<Drawer.Screen name="Điều khoản sử dụng" component={BookmarkScreen} />
+							<Drawer.Screen name="Cài đặt" component={SettingsScreen} />
+							<Drawer.Screen name="Điều khoản" component={BookmarkScreen} />
 							<Drawer.Screen name="Danh sách bác sĩ" component={DoctorListScreen} />
 							<Drawer.Screen name="Lịch khám" component={AppointmentScreen} />
 							<Drawer.Screen name="Hỏi đáp cùng bác sĩ" component={QuestionAnswerScreen} />

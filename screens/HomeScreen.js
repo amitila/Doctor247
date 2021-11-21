@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, StatusBar } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Card, ListItem, Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { SliderBox } from "react-native-image-slider-box";
 
 const doctors = [
     {
@@ -34,6 +35,11 @@ const doctors = [
 const HomeScreen = ({ navigation }) => {
 
 	const { colors } = useTheme();
+	const [images, setImages] = useState([
+		require('../assets/3.jpg'),
+		require('../assets/4.jpg'),
+		require('../assets/5.jpg'),
+	])
 
 	const theme = useTheme();
 
@@ -120,6 +126,23 @@ const HomeScreen = ({ navigation }) => {
 						</View>
 					</Card.Title>
 				</Card>
+				<Text style={{marginTop: 6, textAlign: 'center', fontSize: 18, fontWeight: 'bold', color: 'blue'}}>
+					{'>Chào mừng bạn đã đến với Doctor 247<'}
+				</Text>
+				<View>
+					<SliderBox
+						images={images}
+						sliderBoxHeight={300}
+						ImageComponentStyle={{borderRadius: 10, width: '100%', marginTop: 4}}
+						autoplay
+						circleLoop
+						// parentWidth={340}
+						onCurrentImagePressed={index =>
+							console.warn(`image ${index} pressed`)
+						}
+						
+					/>
+				</View>
 		</View>
 	);
 };

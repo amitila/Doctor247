@@ -36,6 +36,7 @@ export default function DatePicker( props ) {
 			{isDisplayDate && (
 				<DateTimePicker
 					testID="dateTimePicker"
+					maximumDate={new Date()}
 					value={mydate}
 					mode={displaymode}
 					is24Hour={true}

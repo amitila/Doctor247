@@ -181,13 +181,13 @@ const SpecialityScreen = ({ navigation }) => {
     const showDialog = (avatar, name, introduce, symptom, treatment, related, images) => {
         setVisible(true);
         setInfo({
-            avatar: "",
-            name:"",
-            introduce: '',
-            symptom: ``,
-            treatment: '',
-            related: ``,
-            images: '',
+            avatar: avatar,
+            name: name,
+            introduce: introduce,
+            symptom: symptom,
+            treatment: treatment,
+            related: related,
+            images: images,
         })
     };
 
@@ -195,19 +195,51 @@ const SpecialityScreen = ({ navigation }) => {
         setVisible(false);
     };
 
-    const handleDelete = () => {
-        setVisible(false);
-    };
-
     return (
         <>
             <Dialog.Container visible={visible}>
-                <Dialog.Title>Thông tin chuyên khoa {info.name}</Dialog.Title>
-                <Dialog.Description>
-                    Amiiiiii
-                </Dialog.Description>
-                <Dialog.Button label="Hủy bỏ" onPress={handleCancel} />
-                <Dialog.Button label="Đặt khám" onPress={handleDelete} />
+                <Dialog.Title style={{textAlign: 'center', color: '#a024ed'}}>Thông tin chuyên khoa {info.name}</Dialog.Title>
+                <ScrollView>
+                    <Dialog.Description>
+                        {/* Avatar */}
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center'}}>
+                            Chuyên khoa {info.name}
+                        </Text>
+                        {'\n'}{'\n'}
+                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                            Giới thiệu
+                        </Text>{'\n'}
+                        <Text>{info.introduce}</Text>
+                        {'\n'}{'\n'}
+                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                            Triệu chứng 
+                        </Text>{'\n'}
+                        <Text>{info.symptom}</Text>
+                        {'\n'}{'\n'}
+                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                            Chữa trị 
+                        </Text>{'\n'}
+                        <Text>{info.treatment}</Text>
+                        {'\n'}{'\n'}
+                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                            Liên quan 
+                        </Text>{'\n'}
+                        <Text>{info.related}</Text>
+                        {'\n'}{'\n'}
+
+                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                            Hình ảnh
+                        </Text>{'\n'}
+                        <Text>
+                            <Avatar
+                                source={{uri: info.images}}
+                                size="xlarge"
+                            />
+                        </Text>
+                        {'\n'}{'\n'}
+                    </Dialog.Description>
+                </ScrollView>
+                <Dialog.Button label="Quay về" onPress={handleCancel} />
             </Dialog.Container>
             <ScrollView>
                 {

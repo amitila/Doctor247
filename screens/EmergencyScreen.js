@@ -22,7 +22,7 @@ const EmergencyScreen = ({ navigation }) => {
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [sms, setContent] = useState('');
 	const [isHaveChange, setIsHaveChange] = useState(true);
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(false);
 
 	const callEmergency = (phoneNumber) => {
         return Linking.openURL(`tel:${phoneNumber}`)
@@ -74,8 +74,7 @@ const EmergencyScreen = ({ navigation }) => {
 					sms ? sms : 'Tôi đang gặp nạn!',
 					(success, json) => {
 						if (success && json.result) {
-							setIsHaveChange(true)
-							return setOpenAddPhone(false)
+							return setIsHaveChange(true)
 						} else {
 							return console.log(json.error)
 						}

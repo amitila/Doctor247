@@ -117,7 +117,7 @@ export function DrawerContent(props) {
 								/>
 							)}
 							label="Điều khoản"
-							onPress={() => { props.navigation.navigate('BookmarkScreen') }}
+							onPress={() => { props.navigation.navigate('Điều khoản') }}
 						/>
 						<DrawerItem
 							icon={({ color, size }) => (
@@ -127,8 +127,8 @@ export function DrawerContent(props) {
 									size={size}
 								/>
 							)}
-							label="Bảo mật"
-							onPress={() => { props.navigation.navigate('SettingsScreen') }}
+							label="Cài đặt"
+							onPress={() => { props.navigation.navigate('Cài đặt') }}
 						/>
 						<DrawerItem
 							icon={({ color, size }) => (
@@ -139,7 +139,7 @@ export function DrawerContent(props) {
 								/>
 							)}
 							label="Hỗ trợ"
-							onPress={() => { props.navigation.navigate('SupportScreen') }}
+							onPress={() => { props.navigation.navigate('Hỗ trợ') }}
 						/>
 					</Drawer.Section>
 					<Drawer.Section title="Tùy chọn">
