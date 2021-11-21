@@ -143,7 +143,7 @@ export default function AnswerCard(props) {
 								open={openAnchor}
 								onClose={handleAnchor}
 							>
-								<MenuItem onClick={()=>history.push(`/doctor/${reply.doctorId}`)}>Thông tin bác sĩ</MenuItem>
+								<MenuItem onClick={()=>history.push(`/doctorlist/${reply.doctorId}`)}>Thông tin bác sĩ</MenuItem>
 							</Menu>
 						</div>
 					}

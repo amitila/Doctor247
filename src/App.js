@@ -51,7 +51,7 @@ export default function App() {
 			}
 			<div
 				class="fb-like"
-				data-href="http://192.168.1.2:3000/home"
+				data-href={window.location.origin + '/home'}
 				data-width=""
 				data-layout="button_count"
 				data-action="like"
@@ -73,8 +73,8 @@ export default function App() {
 								<Route exact path='/appointment' component={Appointment} />
 								<Route exact path='/medicalrecord' component={MedicalrRecords} />
 								<Route exact path='/setting' component={Setting} />
-								<Route exact path='/doctor/:id/chat-to-doctor' component={Chat} />
-								<Route exact path='/doctor/:id/videocall-to-doctor' component={Videocall} />
+								<Route exact path='/doctorlist/:id/chat-to-doctor' component={Chat} />
+								<Route exact path='/doctorlist/:id/videocall-to-doctor' component={Videocall} />
 							</>
 							: ''
 					}
@@ -82,8 +82,8 @@ export default function App() {
 					<Route exact path='/speciality' component={Speciality} />
 					<Route exact path='/service' component={Service} />
 					<Route exact path='/task' component={Task} />
-					<Route exact path='/doctor' component={ListDoctors} />
-					<Route exact path='/doctor/:id' component={DoctorId} />
+					<Route exact path='/doctorlist' component={ListDoctors} />
+					<Route exact path='/doctorlist/:id' component={DoctorId} />
 					<Route exact path='/question' component={QuestionAnswer} />
 					<Route exact path='/question/:id' component={QuestionId} />
 					<Route exact path='/home' component={HomeScreen} />
@@ -94,7 +94,9 @@ export default function App() {
 					}
 				</DoctorProvider>
 			</Switch>
-			<Footer />
+			{
+				role === 'DOCTOR' ? null : <Footer />
+			}
 			{/* <DrawerHeader />
 			<div
 				class="fb-like"

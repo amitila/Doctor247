@@ -13,7 +13,7 @@ import MedicalRecords from '../MedicalRecord/MedicalRecords';
 import APIService from '../../../utils/APIService';
 import WorkPlace from '../WorkPlace/WorkPlace';
 import QuestionList from '../QA/QuestionList';
-
+import getToken from '../../../helpers/getToken';
 
 const useStyles = makeStyles((theme) => ({
     sidebar__inner: {
@@ -161,13 +161,14 @@ function Doctor() {
     const {ScreenCode, currentMenuItem ,setCurrentMenuItem, history, setUserId} = useContext(DoctorContext);
 
     useEffect(() =>{
-        const token = localStorage.getItem("token_doctor247");
+        // const token = localStorage.getItem("token_doctor247");
+        const token = getToken();
         APIService.getDoctorProfile(token, (success, json) => {
             if(success && json.result){
                 setUserId(json.result.id.toString());
             }
             else{
-                history.push("/login");
+                history.push("/signin");
             }
         });
     }, []);

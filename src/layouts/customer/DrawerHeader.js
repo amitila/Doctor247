@@ -334,7 +334,7 @@ export default function DrawerHeader(props) {
                         <MenuList>
                             {[
                                 <div className={classes.link} onClick={()=>history.push("/home")} style={{color: '#db5f12'}}>Trang chủ</div>,
-                                <div className={classes.link} onClick={()=>history.push("/doctor")}>Danh sách Bác sĩ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/doctorlist")}>Danh sách Bác sĩ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/appointment")}>Lịch khám</div>,
                                 <div className={classes.link} onClick={()=>history.push("/profile")}>Hồ sơ gia đình</div>,
                                 <div className={classes.link} onClick={()=>history.push("/medicalrecord")}>Xem bệnh án</div>,
@@ -416,7 +416,7 @@ export default function DrawerHeader(props) {
                         <MenuList>
                             {[
                                 <div className={classes.link} onClick={()=>history.push("/home")}>Trang chủ</div>,
-                                <div className={classes.link} onClick={()=>history.push("/doctors")}>Danh sách Bác sĩ</div>,
+                                <div className={classes.link} onClick={()=>history.push("/doctorlist")}>Danh sách Bác sĩ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
                                 <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,

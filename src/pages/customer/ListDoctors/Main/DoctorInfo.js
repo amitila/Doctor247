@@ -125,9 +125,15 @@ export default function DoctorInfo(props) {
 
                             <Typography paragraph>
                                 <Button color="inherit">
-                                    <Link className={classes.link} to={`/doctor/${task.id}/chat-to-doctor`}>Chat với bác sĩ</Link>
+                                    <Link className={classes.link} to={`/doctorlist/${task.id}/chat-to-doctor`}>Chat với bác sĩ</Link>
                                 </Button>
                             </Typography>
+                            <Typography paragraph>
+                                <Button color="inherit">
+                                    <Link className={classes.link} to={`/doctorlist/${task.id}/videocall-to-doctor`}>Videocall với bác sĩ</Link>
+                                </Button>
+                            </Typography>
+                            
                             <Typography paragraph>
                                 <Button color="inherit">
                                     <Link className={classes.link} to="/appointment">Đặt lịch khám</Link>

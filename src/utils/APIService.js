@@ -3,39 +3,40 @@ import WebService from './WebService';
 export default class APIService {
 	static urlServerAddress = 'http://192.168.1.7:8080';
 	// static urlServerAddress = 'http://localhost:8081';
-// For visitor
-static baseAPI = () => {
-	return `${APIService.urlServerAddress}/api/`;
-};
 
-static apiAnswer = (id) => {
-	return `${APIService.baseAPI()}question/answer/${id}`;
-};
+	// For visitor
+	static baseAPI = () => {
+		return `${APIService.urlServerAddress}/api/`;
+	};
 
-static apiDoctorList = (id) => {
-	return `${APIService.baseAPI()}doctor/list`;
-};
+	static apiAnswer = (id) => {
+		return `${APIService.baseAPI()}question/answer/${id}`;
+	};
 
-static apiQuestion = () => {
-	return `${APIService.baseAPI()}question`;
-};
+	static apiDoctorList = (id) => {
+		return `${APIService.baseAPI()}doctor/list`;
+	};
 
-static apiSignIn = () => {
-	return `${APIService.baseAPI()}user/login`;
-};
+	static apiQuestion = () => {
+		return `${APIService.baseAPI()}question`;
+	};
 
-static apiSpecialized = () => {
-	return `${APIService.baseAPI()}specialized`;
-};
+	static apiSignIn = () => {
+		return `${APIService.baseAPI()}user/login`;
+	};
+
+	static apiSpecialized = () => {
+		return `${APIService.baseAPI()}specialized`;
+	};
 
 // For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
 	};
 
-	static apiSpecialized = () => {
-		return `${APIService.baseAPI()}specialized`;
-	};
+	// static apiSpecialized = () => {
+	// 	return `${APIService.baseAPI()}specialized`;
+	// };
 
 	static apiCheckToken = () => {
 		return `${APIService.baseAPI()}customer/users/check-token`;
@@ -57,9 +58,9 @@ static apiSpecialized = () => {
 		return `${APIService.baseAPI()}user/forgot-password/sms`;
 	};
 
-	static apiSignIn = () => {
-		return `${APIService.baseAPI()}user/login`;
-	};
+	// static apiSignIn = () => {
+	// 	return `${APIService.baseAPI()}user/login`;
+	// };
 
 	static apiSignInBySms = () => {
 		return `${APIService.baseAPI()}user/login-by-sms`;
@@ -237,6 +238,11 @@ static apiSpecialized = () => {
 	};
 
 // For doctor
+	// Doctor check token
+	static apiDoctorCheckToken = () => {
+		return `${APIService.baseAPI()}doctor/users/check-token`;
+	};
+
     // Doctor Answer URL
     static apiDoctorAnswer = () => {
         return `${APIService.baseAPI()}doctor/answer`;
@@ -877,15 +883,15 @@ static apiSpecialized = () => {
 	}	
 
 	// api for All Questions
-	static getQuestion(token, callback ) {
-		WebService.sendJsonGET(
-			this.apiQuestion(),
-			{
-				jwt: token
-			},
-			callback,
-		);
-	}	
+	// static getQuestion(token, callback ) {
+	// 	WebService.sendJsonGET(
+	// 		this.apiQuestion(),
+	// 		{
+	// 			jwt: token
+	// 		},
+	// 		callback,
+	// 	);
+	// }	
 
 	// api for Post A Question
 	static postQuestion(token, values, callback) {
@@ -1051,24 +1057,24 @@ static apiSpecialized = () => {
 	}	
 
 	// api for Get Doctor List
-	static getDoctorList(token, values, callback ) {
-		const formData = new FormData();
-		formData.append('specializedId', values.specializedId);
-		formData.append('booked', values.booked);
-		formData.append('skip', values.skip);
-		formData.append('take', values.take);
-		formData.append('wardId', values.wardId);
-		formData.append('districtId', values.districtId);
-		formData.append('provinceId', values.provinceId);
-		WebService.sendJsonGET(
-			this.apiDoctorList(),
-			{
-				jwt: token,
-				formData
-			},
-			callback,
-		);
-	}	
+	// static getDoctorList(token, values, callback ) {
+	// 	const formData = new FormData();
+	// 	formData.append('specializedId', values.specializedId);
+	// 	formData.append('booked', values.booked);
+	// 	formData.append('skip', values.skip);
+	// 	formData.append('take', values.take);
+	// 	formData.append('wardId', values.wardId);
+	// 	formData.append('districtId', values.districtId);
+	// 	formData.append('provinceId', values.provinceId);
+	// 	WebService.sendJsonGET(
+	// 		this.apiDoctorList(),
+	// 		{
+	// 			jwt: token,
+	// 			formData
+	// 		},
+	// 		callback,
+	// 	);
+	// }	
 
 	// api for Get Doctor Operation
 	static getOperationOfDoctor(token, doctorId , date, callback ) {

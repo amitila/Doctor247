@@ -68,12 +68,12 @@ const Footer = () => {
                         <Grid item xs={12} sm={3}>
                             <Box borderBottom={1} px={{ xs: 2, sm: 2 }} py={{ xs: 2, sm: 2 }} ><b>Danh sách bác sĩ</b></Box>
                             <Box style={{marginTop: 10}} >
-                                <Link href={window.location.origin + '/doctor'} className={classes.link} color="inherit">
+                                <Link href={window.location.origin + '/doctorlist'} className={classes.link} color="inherit">
                                     Tìm kiếm bác sĩ
                                 </Link>
                             </Box>
                             <Box style={{marginTop: 10}} >
-                                <Link href={window.location.origin + '/doctor'} className={classes.link} color="inherit">
+                                <Link href={window.location.origin + '/doctorlist'} className={classes.link} color="inherit">
                                     Đặt lịch với bác sĩ
                                 </Link>
                             </Box>

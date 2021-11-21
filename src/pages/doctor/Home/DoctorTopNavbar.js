@@ -24,7 +24,7 @@ function DoctorTopNavbar(props) {
 
     const handleLogout = () => {
         localStorage.removeItem("token_doctor247");
-        history.push("/login");
+        history.push("/signin");
     }
 
     return (
