@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './Doctor.css';
 import DoctorTopNavbar from './DoctorTopNavbar';
 import { makeStyles, Tooltip } from '@material-ui/core';
@@ -18,7 +18,7 @@ import getToken from '../../../helpers/getToken';
 const useStyles = makeStyles((theme) => ({
     sidebar__inner: {
         position: 'relative'
-    },    
+    },
     profile: {
         display: 'flex',
         alignItems: 'center',
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     img: {
         padding: '0 18px',
         width: '50px'
-    },    
+    },
     firstChild: {
         fontSize: '14px',
         color: '#80cbc8',
@@ -49,11 +49,11 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             background: "#fff",
             color: '#004d40'
-         },
-         '&:active': {
+        },
+        '&:active': {
             background: "#fff",
             color: '#004d40'
-         }
+        }
     },
     currentMenuItem: {
         background: "#fff",
@@ -108,48 +108,48 @@ const useStyles = makeStyles((theme) => ({
 
 
 const ShowContent = (props) => {
-    if(props.menuId === props.screenCode.HOME){
-        return(
-            <DrBody/>
+    if (props.menuId === props.screenCode.HOME) {
+        return (
+            <DrBody />
         );
     }
-    else if(props.menuId === props.screenCode.MEDICAL_RECORD){
-        return(
-            <MedicalRecords/>
+    else if (props.menuId === props.screenCode.MEDICAL_RECORD) {
+        return (
+            <MedicalRecords />
         );
     }
-    else if(props.menuId === props.screenCode.TIMETABLE){
-        return(
-            <TimeTable/>
+    else if (props.menuId === props.screenCode.TIMETABLE) {
+        return (
+            <TimeTable />
         );
     }
-    else if(props.menuId === props.screenCode.WORK_PLACE){
-        return(
-            <WorkPlace/>
+    else if (props.menuId === props.screenCode.WORK_PLACE) {
+        return (
+            <WorkPlace />
         );
     }
-    else if(props.menuId === props.screenCode.QA){
-        return(
-            <QuestionList/>
+    else if (props.menuId === props.screenCode.QA) {
+        return (
+            <QuestionList />
         );
     }
     else if (props.menuId === props.screenCode.PROFILE) {
         return (
-            <Profile/>
+            <Profile />
         );
     }
-    else if(props.menuId === props.screenCode.CHAT){
-        return(
-            <ChatRoom/>
+    else if (props.menuId === props.screenCode.CHAT) {
+        return (
+            <ChatRoom />
         );
     }
-    else if(props.menuId === props.screenCode.VIDEO){
-        return(
-            <VideoCall/>
+    else if (props.menuId === props.screenCode.VIDEO) {
+        return (
+            <VideoCall />
         );
     }
-    else{
-        return(null);
+    else {
+        return (null);
     }
 }
 
@@ -158,17 +158,17 @@ function Doctor() {
 
     const [isShowSidabar, setIsShowSidebar] = useState(false);
 
-    const {ScreenCode, currentMenuItem ,setCurrentMenuItem, history, setUserId} = useContext(AppContext);
+    const { ScreenCode, currentMenuItem, setCurrentMenuItem } = useContext(AppContext);
 
-    useEffect(() =>{
-        // const token = localStorage.getItem("token_doctor247");
-        const token = getToken();
+    const token = getToken();
+
+    useEffect(() => {
         APIService.getDoctorProfile(token, (success, json) => {
-            if(success && json.result){
-                setUserId(json.result.id.toString());
+            if (success && json.result) {
+                console.log('had doctor token');
             }
-            else{
-                history.push("/signin");
+            else {
+                console.log('NO doctor token');
             }
         });
     }, []);
@@ -181,9 +181,9 @@ function Doctor() {
         <React.Fragment>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <div className="wrapper">
-                <DoctorTopNavbar onClick={menuRefClick} myname="Dung"/>
+                <DoctorTopNavbar onClick={menuRefClick} myname="Dung" />
                 <div>
-                    <div className={[classes.sidebar, isShowSidabar?classes.sidebarOpen:classes.sidebarClose].join(' ')}>
+                    <div className={[classes.sidebar, isShowSidabar ? classes.sidebarOpen : classes.sidebarClose].join(' ')}>
                         <div className={classes.sidebar__inner}>
                             <div className={classes.profile}>
                                 <div className={classes.img}>
@@ -194,84 +194,84 @@ function Doctor() {
                                     <p className={classes.profile_name}>Ricardo Kaka</p>
                                 </div>
                             </div>
-                            <ul style={{paddingLeft:'0'}}>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.HOME)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.HOME?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Trang chủ</span>
+                            <ul style={{ paddingLeft: '0' }}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.HOME) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.HOME ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Trang chủ</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORD)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.MEDICAL_RECORD?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.MEDICAL_RECORD) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.MEDICAL_RECORD ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
                                             <span className={classes.icon}><i class="fas fa-book-medical"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Quản lý bệnh án</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Quản lý bệnh án</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.TIMETABLE)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.TIMETABLE?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thời gian biểu</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.TIMETABLE) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.TIMETABLE ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thời gian biểu</h6>}>
                                             <span className={classes.icon}><i class="fas fa-calendar-alt"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Thời gian biểu</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thời gian biểu</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.WORK_PLACE)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.WORK_PLACE?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Nơi làm việc</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.WORK_PLACE) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.WORK_PLACE ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Nơi làm việc</h6>}>
                                             <span className={classes.icon}><i class="fas fa-map-marker-alt"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Nơi làm việc</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Nơi làm việc</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.QA)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.QA?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Hỏi đáp</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.QA) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.QA ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Hỏi đáp</h6>}>
                                             <span className={classes.icon}><i class="fas fa-question-circle"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Hỏi đáp</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Hỏi đáp</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.CHAT)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.CHAT?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Nhắn tin</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.CHAT) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.CHAT ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Nhắn tin</h6>}>
                                             <span className={classes.icon}><i class="far fa-comments"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Nhắn tin</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Nhắn tin</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.VIDEO)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.VIDEO?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Gọi video</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.VIDEO) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.VIDEO ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Gọi video</h6>}>
                                             <span className={classes.icon}><i class="fas fa-video"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Gọi video</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Gọi video</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.PROFILE)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.PROFILE?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thông tin cá nhân</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.PROFILE) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.PROFILE ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thông tin cá nhân</h6>}>
                                             <span className={classes.icon}><i class="fas fa-user-edit"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Thông tin cá nhân</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thông tin cá nhân</span>
                                     </a>
                                 </li>
-                                <li onClick={() => {setCurrentMenuItem(ScreenCode.NOTIFY)}}>
-                                    <a className={[classes.ul_li_a, currentMenuItem===ScreenCode.NOTIFY?classes.currentMenuItem:''].join(' ')} >
-                                        <Tooltip title={isShowSidabar?'':<h6 style={{ color: "lightblue" }}>Thông báo</h6>}>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.NOTIFY) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.NOTIFY ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thông báo</h6>}>
                                             <span className={classes.icon}><i class="fas fa-bell"></i></span>
                                         </Tooltip>
-                                        <span className={isShowSidabar?classes.title:classes.hideTitle}>Thông báo</span>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thông báo</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className={[classes.container, isShowSidabar?'':classes.containerX].join(' ')}>
+                    <div className={[classes.container, isShowSidabar ? '' : classes.containerX].join(' ')}>
                         <div className={classes.content}>
-                            <ShowContent menuId={currentMenuItem} screenCode={ScreenCode}/>
+                            <ShowContent menuId={currentMenuItem} screenCode={ScreenCode} />
                         </div>
                     </div>
                 </div>

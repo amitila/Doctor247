@@ -6,6 +6,7 @@ import useFirestore from '../firebase/useFirestore';
 import { useHistory } from "react-router-dom";
 import APIService from '../utils/APIService';
 import getToken from '../helpers/getToken';
+import Cookies from 'universal-cookie';
 
 const ScreenCode = {
     HOME: 1,
@@ -39,8 +40,6 @@ export default function AppProvider({ children }) {
     const [currentCall, setCurrentCall] = useState(null);
 
     const history = useHistory();
-
-    const doctorToken = localStorage.getItem("token_doctor247");
 
     // for video call ->
     const [userInfo, setUserInfo] = useState({
@@ -102,11 +101,6 @@ export default function AppProvider({ children }) {
         rooms.find((room) => room.id === selectedRoomId),
         [rooms, selectedRoomId]
     );
-
-    useEffect(() => {
-        console.log('selectedRoom');
-        console.log(selectedRoom);
-    }, [selectedRoom])
 
     useEffect(() => {
         const token = getToken();

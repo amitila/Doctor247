@@ -56,8 +56,6 @@ export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const cookies = new Cookies();
 
-    const { setUserId } = useContext(AppContext);
-
     const handleClickShowPassword = () => {
        setShowPassword(!showPassword);
     };
@@ -77,7 +75,6 @@ export default function SignIn() {
         event.preventDefault();
         APIService.signIn(email, password, (success, json) => {
             if(success && json.result){
-                // setUserId(json.result.id.toString());
                 dispatch(updateRole(json.result.role));
                 dispatch(updateEmail(email));
                 dispatch(updatePassword(password));
@@ -85,15 +82,12 @@ export default function SignIn() {
                 const expire = timestamp + (60*60*24*1000*3);
                 const expireDate = new Date(expire);
                 cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-                // return history.push("/doctor/home");
                 if(json.result.role === "CUSTOMER"){
                     return history.push("/home");
                 }
                 else if(json.result.role === "DOCTOR"){
-                    setUserId(json.result.doctor.id.toString());
                     return history.push("/doctor/home");
                 }
-                // return history.push("/home");
             } else {
                 setStatus(true);
             }
