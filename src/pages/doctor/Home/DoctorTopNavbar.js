@@ -4,9 +4,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { AppContext } from '../../../store/AppProvider';
 import './Doctor.css';
+import Cookies from 'universal-cookie';
 
 function DoctorTopNavbar(props) {
     const [anchorEl, setAnchorEl] = useState(null);
+    const cookies = new Cookies();
 
     const { history } = useContext(AppContext);
 
@@ -23,7 +25,7 @@ function DoctorTopNavbar(props) {
     }
 
     const handleLogout = () => {
-        localStorage.removeItem("token_doctor247");
+        cookies.remove("token");
         history.push("/signin");
     }
 
