@@ -3,6 +3,7 @@ import WebService from './WebService';
 export default class APIService {
 	static urlServerAddress = 'http://192.168.1.7:8080';
 	// static urlServerAddress = 'http://localhost:8081';
+
 // For visitor
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -28,14 +29,38 @@ export default class APIService {
 		return `${APIService.baseAPI()}specialized`;
 	};
 
-// For customer
-	// static baseAPI = () => {
-	// 	return `${APIService.urlServerAddress}/api/`;
-	// };
+// For visitor
+	static baseAPI = () => {
+		return `${APIService.urlServerAddress}/api/`;
+	};
 
-	// static apiSpecialized = () => {
-	// 	return `${APIService.baseAPI()}specialized`;
-	// };
+	static apiAnswer = (id) => {
+		return `${APIService.baseAPI()}question/answer/${id}`;
+	};
+
+	static apiDoctorListPublic = () => {
+		return `${APIService.baseAPI()}doctor/list`;
+	};
+
+	static apiPublicQuestion = () => {
+		return `${APIService.baseAPI()}question`;
+	};
+
+	static apiSignIn = () => {
+		return `${APIService.baseAPI()}user/login`;
+	};
+
+	static apiSpecialized = () => {
+		return `${APIService.baseAPI()}specialized`;
+	};
+// For customer
+	static baseAPI = () => {
+		return `${APIService.urlServerAddress}/api/`;
+	};
+
+	static apiSpecialized = () => {
+		return `${APIService.baseAPI()}specialized`;
+	};
 
 	static apiCheckToken = () => {
 		return `${APIService.baseAPI()}customer/users/check-token`;
@@ -57,9 +82,9 @@ export default class APIService {
 		return `${APIService.baseAPI()}user/forgot-password/sms`;
 	};
 
-	// static apiSignIn = () => {
-	// 	return `${APIService.baseAPI()}user/login`;
-	// };
+	static apiSignIn = () => {
+		return `${APIService.baseAPI()}user/login`;
+	};
 
 	static apiSignInBySms = () => {
 		return `${APIService.baseAPI()}user/login-by-sms`;
@@ -155,9 +180,9 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/guardian/user/verify`;
 	};
 
-	// static apiPublicQuestion = () => {
-	// 	return `${APIService.baseAPI()}question`;
-	// };
+	static apiPublicQuestion = () => {
+		return `${APIService.baseAPI()}question`;
+	};
 
 	static apiPublicAnswerById = (id) => {
 		return `${APIService.baseAPI()}question/answer/${id}`;
@@ -211,9 +236,9 @@ export default class APIService {
 	};
 
 	// DoctorList
-	// static apiDoctorListPublic = () => {
-	// 	return `${APIService.baseAPI()}doctor/list`;
-	// };
+	static apiDoctorListPublic = () => {
+		return `${APIService.baseAPI()}doctor/list`;
+	};
 
 	static apiDoctorList = () => {
 		return `${APIService.baseAPI()}customer/doctor/list`;
@@ -235,6 +260,7 @@ export default class APIService {
 	static apiMedicalRecordById = (id) => {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
+
 
 // For doctor
 	// Doctor Check token
@@ -307,8 +333,8 @@ export default class APIService {
 	// TODO: Both user 
 
 //====================GET SPECIALIZED======================
-	// api for Get Specialized
-	static getSpecialized( callback ) {
+	// api for Get Profile
+	static getSpecialized(token, callback ) {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
 			{
@@ -1412,5 +1438,4 @@ export default class APIService {
 			callback,
 		);
     }
-
 }
