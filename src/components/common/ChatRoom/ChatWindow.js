@@ -74,7 +74,7 @@ function ChatWindow() {
     const [inputMessage, setInputMessage] = useState('');
     const [limitAmount, setLimitAmount] = useState(10);
 
-    const { selectedRoom, userInfo, rooms } = useContext(AppContext);
+    const { selectedRoom, userInfo } = useContext(AppContext);
 
     const roomCondition = useMemo(() => ({
         fieldName: 'roomId',

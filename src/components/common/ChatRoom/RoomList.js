@@ -64,58 +64,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RoomList(props) {
-    const { user, setIsVideoCallVisible, setIsAddRoomVisible, setSelectedRoomId, rooms } = useContext(AppContext);
+    const { setSelectedRoomId, rooms } = useContext(AppContext);
 
     const classes = useStyles();
-
-    // const roomsCondition = useMemo(() => {
-    //     return {
-    //         fieldName: 'members',
-    //         operator: 'array-contains',
-    //         compareValue: user.id
-    //     }
-    // }, [user.id]);
-
-    // const rooms = useFirestore("rooms", roomsCondition);
-
-    useEffect(() => {
-        console.log('rooms');
-        console.log(rooms);
-    }, [rooms]);
-
-    const rooms2 = [
-        {
-            description: 'Online 5 phút trước',
-            name: 'Dũng',
-            id: '123',
-            members: [1],
-        },
-        {
-            description: 'Online 12 phút trước',
-            name: 'Hùng',
-            id: '123456',
-            members: [1],
-        },
-        {
-            description: 'Online 22 phút trước',
-            name: 'Nam',
-            id: '123456',
-            members: [1],
-        },
-        {
-            description: 'Online 35 phút trước',
-            name: 'Hà',
-            id: '123456',
-            members: [1],
-        },
-    ];
-
-    // const handleAddRoom = () => {
-    //     setIsAddRoomVisible(true);
-    // }
-    // const handleShowVideoCall = () => {
-    //     setIsVideoCallVisible(true);
-    // }
 
     return (
         <Accordion defaultExpanded>

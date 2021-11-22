@@ -11,12 +11,16 @@ const express = require("express")
 const http = require("http")
 const app = express()
 const server = http.createServer(app)
+const cors = require("cors")
+
 const io = require("socket.io")(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "*",
         methods: ["GET", "POST"]
     }
 })
+
+app.use(cors());
 
 const listOnlineUsers = [];
 const listCallingUserIds = [];
@@ -92,7 +96,8 @@ io.on("connection", (socket) => {
             io.emit('HAS_DISCONNECTED', user.id);
             console.log('HAS_DISCONNECTED: ' + user.id);
             //console.log('socket.peerId: ' + socket.peerId);
-            console.log('length: ' + listOnlineUsers.length);
+            console.log('online user length: ' + listOnlineUsers.length);
+            console.log('calling user length: ' + listCallingUserIds.length);
         }
     });
 })

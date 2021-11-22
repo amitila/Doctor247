@@ -1,8 +1,6 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
-import { maxWidth } from '@mui/system';
-import { useEffect } from 'react/cjs/react.development';
 
 const useStylesRight = makeStyles((theme) => ({
     root: {

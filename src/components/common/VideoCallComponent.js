@@ -174,16 +174,15 @@ export default function VideoCallComponent(props) {
             openStream()
                 .then(stream => {
                     playStream('localStream', stream);
-                    const call = peer.call(waitingPeerId, stream);
+                    const call = peer.current.call(waitingPeerId, stream);
                     call.on('stream', (remoteStream) => {
                         playStream('remoteStream', remoteStream);
                     });
+                    setIsCallSend(false);
                     setIsCalling(true);
-                    setCurrentCallSend(call);
                     setWaitingPeerId('');
+                    setIsCallAccept(false);
                 });
-            setIsCallSend(false);
-            setIsCallAccept(false);
         }
         else if (!isCallSend && isCallAccept && callingUserId > 0 && currentCall !== null) {
             openStream()
@@ -194,14 +193,14 @@ export default function VideoCallComponent(props) {
                         playStream('remoteStream', remoteStream);
                     });
                     setIsCalling(true);
+                    setIsCallAccept(false);
                 });
-            setIsCallAccept(false);
         }
-        else if (!isCallSend && !isCallAccept && callingUserId === 0 && waitingUserId === 0) {
+        else if (!isCallSend && !isCallAccept && !isCalling && waitingUserId === 0) {
             closeStream('remoteStream');
             console.log('call end');
         }
-    }, [isCallSend, isCallAccept, callingUserId, currentCall, waitingPeerId, waitingUserId]);
+    }, [isCallSend, isCallAccept, callingUserId, currentCall, waitingPeerId, waitingUserId, isCalling]);
 
     const handleAnswerCall = () => {
         socket.emit('ACCEPT_CALL', userInfo.id);
@@ -216,6 +215,7 @@ export default function VideoCallComponent(props) {
     const handleEndCall = () => {
         socket.emit('END_CALL_FROM', userInfo.id, callingUserId);
         setIsCalling(false);
+        setIsCallSend(false);
         setCallingUserId(0);
         setIsCallAccept(false);
     }

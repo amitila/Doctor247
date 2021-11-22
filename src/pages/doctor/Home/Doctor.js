@@ -7,7 +7,7 @@ import Profile from '../Profile/Profile';
 import TimeTable from '../TimeTable/TimeTable';
 import VideoCall from '../VideoCall/VideoCall';
 
-import ChatRoom from '../ChatRoom/ChatRoom';
+import Chat from '../Chat/Chat';
 import { AppContext } from '../../../store/AppProvider';
 import MedicalRecords from '../MedicalRecord/MedicalRecords';
 import APIService from '../../../utils/APIService';
@@ -140,7 +140,7 @@ const ShowContent = (props) => {
     }
     else if (props.menuId === props.screenCode.CHAT) {
         return (
-            <ChatRoom />
+            <Chat />
         );
     }
     else if (props.menuId === props.screenCode.VIDEO) {

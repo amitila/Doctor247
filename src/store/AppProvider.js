@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useMemo, useState } from 'react/cjs/react.development';
+import { useEffect, useMemo, useRef, useState } from 'react/cjs/react.development';
 import Peer from 'peerjs';
 import { io } from "socket.io-client";
 import useFirestore from '../firebase/useFirestore';
@@ -30,8 +30,6 @@ export const AppContext = React.createContext();
 
 export default function AppProvider({ children }) {
     const [currentMenuItem, setCurrentMenuItem] = useState(ScreenCode.HOME);
-    const [userId, setUserId] = useState('0');
-    const [username, setUsername] = useState('Bin');
     const [isAddRoomVisible, setIsAddRoomVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('0');
     const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
@@ -50,7 +48,7 @@ export default function AppProvider({ children }) {
     const [listOnlineUsers, setListOnlineUsers] = useState([]);
     const [myPeerId, setMyPeerId] = useState('');
     const [callingUserId, setCallingUserId] = useState(-1);
-    const peer = new Peer();
+    const peer = useRef();
 
     const socket = io('http://localhost:5000/');
 
@@ -73,6 +71,8 @@ export default function AppProvider({ children }) {
     const [contentId, setContentId] = useState(ContentCode.LIST);
 
     const roomsCondition = useMemo(() => {
+        console.log('userInfo.id');
+        console.log(userInfo.id.toString());
         return {
             fieldName: 'members',
             operator: 'array-contains',
@@ -103,16 +103,17 @@ export default function AppProvider({ children }) {
     );
 
     useEffect(() => {
+        console.log('selectedRoom');
+        console.log(selectedRoom);
+        console.log('rooms');
+        console.log(rooms);
+    }, [selectedRoom, rooms]);
+
+    useEffect(() => {
         const token = getToken();
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
                 setUserInfo({
-                    id: json.result.id,
-                    name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
-                    avatarURL: json.result.doctor.avatar
-                });
-                console.log('my info:');
-                console.log({
                     id: json.result.id,
                     name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
                     avatarURL: json.result.doctor.avatar
@@ -132,12 +133,15 @@ export default function AppProvider({ children }) {
                 }) 
             }
         });
+        peer.current = new Peer();    
+        peer.current.on('call', (call) => {
+            setCurrentCall(call);
+        });
     }, []);
 
     useEffect(() => {
-        setUsername(userInfo.name);
         if (userInfo.id !== 0) {
-            peer.on('open', (id) => {
+            peer.current.on('open', (id) => {
                 console.log(id);
                 setMyPeerId(id);
                 socket.emit('SIGN_UP_USER', {
@@ -149,10 +153,7 @@ export default function AppProvider({ children }) {
             });
         }
     }, [userInfo.id]);
-    
-    peer.on('call', (call) => {
-        setCurrentCall(call);
-    });
+
 
     const getWorkPlaceName = (id) => {
         const wp = workPlaceList.find(x => x.id === id);
@@ -164,10 +165,6 @@ export default function AppProvider({ children }) {
         <AppContext.Provider
             value={{
                 userInfo,
-                username,
-                setUsername,
-                userId,
-                setUserId,
                 callingUserId,
                 setCallingUserId,
                 currentCall,
