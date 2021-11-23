@@ -261,7 +261,6 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
 
-
 // For doctor
 	// Doctor Check token
 	static apiDoctorCheckToken = () => {

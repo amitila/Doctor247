@@ -1,5 +1,5 @@
 import { Typography } from 'antd';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../store/AppProvider';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -10,8 +10,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
-import { useEffect } from 'react/cjs/react.development';
+import { useSelector } from "react-redux";
+import { selectRole } from '../../../store/userSlice';
+import APIService from '../../../utils/APIService';
+import getToken from '../../../helpers/getToken';
 
+const token = getToken();
+const myImg = "https://img.flaticon.com/icons/png/512/149/149071.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF"
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -64,7 +69,58 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RoomList(props) {
-    const { setSelectedRoomId, rooms } = useContext(AppContext);
+    const { setSelectedRoomId, rooms, selectedUserId, userInfo } = useContext(AppContext);
+    const role = useSelector(selectRole);
+
+    const [chatUsersList, setChatUsersList] = useState([]);
+    const [selectedUser, setSelectedUser] = useState({ name: '', avatarURL: null});
+
+    useEffect(() => {
+        if (chatUsersList.length > 0){
+            setSelectedUser(chatUsersList.find(user => user.id.toString() === selectedUserId));
+        }
+        console.log('chatUsersList');
+        console.log(chatUsersList);
+    }, [chatUsersList]);
+
+    useEffect(() => {
+        if (role === 'CUSTOMER') {
+            APIService.getAppointment(token, {}, (success, json) => {
+                if (success && json.result) {
+                    let list = [];
+                    json.result.forEach(element => {
+                        list.push(
+                            {
+                                id: element.doctor.id,
+                                name: element.doctor.firstName + " " + element.doctor.lastName,
+                                gender: element.doctor.gender,
+                                avatarURL: element.doctor.avatarURL,
+                            }
+                        );
+                    });
+                    setChatUsersList(list);
+                }
+            });
+        }
+        else if (role === 'DOCTOR'){
+            APIService.getDoctorAppointment(token, (success, json) => {
+                if (success && json.result) {
+                    let list = [];
+                    json.result.forEach(element => {
+                        list.push(
+                            {
+                                id: element.medicalRecord.customer.id,
+                                name: element.medicalRecord.customer.firstName + " " + element.medicalRecord.customer.lastName,
+                                gender: element.medicalRecord.customer.gender,
+                                avatarURL: element.medicalRecord.customer.avatarURL,
+                            }
+                        );
+                    });
+                    setChatUsersList(list);
+                }
+            });
+        }
+    }, [role]);
 
     const classes = useStyles();
 
@@ -90,11 +146,11 @@ export default function RoomList(props) {
                                     }}
                                     variant="dot"
                                 >
-                                    <Avatar src={room.avatarURL} style={{ marginRight: '10px', width: '60px', height: '60px' }}>A</Avatar>
+                                    <Avatar src={(selectedUser === null || selectedUser === undefined) ? myImg : ''} style={{ marginRight: '10px', width: '60px', height: '60px' }}></Avatar>
                                 </StyledBadge>
                                 <Grid container>
                                     <Grid item xs={12}>
-                                        <h4 style={{ textAlign: 'left' }}>{room.name}</h4>
+                                        <h6 style={{ textAlign: 'left' }}>{(chatUsersList.find(user => user.id.toString() === room.members.find(id => id !== userInfo.id.toString()))?.name)}</h6>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <h6 style={{ textAlign: 'left' }}>{room.description}</h6>

@@ -43,7 +43,7 @@ export default function AppProvider({ children }) {
     const [userInfo, setUserInfo] = useState({
         name: '',
         id: 0,
-        avatarURL: null
+        avatarURL: null,
     });
     const [listOnlineUsers, setListOnlineUsers] = useState([]);
     const [myPeerId, setMyPeerId] = useState('');
@@ -71,8 +71,6 @@ export default function AppProvider({ children }) {
     const [contentId, setContentId] = useState(ContentCode.LIST);
 
     const roomsCondition = useMemo(() => {
-        console.log('userInfo.id');
-        console.log(userInfo.id.toString());
         return {
             fieldName: 'members',
             operator: 'array-contains',
@@ -102,12 +100,12 @@ export default function AppProvider({ children }) {
         [rooms, selectedRoomId]
     );
 
-    useEffect(() => {
-        console.log('selectedRoom');
-        console.log(selectedRoom);
-        console.log('rooms');
-        console.log(rooms);
-    }, [selectedRoom, rooms]);
+    const TRoom = {members: []};
+
+    const selectedUserId = useMemo(() =>
+        ((selectedRoom === null || selectedRoom === undefined) ? TRoom : selectedRoom).members.find(id => id !== userInfo.id),
+        [selectedRoom]
+    ); 
 
     useEffect(() => {
         const token = getToken();
@@ -185,6 +183,7 @@ export default function AppProvider({ children }) {
                 closeStream,
                 rooms,
                 selectedRoom,
+                selectedUserId,
                 isAddRoomVisible,
                 setIsAddRoomVisible,
                 isVideoCallVisible,

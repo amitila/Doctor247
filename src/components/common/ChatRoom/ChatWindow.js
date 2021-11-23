@@ -79,8 +79,8 @@ function ChatWindow() {
     const roomCondition = useMemo(() => ({
         fieldName: 'roomId',
         operator: '==',
-        compareValue: selectedRoom.id
-    }), [selectedRoom.id]);
+        compareValue: (selectedRoom === null || selectedRoom === undefined)? '0' : selectedRoom.id
+    }), [selectedRoom]);
 
     const messages = GetMessages(roomCondition, limitAmount);
 
@@ -99,7 +99,7 @@ function ChatWindow() {
         setLimitAmount(10);
         var s = document.getElementById("msg-panel");
         s.scrollTo(0, 0);
-    }, [selectedRoom.id]);
+    }, [selectedRoom]);
 
     const handleOnSubmit = () => {
         if (inputMessage === '') {
@@ -123,8 +123,8 @@ function ChatWindow() {
         <WrapperStyled>
             <HeaderStyled>
                 <div className="header__info">
-                    <p className="header__title">{selectedRoom.name}</p>
-                    <span className="header__description">{selectedRoom.description}</span>
+                    <p className="header__title">{(selectedRoom === null || selectedRoom === undefined)? '' : selectedRoom.name}</p>
+                    <span className="header__description">{(selectedRoom === null || selectedRoom === undefined)? '' : selectedRoom.description}</span>
                 </div>
                 {/* <i style={{ fontSize: '25px' }} className="fas fa-video"></i> */}
             </HeaderStyled>
