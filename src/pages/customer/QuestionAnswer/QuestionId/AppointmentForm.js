@@ -113,17 +113,20 @@ export default function AppointmentForm(props) {
 		event.preventDefault();
 		console.log(state);
 		const token = getToken();
+		const customerIp = window.location.hostname;
         APIService.postAppointment(
 			token,
 			{
 				guardianId: state.guardianId,
 				doctorId: state.doctorId,
 				dayTime: state.dayTime,
-				description: state.description,
+				description: [state.description],
 				images: state.imagesSend,
+				customerIp: customerIp
 			},
 			(success, json) => {
 				if (success && json.result) {
+					window.open(json.result, '_blank');
 					return alert("Đặt lịch THÀNH CÔNG!");
 				} else {
 					return alert("THẤT BẠI");

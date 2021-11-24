@@ -29,30 +29,10 @@ export default class APIService {
 		return `${APIService.baseAPI()}specialized`;
 	};
 
-// For visitor
-	static baseAPI = () => {
-		return `${APIService.urlServerAddress}/api/`;
+	static apiConfirmPayment = () => {
+		return `${APIService.baseAPI()}payment/confirm_payment`;
 	};
 
-	static apiAnswer = (id) => {
-		return `${APIService.baseAPI()}question/answer/${id}`;
-	};
-
-	static apiDoctorListPublic = () => {
-		return `${APIService.baseAPI()}doctor/list`;
-	};
-
-	static apiPublicQuestion = () => {
-		return `${APIService.baseAPI()}question`;
-	};
-
-	static apiSignIn = () => {
-		return `${APIService.baseAPI()}user/login`;
-	};
-
-	static apiSpecialized = () => {
-		return `${APIService.baseAPI()}specialized`;
-	};
 // For customer
 	static baseAPI = () => {
 		return `${APIService.urlServerAddress}/api/`;
@@ -261,6 +241,14 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
 
+<<<<<<< Updated upstream
+=======
+	// Create payment 
+	static apiCreatePaymentUrl = () => {
+		return `${APIService.baseAPI()}customer/appointment/create_payment_url`;
+	};
+
+>>>>>>> Stashed changes
 // For doctor
 	// Doctor Check token
 	static apiDoctorCheckToken = () => {
@@ -337,6 +325,32 @@ export default class APIService {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
 			{
+			},
+			callback,
+		);
+	}
+
+	// api for Get Confirm Payment
+	static getConfirmPayment( values, callback ) {
+		const formData = new FormData();
+		formData.append('vnp_Amount', values.vnp_Amount);
+		formData.append('vnp_BankCode', values.vnp_BankCode);
+		formData.append('vnp_BankTranNo', values.vnp_BankTranNo);
+		formData.append('vnp_CardType', values.vnp_CardType);
+		formData.append('vnp_OrderInfo', values.vnp_OrderInfo );
+		formData.append('vnp_PayDate', values.vnp_PayDate);
+		formData.append('vnp_ResponseCode', values.vnp_ResponseCode);
+		formData.append('vnp_TmnCode', values.vnp_TmnCode);
+		formData.append('vnp_TransactionNo', values.vnp_TransactionNo);
+		formData.append('vnp_TransactionStatus', values.vnp_TransactionStatus);
+		formData.append('vnp_TxnRef', values.vnp_TxnRef);
+		formData.append('vnp_SecureHash', values.vnp_SecureHash);
+		// console.log('-----------------')
+		// console.log(values)
+		WebService.sendJsonGET(
+			this.apiConfirmPayment(),
+			{
+				formData
 			},
 			callback,
 		);
@@ -682,7 +696,8 @@ export default class APIService {
 		formData.append('description', values.description);
 		values.images.forEach((image, index) => {
 			formData.append(`images[${index}]`, image);
-		  });
+		});
+		  formData.append('customerIp', values.customerIp);
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{
@@ -1160,6 +1175,23 @@ export default class APIService {
 			{
 				jwt: token,
 				status
+			},
+			callback,
+		);
+	}
+
+//====================CREATE - PAYMENT======================
+
+	// post to create payment url
+	static getPaymentUrl(token, values, callback) {
+		const formData = new FormData();
+		formData.append('id', values.id);
+		formData.append('customerIp', values.customerIp);
+		WebService.sendJsonPOST(
+			this.apiCreatePaymentUrl(),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);

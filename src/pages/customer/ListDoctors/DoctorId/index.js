@@ -95,6 +95,7 @@ export default function Index({match}) {
                             gender: item.doctor.gender,
                             province: item.doctor.province,
                             introduce: item.doctor.introduce,
+                            medicalExamination: item.doctor.medicalExamination,
                             workHistory: item.doctor.workHistory,
                             workplace: item.doctor.operation.map(x => {return x.workplace.name}),
                             operations: item.doctor.operation.map(x => {return {

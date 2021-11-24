@@ -27,6 +27,8 @@ export default function MRItem(props) {
 	};
 
 	const images = task.images;
+	const files = task.files;
+	// const files = ['http://www.africau.edu/images/default/sample.pdf', 'http://www.africau.edu/images/default/sample.pdf'];
 	const dateTime = new Date(task.dateTime);
 	const createdAt = new Date(task.createdAt);
 	const getDateTime = (dmy) => {
@@ -90,7 +92,7 @@ export default function MRItem(props) {
 									alignItems: 'center',
 									justifyContent: 'center'
 								}} 
-								rowspan="12"
+								rowspan="13"
 							>
 								MÃ NHẬN DẠNG:<br/>
 								{task.id}<br /><br />
@@ -225,7 +227,7 @@ export default function MRItem(props) {
 							</td>
 						</tr>
 						<tr>
-							<td>Tài liệu khám đính kèm:</td>
+							<td>Hình ảnh:</td>
 							{
 								images.length > 0 ? 
 									<td>
@@ -243,7 +245,28 @@ export default function MRItem(props) {
 										</ImageList>
 									</td>
 									:
-									<td>Không có đính kèm</td>
+									<td>Không có ảnh</td>
+							}
+						</tr>
+						<tr>
+							<td>Tài liệu khám:</td>
+							{
+								files.length > 0 ? 
+									<td>
+										<ImageList style={{height: 300, width: 400}} sx={{ width: 500, height: 450 }} cols={1} rowHeight={164}>
+											{files.map((file, index) => (
+												<a key={index} href={file} target="_blank" rel="noreferrer" download>
+													<object data={file} type="application/pdf">
+														<iframe title="document" src={`https://docs.google.com/viewer?url=${file}&embedded=true`} frameborder="0" height="200px" width="100%"></iframe>
+													</object>
+													<br/>
+													Tải xuống
+												</a>
+											))}
+										</ImageList>
+									</td>
+									:
+									<td>Không đính kèm</td>
 							}
 						</tr>
 					</table>

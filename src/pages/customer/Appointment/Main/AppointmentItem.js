@@ -10,6 +10,9 @@ import ImageListItem from '@mui/material/ImageListItem';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
+import APIService from '../../../../utils/APIService';
+import getToken from '../../../../helpers/getToken';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 export default function AppointmentItem(props) {
 	const onDelete = () => {
@@ -35,6 +38,28 @@ export default function AppointmentItem(props) {
 		return (hour + ' : ' + minute).toString();
 	}
 
+	const [showResult, setShowResult] = React.useState('Nhấn để thanh toán');
+	const getPaymentUrl = (appointentId) => {
+        const token = getToken();
+        const customerIp = window.location.hostname;
+        APIService.getPaymentUrl(
+			token,
+			{
+				id: appointentId,
+                customerIp: customerIp
+			},
+			(success, json) => {
+				if (success && json.result) {
+					window.open(json.result, '_blank');
+					return json.result;
+				} else {
+					setShowResult('Đã thanh toán')
+					return console.log(json.error)
+				}
+			}
+        )
+    }
+
 	return (
 		<div style={{fontSize: 20}}>
 			<Accordion 
@@ -59,11 +84,24 @@ export default function AppointmentItem(props) {
 						</Grid>
 						<Grid item xs={12} sm={5}>
 							<Typography style={{fontSize: 23}}>
-								Tình trạng lịch: {
+								Tình trạng lịch: 
+												{
+													task.status === "WAITING_PAYMENT" ? "Chờ thanh toán" : ""
+												}
+												{
 													task.status === "PENDING" ? "Chờ khám" : ""
 												}
 												{
-													task.status === "CUSTOMER_CANCEL" ? "Đã xóa" : ""
+													task.status === "DOING" ? "Đang khám" : ""
+												}
+												{
+													task.status === "DONE" ? "Hoàn thành" : ""
+												}
+												{
+													task.status === "DOCTOR_CANCEL" ? "Bác sĩ từ chối" : ""
+												}
+												{
+													task.status === "CUSTOMER_CANCEL" ? "Tôi đã hủy" : ""
 												}
 							</Typography>
 						</Grid>
@@ -78,7 +116,7 @@ export default function AppointmentItem(props) {
 									alignItems: 'center',
 									justifyContent: 'center'
 								}} 
-								rowspan="8"
+								rowspan="9"
 							>
 								MÃ NHẬN DẠNG:<br/>
 								{task.id}<br /><br />
@@ -97,7 +135,7 @@ export default function AppointmentItem(props) {
 										startIcon={<DeleteIcon />}
 										onClick={onDelete}
 									>
-										<b>Delete</b>
+										<b>Hủy lịch</b>
 									</Button>
 								</Stack>
 							</th>
@@ -127,12 +165,41 @@ export default function AppointmentItem(props) {
 						<tr>
 							<td>Tình trạng:</td>
 							<td>
+							{
+								task.status === "WAITING_PAYMENT" ? "Chờ thanh toán" : ""
+							}
+							{
+								task.status === "PENDING" ? "Chờ khám" : ""
+							}
+							{
+								task.status === "DOING" ? "Đang khám" : ""
+							}
+							{
+								task.status === "DONE" ? "Hoàn thành" : ""
+							}
+							{
+								task.status === "DOCTOR_CANCEL" ? "Bác sĩ từ chối" : ""
+							}
+							{
+								task.status === "CUSTOMER_CANCEL" ? "Tôi đã hủy" : ""
+							}
+							</td>
+						</tr>
+						<tr>
+							<td>Thanh toán:</td>
+							<td>
 								{
-									task.status === "PENDING" ? "Chờ khám" : ""
-								}
-								{
-									task.status === "CUSTOMER_CANCEL" ? "Đã xóa" : ""
-								}
+									task.status === "WAITING_PAYMENT" ? 
+										<Button 
+											variant="outlined" 
+											color="secondary"
+											startIcon={<PaymentIcon />}
+											onClick={()=>getPaymentUrl(task.id)}
+										>
+											<b>{showResult}</b>
+										</Button>
+									: 'Đã thanh toán'
+								}	
 							</td>
 						</tr>
 						<tr>

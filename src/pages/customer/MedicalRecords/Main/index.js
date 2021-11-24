@@ -49,6 +49,7 @@ export default function Index(props) {
                             images: item.images,
                             status: item.status,
                             createdAt: item.createdAt,
+                            files: item.files,
                         }
                     }))
                     setFlag(mrList?.map(item => {
@@ -66,6 +67,7 @@ export default function Index(props) {
                             images: item.images,
                             status: item.status,
                             createdAt: item.createdAt,
+                            files: item.files,
                         }
                     }))
                     setIsHaveChange(false);

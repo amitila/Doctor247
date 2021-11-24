@@ -33,6 +33,7 @@ import AppProvider from './store/AppProvider';
 import { useSelector } from "react-redux";
 import { selectRole } from './store/userSlice';
 import NotFound from './components/NotFound';
+import PaymentResult from './components/PaymentResult';
 
 export default function App() {
 	let mark;
@@ -89,6 +90,7 @@ export default function App() {
 					<Route exact path='/home' component={HomeScreen} />
 					<Route exact path='/doctor/home' component={Doctor} />
 					<Route exact path='/notfound' component={NotFound} />
+					<Route path='/api/payment' component={PaymentResult} />
 					{
 						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : null
 					}

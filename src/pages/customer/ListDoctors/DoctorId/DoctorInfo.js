@@ -193,10 +193,15 @@ export default function DoctorInfo(props) {
                             Chuyên khám và điều trị:
                         </Typography>
                         <Typography paragraph>
-                            1. Bệnh đái tháo đường ở mèo <br />
+                            {
+								task.medicalExamination.length ? task.medicalExamination.map((item, index) => {
+									return <Typography>{`- ${item}`}<br/></Typography>
+								}) : 'Đang cập nhật'
+							}
+                            {/* 1. Bệnh đái tháo đường ở mèo <br />
                             2. Bệnh đau cơ bụng chùn cơ rún ở mèo <br />
                             3. Siêu âm thai nhi cho mèo <br />
-                            4. Chuyển đổi giới tính thai nhi cho mèo <br />
+                            4. Chuyển đổi giới tính thai nhi cho mèo <br /> */}
                         </Typography>
 
                         <Typography variant="h6" component="h2" className={classes.title} gutterBottom >

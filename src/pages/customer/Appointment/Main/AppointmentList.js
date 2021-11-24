@@ -42,6 +42,7 @@ export default function AppointmentList(props) {
                         label="Tình trạng"
                         onChange={(event)=>onStatus(event.target.value)}
                     >
+                        <MenuItem value='WAITING_PAYMENT'>Chờ thanh toán</MenuItem>
                         <MenuItem value='PENDING'>Chờ khám</MenuItem>
                         <MenuItem value='DOING'>Đang khám</MenuItem>
                         <MenuItem value='DONE'>Hoàn thành</MenuItem>

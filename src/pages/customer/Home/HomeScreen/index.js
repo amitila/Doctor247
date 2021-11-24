@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { updateId, updateName } from '../../../../store/userSlice';
 import APIService from '../../../../utils/APIService';
 import Cookies from 'universal-cookie';
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { makeStyles } from '@material-ui/core/styles';
@@ -175,7 +175,7 @@ export default function HomeScreen() {
 								<img src="img/doctor.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Xem danh sách bác sĩ</b></h4>
 								<p className={classes.text}>Đây là danh sách các bác sĩ</p>
-								<Link to="/doctors" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								<Link to="/doctorlist" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
 							</div>
 						</div>
 
@@ -210,7 +210,7 @@ export default function HomeScreen() {
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Xem bệnh án đã khám</b></h4>
 								<p className={classes.text}>Xem bệnh án khi đã được bác sĩ đã khám</p>
 								{
-									state.id ? <Link to="/medicalrecords" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link> 
+									state.id ? <Link to="/medicalrecord" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link> 
 										: <Link to="/signin" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Đăng nhập</Link>
 								}
 							</div>
@@ -239,7 +239,7 @@ export default function HomeScreen() {
 								<img src="img/videocall.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Tư vấn từ xa</b></h4>
 								<p className={classes.text}>Tư vấn từ xa qua videocall mặt đối mặt</p>
-								<Link to="#" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								<Link to="/doctorlist/:id/videocall-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
 							</div>
 						</div>
 
@@ -248,7 +248,7 @@ export default function HomeScreen() {
 								<img src="img/chat.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Trò chuyện trực tuyến</b></h4>
 								<p className={classes.text}>Trò chuyện với bác sĩ qua tin nhắn</p>
-								<Link to="#" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								<Link to="/doctorlist/:id/chat-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
 							</div>
 						</div>
 
@@ -258,9 +258,10 @@ export default function HomeScreen() {
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Thanh toán trực tuyến</b></h4>
 								<p className={classes.text}>Thanh toán qua cổng thanh toán trực tuyến nhanh gọn lẹ</p>
 								<Link 
-									to={{ pathname: "http://192.168.1.4:8888/order/create_payment_url" }} 
+									// to={{ pathname: "http://192.168.1.4:8888/order/create_payment_url" }} 
+									to="#"
 									className={classNames("btn btn-outline-dark btn-md", classes.button)}
-									target="_blank"
+									// target="_blank"
 								>
 										Xem chi tiết
 								</Link>
