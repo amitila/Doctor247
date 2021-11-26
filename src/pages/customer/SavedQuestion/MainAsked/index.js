@@ -172,7 +172,7 @@ export default function Index(props) {
     return (
         <div className="container-fluid m-50">
             <div className="text-center">
-                <h1>Bài viết đã lưu</h1>
+                <h1>Bài viết đã đăng</h1>
                 <br />
             </div>
             <div className="row">

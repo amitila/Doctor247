@@ -245,6 +245,7 @@ export default class APIService {
 	static apiCreatePaymentUrl = () => {
 		return `${APIService.baseAPI()}customer/appointment/create_payment_url`;
 	};
+
 // For doctor
 	// Doctor Check token
 	static apiDoctorCheckToken = () => {
@@ -346,7 +347,7 @@ export default class APIService {
 		WebService.sendJsonGET(
 			this.apiConfirmPayment(),
 			{
-				formData
+				...values
 			},
 			callback,
 		);
@@ -693,7 +694,7 @@ export default class APIService {
 		values.images.forEach((image, index) => {
 			formData.append(`images[${index}]`, image);
 		});
-		  formData.append('customerIp', values.customerIp);
+		formData.append('customerIp', values.customerIp);
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{

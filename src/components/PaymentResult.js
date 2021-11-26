@@ -12,6 +12,7 @@ import APIService from '../utils/APIService';
 export default function PaymentResult () {
 	const history = useHistory();
 	const [result, setResult] = React.useState(false);
+	const [isLoading, setIsLoading] = React.useState(true);
 
 	// console.log(window.location.href)
 	var paymentUrl = window.location.href;
@@ -44,6 +45,7 @@ export default function PaymentResult () {
 				vnp_SecureHash : elmPaymentUrl[11]
 			},
 			(success, json) => {
+				setIsLoading(false)
 				if (success && json.result) {
                     console.log(json.result)
 					setResult(true)
@@ -78,7 +80,7 @@ export default function PaymentResult () {
 						Kết quả thanh toán
 					</Typography>
 					{
-						result ? <Box sx={{ textAlign: 'center', marginBottom: 20 }}>
+						!isLoading && result ? <Box sx={{ textAlign: 'center', marginBottom: 20 }}>
 									<img
 										alt="paymentResult"
 										src="/paymentSuccess.jpg"
@@ -91,18 +93,27 @@ export default function PaymentResult () {
 									/>
 								</Box> 
 								:
-								<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
-									<img
-										alt="paymentResult"
-										src="/paymentFail.jpg"
-										style={{
-											marginTop: 50,
-											display: 'inline-block',
-											maxWidth: '100%',
-											width: 560
-										}}
-									/>
-								</Box> 
+								!isLoading && !result ?	<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
+															<img
+																alt="paymentResult"
+																src="/paymentFail.jpg"
+																style={{
+																	marginTop: 50,
+																	display: 'inline-block',
+																	maxWidth: '100%',
+																	width: 560
+																}}
+															/>
+														</Box> :
+														<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
+															<Typography
+																align="center"
+																color="textPrimary"
+																variant="h3"
+															>
+																Đang lấy kết quả...
+															</Typography>
+														</Box>
 					}
 					
 					<Button

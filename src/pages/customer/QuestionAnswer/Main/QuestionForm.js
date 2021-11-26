@@ -8,6 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 const useStyles = makeStyles((theme) => ({
     textSize: {
         width: '100%',
+		padding: 10
     },
     paper: {
         marginTop: theme.spacing(8),

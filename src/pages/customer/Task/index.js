@@ -4,6 +4,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 // import Main from './Main';
 import AlertComponent from '../../../components/AlertComponent';
+import {GetMessages} from '../../../../src/firebase/useFirestore'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -34,6 +35,13 @@ export default function Inndex() {
         return setAlert({ number: '', sms: ''})
     }
     /////
+
+    const roomCondition = {
+        fieldName: 'roomId',
+        operator: '==',
+        compareValue: '1001'};
+    const messages = GetMessages(roomCondition, 10);
+    console.log(messages)
 
 	return (
 		<div className={classes.root}>
