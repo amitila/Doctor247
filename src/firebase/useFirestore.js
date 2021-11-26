@@ -64,10 +64,13 @@ export function GetMessages(roomCondition, amount) {
     }
 
     useEffect(() => {
-        if (roomCondition && timeCondition) {
+        if (roomCondition) {
             if(!roomCondition.compareValue || !roomCondition.compareValue.length || !roomCondition.fieldName) {
-                return;
+                return [];
             }
+        }
+        else{
+            return [];
         }
 
         const collectionRef = collection(db, "messages");

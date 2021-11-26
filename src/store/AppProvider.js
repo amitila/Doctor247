@@ -103,7 +103,7 @@ export default function AppProvider({ children }) {
     const TRoom = {members: []};
 
     const selectedUserId = useMemo(() =>
-        ((selectedRoom === null || selectedRoom === undefined) ? TRoom : selectedRoom).members.find(id => id !== userInfo.id),
+        ((selectedRoom === null || selectedRoom === undefined) ? TRoom : selectedRoom).members.find(id => id !== userInfo.id.toString()),
         [selectedRoom]
     ); 
 

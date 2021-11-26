@@ -70,16 +70,17 @@ const MessageListStyled = styled.div`
     overflow-y: auto;
 `;
 
-function ChatWindow() {
+function ChatWindow(props) {
+    const { selectedRoom, userInfo } = useContext(AppContext);
+    const { selectedUser, chatUsersList } = props;
+
     const [inputMessage, setInputMessage] = useState('');
     const [limitAmount, setLimitAmount] = useState(10);
-
-    const { selectedRoom, userInfo } = useContext(AppContext);
 
     const roomCondition = useMemo(() => ({
         fieldName: 'roomId',
         operator: '==',
-        compareValue: (selectedRoom === null || selectedRoom === undefined)? '0' : selectedRoom.id
+        compareValue: (selectedRoom === null || selectedRoom === undefined) ? '0' : selectedRoom.id
     }), [selectedRoom]);
 
     const messages = GetMessages(roomCondition, limitAmount);
@@ -88,7 +89,8 @@ function ChatWindow() {
         var s = document.getElementById("msg-panel");
         s.addEventListener("scroll", (event) => {
             if (Math.abs(s.scrollTop) >= Math.abs(s.scrollHeight - 600)) {
-                if (limitAmount < selectedRoom.length) {
+                let maxLength = ((selectedRoom === null || selectedRoom === undefined) ? 0 : selectedRoom.length);
+                if (limitAmount < maxLength) {
                     setLimitAmount(limitAmount + 10);
                 }
             }
@@ -99,14 +101,17 @@ function ChatWindow() {
         setLimitAmount(10);
         var s = document.getElementById("msg-panel");
         s.scrollTo(0, 0);
+        console.log('selectedRoom');
+        console.log(selectedRoom);
     }, [selectedRoom]);
 
     const handleOnSubmit = () => {
         if (inputMessage === '') {
             return;
         }
-        updateDoc(doc(db, "rooms", selectedRoom.id), {
-            "length": selectedRoom.length + 1
+        let maxLength = ((selectedRoom === null || selectedRoom === undefined) ? 0 : selectedRoom.length);
+        updateDoc(doc(db, "rooms", maxLength), {
+            "length": ((selectedRoom === null || selectedRoom === undefined) ? 0 : selectedRoom.length) + 1
         });
         setDoc(doc(db, "messages", getNowDateTimeCode() + userInfo.id.toString()), {
             text: inputMessage,
@@ -123,8 +128,8 @@ function ChatWindow() {
         <WrapperStyled>
             <HeaderStyled>
                 <div className="header__info">
-                    <p className="header__title">{(selectedRoom === null || selectedRoom === undefined)? '' : selectedRoom.name}</p>
-                    <span className="header__description">{(selectedRoom === null || selectedRoom === undefined)? '' : selectedRoom.description}</span>
+                    <p className="header__title">{(selectedRoom === null || selectedRoom === undefined) ? '' : selectedRoom.name}</p>
+                    <span className="header__description">{(selectedRoom === null || selectedRoom === undefined) ? '' : selectedRoom.description}</span>
                 </div>
                 {/* <i style={{ fontSize: '25px' }} className="fas fa-video"></i> */}
             </HeaderStyled>
@@ -136,7 +141,7 @@ function ChatWindow() {
                                 align={(msg.uid === userInfo.id.toString()) ? 'right' : 'left'}
                                 text={msg.text}
                                 photoURL={msg.photoURL}
-                                displayName={msg.displayName}
+                                displayName={(msg.uid === userInfo.id.toString()) ? '' : (chatUsersList.find(user => user.id.toString() === selectedRoom.members.find(id => id !== userInfo.id.toString()))?.name)}
                                 createdAt={getDateTimeShow(msg.createdAt)}
                             />
                         )
@@ -159,6 +164,7 @@ function ChatWindow() {
                             multiline
                             placeholder="Nhập tin nhắn"
                             value={inputMessage}
+                            disabled={(selectedRoom === null || selectedRoom === undefined) ? true : false}
                         />
                     </Grid>
                     <Grid item xs={2} sm={2}>

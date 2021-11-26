@@ -1,9 +1,17 @@
-import React from 'react';
+
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../store/AppProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
+import { useSelector } from "react-redux";
+import { selectRole } from '../../../store/userSlice';
+import APIService from '../../../utils/APIService';
+import getToken from '../../../helpers/getToken';
+
+const token = getToken();
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,18 +26,69 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ChatRoom(props) {
     const classes = useStyles();
+    const { selectedUserId, selectedRoom } = useContext(AppContext);
+
+    const role = useSelector(selectRole);
+
+    const [chatUsersList, setChatUsersList] = useState([]);
+    const [selectedUser, setSelectedUser] = useState({ name: '', avatarURL: null });
+
+    useEffect(() => {
+        if (chatUsersList.length > 0) {
+            setSelectedUser(chatUsersList.find(user => user.id.toString() === selectedUserId));
+        }
+    }, [chatUsersList]);
+
+    useEffect(() => {
+        if (role === 'CUSTOMER') {
+            APIService.getAppointment(token, {}, (success, json) => {
+                if (success && json.result) {
+                    let list = [];
+                    json.result.forEach(element => {
+                        list.push(
+                            {
+                                id: element.doctor.id,
+                                name: element.doctor.firstName + " " + element.doctor.lastName,
+                                gender: element.doctor.gender,
+                                avatarURL: element.doctor.avatarURL,
+                            }
+                        );
+                    });
+                    setChatUsersList(list);
+                }
+            });
+        }
+        else if (role === 'DOCTOR') {
+            APIService.getDoctorAppointment(token, (success, json) => {
+                if (success && json.result) {
+                    let list = [];
+                    json.result.forEach(element => {
+                        list.push(
+                            {
+                                id: element.medicalRecord.customer.id,
+                                name: element.medicalRecord.customer.firstName + " " + element.medicalRecord.customer.lastName,
+                                gender: element.medicalRecord.customer.gender,
+                                avatarURL: element.medicalRecord.customer.avatarURL,
+                            }
+                        );
+                    });
+                    setChatUsersList(list);
+                }
+            });
+        }
+    }, [role]);
 
     return (
         <div>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={8} md={8}>
                     <Paper className={classes.paper}>
-                        <ChatWindow />
+                        <ChatWindow selectedUser={selectedUser} chatUsersList={chatUsersList} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={4} md={4}>
                     <Paper className={classes.paper}>
-                        <Sidebar />
+                        <Sidebar selectedUser={selectedUser} chatUsersList={chatUsersList} />
                     </Paper>
                 </Grid>
             </Grid>

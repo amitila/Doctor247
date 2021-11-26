@@ -25,7 +25,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import DialogContentText from "@material-ui/core/DialogContentText";
 
 import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
@@ -599,7 +598,7 @@ function getDay(datetime) {
     return result;
 }
 
-function ClinicTable(props) {
+function MyClinicsTable(props) {
     const classes = useStyles();
     const [clinics, SetClinics] = useState([]);
 
@@ -645,7 +644,7 @@ function ClinicTable(props) {
     );
 }
 
-function RequestTable(props) {
+function ClinicRequestTable(props) {
     const classes = useStyles();
 
     useEffect(() => {
@@ -681,7 +680,7 @@ function RequestTable(props) {
     );
 }
 
-function SearchTable(props) {
+function SearchClinicsTable(props) {
     const classes = useStyles();
 
     useEffect(() => {
@@ -692,6 +691,7 @@ function SearchTable(props) {
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
+                        <StyledTableCell align="center">Loại phòng khám</StyledTableCell>
                         <StyledTableCell align="center">Tên phòng khám</StyledTableCell>
                         <StyledTableCell align="center">Người quản lý</StyledTableCell>
                         <StyledTableCell align="center">Địa chỉ</StyledTableCell>
@@ -701,8 +701,9 @@ function SearchTable(props) {
                 </TableHead>
                 <TableBody>
                     <StyledTableRow >
-                        <StyledTableCell align="center">Bách Khoa</StyledTableCell>
-                        <StyledTableCell align="center">Dũng</StyledTableCell>
+                        <StyledTableCell align="center">Phòng khám tư</StyledTableCell>
+                        <StyledTableCell align="center">Phòng khám Bách Khoa</StyledTableCell>
+                        <StyledTableCell align="center">Nguyễn An</StyledTableCell>
                         <StyledTableCell align="center">Quận Tân Bình, Tp Hồ Chí Minh</StyledTableCell>
                         <StyledTableCell align="center">
                             <Button variant="outlined" color="default" align="center" >
@@ -770,19 +771,19 @@ export default function WorkPlace() {
         <div className={classes.root}>
             <div className={classes.demo1}>
                 <AntTabs value={value} onChange={handleChange} aria-label="ant example">
-                    <AntTab label="Danh sách phòng khám" />
-                    <AntTab label="Danh sách yêu cầu mới" />
+                    <AntTab label="Tìm kiếm phòng khám" />
+                    <AntTab label="Phòng khám của tôi" />
+                    <AntTab label="Các yêu cầu mới" />
                 </AntTabs>
             </div>
             <TabPanel value={value} index={0}>
-                <h5>Danh sách phòng khám của tôi</h5>
-                <ClinicTable handleOpenClinicsDialog={handleClinicsClickOpen} handleOpenClinicForm={handleClickOpenClinicForm} />
-                <br/>
-                <h5>Tìm kiếm phòng khám</h5>
-                <SearchTable />
+                <SearchClinicsTable />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <RequestTable />
+                <MyClinicsTable handleOpenClinicsDialog={handleClinicsClickOpen} handleOpenClinicForm={handleClickOpenClinicForm} />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <ClinicRequestTable />
             </TabPanel>
             <ClinicRegistrationDialogRaw
                 classes={{

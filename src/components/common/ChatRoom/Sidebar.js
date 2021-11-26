@@ -28,7 +28,7 @@ function Sidebar(props) {
         <SidebarStyled>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <RoomList />
+                    <RoomList selectedUser={props.selectedUser} chatUsersList={props.chatUsersList}/>
                 </Grid>
             </Grid>
         </SidebarStyled>
