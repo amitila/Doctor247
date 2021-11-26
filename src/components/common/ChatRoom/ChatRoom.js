@@ -35,9 +35,12 @@ export default function ChatRoom(props) {
 
     useEffect(() => {
         if (chatUsersList.length > 0) {
-            setSelectedUser(chatUsersList.find(user => user.id.toString() === selectedUserId));
+            let temp = chatUsersList.find(user => user.id.toString() === selectedUserId);
+            if (temp !== undefined){
+                setSelectedUser(temp);
+            }
         }
-    }, [chatUsersList]);
+    }, [chatUsersList, selectedRoom]);
 
     useEffect(() => {
         if (role === 'CUSTOMER') {
@@ -47,7 +50,7 @@ export default function ChatRoom(props) {
                     json.result.forEach(element => {
                         list.push(
                             {
-                                id: element.doctor.id,
+                                id: element.doctor.userId,
                                 name: element.doctor.firstName + " " + element.doctor.lastName,
                                 gender: element.doctor.gender,
                                 avatarURL: element.doctor.avatarURL,
@@ -65,7 +68,7 @@ export default function ChatRoom(props) {
                     json.result.forEach(element => {
                         list.push(
                             {
-                                id: element.medicalRecord.customer.id,
+                                id: element.medicalRecord.customer.userId,
                                 name: element.medicalRecord.customer.firstName + " " + element.medicalRecord.customer.lastName,
                                 gender: element.medicalRecord.customer.gender,
                                 avatarURL: element.medicalRecord.customer.avatarURL,

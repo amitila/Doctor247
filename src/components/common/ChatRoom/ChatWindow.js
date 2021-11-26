@@ -101,8 +101,6 @@ function ChatWindow(props) {
         setLimitAmount(10);
         var s = document.getElementById("msg-panel");
         s.scrollTo(0, 0);
-        console.log('selectedRoom');
-        console.log(selectedRoom);
     }, [selectedRoom]);
 
     const handleOnSubmit = () => {
@@ -110,8 +108,9 @@ function ChatWindow(props) {
             return;
         }
         let maxLength = ((selectedRoom === null || selectedRoom === undefined) ? 0 : selectedRoom.length);
-        updateDoc(doc(db, "rooms", maxLength), {
-            "length": ((selectedRoom === null || selectedRoom === undefined) ? 0 : selectedRoom.length) + 1
+        let sid = ((selectedRoom === null || selectedRoom === undefined) ? '0' : selectedRoom.id);
+        updateDoc(doc(db, "rooms", sid), {
+            "length": maxLength + 1
         });
         setDoc(doc(db, "messages", getNowDateTimeCode() + userInfo.id.toString()), {
             text: inputMessage,
@@ -128,7 +127,7 @@ function ChatWindow(props) {
         <WrapperStyled>
             <HeaderStyled>
                 <div className="header__info">
-                    <p className="header__title">{(selectedRoom === null || selectedRoom === undefined) ? '' : selectedRoom.name}</p>
+                    <p className="header__title">{selectedUser.name}</p>
                     <span className="header__description">{(selectedRoom === null || selectedRoom === undefined) ? '' : selectedRoom.description}</span>
                 </div>
                 {/* <i style={{ fontSize: '25px' }} className="fas fa-video"></i> */}
