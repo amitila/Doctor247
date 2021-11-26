@@ -91,7 +91,7 @@ export default function RoomList(props) {
                                     }}
                                     variant="dot"
                                 >
-                                    <Avatar src={(selectedUser === null || selectedUser === undefined) ? myImg : ''} style={{ marginRight: '10px', width: '60px', height: '60px' }}></Avatar>
+                                    <Avatar src={(selectedUser === null || selectedUser === undefined) ? myImg : selectedUser.avatarURL} style={{ marginRight: '10px', width: '60px', height: '60px' }}></Avatar>
                                 </StyledBadge>
                                 <Grid container>
                                     <Grid item xs={12}>

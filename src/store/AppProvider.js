@@ -100,7 +100,7 @@ export default function AppProvider({ children }) {
         [rooms, selectedRoomId]
     );
 
-    const TRoom = {members: []};
+    const TRoom = {members: ['0']};
 
     const selectedUserId = useMemo(() =>
         ((selectedRoom === null || selectedRoom === undefined) ? TRoom : selectedRoom).members.find(id => id !== userInfo.id.toString()),
@@ -152,10 +152,8 @@ export default function AppProvider({ children }) {
         }
     }, [userInfo.id]);
 
-
     const getWorkPlaceName = (id) => {
         const wp = workPlaceList.find(x => x.id === id);
-        //const type = wp.type === 'HOSPITAL'? 'Bệnh viện ': 'Phòng Khám ';
         return wp.name;
     }
 

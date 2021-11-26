@@ -74,3 +74,13 @@ export const listenSnapshot = () => {
     });
 
 }
+
+export const addRoom = (id1, id2) => {
+    console.log("created room of " + id1 + " and " + id2);
+    setDoc(doc(db, "rooms", getNowDateTimeCode() + id1 + id2), {
+        id: getNowDateTimeCode() + id1 + id2,
+        members: [id1, id2],
+        length: 0,
+        description: '',
+    });
+}
