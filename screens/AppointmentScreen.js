@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, Picker, Linking } from 'react-native';
 import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import AppointmentForm from '../forms/AppointmentForm/AppointmentForm';
 import APIService from '../utils/APIService';
@@ -43,7 +43,34 @@ const AppointmentScreen = ({ navigation }) => {
     const [doctorcards, setDoctorcards] = useState([]);
     const [open, setOpen] = useState(true);
     const [isHaveChange, setIsHaveChange] = useState(true);
-    var status = 'PENDING';
+    const [selectedValue, setSelectedValue] = useState('PENDING');
+    // var status = 'PENDING';
+    var statuses = [
+        {
+            status: 'WAITING_PAYMENT',
+            name: 'Chờ thanh toán'
+        },
+        {
+            status: 'PENDING',
+            name: 'Chờ khám'
+        },
+        {
+            status: 'DOING',
+            name: 'Đang khám'
+        },
+        {
+            status: 'DONE',
+            name: 'Hoàn thành'
+        },
+        {
+            status: 'DOCTOR_CANCEL',
+            name: 'Bác sĩ từ chối'
+        },
+        {
+            status: 'CUSTOMER_CANCEL',
+            name: 'Tôi đã hủy'
+        },
+    ];
 
     const onClose = () => {
         setIsHaveChange(true)
@@ -62,7 +89,7 @@ const AppointmentScreen = ({ navigation }) => {
                         (success, json) => {
                             if (success && json.result) {
                                 json.result.map(item => {
-                                    return item.status === status ? appointmentList.push(item) : '';
+                                    return item.status === selectedValue ? appointmentList.push(item) : '';
                                 })
                                 setAppointments(appointmentList?.map(item => {
                                     return {
@@ -203,9 +230,48 @@ const AppointmentScreen = ({ navigation }) => {
         setVisible(false);
     };
 
-    const handleDelete = () => {
+    const handleDelete = (id) => {
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                APIService.deleteAppointmentById(
+                    token,
+                    id,
+                    (success, json) => {
+                        if (success && json.result) {
+                            setIsHaveChange(true);
+                            return alert("Xóa thành công");
+                        } else {
+                            return alert("THẤT BẠI!");
+                        }
+                    }
+        
+                )
+            })
         setVisible(false);
     };
+
+	const getPaymentUrl = (appointentId) => {
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                const customerIp = '192.168.1.7';
+                APIService.getPaymentUrl(
+                    token,
+                    {
+                        id: appointentId,
+                        customerIp: customerIp
+                    },
+                    (success, json) => {
+                        if (success && json.result) {
+                            Linking.openURL(json.result);
+                            return json.result;
+                        } else {
+                            // setShowResult('Đã thanh toán')
+                            return console.log(json.error)
+                        }
+                    }
+                )
+            })
+    }
 
     return (
         <ScrollView>
@@ -219,27 +285,77 @@ const AppointmentScreen = ({ navigation }) => {
                     /> : <AppointmentForm onClose={onClose} patients={patients} doctorcards={doctorcards} />
                 }
             </View>
+            {
+                open ?<View style={styles.containerView}>
+                        <Picker
+                            selectedValue={selectedValue}
+                            style={{ height: 50, width: 250 }}
+                            onValueChange={(itemValue, itemIndex) => {setSelectedValue(itemValue); setIsHaveChange(true)}}
+                        >
+                            {
+                                statuses.map((item, index) => {
+                                    return <Picker.Item label={item.name} value={item.status} key={index} />
+                                })
+                            }
+                        </Picker>
+                    </View>
+                    :
+                    null
+            }
             <View style={styles.container}>
                 <Dialog.Container visible={visible}>
                     <Dialog.Title>Lịch khám #{info.id}</Dialog.Title>
-                    <Dialog.Description style={{textAlign: 'center'}}>
-                        Tình trạng:	{info.status === 'PENDING' ? 'Chờ khám' : info.status === 'CUSTOMER_CANCEL' ? 'Đã xóa' : ''} {"\n"}
-                        Họ và tên:	{info.guardian?.firstName + ' ' + info.guardian?.lastName} {"\n"}
-                        Ngày tạo lịch khám:	{info.createdAt} {"\n"}
-                        Ngày được khám:	{info.dateTime} {"\n"}
-                        Thời gian khám:	{info.hour} {"\n"}
-                        Bác sĩ khám:	{info.doctor?.firstName + ' ' + info.doctor?.lastName} {"\n"}
-                        Mô tả triệu chứng:	{info.description?.map(item => {return item + ', '})} {"\n"}
-                        Ảnh đính kèm:{"\n"}	{info.images?.map(item => {
-                            return <Image
-                                key={item}
-                                source={{ uri: item }}
-                                style={{ width: 120, height: 150 }}
-                            />
-                        })} {"\n"}
-                    </Dialog.Description>
-                    <Dialog.Button label="Hủy lịch" onPress={handleCancel} />
-                    <Dialog.Button label="Quay về" onPress={handleDelete} />
+                    <ScrollView>
+                        <Dialog.Description style={{textAlign: 'center'}}>
+                            Tình trạng:	
+                                {
+                                    info.status === "WAITING_PAYMENT" ? " Chờ thanh toán" : ""
+                                }
+                                {
+                                    info.status === "PENDING" ? " Chờ khám" : ""
+                                }
+                                {
+                                    info.status === "DOING" ? " Đang khám" : ""
+                                }
+                                {
+                                    info.status === "DONE" ? " Hoàn thành" : ""
+                                }
+                                {
+                                    info.status === "DOCTOR_CANCEL" ? " Bác sĩ từ chối" : ""
+                                }
+                                {
+                                    info.status === "CUSTOMER_CANCEL" ? " Tôi đã hủy" : ""
+                                }
+                            {"\n"}{"\n"}
+                            Họ và tên:	{info.guardian?.firstName + ' ' + info.guardian?.lastName} {"\n"}{"\n"}
+                            Ngày tạo lịch khám:	{info.createdAt} {"\n"}{"\n"}
+                            Ngày được khám:	{info.dateTime} {"\n"}{"\n"}
+                            Thời gian khám:	{info.hour} {"\n"}{"\n"}
+                            Bác sĩ khám:	{info.doctor?.firstName + ' ' + info.doctor?.lastName} {"\n"}{"\n"}
+                            Mô tả triệu chứng:	{info.description?.map(item => {return item + ', '})} {"\n"}{"\n"}{"\n"}
+                            Thanh toán:	{"\n"}
+                                {
+                                    info.status === "WAITING_PAYMENT" ? 
+                                        <Button
+                                            // icon={<Icon name='code' color='#ffffff' />}
+                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 100 }}
+                                            title={'Nhấn để thanh toán'} 
+                                            onPress={()=>getPaymentUrl(info.id)}
+                                        /> 
+                                        : " Đã thanh toán"
+                                }
+                            {"\n"}{"\n"}
+                            Ảnh đính kèm:{"\n"}	{info.images?.map(item => {
+                                return <Image
+                                    key={item}
+                                    source={{ uri: item }}
+                                    style={{ width: 120, height: 150 }}
+                                />
+                            })} {"\n"}
+                        </Dialog.Description>
+                    </ScrollView>
+                    <Dialog.Button label="Hủy lịch" onPress={()=>handleDelete(info.id)} />
+                    <Dialog.Button label="Quay về" onPress={handleCancel} />
                 </Dialog.Container>
             </View>
             {
@@ -254,10 +370,22 @@ const AppointmentScreen = ({ navigation }) => {
                                     <Text>
                                         Tình trạng: {' '}
                                             {
-                                                item.status === "PENDING" ? "Chờ khám" : ""
+                                                item.status === "WAITING_PAYMENT" ? " Chờ thanh toán" : ""
                                             }
                                             {
-                                                item.status === "CUSTOMER_CANCEL" ? "Đã xóa" : ""
+                                                item.status === "PENDING" ? " Chờ khám" : ""
+                                            }
+                                            {
+                                                item.status === "DOING" ? " Đang khám" : ""
+                                            }
+                                            {
+                                                item.status === "DONE" ? " Hoàn thành" : ""
+                                            }
+                                            {
+                                                item.status === "DOCTOR_CANCEL" ? " Bác sĩ từ chối" : ""
+                                            }
+                                            {
+                                                item.status === "CUSTOMER_CANCEL" ? " Tôi đã hủy" : ""
                                             }
                                     </Text>
                                     <Text>

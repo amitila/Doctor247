@@ -220,6 +220,7 @@ const AnswerForm = (props) => {
 										<Button
 											// icon={<Icon name='code' color='#ffffff' />}
 											// onPress={()=>showBookForm(patients, doctorId)}
+											// onPress={() => navigation.navigate('Danh sách bác sĩ')}
 											buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
 											title='Đặt khám' />
 									</View>

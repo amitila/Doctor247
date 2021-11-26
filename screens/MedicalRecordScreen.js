@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, Picker } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, Picker, Linking } from 'react-native';
 import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import APIService from '../utils/APIService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,7 +9,7 @@ const MedicalRecordScreen = ({ navigation }) => {
     const [medicalRecords, setMedicalRecords] = useState([]);
     const [open, setOpen] = useState(true);
     const [isHaveChange, setIsHaveChange] = useState(true);
-    var status = 'PENDING';
+    // const source = { uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true };
 
     useEffect(() => {
 		if (isHaveChange) {
@@ -40,6 +40,7 @@ const MedicalRecordScreen = ({ navigation }) => {
 										images: item.images,
 										status: item.status,
 										createdAt: item.createdAt,
+										files: item.files,
 									}
 								}))
 								setIsHaveChange(false);
@@ -68,7 +69,8 @@ const MedicalRecordScreen = ({ navigation }) => {
 		note: '',
 		images: [],
 		status: '',
-		createdAt: ''
+		createdAt: '',
+		files: [],
     });
 
 	const handleChangeVisible = (id, visible) => {
@@ -106,7 +108,7 @@ const MedicalRecordScreen = ({ navigation }) => {
         return (hour + ' : ' + minute).toString();
     }
 
-    const showDialog = ( id, patient, doctor, doctorId, dateTime, symptom, dose, diagnostic, medicalExpense, note, images, status, createdAt) => {
+    const showDialog = ( id, patient, doctor, doctorId, dateTime, symptom, dose, diagnostic, medicalExpense, note, images, status, createdAt, files) => {
         setVisible(true);
         setInfo({
 			id: id ? id : '',
@@ -123,6 +125,7 @@ const MedicalRecordScreen = ({ navigation }) => {
 			images: images ? images : [],
 			status: status ? status : '',
 			createdAt: createdAt ? getDateTime(new Date(createdAt)) : '',
+			files: files ? files : [],
         })
     };
 
@@ -145,34 +148,47 @@ const MedicalRecordScreen = ({ navigation }) => {
 		}
 	];
 
+	const downloadDocument = (file) => {
+		// console.log(file)
+		return Linking.openURL(file);
+	}
+
     return (
         <ScrollView>
+			
 			<View style={{alignItems: 'center', marginTop: 10}}>
 				<Text style={{fontSize: 25, fontWeight: 'bold'}}>Hồ sơ bệnh án</Text>
 			</View>
             <View style={styles.container}>
                 <Dialog.Container visible={visible}>
                     <Dialog.Title>Bệnh án #{info.id}</Dialog.Title>
-                    <Dialog.Description style={{textAlign: 'center'}}>
-                        Chế độ xem:		{info.status === 'PUBLIC' ? 'Mọi người' : info.status === 'PRIVATE' ? 'Chỉ mình tôi' : 'Chỉ bác sĩ khám'} {"\n"}
-                        Họ và tên:		{info.patient} {"\n"}
-                        Ngày khám bệnh:	{info.dateTime} {"\n"}
-						Ngày trả kết quả: {info.createdAt} {"\n"}
-                        Giờ khám:		{info.hour} {"\n"}
-                        Bác sĩ khám:	{info.doctor + ' _MS:BS100' + info.doctorId} {"\n"}
-                        Triệu chứng:	{info.symptom.length ? info.symptom.map(item => {return item + ', '}) : 'Không có'} {"\n"}
-						Đã chẩn đoán:	{info.diagnostic.length ? info.diagnostic.map(item => {return item + ', '}) : 'Không có'} {"\n"}
-						Thuốc dùng:		{info.dose.length ? info.dose.map(item => {return item + ', '}) : 'Không có'} {"\n"}
-						Lưu ý bác sĩ:	{info.note} {"\n"}
-						Chi phí khám:	{info.medicalExpense} {"\n"}
-                        Tài liệu đính kèm:{"\n"}	{info.images.length ? info.images.map(item => {
-														return <Image
-															key={item}
-															source={{ uri: item }}
-															style={{ width: 120, height: 150 }}
-														/>
-													}) : 'Không có'} {"\n"}
-                    </Dialog.Description>
+					<ScrollView>
+						<Dialog.Description style={{textAlign: 'center'}}>
+							Chế độ xem:		{info.status === 'PUBLIC' ? 'Mọi người' : info.status === 'PRIVATE' ? 'Chỉ mình tôi' : 'Chỉ bác sĩ khám'} {"\n"}{"\n"}
+							Họ và tên:		{info.patient} {"\n"}{"\n"}
+							Ngày khám bệnh:	{info.dateTime} {"\n"}{"\n"}
+							Ngày trả kết quả: {info.createdAt} {"\n"}{"\n"}
+							Giờ khám:		{info.hour} {"\n"}{"\n"}
+							Bác sĩ khám:	{info.doctor + ' _MS:BS100' + info.doctorId} {"\n"}{"\n"}
+							Triệu chứng:	{info.symptom.length ? info.symptom.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
+							Đã chẩn đoán:	{info.diagnostic.length ? info.diagnostic.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
+							Thuốc dùng:		{info.dose.length ? info.dose.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
+							Lưu ý bác sĩ:	{info.note} {"\n"}{"\n"}
+							Chi phí khám:	{info.medicalExpense} {"\n"}{"\n"}
+							Hình ảnh:{"\n"}	{info.images.length ? info.images.map(item => {
+															return <Image
+																key={item}
+																source={{ uri: item }}
+																style={{ width: 120, height: 150 }}
+															/>
+														}) : 'Không có'} {"\n"}{"\n"}
+							Tài liệu đính kèm:{"\n"}	{info.files.length ? info.files.map((item, i) => {
+															return <Text key={i} onPress={()=>downloadDocument(item)} style={{textDecorationLine:'underline', color: 'brown'}}>
+																		Tài liệu {i+1}{"\n"}
+																	</Text>
+														}) : 'Không có'} {"\n"}
+						</Dialog.Description>
+					</ScrollView>
                     <Dialog.Button label="Quay về" onPress={handleCancel} />
                 </Dialog.Container>
             </View>
@@ -234,7 +250,8 @@ const MedicalRecordScreen = ({ navigation }) => {
 										item.note,
 										item.images,
 										item.status,
-										item.createdAt
+										item.createdAt,
+										item.files
                                     )} />
                             </View>
                             {/* <Card.Image>

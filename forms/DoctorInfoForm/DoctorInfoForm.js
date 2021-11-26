@@ -113,7 +113,11 @@ const DoctorInfoForm = (props) => {
 							textAlign: 'center',
 					}]}>
 						<Text style={{fontWeight: 'bold'}}>Chuyên chữa và điều trị</Text> {'\n'}
-						{infoOfDoctor.introduce}
+						{
+							infoOfDoctor.medicalExamination ? infoOfDoctor.medicalExamination.map((item, index) => {
+								return <Text key={index}>{`- ${item}`}<br/></Text>
+							}) : <Text>Đang cập nhật</Text>
+						}
 					</Text>
                     {/* Workplace */}
 					<Text style={[styles.text_footer, {

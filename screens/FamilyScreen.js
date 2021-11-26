@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, TextInput, Picker } from 'react-native';
 import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import GuardianForm from '../forms/GuardianForm/GuardianForm';
 import APIService from '../utils/APIService';
@@ -98,19 +98,140 @@ const FamilyScreen = ({ navigation }) => {
 		}
 	}, [isHaveChange])
 
-    const [visible, setVisible] = useState(false);
+    // dialog for delete guardian
+    const [visibleDel, setVisibleDel] = useState(false);
+    const [info, setInfo] = useState({
+        id: '',
+    });
+    const [code, setCode] = useState('');
 
-    const showDialog = () => {
+    const showDialogDel = (id) => {
+        setVisibleDel(true);
+        setInfo({
+            id : id ? id : '',
+        })
+    };
+
+    const handleCancelDel = () => {
+        setVisibleDel(false);
+    };
+
+    // send code 
+    const sendCode = (id, type) => {
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                APIService.getCodeVerifyGuardian(
+                    token,
+                    {
+                        id: id,
+                        type: type
+                    },
+                    (success, json) => {
+                        if (success && json.result) {
+                            return alert("Vui lòng kiểm tra mail/tin nhắn !");
+                        } else {
+                            return alert(json.error);
+                        }
+                    }
+                )
+            })
+    }
+
+    // confirm to delete
+    const handleConfirmDelete = (id, code) => {
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                APIService.deleteGuardian(
+                    token,
+                    id,
+                    code,
+                    (success, json) => {
+                        if (success && json.result) {
+                            setVisibleDel(false);
+                            return alert(" Xóa THÀNH CÔNG !");
+                        } else {
+                            return alert(json.error);
+                        }
+                    }
+                )
+            })
+    };
+
+    // dialog for transfer guardian to user
+    const [visible, setVisible] = useState(false);
+    const [openCode, setOpenCode] = useState(false);
+    const [data, setData] = useState({
+        guardiantId: '',
+        type: 'EMAIL',
+        name: '',
+        email: '',
+        phoneNumber: '',
+        password: '',
+        code: '',
+        guardiantPassword: ''
+    })
+
+    const showDialog = (name, id) => {
+        setData(({ ...data, name: name, guardiantId: id }));
         setVisible(true);
     };
 
     const handleCancel = () => {
+        setOpenCode(false)
         setVisible(false);
     };
 
-    const handleDelete = () => {
-        setVisible(false);
-    };
+    const verifyGuardianUser = () => {
+        // console.log('data')
+        // console.log(data)
+        // Send code verify
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                APIService.verifyGuardianUser(
+                    token,
+                    {
+                        password: data.password,
+                        guardiantId: data.guardiantId,
+                        type: data.type,
+                        email: data.email,
+                        phoneNumber: data.phoneNumber
+                    },
+                    (success, json) => {
+                        if (success && json.result) {
+                            setOpenCode(true)
+                            return alert('Đã gửi code')
+                        } else {
+                            return alert("Không gửi được!");
+                        }
+                    })
+            })
+    }
+
+    const handleConfirmGuardianUser = () => {
+        // Confirm create guardian user
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                APIService.postGuardianUser(
+                    token,
+                    {
+                        password: data.password,
+                        guardiantId: data.guardiantId,
+                        type: data.type,
+                        email: data.email,
+                        phoneNumber: data.phoneNumber,
+                        code: data.code,
+                        guardiantPassword: data.guardiantPassword
+                    },
+                    (success, json) => {
+                        if (success && json.result) {
+                            setVisible(false);
+                            return alert('Xác nhận tạo user mới')
+                        } else {
+                            return alert("Chuyển đổi THẤT BẠI!");
+                        }
+                    })
+            })
+    }
 
     return (
         <>
@@ -126,13 +247,126 @@ const FamilyScreen = ({ navigation }) => {
                     }
                 </View>
                 <View style={styles.container}>
-                    <Dialog.Container visible={visible}>
-                        <Dialog.Title>Tạo tài khoản mới</Dialog.Title>
+                    <Dialog.Container visible={visibleDel}>
+                        <Dialog.Title>Xóa thẻ hồ sơ #{info.id}</Dialog.Title>
                         <Dialog.Description>
-                            Bạn có muốn tạo tài khoản mới cho amiiii
+                            Bạn muốn nhận mã xóa qua:{'\n'}{'\n'}
+                            <Button
+                                onPress={()=>sendCode(info.id, 'EMAIL')}
+                                // icon={<Icon name='code' color='#ffffff' />}
+                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
+                                title='Qua Email' />{'          '}
+                            <Button
+                                onPress={()=>sendCode(info.id, 'PHONE')}
+                                // icon={<Icon name='code' color='#ffffff' />}
+                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'brown' }}
+                                title='Qua Sms' />
+                            
                         </Dialog.Description>
-                        <Dialog.Button label="Cancel" onPress={handleCancel} />
-                        <Dialog.Button label="Delete" onPress={handleDelete} />
+                        <TextInput
+                            placeholder="Mã OTP*"
+                            value={code}
+                            style={{fontSize: 18}}
+                            autoCapitalize="none"
+                            onChangeText={(val) => setCode(val)}
+                        />
+                        <Dialog.Button label="Quay về" onPress={handleCancelDel} />
+                        <Dialog.Button label="Xác nhận xóa" onPress={()=>handleConfirmDelete(info.id, code)} />
+                    </Dialog.Container>
+                </View>
+                <View style={styles.container}>
+                    <Dialog.Container visible={visible}>
+                        <Dialog.Title style={{textAlign: 'center'}}>Tạo tài khoản mới</Dialog.Title>
+                        <Dialog.Description>
+                            Bạn muốn chọn mail hay số điện thoại làm tên đăng nhập cho tài khoản:{'\n'}{'\n'}
+                            <Picker
+                                selectedValue={data.type}
+                                style={{ height: 50, width: 250 }}
+                                onValueChange={(itemValue, itemIndex) => setData({
+                                    ...data,
+                                    type: itemValue
+                                })}
+                            >
+                                {
+                                    ['EMAIL', 'PHONE'].map((item, index) => {
+                                        return <Picker.Item label={item === 'EMAIL'? 'Email' : 'Số điện thoại'} value={item} key={index} />
+                                    })
+                                }
+						    </Picker>
+                        </Dialog.Description>
+                        <TextInput
+                            placeholder="Họ và tên"
+                            value={data.name}
+                            style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+                            autoCapitalize="none"
+                            onChangeText={(val) => setData({
+                                ...data,
+                                name: val
+                            })}
+                        />
+                        {
+                            data.type === 'EMAIL' ?  <TextInput
+                                                    placeholder="Địa chỉ email (mới)"
+                                                    value={data.email}
+                                                    style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+                                                    autoCapitalize="none"
+                                                    onChangeText={(val) => setData({
+                                                        ...data,
+                                                        email: val
+                                                    })}
+                                                /> : 
+                                                <TextInput
+                                                    placeholder="Số điện thoại (mới)"
+                                                    value={data.phoneNumber}
+                                                    style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+                                                    autoCapitalize="none"
+                                                    onChangeText={(val) => setData({
+                                                        ...data,
+                                                        phoneNumber: val
+                                                    })}
+                                                />
+                        }
+                        <TextInput
+							placeholder="Mật khẩu của bạn"
+							value={data.password}
+							style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+							autoCapitalize="none"
+							onChangeText={(val) => setData({
+								...data,
+								password: val
+							})}
+						/>
+                        <Button
+                                onPress={verifyGuardianUser}
+                                // icon={<Icon name='code' color='#ffffff' />}
+                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
+                                title='Nhận mã xác thực' />
+                        {
+                            openCode ? <>
+                                        <TextInput
+                                            placeholder="Mã OTP*"
+                                            value={data.code}
+                                            style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+                                            autoCapitalize="none"
+                                            onChangeText={(val) => setData({
+                                                ...data,
+                                                code: val
+                                            })}
+                                        />
+                                        <TextInput
+                                            placeholder="Tạo mật khẩu cho tài khoản mới"
+                                            value={data.guardiantPassword}
+                                            style={{fontSize: 18, marginTop: 5, marginBottom: 5}}
+                                            autoCapitalize="none"
+                                            onChangeText={(val) => setData({
+                                                ...data,
+                                                guardiantPassword: val
+                                            })}
+                                        />
+                                    </> : null
+                        }
+                        <Dialog.Button label="Quay về" onPress={handleCancel} />
+                        <Dialog.Button label="Xác nhận" onPress={handleConfirmGuardianUser} />
                     </Dialog.Container>
                 </View>
                 {
@@ -181,7 +415,15 @@ const FamilyScreen = ({ navigation }) => {
                                     </Text>
                                     <View style={styles.containerView}>
                                         <Button
-                                            onPress={showDialog}
+                                            onPress={()=>showDialogDel(item.userTwoId)}
+                                            // icon={<Icon name='code' color='#ffffff' />}
+                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'red' }}
+                                            title={`Xóa thẻ ${item.firstName + ' ' + item.lastName}`} />
+                                    </View>
+                                    <View style={{marginTop: 5}}></View>
+                                    <View style={styles.containerView}>
+                                        <Button
+                                            onPress={()=>showDialog(item.firstName+" "+item.lastName, item.userTwoId)}
                                             // icon={<Icon name='code' color='#ffffff' />}
                                             buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                                             title={`Tạo tài khoản cho ${item.firstName + ' ' + item.lastName}`} />
@@ -220,5 +462,11 @@ const styles = StyleSheet.create({
 		height: 150,
 		justifyContent: 'center',
 		alignItems: 'center',
+	},
+    textInput: {
+		flex: 1,
+		marginTop: Platform.OS === 'ios' ? 0 : -12,
+		paddingLeft: 10,
+		color: '#05375a',
 	},
 });

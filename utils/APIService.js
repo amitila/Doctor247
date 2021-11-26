@@ -121,6 +121,15 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/guardian/${id}`;
 	};
 
+	// api add user for guardian
+	static apiGuardianUser = () => {
+		return `${APIService.baseAPI()}customer/guardian/user`;
+	};
+
+	static apiGuardianUserVerify = () => {
+		return `${APIService.baseAPI()}customer/guardian/user/verify`;
+	};
+
 	static apiPublicQuestion = () => {
 		return `${APIService.baseAPI()}question`;
 	};
@@ -202,6 +211,16 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
 
+	// Create payment 
+	static apiCreatePaymentUrl = () => {
+		return `${APIService.baseAPI()}customer/appointment/create_payment_url`;
+	};
+
+	// api confirm payment
+	static apiConfirmPayment = () => {
+		return `${APIService.baseAPI()}payment/confirm_payment`;
+	};
+
 	// For doctor 
 
 	static apiDoctorCheckToken = () => {
@@ -214,7 +233,7 @@ export default class APIService {
 
 //====================GET SPECIALIZED======================
 	// api for Get Profile
-	static getSpecialized(token, callback ) {
+	static getSpecialized( callback ) {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
 			{
@@ -536,6 +555,7 @@ export default class APIService {
 			});
 			
 		}
+		formData.append('customerIp', values.customerIp);
 		WebService.sendJsonPOST(
 			this.apiAppointment(),
 			{
@@ -685,6 +705,44 @@ export default class APIService {
 			{
 				jwt: token,
 				code
+			},
+			callback,
+		);
+	}
+
+	// api for Guardian User
+	static postGuardianUser( token, values, callback ) {
+		const formData = new FormData();
+		formData.append('password', values.password);
+		formData.append('guardiantId', values.guardiantId);
+		formData.append('type', values.type);
+		formData.append('email', values.email);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('code', values.code);
+		formData.append('guardiantPassword', values.guardiantPassword);
+		WebService.sendJsonPOST(
+			this.apiGuardianUser(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
+
+	// api for Verify Guardian User
+	static verifyGuardianUser( token, values, callback ) {
+		const formData = new FormData();
+		formData.append('password', values.password);
+		formData.append('guardiantId', values.guardiantId);
+		formData.append('type', values.type);
+		formData.append('email', values.email);
+		formData.append('phoneNumber', values.phoneNumber);
+		WebService.sendJsonPOST(
+			this.apiGuardianUserVerify(),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);
@@ -967,6 +1025,49 @@ export default class APIService {
 			{
 				jwt: token,
 				status
+			},
+			callback,
+		);
+	}
+
+//====================CREATE - PAYMENT======================
+
+	// api for Get Confirm Payment
+	static getConfirmPayment( values, callback ) {
+		const formData = new FormData();
+		formData.append('vnp_Amount', values.vnp_Amount);
+		formData.append('vnp_BankCode', values.vnp_BankCode);
+		formData.append('vnp_BankTranNo', values.vnp_BankTranNo);
+		formData.append('vnp_CardType', values.vnp_CardType);
+		formData.append('vnp_OrderInfo', values.vnp_OrderInfo );
+		formData.append('vnp_PayDate', values.vnp_PayDate);
+		formData.append('vnp_ResponseCode', values.vnp_ResponseCode);
+		formData.append('vnp_TmnCode', values.vnp_TmnCode);
+		formData.append('vnp_TransactionNo', values.vnp_TransactionNo);
+		formData.append('vnp_TransactionStatus', values.vnp_TransactionStatus);
+		formData.append('vnp_TxnRef', values.vnp_TxnRef);
+		formData.append('vnp_SecureHash', values.vnp_SecureHash);
+		// console.log('-----------------')
+		// console.log(values)
+		WebService.sendJsonGET(
+			this.apiConfirmPayment(),
+			{
+				...values
+			},
+			callback,
+		);
+	}
+
+	// post to create payment url
+	static getPaymentUrl(token, values, callback) {
+		const formData = new FormData();
+		formData.append('id', values.id);
+		formData.append('customerIp', values.customerIp);
+		WebService.sendJsonPOST(
+			this.apiCreatePaymentUrl(),
+			{
+				jwt: token,
+				formData
 			},
 			callback,
 		);
