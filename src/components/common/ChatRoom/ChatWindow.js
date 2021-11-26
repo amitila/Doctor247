@@ -117,7 +117,6 @@ function ChatWindow(props) {
             uid: userInfo.id.toString(),
             photoURL: '',
             roomId: selectedRoom.id,
-            displayName: userInfo.name,
             createdAt: getNowDateTimeCode()
         });
         setInputMessage('');
@@ -140,7 +139,7 @@ function ChatWindow(props) {
                                 align={(msg.uid === userInfo.id.toString()) ? 'right' : 'left'}
                                 text={msg.text}
                                 photoURL={msg.photoURL}
-                                displayName={(msg.uid === userInfo.id.toString()) ? '' : (chatUsersList.find(user => user.id.toString() === selectedRoom.members.find(id => id !== userInfo.id.toString()))?.name)}
+                                displayName={(msg.uid === userInfo.id.toString()) ? '' : selectedUser.name}
                                 createdAt={getDateTimeShow(msg.createdAt)}
                             />
                         )
