@@ -241,14 +241,10 @@ export default class APIService {
 		return `${APIService.baseAPI()}customer/medical-record/${id}`;
 	};
 
-<<<<<<< Updated upstream
-=======
 	// Create payment 
 	static apiCreatePaymentUrl = () => {
 		return `${APIService.baseAPI()}customer/appointment/create_payment_url`;
 	};
-
->>>>>>> Stashed changes
 // For doctor
 	// Doctor Check token
 	static apiDoctorCheckToken = () => {
@@ -320,8 +316,8 @@ export default class APIService {
 	// TODO: Both user 
 
 //====================GET SPECIALIZED======================
-	// api for Get Profile
-	static getSpecialized(token, callback ) {
+	// api for Get Specialized
+	static getSpecialized( callback ) {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
 			{

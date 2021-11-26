@@ -235,7 +235,6 @@ export default function Index() {
 
     const getSpecialized = () => {
         APIService.getSpecialized(
-            {},
             (success, json) => {
                 if (success && json.result) { 
                     setSpecialized(json.result.map(item => {
