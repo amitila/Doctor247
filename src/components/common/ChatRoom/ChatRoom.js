@@ -68,7 +68,7 @@ export default function ChatRoom(props) {
                     json.result.forEach(element => {
                         list.push(
                             {
-                                id: element.medicalRecord.customer.userId,
+                                id: element.medicalRecord.customer.userId === null ? element.medicalRecord.customer.guardianTwo[0].userOne.userId : element.medicalRecord.customer.userId,
                                 name: element.medicalRecord.customer.firstName + " " + element.medicalRecord.customer.lastName,
                                 gender: element.medicalRecord.customer.gender,
                                 avatarURL: element.medicalRecord.customer.avatarURL,

@@ -8,11 +8,17 @@ import {
 import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import APIService from '../utils/APIService';
+import { addRoom } from '../firebase/service';
+import { AppContext } from '../store/AppProvider';
+import getToken from '../helpers/getToken';
+import useFirestore from '../firebase/useFirestore';
 
 export default function PaymentResult () {
 	const history = useHistory();
 	const [result, setResult] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(true);
+	const [doctorIdList, setDoctorIdList] = React.useState([]);
+	const [myId, setMyId] = React.useState(0);
 
 	// console.log(window.location.href)
 	var paymentUrl = window.location.href;
@@ -26,6 +32,15 @@ export default function PaymentResult () {
 		return item.split('=')[1]
 	})
 	// console.log(elmPaymentUrl)
+
+	const roomsCondition = React.useMemo(() => {
+        return {
+            fieldName: 'members',
+            operator: 'array-contains',
+            compareValue: myId
+        }
+    }, [myId])
+	const rooms = useFirestore('rooms', roomsCondition);
 
 	React.useEffect(() => {
 		console.log(elmPaymentUrl[0])
@@ -56,6 +71,43 @@ export default function PaymentResult () {
 			}
         )
 	},[])
+
+	React.useEffect(() => {
+		const token = getToken();
+		if (result) {
+			APIService.getAppointment(token, {}, (success, json) => {
+				if (success, json.result) {
+					let list = [];
+					json.result.forEach(element => {
+						if (element.status !== 'WAITING_PAYMENT' || element.status !== 'CUSTOMER_CANCEL') {
+							if (list.indexOf(element.doctor.userId.toString()) > -1) {
+								list.push(element.doctor.userId.toString());
+							}
+						}
+					});
+					setDoctorIdList(list);
+				}
+			});
+			APIService.getProfile(token, (success, json) => {
+				if (success, json.result) {
+					setMyId(json.result.id);
+				}
+			})
+		}
+	}, [result])
+
+	React.useEffect(() => {
+		if (myId !== 0) {
+			doctorIdList.forEach(doctorId => {
+				if (rooms === undefined || rooms === null) {
+					addRoom(doctorId, myId);
+				}
+				else if (rooms.find(room => room.members.indexOf(doctorId) > -1) === undefined) {
+					addRoom(doctorId, myId);
+				}
+			});
+		}
+	}, [doctorIdList, rooms])
 
 	return(
 		<>
