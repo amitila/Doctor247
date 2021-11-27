@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RoomList(props) {
     const classes = useStyles();
-    const { setSelectedRoomId, rooms, selectedUserId, userInfo } = useContext(AppContext);
+    const { setSelectedRoomId, rooms, userInfo } = useContext(AppContext);
     const { selectedUser, chatUsersList } = props;
 
     return (

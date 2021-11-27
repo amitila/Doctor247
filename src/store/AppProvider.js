@@ -76,7 +76,7 @@ export default function AppProvider({ children }) {
             operator: 'array-contains',
             compareValue: userInfo.id.toString()
         }
-    }, [userInfo.id]);
+    }, [userInfo]);
 
     const userCondition = useMemo(() => {
         return {
@@ -84,11 +84,12 @@ export default function AppProvider({ children }) {
             operator: '!=',
             compareValue: userInfo.id.toString()
         }
-    }, [userInfo.id]);
+    }, [userInfo]);
 
     const users = useFirestore("users", userCondition);
 
-    const rooms = useFirestore('rooms', roomsCondition);
+    const [isGetRoom, setIsGetRoom] = useState(false);
+    const rooms = useFirestore('rooms', roomsCondition, () => {setIsGetRoom(true);});
 
     const user = useMemo(() =>
         users.find((u) => u.id === userInfo.id.toString()),
@@ -193,7 +194,8 @@ export default function AppProvider({ children }) {
                 setLimitMsgAmount,
                 history,
                 workPlaceList,
-                getWorkPlaceName
+                getWorkPlaceName,
+                isGetRoom
             }}>
             {children}
         </AppContext.Provider>

@@ -4,30 +4,13 @@ import ChatRoom from '../../../components/common/ChatRoom/ChatRoom';
 import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
 import { addRoom } from '../../../firebase/service';
-import useFirestore from '../../../firebase/useFirestore';
-
-const token = getToken();
-var myId = 0;
-APIService.getProfile(token, (success, json) => {
-	if (success && json.result) {
-		console.log('json.result.id')
-		console.log(json.result.id)
-		myId = json.result.id;
-	}
-})
+import { AppContext } from '../../../store/AppProvider';
 
 export default function Index() {
 
-    const [doctorIdList, setDoctorIdList] = React.useState([]);
+    const { userInfo, rooms, isGetRoom } = React.useContext(AppContext);
 
-    const roomsCondition = React.useMemo(() => {
-        return {
-            fieldName: 'members',
-            operator: 'array-contains',
-            compareValue: myId
-        }
-    }, [])
-	const rooms = useFirestore('rooms', roomsCondition);
+    const [doctorIdList, setDoctorIdList] = React.useState([]);
 
 	React.useEffect(() => {
 		const token = getToken();
@@ -47,17 +30,23 @@ export default function Index() {
     },[])
 
 	React.useEffect(() => {
-		if (myId !== 0) {
+        console.log('log data');
+        console.log(rooms);
+        console.log(doctorIdList);
+        console.log(isGetRoom);
+		if (userInfo.id !== 0 && isGetRoom) {
 			doctorIdList.forEach(doctorId => {
 				if (rooms === undefined || rooms === null) {
-					addRoom(doctorId, myId);
+                    console.log('room was added 1');
+					addRoom(doctorId, userInfo.id);
 				}
 				else if (rooms.find(room => room.members.indexOf(doctorId) > -1) === undefined) {
-					addRoom(doctorId, myId);
+                    console.log('room was added 2');
+					addRoom(doctorId, userInfo.id.toString());
 				}
 			});
 		}
-	}, [doctorIdList, rooms])
+	}, [doctorIdList, rooms, isGetRoom])
 
     return (
         <Container maxWidth="lg">

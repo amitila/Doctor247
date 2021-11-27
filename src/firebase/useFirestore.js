@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot, orderBy, limit } from "firebase/firestore";
 import { db } from './config';
 
-export default function useFirestore(collectionName, condition) {
+export default function useFirestore(collectionName, condition, callback) {
     const [documents, setDocuments] = useState([]);
 
     useEffect(() => {
@@ -23,6 +23,7 @@ export default function useFirestore(collectionName, condition) {
                 id: doc.id
             }));
             setDocuments(document);
+            if (callback) callback();
         });
 
         return unsubscribe;

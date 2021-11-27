@@ -135,6 +135,14 @@ export default class APIService {
 		return `${APIService.baseAPI()}province`;
 	};
 
+	static apiDistricts = (id) => {
+		return `${APIService.baseAPI()}province/district/${id}`;
+	};
+
+	static apiWards = (id) => {
+		return `${APIService.baseAPI()}province/ward/${id}`;
+	};
+
 	static apiGuardian = () => {
 		return `${APIService.baseAPI()}customer/guardian`;
 	};
@@ -757,6 +765,25 @@ export default class APIService {
 		);
 	}
 
+	// api for Get Districts
+	static getDistricts( id, callback ) {
+		WebService.sendJsonGET(
+			this.apiDistricts(id),
+			{
+			},
+			callback,
+		);
+	}
+
+	// api for Get Wards
+	static getWards( id, callback ) {
+		WebService.sendJsonGET(
+			this.apiWards(id),
+			{
+			},
+			callback,
+		);
+	}
 //====================GUARDIAN======================
 
 	// api for Post Guardian
@@ -1378,11 +1405,38 @@ export default class APIService {
     }
 
 	// Get Doctor Work Place
-    static getDoctorWorkPlace(token, callback) {
+    static getDoctorWorkPlace(token, values, callback) {
+		let query = {}
+		if(values.skip){
+			query = {
+				...query,
+				skip: values.skip
+			}
+		}
+		if(values.take){
+			query = {
+				...query,
+				take: values.take
+			}
+		}
+		if(values.keyword){
+			query = {
+				...query,
+				keyword: values.keyword
+			}
+		}
+		if(values.status){
+			query = {
+				...query,
+				status: values.status
+			}
+		}
+
         WebService.sendJsonGET(
 			this.apiDoctorWorkPlace(),
 			{
-				jwt: token
+				jwt: token,
+				...query
 			},
 			callback,
 		);
