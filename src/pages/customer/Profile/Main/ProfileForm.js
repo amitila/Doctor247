@@ -323,7 +323,6 @@ export default function ProfileForm(props) {
 											variant="filled"
 											size="small"
 											margin="normal"
-											required
 											fullWidth
 											id="email"
 											label="Địa chỉ email"

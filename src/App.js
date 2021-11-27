@@ -92,7 +92,7 @@ export default function App() {
 					<Route exact path='/notfound' component={NotFound} />
 					<Route path='/api/payment' component={PaymentResult} />
 					{
-						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : null
+						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : <Redirect to={window.location.pathname} />
 					}
 				</AppProvider>
 			</Switch>

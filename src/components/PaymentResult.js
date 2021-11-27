@@ -8,17 +8,25 @@ import {
 import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import APIService from '../utils/APIService';
-import { addRoom } from '../firebase/service';
-import { AppContext } from '../store/AppProvider';
-import getToken from '../helpers/getToken';
-import useFirestore from '../firebase/useFirestore';
+// import { addRoom } from '../firebase/service';
+// import getToken from '../helpers/getToken';
+// import useFirestore from '../firebase/useFirestore';
+
+// const token = getToken();
+// var myId = 0;
+// APIService.getProfile(token, (success, json) => {
+// 	if (success && json.result) {
+// 		console.log('json.result.id')
+// 		console.log(json.result.id)
+// 		myId = json.result.id;
+// 	}
+// })
 
 export default function PaymentResult () {
 	const history = useHistory();
 	const [result, setResult] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(true);
-	const [doctorIdList, setDoctorIdList] = React.useState([]);
-	const [myId, setMyId] = React.useState(0);
+	// const [doctorIdList, setDoctorIdList] = React.useState([]);
 
 	// console.log(window.location.href)
 	var paymentUrl = window.location.href;
@@ -33,20 +41,11 @@ export default function PaymentResult () {
 	})
 	// console.log(elmPaymentUrl)
 
-	const roomsCondition = React.useMemo(() => {
-        return {
-            fieldName: 'members',
-            operator: 'array-contains',
-            compareValue: myId
-        }
-    }, [myId])
-	const rooms = useFirestore('rooms', roomsCondition);
-
 	React.useEffect(() => {
-		console.log(elmPaymentUrl[0])
+		// console.log(elmPaymentUrl[0])
 		APIService.getConfirmPayment(
 			{
-				vnp_Amount : elmPaymentUrl[0].toString(),
+				vnp_Amount : elmPaymentUrl[0],
 				vnp_BankCode : elmPaymentUrl[1],
 				vnp_BankTranNo : elmPaymentUrl[2],
 				vnp_CardType : elmPaymentUrl[3],
@@ -72,42 +71,46 @@ export default function PaymentResult () {
         )
 	},[])
 
-	React.useEffect(() => {
-		const token = getToken();
-		if (result) {
-			APIService.getAppointment(token, {}, (success, json) => {
-				if (success, json.result) {
-					let list = [];
-					json.result.forEach(element => {
-						if (element.status !== 'WAITING_PAYMENT' || element.status !== 'CUSTOMER_CANCEL') {
-							if (list.indexOf(element.doctor.userId.toString()) > -1) {
-								list.push(element.doctor.userId.toString());
-							}
-						}
-					});
-					setDoctorIdList(list);
-				}
-			});
-			APIService.getProfile(token, (success, json) => {
-				if (success, json.result) {
-					setMyId(json.result.id);
-				}
-			})
-		}
-	}, [result])
+	// const roomsCondition = React.useMemo(() => {
+    //     return {
+    //         fieldName: 'members',
+    //         operator: 'array-contains',
+    //         compareValue: myId
+    //     }
+    // }, [])
+	// const rooms = useFirestore('rooms', roomsCondition);
 
-	React.useEffect(() => {
-		if (myId !== 0) {
-			doctorIdList.forEach(doctorId => {
-				if (rooms === undefined || rooms === null) {
-					addRoom(doctorId, myId);
-				}
-				else if (rooms.find(room => room.members.indexOf(doctorId) > -1) === undefined) {
-					addRoom(doctorId, myId);
-				}
-			});
-		}
-	}, [doctorIdList, rooms])
+	// React.useEffect(() => {
+	// 	const token = getToken();
+	// 	if (result) {
+	// 		APIService.getAppointment(token, {}, (success, json) => {
+	// 			if (success && json.result) {
+	// 				let list = [];
+	// 				let listDoctor = [];
+	// 				list = json.result.filter(element => element.status !== 'WAITING_PAYMENT');
+	// 				list = list.filter(element => element.status !== 'CUSTOMER_CANCEL');
+	// 				list.forEach(element => {
+	// 					listDoctor.push(element.doctor.userId.toString());
+	// 				});
+	// 				listDoctor = listDoctor.filter((item, index) => listDoctor.indexOf(item) === index);
+	// 				setDoctorIdList(listDoctor);
+	// 			}
+	// 		});
+	// 	}
+	// }, [result])
+
+	// React.useEffect(() => {
+	// 	if (myId !== 0) {
+	// 		doctorIdList.forEach(doctorId => {
+	// 			if (rooms === undefined || rooms === null) {
+	// 				addRoom(doctorId, myId);
+	// 			}
+	// 			else if (rooms.find(room => room.members.indexOf(doctorId) > -1) === undefined) {
+	// 				addRoom(doctorId, myId);
+	// 			}
+	// 		});
+	// 	}
+	// }, [doctorIdList, rooms])
 
 	return(
 		<>
