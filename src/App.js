@@ -34,6 +34,7 @@ import { useSelector } from "react-redux";
 import { selectRole } from './store/userSlice';
 import NotFound from './components/NotFound';
 import PaymentResult from './components/PaymentResult';
+import { SnackbarProvider } from 'notistack';
 
 export default function App() {
 	let mark;
@@ -61,6 +62,7 @@ export default function App() {
 			></div>
 			<Switch>
 				<AppProvider>
+					<SnackbarProvider maxSnack={3}>
 					<Route exact path='/' component={Landing} />
 					<Route exact path='/notification' component={Notification} />
 					<Route exact path='/signin' component={SignIn} />
@@ -94,6 +96,7 @@ export default function App() {
 					{
 						role === 'DOCTOR' ? <Redirect to="/doctor/home" /> : <Redirect to={window.location.pathname} />
 					}
+					</SnackbarProvider>
 				</AppProvider>
 			</Switch>
 			{

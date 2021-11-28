@@ -770,7 +770,6 @@ export default function TimeTable() {
                 });
             }
             console.log('logdt');
-            setNumbersOfUpdate(0);
             logdt.forEach(item => {
                 APIService.putDoctorOperation(
                     token,
@@ -778,11 +777,8 @@ export default function TimeTable() {
                     (success, json) => {
                         console.log(item);
                         if(success, json.result){
-                            setNumbersOfUpdate(numbersOfUpdate+1);
-                            if(numbersOfUpdate === logdt.length){
-                                setIsOpenWP(false);
-                                setIsReload(true);
-                            }
+                            setIsOpenWP(false);
+                            setIsReload(true);
                             console.log('put operation ok.');
                             console.log(json.result);
                         }

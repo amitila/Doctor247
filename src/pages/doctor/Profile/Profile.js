@@ -19,8 +19,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
 
-const axios = require("axios");
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: "100%",
@@ -45,18 +43,22 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             color: '#004d40'
          },
-    }
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
 }));
 
 function Profile(props) {
     const classes = useStyles();
 
-    //const imgSrc = "https://thumbs.dreamstime.com/z/doctor-web-icon-therapist-medical-avatar-flat-style-illustration-doctor-web-icon-therapist-avatar-103706622.jpg";
+    //const img1 = "https://thumbs.dreamstime.com/z/doctor-web-icon-therapist-medical-avatar-flat-style-illustration-doctor-web-icon-therapist-avatar-103706622.jpg";
     const [imgSrc, setImgSrc] = useState('');
 
     const [fullname, setFullname] = useState('');
     const [dob, setDob] = useState('');
-    const [sex, setSex] = useState('');
+    const [sex, setSex] = useState(0);
     const [position, setPosition] = useState('');
     const [workAbout, setWorkAbout] = useState('');
     const [workAt, setWorkAt] = useState('');
@@ -78,8 +80,11 @@ function Profile(props) {
         workAt: '',
         email: '',
         phone: '',
-        note: ''
+        note: '',
+        image: '',
     });
+
+    const [openSex, setOpenSex] = React.useState(false);
 
     // const token = localStorage.getItem("token_doctor247");
     const token = getToken();
@@ -101,7 +106,8 @@ function Profile(props) {
                     workAt: workplaceName,
                     email: json.result.email,
                     phone: '',
-                    note: ''
+                    note: '',
+                    image: json.result.doctor.image,
                 });
                 setIntroduces(json.result.doctor.introduce);
                 setFirstIntroduce("Hiện đang là " + positionName + " - Chuyên khoa " + json.result.doctor.specialized.name + " tại " + workplaceName);
@@ -120,7 +126,7 @@ function Profile(props) {
         setOpenEditInfo(true);
         setFullname(values.fullname);
         setDob(values.dob);
-        setSex(values.sex);
+        setSex(values.sex === 'Nam' ? 0 : 1);
         setPosition(values.position);
         setWorkAbout(values.workAbout);
         setWorkAt(values.workAt);
@@ -175,28 +181,55 @@ function Profile(props) {
                             <DialogContentText id="alert-dialog-description">
                                 <Grid container spacing={3}>
                                     <Grid item xs={12}>
+                                        <CustomImage image={imgSrc} style={{ margin: '3%' }} width="150" height="150" alt=""/>
+                                        <Button
+                                            component="label"
+                                        >
+                                            <i className={["fas fa-pencil-alt", classes.editIcon].join(' ')} >
+                                                <input
+                                                    type="file"
+                                                    accept='.jpg, .png'
+                                                    multiple
+                                                    onChange={handleChangeImage}
+                                                    hidden
+                                                />
+                                            </i>
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={12}>
                                         <TextField onChange={(e) => setFullname(e.target.value)} required id="fullname" fullWidth label="Họ tên" defaultValue={fullname} />
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField onChange={(e) => setDob(e.target.value)} required id="dob" fullWidth label="Ngày sinh" defaultValue={dob} />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField onChange={(e) => setSex(e.target.value)} required id="sex" fullWidth label="Giới tính" defaultValue={sex} />
+                                        <FormControl className={classes.formControl} fullWidth>
+                                            <InputLabel id="demo-controlled-open-select-label">Giới tính</InputLabel>
+                                            <Select
+                                                labelId="demo-controlled-open-select-label"
+                                                id="demo-controlled-open-select"
+                                                open={openSex}
+                                                onClose={() => {setOpenSex(false)}}
+                                                onOpen={() => {setOpenSex(true)}}
+                                                value={sex}
+                                                onChange={(e) => {setSex(e.target.value)}}
+                                            >
+                                                <MenuItem value={0}>Nam</MenuItem>
+                                                <MenuItem value={1}>Nữ</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField onChange={(e) => setPosition(e.target.value)} required id="position" fullWidth label="Chức vụ" defaultValue={position} />
+                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setPosition(e.target.value)} required id="position" fullWidth label="Chức vụ" defaultValue={position} />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField onChange={(e) => setWorkAbout(e.target.value)} required id="workAbout" fullWidth label="Chuyên khoa" defaultValue={workAbout} />
+                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setWorkAbout(e.target.value)} required id="workAbout" fullWidth label="Chuyên khoa" defaultValue={workAbout} />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField onChange={(e) => setWorkAt(e.target.value)} required id="workAt" fullWidth label="Nơi làm việc" defaultValue={workAt} />
+                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setEmail(e.target.value)} required id="email" fullWidth label="Email" defaultValue={email} />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField onChange={(e) => setEmail(e.target.value)} required id="email" fullWidth label="Email" defaultValue={email} />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField onChange={(e) => setPhone(e.target.value)} required id="phone" fullWidth label="SDT" defaultValue={phone} />
+                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setPhone(e.target.value)} required id="phone" fullWidth label="SDT" defaultValue={phone} />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField onChange={(e) => setNote(e.target.value)} id="note" fullWidth label="Ghi chú" defaultValue={note} />
@@ -339,32 +372,19 @@ function Profile(props) {
                                         <span style={{display:"inline-block"}}>
                                             <h5>Hình ảnh</h5>
                                         </span>
-                                        <Button
-                                            component="label"
-                                        >
-                                            <i className={["fas fa-pencil-alt", classes.editIcon].join(' ')} >
-                                                <input
-                                                    type="file"
-                                                    accept='.jpg, .png'
-                                                    multiple
-                                                    onChange={handleChangeImage}
-                                                    hidden
-                                                />
-                                            </i>
-                                        </Button>
                                     </div>
                                     <div className="col-md-9 text-secondary">
-                                        <CustomImage image={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""/>
-                                        {/* <img src={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""></img> */}
+                                        <CustomImage image={values.image} style={{ margin: '3%' }} width="44%" height="200" alt=""/>
+                                        {/* <img src={} style={{ margin: '3%' }} width="44%" height="200" alt=""></img> */}
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="col-md-3">
                                         <h5>Giới thiệu</h5>
                                     </div>
-                                    <div className="col-md-9 text-secondary">
+                                    {/* <div className="col-md-9 text-secondary">
                                         <h5>{firstIntroduce}</h5>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 {
                                     introduces.map(intro => 

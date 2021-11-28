@@ -25,10 +25,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import InputBase from '@material-ui/core/InputBase';
 
 import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
+import { useSnackbar } from 'notistack';
+import { AppContext } from '../../../store/AppProvider';
 
 const axios = require("axios");
 
@@ -600,15 +603,8 @@ function getDay(datetime) {
 
 function MyClinicsTable(props) {
     const classes = useStyles();
-    const [clinics, SetClinics] = useState([]);
-
-    useEffect(() => {
-        APIService.getDoctorWorkPlaceMy(token, (success, json) => {
-            if (success && json.result) {
-                SetClinics(json.result);
-            }
-        });
-    }, []);
+    
+    const { myClinics } = props;
 
     return (
         <TableContainer component={Paper}>
@@ -625,15 +621,18 @@ function MyClinicsTable(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {clinics.map((row) => (
+                    {myClinics.map((row) => (
                         <StyledTableRow key={row.id}>
                             <StyledTableCell align="center">{row.type === 'HOSPITAL' ? 'Bệnh viện' : 'Phòng khám tư'}</StyledTableCell>
                             <StyledTableCell align="center">{row.name}</StyledTableCell>
                             <StyledTableCell align="center">{row.address}</StyledTableCell>
                             <StyledTableCell align="center">{row.status}</StyledTableCell>
                             <StyledTableCell align="center">
-                                <Button variant="outlined" color="default" align="center" onClick={() => props.handleOpenClinicsDialog(row)}>
+                                <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, false, false)}>
                                     Xem
+                                </Button>
+                                <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, true, false)}>
+                                    Sửa
                                 </Button>
                             </StyledTableCell>
                         </StyledTableRow>
@@ -646,9 +645,55 @@ function MyClinicsTable(props) {
 
 function ClinicRequestTable(props) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const { myManagementClinics } = props;
+
+    const [applicationsList, setApplicationsList] = React.useState([]);
+    const [applicationsListTemp, setApplicationsListTemp] = React.useState([]);
+
+    const reloadPage = () => {
+        myManagementClinics.forEach(clinic => {
+            APIService.getDoctorWorkPlaceApplied(
+                token,
+                clinic.id,
+                "PENDING",
+                (success, json) => {
+                    if (success, json.result) {
+                        setApplicationsListTemp(json.result);
+                    }
+                }
+            );
+        });
+    }
+
+    const handleAcceptApplication = (applicationId) => {
+        APIService.putDoctorWorkPlaceApply(
+            token,
+            applicationId,
+            "ACTIVE",
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Chấp nhận thành công!', { variant: 'success'});
+                    setApplicationsList([]);
+                    reloadPage();
+                }
+                else{
+                    console.log(json);
+                }
+            }
+        );
+    }
 
     useEffect(() => {
+        reloadPage();
     }, []);
+
+    useEffect(() => {
+        setApplicationsList(applicationsList.concat(applicationsListTemp));
+        console.log('applicationsList');
+        console.log(applicationsList);
+    }, [applicationsListTemp]);
 
     return (
         <TableContainer component={Paper}>
@@ -664,16 +709,20 @@ function ClinicRequestTable(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <StyledTableRow >
-                        <StyledTableCell align="center">Quốc Cường</StyledTableCell>
-                        <StyledTableCell align="center">Nam</StyledTableCell>
-                        <StyledTableCell align="center">1992-02-12</StyledTableCell>
-                        <StyledTableCell align="center">
-                            <Button variant="outlined" color="default" align="center" >
-                                Chấp nhận
-                            </Button>
-                        </StyledTableCell>
-                    </StyledTableRow>
+                    {
+                        applicationsList.map(application => 
+                            <StyledTableRow >
+                                <StyledTableCell align="center">{application.doctor.firstName + " " + application.doctor.lastName}</StyledTableCell>
+                                <StyledTableCell align="center">{application.doctor.gender}</StyledTableCell>
+                                <StyledTableCell align="center">{application.doctor.birthday}</StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <Button variant="outlined" color="primary" align="center" onClick={() => {handleAcceptApplication(application.id)}}>
+                                        Chấp nhận
+                                    </Button>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        )
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
@@ -682,12 +731,156 @@ function ClinicRequestTable(props) {
 
 function SearchClinicsTable(props) {
     const classes = useStyles();
+    const { provinces } = props;
+
+    const [workPlaceList, setWorkPlaceList] = React.useState([]);
+    const [districtsList, setDistrictsList] = React.useState([]);
+    const [wardsList, setWardsList] = React.useState([]);
+    const [wardsListTemp, setWardsListTemp] = React.useState([]);
+    
+    const [type, setType] = React.useState(0);
+    const [openType, setOpenType] = React.useState(false);
+    const [place, setPlace] = React.useState(0);
+    const [openPlace, setOpenPlace] = React.useState(false);
+    const [keyword, setKeyword] = React.useState('');
+
+    const handleChangeType = (event) => {
+      setType(event.target.value);
+    };  
+    const handleCloseType = () => {
+      setOpenType(false);
+    };  
+    const handleOpenType = () => {
+      setOpenType(true);
+    };
+    const handleChangePlace = (event) => {
+      setPlace(event.target.value);
+    };  
+    const handleClosePlace = () => {
+      setOpenPlace(false);
+    };  
+    const handleOpenPlace = () => {
+      setOpenPlace(true);
+    };
+
+    const handleClickSearch = () => {
+        console.log(type + '-' + place + '-' + keyword);
+        const condition = {
+            keyword: keyword
+        }
+        APIService.getDoctorWorkPlace(token, condition, (success, json) => {
+            if (success, json.result) {
+                if (place === 0 && type === 0) {
+                    setWorkPlaceList(json.result);
+                    return;
+                }
+                let list = [];
+                json.result.forEach(element => {
+                    if (wardsList.length === 0 || (wardsList.find(ward => ward.id === element.wardId) !== undefined)) {
+                        if (type === 0 || (type === 1 && element.type === 'HOSPITAL') || (type === 2 && element.type === 'CLINIC')) {
+                            list.push(element);
+                        }
+                    }
+                });
+                setWorkPlaceList(list);
+            }
+        });
+    }
 
     useEffect(() => {
+        setWardsList([]);
+        if (place !== 0) {
+            APIService.getDistricts(place, (success, json) => {
+                if (success, json.result) {
+                    setDistrictsList(json.result);
+                }
+            });
+        }
+        else {
+            setDistrictsList([]);
+        }
+    }, [place]);
+
+    useEffect(() => {
+        if (districtsList.length !== 0) {
+            districtsList.forEach(district => {
+                APIService.getWards(district.id, (success, json) => {
+                    if (success, json.result) {
+                        setWardsListTemp(json.result);
+                    }
+                });
+            });
+        }
+    }, [districtsList]);
+
+    useEffect(() => {
+        setWardsList(wardsList.concat(wardsListTemp));
+    }, [wardsListTemp]);
+
+    useEffect(() => {
+        APIService.getDoctorWorkPlace(token, {}, (success, json) => {
+            if (success, json.result) {
+                setWorkPlaceList(json.result);
+            }
+        });
     }, []);
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{verticalAlign: 'middle'}}>
+            <div style={{marginBottom: '10px'}}>
+                <InputBase
+                    defaultValue="Điều kiện tìm kiếm: "
+                    disabled
+                    inputProps={{ 'aria-label': 'naked' }}
+                    style={{marginTop: '25px', marginLeft: '10px', width: '150px'}}
+                />
+                <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-controlled-open-select-label">Loại</InputLabel>
+                    <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        open={openType}
+                        onClose={handleCloseType}
+                        onOpen={handleOpenType}
+                        value={type}
+                        onChange={handleChangeType}
+                    >
+                        <MenuItem value={0}>Chọn loại</MenuItem>
+                        <MenuItem value={1}>Bệnh viện</MenuItem>
+                        <MenuItem value={2}>Phòng khám</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-controlled-open-select-label">Tỉnh</InputLabel>
+                    <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        open={openPlace}
+                        onClose={handleClosePlace}
+                        onOpen={handleOpenPlace}
+                        value={place}
+                        onChange={handleChangePlace}
+                    >
+                        <MenuItem value={0}>Chọn tỉnh</MenuItem>
+                        {
+                            provinces.map(province => 
+                                <MenuItem value={province.id}>{province.name}</MenuItem>
+                            )
+                        }
+                    </Select>
+                </FormControl>
+                <TextField
+                    label="Tên"
+                    id="margin-normal"
+                    defaultValue=""
+                    value={keyword}
+                    onChange={(e) => {setKeyword(e.target.value)}}
+                    className={classes.textField}
+                    helperText=""
+                    style={{marginTop:'8px'}}
+                />
+                <Button variant="contained" style={{marginLeft: '10px'}} onClick={handleClickSearch}>Tìm kiếm</Button>
+            </div>
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
@@ -700,20 +893,21 @@ function SearchClinicsTable(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <StyledTableRow >
-                        <StyledTableCell align="center">Phòng khám tư</StyledTableCell>
-                        <StyledTableCell align="center">Phòng khám Bách Khoa</StyledTableCell>
-                        <StyledTableCell align="center">Nguyễn An</StyledTableCell>
-                        <StyledTableCell align="center">Quận Tân Bình, Tp Hồ Chí Minh</StyledTableCell>
-                        <StyledTableCell align="center">
-                            <Button variant="outlined" color="default" align="center" >
-                                Chi tiết
-                            </Button>
-                            <Button variant="outlined" color="primary" align="center" >
-                                Nộp đơn
-                            </Button>
-                        </StyledTableCell>
-                    </StyledTableRow>
+                    {
+                        workPlaceList.map(item =>
+                            <StyledTableRow >
+                                <StyledTableCell align="center">{item.type}</StyledTableCell>
+                                <StyledTableCell align="center">{item.name}</StyledTableCell>
+                                <StyledTableCell align="center">{item.managerId}</StyledTableCell>
+                                <StyledTableCell align="center">{item.address}</StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <Button variant="outlined" color="default" align="center" onClick={() => {props.handleOpenClinicsDialog(item, false, true)}}>
+                                        Chi tiết
+                                    </Button>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        )
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
@@ -722,12 +916,46 @@ function SearchClinicsTable(props) {
 
 export default function WorkPlace() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = React.useContext(AppContext);
+
     const [value, setValue] = React.useState(TabCode.CLINICS);
     const [isOpenClinic, setIsOpenClinic] = React.useState(false);
-    
-    useEffect(() => {
-    }, []);
+    const [isEditMode, setIsEditMode] = React.useState(false);
+    const [isApplyMode, setIsApplyMode] = React.useState(false);
 
+    const [provinces, setProvinces] = React.useState([]);
+    const [myClinics, setMyClinics] = React.useState([]);
+    const [myManagementClinics, setMyManagementClinics] = React.useState([]);
+
+    const [clinic, setClinic] = React.useState({
+        id: 0, type: '', name: '', address: '', images: [], status: '', managerId: 0,
+    });
+    const [openClinicStatus, setOpenClinicStatus] = React.useState(false);
+    const [clinicStatus, setClinicStatus] = React.useState(0);
+    const [newClinicName, setNewClinicName] = React.useState('');
+    const [newClinicStatus, setNewClinicStatus] = React.useState('');
+    const [newClinicAddress, setNewClinicAddress] = React.useState('');
+
+    useEffect(() => {
+        APIService.getProvinces(
+            (success, json) => {
+                if (success && json.result) {
+                    setProvinces(json.result);
+                }
+            }
+        );
+        APIService.getDoctorWorkPlaceMy(token, (success, json) => {
+            if (success && json.result) {
+                setMyClinics(json.result);
+            }
+        });
+        APIService.getDoctorWorkPlaceManager(token, "", {}, (success, json) => {
+            if (success && json.result) {
+                setMyManagementClinics(json.result);
+            }
+        });
+    }, []);
 
     const imgList = [
         'https://cdnmedia.baotintuc.vn/Upload/4l8oGGp94lA5r6lHXppg/files/2021/06/nhidong1.jpg',
@@ -735,22 +963,83 @@ export default function WorkPlace() {
         'https://quantri.nhidong.org.vn/UploadImages/bvnhidong/PHP06/2018_6/20/1012.JPG?w=600',
     ];
 
-    const [clinic, setClinic] = React.useState({
-        type: '', name: '', address: '', images: [], status: '', managerId: 0,
-    });
-
-    const handleClinicsClickOpen = (data) => {
+    const handleOpenClinicsDialog = (data, isEdit, isApply) => {
         setIsOpenClinic(true);
+        setIsEditMode(isEdit);
+        setIsApplyMode(isApply);
         setClinic({
+            id: data.id,
             type: data.type,
             name: data.name,
             images: imgList,
             address: data.address,
             status: data.status,
             managerId: data.managerId,
-        })
+        });
+        setNewClinicName(data.name);
+        setNewClinicAddress(data.address);
+        if (data.status === 'ACTIVE'){
+            setClinicStatus(1);
+        }
+        else {
+            setClinicStatus(0);
+        }
     }
 
+    const handleApplyWorkPlace = () => {
+        let allow = true;
+        myClinics.forEach(item => {
+            if (item.id === clinic.id) {
+                enqueueSnackbar('Bạn đã nộp vào đây rồi!', { variant: 'error' });                
+                allow = false;
+            }
+        });
+        if (allow){
+            APIService.postDoctorWorkPlaceApply(
+                token,
+                clinic.id,
+                1,
+                (success, json) => {
+                    if (success, json.result) {
+                        enqueueSnackbar('Nộp đơn thành công!', { variant: 'success' });
+                    }
+                    else{
+                        enqueueSnackbar('Bạn đã nộp vào đây rồi!', { variant: 'error' });
+                    }
+                }
+            );
+        }
+    }
+
+    const handleClinicUpdateWorkPlace = () => {
+        console.log({
+            id: clinic.id,
+            clinicStatus,
+            newClinicName,
+            newClinicAddress,
+        });
+        APIService.putDoctorWorkPlace(
+            token,
+            {
+                id: clinic.id,
+                status: clinicStatus === 0 ? 'INACTIVE' : 'ACTIVE',
+                name: newClinicName,
+                address: newClinicAddress
+            },
+            (success, json) => {
+                if (success, json.result) {
+                    setIsOpenClinic(false);
+                    enqueueSnackbar('Cập nhật phòng khám thành công!', { variant: 'success' });
+                    APIService.getDoctorWorkPlaceMy(token, (success, json) => {
+                        if (success && json.result) {
+                            setMyClinics(json.result);
+                        }
+                    });
+                }
+            }
+        );
+    }
+    
     const handleClinicClose = () => {
         setIsOpenClinic(false);
     }
@@ -777,13 +1066,13 @@ export default function WorkPlace() {
                 </AntTabs>
             </div>
             <TabPanel value={value} index={0}>
-                <SearchClinicsTable />
+                <SearchClinicsTable provinces={provinces} handleOpenClinicsDialog={handleOpenClinicsDialog} myClinics={myClinics}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <MyClinicsTable handleOpenClinicsDialog={handleClinicsClickOpen} handleOpenClinicForm={handleClickOpenClinicForm} />
+                <MyClinicsTable handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicForm={handleClickOpenClinicForm} myClinics={myClinics} myManagementClinics={myManagementClinics}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ClinicRequestTable />
+                <ClinicRequestTable myManagementClinics={myManagementClinics}/>
             </TabPanel>
             <ClinicRegistrationDialogRaw
                 classes={{
@@ -811,20 +1100,22 @@ export default function WorkPlace() {
                         margin="dense"
                         id="name"
                         label="Tên phòng khám"
-                        defaultValue={clinic.name}
+                        value={newClinicName}
+                        onChange={(e) => {setNewClinicName(e.target.value)}}
                         fullWidth
                         InputProps={{
-                            readOnly: true,
+                            readOnly: !isEditMode,
                         }}
                     />
                     <TextField
                         margin="dense"
                         id="name"
                         label="Địa chỉ"
-                        defaultValue={clinic.address}
+                        value={newClinicAddress}
+                        onChange={(e) => {setNewClinicAddress(e.target.value)}}
                         fullWidth
                         InputProps={{
-                            readOnly: true,
+                            readOnly: !isEditMode,
                         }}
                     />
                     <TextField
@@ -837,16 +1128,24 @@ export default function WorkPlace() {
                             readOnly: true,
                         }}
                     />
-                    <TextField
-                        margin="dense"
-                        id="name"
-                        label="Trạng thái hoạt động"
-                        defaultValue={clinic.status}
-                        fullWidth
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
+                    <FormControl className={classes.formControl} fullWidth>
+                        <InputLabel id="demo-controlled-open-select-label">Trạng thái hoạt động</InputLabel>
+                        <Select
+                            labelId="demo-controlled-open-select-label"
+                            id="demo-controlled-open-select"
+                            open={openClinicStatus}
+                            onClose={() => {setOpenClinicStatus(false)}}
+                            onOpen={() => {setOpenClinicStatus(true)}}
+                            value={clinicStatus}
+                            onChange={(e) => {setClinicStatus(e.target.value)}}
+                            inputProps={{
+                                readOnly: !isEditMode,
+                            }}
+                        >
+                            <MenuItem value={0}>Ngừng hoạt động</MenuItem>
+                            <MenuItem value={1}>Đang hoạt động</MenuItem>
+                        </Select>
+                    </FormControl>
                     <br />
                     <h6>
                         {
@@ -860,7 +1159,19 @@ export default function WorkPlace() {
                     }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClinicClose} color="primary" variant="outlined">
+                    {
+                        isApplyMode ?
+                        <Button onClick={handleApplyWorkPlace} color="primary" variant="contained" >
+                            Nộp đơn
+                        </Button> : null
+                    }
+                    {
+                        isEditMode ?
+                        <Button onClick={handleClinicUpdateWorkPlace} color="primary" variant="contained" >
+                            Xác nhận
+                        </Button> : null
+                    }
+                    <Button onClick={handleClinicClose} color="default" variant="outlined">
                         Close
                     </Button>
                 </DialogActions>
