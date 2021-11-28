@@ -274,11 +274,10 @@ export default class APIService {
 	}
 
 	// api for Forgot Password
-	static forgotPassword(token, newPassword, code, type, email, phoneNumber, callback) {
+	static forgotPassword( newPassword, code, type, email, phoneNumber, callback) {
 		WebService.sendJsonPUT(
 			this.apiForgotPassword(),
 			{
-				jwt : token,
 				newPassword,
 				code,
 				type,

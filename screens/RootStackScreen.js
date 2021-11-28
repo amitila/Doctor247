@@ -7,6 +7,7 @@ import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import SignInByPhoneScreen from './SignInByPhoneScreen';
 import SignUpByPhoneScreen from './SignUpByPhoneScreen';
+import ForgotPassScreen from './ForgotPassScreen';
 
 const RootStack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="SignInByPhoneScreen" component={SignInByPhoneScreen}/>
         <RootStack.Screen name="SignUpScreen" component={SignUpScreen}/>
         <RootStack.Screen name="SignUpByPhoneScreen" component={SignUpByPhoneScreen}/>
+        <RootStack.Screen name="ForgotPassScreen" component={ForgotPassScreen}/>
     </RootStack.Navigator>
 );
 

@@ -251,7 +251,10 @@ const SignInScreen = ({ navigation }) => {
 
 
 				<TouchableOpacity>
-					<Text style={{ color: '#036ffc', marginTop: 15 }}>Quên mật khẩu?</Text>
+					<Text 
+						onPress={() => navigation.navigate('ForgotPassScreen')} 
+						style={{ color: '#036ffc', marginTop: 15 }}
+					>Quên mật khẩu?</Text>
 				</TouchableOpacity>
 				<View style={styles.button}>
 					<TouchableOpacity
