@@ -154,39 +154,38 @@ const MedicalRecordScreen = ({ navigation }) => {
 	}
 
     return (
-        <ScrollView>
-			
-			<View style={{alignItems: 'center', marginTop: 10}}>
+        <ScrollView style={{backgroundColor: '#a5f2c9'}}>
+			<View style={{alignItems: 'center', marginTop: 10, backgroundColor: '#ecf549', padding: 20, marginLeft: 10, marginRight: 10, borderRadius: 30}}>
 				<Text style={{fontSize: 25, fontWeight: 'bold'}}>Hồ sơ bệnh án</Text>
 			</View>
             <View style={styles.container}>
                 <Dialog.Container visible={visible}>
-                    <Dialog.Title>Bệnh án #{info.id}</Dialog.Title>
+                    <Dialog.Title style={{fontWeight: 'bold', textAlign: 'center'}}>Bệnh án #{info.id}</Dialog.Title>
 					<ScrollView>
 						<Dialog.Description style={{textAlign: 'center'}}>
-							Chế độ xem:		{info.status === 'PUBLIC' ? 'Mọi người' : info.status === 'PRIVATE' ? 'Chỉ mình tôi' : 'Chỉ bác sĩ khám'} {"\n"}{"\n"}
-							Họ và tên:		{info.patient} {"\n"}{"\n"}
-							Ngày khám bệnh:	{info.dateTime} {"\n"}{"\n"}
-							Ngày trả kết quả: {info.createdAt} {"\n"}{"\n"}
-							Giờ khám:		{info.hour} {"\n"}{"\n"}
-							Bác sĩ khám:	{info.doctor + ' _MS:BS100' + info.doctorId} {"\n"}{"\n"}
-							Triệu chứng:	{info.symptom.length ? info.symptom.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
-							Đã chẩn đoán:	{info.diagnostic.length ? info.diagnostic.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
-							Thuốc dùng:		{info.dose.length ? info.dose.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}
-							Lưu ý bác sĩ:	{info.note} {"\n"}{"\n"}
-							Chi phí khám:	{info.medicalExpense} {"\n"}{"\n"}
-							Hình ảnh:{"\n"}	{info.images.length ? info.images.map(item => {
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Chế độ xem  |		{info.status === 'PUBLIC' ? 'Mọi người' : info.status === 'PRIVATE' ? 'Chỉ mình tôi' : 'Chỉ bác sĩ khám'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Họ và tên  |		{info.patient} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Ngày khám bệnh  |	{info.dateTime} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Ngày trả kết quả  | {info.createdAt} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Giờ khám  |		{info.hour} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Bác sĩ khám  |	{info.doctor + ' _MS:BS100' + info.doctorId} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Triệu chứng  |	{info.symptom.length ? info.symptom.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Đã chẩn đoán  |	{info.diagnostic.length ? info.diagnostic.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Thuốc dùng  |		{info.dose.length ? info.dose.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Lưu ý bác sĩ  |	{info.note} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Chi phí khám  |	{info.medicalExpense} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'blue', fontWeight: 'bold'}}>Hình ảnh  | {"\n"}	{info.images.length ? info.images.map(item => {
 															return <Image
 																key={item}
 																source={{ uri: item }}
 																style={{ width: 120, height: 150 }}
 															/>
-														}) : 'Không có'} {"\n"}{"\n"}
-							Tài liệu đính kèm:{"\n"}	{info.files.length ? info.files.map((item, i) => {
+														}) : 'Không có'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Tài liệu đính kèm:{"\n"}	{info.files.length ? info.files.map((item, i) => {
 															return <Text key={i} onPress={()=>downloadDocument(item)} style={{textDecorationLine:'underline', color: 'brown'}}>
 																		Tài liệu {i+1}{"\n"}
 																	</Text>
-														}) : 'Không có'} {"\n"}
+														}) : 'Không có'} {"\n"}</Text>
 						</Dialog.Description>
 					</ScrollView>
                     <Dialog.Button label="Quay về" onPress={handleCancel} />
@@ -198,7 +197,7 @@ const MedicalRecordScreen = ({ navigation }) => {
                         <Card key={i}>
                             <Card.Title>
                                 <SafeAreaView style={styles.container}>
-                                    <Text>
+                                    <Text style={{fontWeight: 'bold', fontSize: 20}}>
                                         Mã nhận dạng: #{item.id}
                                     </Text>
                                     <Text>
@@ -235,7 +234,7 @@ const MedicalRecordScreen = ({ navigation }) => {
 								</View>
                                 <Button
                                     // icon={<Icon name='code' color='#ffffff' />}
-                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: '#25995b'}}
                                     title='Chi tiết' 
                                     onPress={() => showDialog(
                                         item.id,

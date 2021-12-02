@@ -240,7 +240,7 @@ const FamilyScreen = ({ navigation }) => {
                     {
                         open ? <Button
                             // icon={<Icon name='code' color='#ffffff' />}
-                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350 }}
+                            buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350, padding: 20 }}
                             title='Thêm hồ sơ' 
                             onPress={()=>setOpen(false)}
                         /> : <GuardianForm onClose={onClose} />
@@ -254,12 +254,12 @@ const FamilyScreen = ({ navigation }) => {
                             <Button
                                 onPress={()=>sendCode(info.id, 'EMAIL')}
                                 // icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
+                                buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
                                 title='Qua Email' />{'          '}
                             <Button
                                 onPress={()=>sendCode(info.id, 'PHONE')}
                                 // icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'brown' }}
+                                buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'brown' }}
                                 title='Qua Sms' />
                             
                         </Dialog.Description>
@@ -339,7 +339,7 @@ const FamilyScreen = ({ navigation }) => {
                         <Button
                                 onPress={verifyGuardianUser}
                                 // icon={<Icon name='code' color='#ffffff' />}
-                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
+                                buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green' }}
                                 title='Nhận mã xác thực' />
                         {
                             openCode ? <>
@@ -385,7 +385,7 @@ const FamilyScreen = ({ navigation }) => {
                                         <Text>
                                             Hồ sơ số {i} của {item.relationship}
                                         </Text>
-                                        <Text>
+                                        <Text style={{fontWeight: 'bold'}}>
                                             {item.firstName + ' ' + item.lastName}
                                         </Text>
                                         <Text>
@@ -417,7 +417,7 @@ const FamilyScreen = ({ navigation }) => {
                                         <Button
                                             onPress={()=>showDialogDel(item.userTwoId)}
                                             // icon={<Icon name='code' color='#ffffff' />}
-                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'red' }}
+                                            buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'red' }}
                                             title={`Xóa thẻ ${item.firstName + ' ' + item.lastName}`} />
                                     </View>
                                     <View style={{marginTop: 5}}></View>
@@ -425,7 +425,7 @@ const FamilyScreen = ({ navigation }) => {
                                         <Button
                                             onPress={()=>showDialog(item.firstName+" "+item.lastName, item.userTwoId)}
                                             // icon={<Icon name='code' color='#ffffff' />}
-                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                            buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: 'green'}}
                                             title={`Tạo tài khoản cho ${item.firstName + ' ' + item.lastName}`} />
                                     </View>
                                 </View>

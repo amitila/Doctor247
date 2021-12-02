@@ -44,15 +44,15 @@ const HomeScreen = ({ navigation }) => {
 	const theme = useTheme();
 
 	return (
-		<View>
+		<View style={{backgroundColor: '#d0eaf2'}}>
 			<StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
 			{/* <Text style={{ color: colors.text }}>Home Screen</Text>
 			<Button
 				title="Go to details screen"
 				onPress={() => navigation.navigate("Details")}
 			/> */}
-				<Card>
-					<Card.Title style={{backgroundColor: '#b9e3fa'}} >
+				<Card> 
+					<Card.Title style={{backgroundColor: 'white'}} >
 						<View style={styles.container}>
 							<SafeAreaView style={styles.goldContainer}>
 								<Icon 
@@ -132,8 +132,8 @@ const HomeScreen = ({ navigation }) => {
 				<View>
 					<SliderBox
 						images={images}
-						sliderBoxHeight={300}
-						ImageComponentStyle={{borderRadius: 10, width: '100%', marginTop: 4}}
+						sliderBoxHeight={260}
+						ImageComponentStyle={{borderRadius: 10, width: '90%', marginTop: 4}}
 						autoplay
 						circleLoop
 						// parentWidth={340}

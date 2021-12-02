@@ -89,8 +89,8 @@ export function DrawerContent(props) {
 						<DrawerItem
 							icon={({ color, size }) => (
 								<Icon
-									name="home-outline"
-									color={color}
+									name="home"
+									color={'blue'}
 									size={size}
 								/>
 							)}
@@ -100,30 +100,19 @@ export function DrawerContent(props) {
 						<DrawerItem
 							icon={({ color, size }) => (
 								<Icon
-									name="account-outline"
-									color={color}
+									name="account"
+									color={'blue'}
 									size={size}
 								/>
 							)}
 							label="Cá nhân"
 							onPress={() => { props.navigation.navigate('Profile') }}
-						/>
+						/>						
 						<DrawerItem
 							icon={({ color, size }) => (
 								<Icon
-									name="bookmark-outline"
-									color={color}
-									size={size}
-								/>
-							)}
-							label="Điều khoản"
-							onPress={() => { props.navigation.navigate('Điều khoản') }}
-						/>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<Icon
-									name="cog-outline"
-									color={color}
+									name="cog"
+									color={'blue'}
 									size={size}
 								/>
 							)}
@@ -133,13 +122,26 @@ export function DrawerContent(props) {
 						<DrawerItem
 							icon={({ color, size }) => (
 								<Icon
-									name="account-check-outline"
-									color={color}
+									// name="account-check-outline"
+									name='chat-outline'
+									color={'blue'}
 									size={size}
 								/>
 							)}
-							label="Hỗ trợ"
-							onPress={() => { props.navigation.navigate('Hỗ trợ') }}
+							label="Trò chuyện - Tư vấn"
+							onPress={() => { props.navigation.navigate('Trò chuyện - Tư vấn trực tuyến') }}
+						/>
+						<DrawerItem
+							icon={({ color, size }) => (
+								<Icon
+									// name="bookmark-outline"
+									name='facebook'
+									color={'blue'}
+									size={size}
+								/>
+							)}
+							label="Fanpage Doctor247"
+							onPress={() => { props.navigation.navigate('Fanpage Doctor247') }}
 						/>
 					</Drawer.Section>
 					<Drawer.Section title="Tùy chọn">
@@ -156,6 +158,7 @@ export function DrawerContent(props) {
 			</DrawerContentScrollView>
 			<Drawer.Section style={styles.bottomDrawerSection}>
 				<DrawerItem
+					style={{color: 'green', backgroundColor: '#fcc6c0', fontWeight: 'bold'}}
 					icon={({ color, size }) => (
 						<Icon
 							name="exit-to-app"
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
 	bottomDrawerSection: {
 		marginBottom: 15,
 		borderTopColor: '#f4f4f4',
-		borderTopWidth: 1
+		borderTopWidth: 1,
 	},
 	preference: {
 		flexDirection: 'row',

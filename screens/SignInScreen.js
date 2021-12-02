@@ -286,13 +286,13 @@ const SignInScreen = ({ navigation }) => {
 					<TouchableOpacity
 						onPress={() => navigation.navigate('SignUpScreen')}
 						style={[styles.signIn, {
-							borderColor: '#036ffc',
+							borderColor: '#e8aa35',
 							borderWidth: 1,
 							marginTop: 15
 						}]}
 					>
 						<Text style={[styles.textSign, {
-							color: '#036ffc'
+							color: '#e8aa35'
 						}]}>Đăng ký tài khoản</Text>
 					</TouchableOpacity>
 				</View>

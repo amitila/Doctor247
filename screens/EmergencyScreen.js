@@ -124,8 +124,8 @@ const EmergencyScreen = ({ navigation }) => {
 
 	return (
 		<ScrollView>
-			<View style={{alignItems: 'center', marginTop: 10}}>
-				<Text style={{fontSize: 25, fontWeight: 'bold'}}>Trường hợp khẩn cấp</Text>
+			<View style={{alignItems: 'center', marginTop: 10, backgroundColor: 'red', padding: 20, marginLeft: 10, marginRight: 10, borderRadius: 30}}>
+				<Text style={{fontSize: 25, fontWeight: 'bold', color: 'yellow'}}>Trường hợp khẩn cấp</Text>
 			</View>
 			{
 				open ? <View style={styles.container}>

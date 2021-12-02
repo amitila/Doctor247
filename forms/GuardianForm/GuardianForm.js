@@ -237,11 +237,6 @@ const GuardianForm = (props) => {
 						marginTop: 35
 					}]}>Mã BHYT (nếu có)</Text>
 					<View style={styles.action}>
-						<FontAwesome
-							name="user-o"
-							color="#05375a"
-							size={20}
-						/>
 						<TextInput
 							placeholder="Mã BHYT (nếu có)"
 							value={data.healthInsuranceCode}
@@ -258,11 +253,6 @@ const GuardianForm = (props) => {
 						marginTop: 35
 					}]}>Số điện thoại</Text>
 					<View style={styles.action}>
-						<FontAwesome
-							name="user-o"
-							color="#05375a"
-							size={20}
-						/>
 						<TextInput
 							placeholder="Số điện thoại"
 							value={data.phoneNumber}
@@ -279,11 +269,6 @@ const GuardianForm = (props) => {
 						marginTop: 35
 					}]}>Địa chỉ email</Text>
 					<View style={styles.action}>
-						<FontAwesome
-							name="user-o"
-							color="#05375a"
-							size={20}
-						/>
 						<TextInput
 							placeholder="Địa chỉ email"
 							value={data.email}
@@ -317,11 +302,6 @@ const GuardianForm = (props) => {
 						marginTop: 35
 					}]}>Địa chỉ cụ thể</Text>
 					<View style={styles.action}>
-						<FontAwesome
-							name="user-o"
-							color="#05375a"
-							size={20}
-						/>
 						<TextInput
 							placeholder="Địa chỉ cụ thể"
 							value={data.address}

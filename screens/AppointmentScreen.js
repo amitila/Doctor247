@@ -279,7 +279,7 @@ const AppointmentScreen = ({ navigation }) => {
                 {
                     open ? <Button
                         // icon={<Icon name='code' color='#ffffff' />}
-                        buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350 }}
+                        buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350, padding: 20 }}
                         title='Tạo lịch khám' 
                         onPress={()=>setOpen(false)}
                     /> : <AppointmentForm onClose={onClose} patients={patients} doctorcards={doctorcards} />
@@ -304,10 +304,10 @@ const AppointmentScreen = ({ navigation }) => {
             }
             <View style={styles.container}>
                 <Dialog.Container visible={visible}>
-                    <Dialog.Title>Lịch khám #{info.id}</Dialog.Title>
+                    <Dialog.Title style={{fontWeight: 'bold', textAlign: 'center'}}>Lịch khám #{info.id}</Dialog.Title>
                     <ScrollView>
                         <Dialog.Description style={{textAlign: 'center'}}>
-                            Tình trạng:	
+                            <Text style={{color: 'green', fontWeight: 'bold'}}>Tình trạng  |
                                 {
                                     info.status === "WAITING_PAYMENT" ? " Chờ thanh toán" : ""
                                 }
@@ -326,14 +326,14 @@ const AppointmentScreen = ({ navigation }) => {
                                 {
                                     info.status === "CUSTOMER_CANCEL" ? " Tôi đã hủy" : ""
                                 }
-                            {"\n"}{"\n"}
-                            Họ và tên:	{info.guardian?.firstName + ' ' + info.guardian?.lastName} {"\n"}{"\n"}
-                            Ngày tạo lịch khám:	{info.createdAt} {"\n"}{"\n"}
-                            Ngày được khám:	{info.dateTime} {"\n"}{"\n"}
-                            Thời gian khám:	{info.hour} {"\n"}{"\n"}
-                            Bác sĩ khám:	{info.doctor?.firstName + ' ' + info.doctor?.lastName} {"\n"}{"\n"}
-                            Mô tả triệu chứng:	{info.description?.map(item => {return item + ', '})} {"\n"}{"\n"}{"\n"}
-                            Thanh toán:	{"\n"}
+                            {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'blue', fontWeight: 'bold'}}>Họ và tên  |	{info.guardian?.firstName + ' ' + info.guardian?.lastName} {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'green', fontWeight: 'bold'}}>Ngày tạo lịch khám  |	{info.createdAt} {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'blue', fontWeight: 'bold'}}>Ngày được khám  |	{info.dateTime} {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'green', fontWeight: 'bold'}}>Thời gian khám  |	{info.hour} {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'blue', fontWeight: 'bold'}}>Bác sĩ khám  |	{info.doctor?.firstName + ' ' + info.doctor?.lastName} {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'green', fontWeight: 'bold'}}>Mô tả triệu chứng  |	{info.description?.map(item => {return item + ', '})} {"\n"}{"\n"}{"\n"}</Text>
+                            <Text style={{color: 'blue', fontWeight: 'bold'}}>Thanh toán  |	{"\n"}
                                 {
                                     info.status === "WAITING_PAYMENT" ? 
                                         <Button
@@ -344,14 +344,14 @@ const AppointmentScreen = ({ navigation }) => {
                                         /> 
                                         : " Đã thanh toán"
                                 }
-                            {"\n"}{"\n"}
-                            Ảnh đính kèm:{"\n"}	{info.images?.map(item => {
+                            {"\n"}{"\n"}</Text>
+                            <Text style={{color: 'green', fontWeight: 'bold'}}>Ảnh đính kèm  | {"\n"}	{info.images?.map(item => {
                                 return <Image
                                     key={item}
                                     source={{ uri: item }}
                                     style={{ width: 120, height: 150 }}
                                 />
-                            })} {"\n"}
+                            })} {"\n"}</Text>
                         </Dialog.Description>
                     </ScrollView>
                     <Dialog.Button label="Hủy lịch" onPress={()=>handleDelete(info.id)} />
@@ -364,7 +364,7 @@ const AppointmentScreen = ({ navigation }) => {
                         <Card key={i}>
                             <Card.Title>
                                 <SafeAreaView style={styles.container}>
-                                    <Text>
+                                    <Text style={{fontWeight: 'bold', fontSize: 20}}>
                                         Mã nhận dạng: #{item.id}
                                     </Text>
                                     <Text>
@@ -397,7 +397,7 @@ const AppointmentScreen = ({ navigation }) => {
                             <View>
                                 <Button
                                     // icon={<Icon name='code' color='#ffffff' />}
-                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: '#25995b' }}
                                     title='Chi tiết' 
                                     onPress={() => showDialog(
                                         item.id,

@@ -198,36 +198,36 @@ const SpecialityScreen = ({ navigation }) => {
     return (
         <>
             <Dialog.Container visible={visible}>
-                <Dialog.Title style={{textAlign: 'center', color: '#a024ed'}}>Thông tin chuyên khoa {info.name}</Dialog.Title>
+                <Dialog.Title style={{fontWeight: 'bold', textAlign: 'center', color: '#a024ed'}}>Thông tin chuyên khoa {info.name}</Dialog.Title>
                 <ScrollView>
                     <Dialog.Description>
                         {/* Avatar */}
-                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Chuyên khoa {info.name}
                         </Text>
                         {'\n'}{'\n'}
-                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Giới thiệu
                         </Text>{'\n'}
                         <Text>{info.introduce}</Text>
                         {'\n'}{'\n'}
-                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Triệu chứng 
                         </Text>{'\n'}
                         <Text>{info.symptom}</Text>
                         {'\n'}{'\n'}
-                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Chữa trị 
                         </Text>{'\n'}
                         <Text>{info.treatment}</Text>
                         {'\n'}{'\n'}
-                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Liên quan 
                         </Text>{'\n'}
                         <Text>{info.related}</Text>
                         {'\n'}{'\n'}
 
-                        <Text style={{marginTop: 10, fontSize: 20, alignItems: 'center'}}>
+                        <Text style={{marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>
                             Hình ảnh
                         </Text>{'\n'}
                         <Text>
@@ -259,7 +259,7 @@ const SpecialityScreen = ({ navigation }) => {
                                     <View>
                                         <Button
                                             // icon={<Icon name='code' color='#ffffff' />}
-                                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                            buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                                             title='Tìm hiểu thêm'
                                             onPress={()=>showDialog(
                                                 item.avatar,

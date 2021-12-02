@@ -137,7 +137,7 @@ const AnswerForm = (props) => {
 								<Text>
 									Tiêu đề #{question.id}:
 								</Text>
-								<Text>
+								<Text style={{fontWeight: 'bold'}}>
 									{question.title}
 								</Text>
 							</SafeAreaView>
@@ -191,10 +191,10 @@ const AnswerForm = (props) => {
 										</SafeAreaView>
 										{'\n'}
 										<SafeAreaView style={styles.containerQuestion}>
-											<Text>
+											<Text style={{fontWeight: 'bold'}}>
 												BS.{item.doctorName}
 											</Text>
-											<Text>
+											<Text style={{fontWeight: 'bold'}}>
 												Mã số: BS100{item.doctorId} | {item.specialized}
 											</Text>
 										</SafeAreaView>
@@ -221,6 +221,7 @@ const AnswerForm = (props) => {
 											// icon={<Icon name='code' color='#ffffff' />}
 											// onPress={()=>showBookForm(patients, doctorId)}
 											// onPress={() => navigation.navigate('Danh sách bác sĩ')}
+											color='#9c6225'
 											buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
 											title='Đặt khám' />
 									</View>

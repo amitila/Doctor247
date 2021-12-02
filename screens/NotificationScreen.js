@@ -67,7 +67,7 @@ const NotificationScreen = ({ navigation }) => {
 
 	return (
         <ScrollView>
-            <View style={{alignItems: 'center', marginTop: 10, marginBottom: 10}}>
+            <View style={{alignItems: 'center', marginTop: 10, backgroundColor: '#ecf549', padding: 20, marginLeft: 10, marginRight: 10, borderRadius: 30}}>
 				<Text style={{fontSize: 25, fontWeight: 'bold'}}>Hôm nay có gì ?</Text>
 			</View>
             {

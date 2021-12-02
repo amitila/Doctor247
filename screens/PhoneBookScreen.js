@@ -112,7 +112,7 @@ const PhoneBookScreen = ({ navigation }) => {
 
     return (
         <>
-            <ScrollView>
+            <ScrollView style={{padding: 10}}>
                 <View>
                     <Text style={styles.note}>
                         Đây là danh sách các bệnh viện mà hệ thống đã thu thập được 
@@ -157,13 +157,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        color: '#4f603c'
+        color: '#4f603c',
+        fontWeight: 'bold'
     },
     note: {
         fontSize: 20, 
         color: 'red', 
         textAlign: 'center', 
         backgroundColor: 'pink', 
-        padding: 10
+        padding: 10,
+        fontWeight: 'bold'
     }
 });

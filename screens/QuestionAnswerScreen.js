@@ -113,7 +113,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                 {
                     open ? <Button
                         // icon={<Icon name='code' color='#ffffff' />}
-                        buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350 }}
+                        buttonStyle={{ borderRadius: 10, marginLeft: 0, marginRight: 0, marginTop: 10, marginBottom: 0, width: 350, padding: 20 }}
                         title='Đăng câu hỏi' 
                         onPress={()=>setOpen(false)}
                     /> : <QuestionForm onClose={onClose} />
@@ -133,7 +133,7 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                     <Text>
                                         Tiêu đề #{item.id}:
                                     </Text>
-                                    <Text>
+                                    <Text style={{fontWeight: 'bold'}}>
                                         {item.title}
                                     </Text>
                                 </SafeAreaView>
@@ -182,8 +182,8 @@ const QuestionAnswerScreen = ({ navigation }) => {
                                         item.liked,
                                         item.saved
                                     )}
-                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                    title='Xem bình luận' 
+                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, borderRadius: 10, marginTop: 10, backgroundColor: 'purple'}}
+                                    title='<Xem bình luận>' 
                                 />
                             </View>
                         </Card>

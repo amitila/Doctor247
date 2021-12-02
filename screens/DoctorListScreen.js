@@ -358,6 +358,7 @@ const DoctorListScreen = ({ navigation }) => {
                             <View>
                                 <Button 
                                     title="Thông tin bác sĩ" 
+                                    buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: '#25995b'}}
                                     onPress={()=>showDoctorForm(patients, doctorId, doctorName)} />
                             </View>
                             <Card.Divider />
@@ -365,7 +366,7 @@ const DoctorListScreen = ({ navigation }) => {
                                 <Button
                                     // icon={<Icon name='code' color='#ffffff' />}
                                     onPress={()=>showBookForm(patients, doctorId, doctorName)}
-                                    buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    buttonStyle={{ borderRadius: 20, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                                     title='Đặt khám' />
                             </View>
                             {/* <Card.Image>

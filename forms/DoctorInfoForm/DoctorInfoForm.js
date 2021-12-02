@@ -65,7 +65,7 @@ const DoctorInfoForm = (props) => {
 						<Text style={{fontWeight: 'bold'}}>Giới thiệu</Text> {'\n'}
 						{
 							infoOfDoctor.introduce ? infoOfDoctor.introduce.map((item, index) => {
-								return <Text key={index}>{`- ${item}`}<br/></Text>
+								return <Text key={index}>{`- ${item}`}{'\n'}</Text>
 							}) : <Text>Đang cập nhật</Text>
 						}
 					</Text>
@@ -102,7 +102,7 @@ const DoctorInfoForm = (props) => {
 						<Text style={{fontWeight: 'bold'}}>Quá trình công tác</Text> {'\n'}
 						{
 							infoOfDoctor.workHistory ? infoOfDoctor.workHistory.map((item, index) => {
-								return <Text key={index}>{`- ${item}`}<br/></Text>
+								return <Text key={index}>{`- ${item}`}{'\n'}</Text>
 							}) : <Text>Đang cập nhật</Text>
 						}
 					</Text>
@@ -115,7 +115,7 @@ const DoctorInfoForm = (props) => {
 						<Text style={{fontWeight: 'bold'}}>Chuyên chữa và điều trị</Text> {'\n'}
 						{
 							infoOfDoctor.medicalExamination ? infoOfDoctor.medicalExamination.map((item, index) => {
-								return <Text key={index}>{`- ${item}`}<br/></Text>
+								return <Text key={index}>{`- ${item}`}{'\n'}</Text>
 							}) : <Text>Đang cập nhật</Text>
 						}
 					</Text>

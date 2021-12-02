@@ -16,9 +16,9 @@ import {
 import { DrawerContent } from './screens/DrawerContent';
 
 import MainTabScreen from './screens/MainTabScreen';
-import SupportScreen from './screens/SupportScreen';
+import ChatAndVideoCallScreen from './screens/ChatAndVideoCallScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import BookmarkScreen from './screens/BookmarkScreen';
+import FanpageDoctor247Screen from './screens/FanpageDoctor247Screen';
 
 import { AuthContext } from './components/context';
 
@@ -170,9 +170,9 @@ const App = () => {
 					{loginState.userToken !== null ? (
 						<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
 							<Drawer.Screen name="Ứng dụng Doctor 247" component={MainTabScreen} />
-							<Drawer.Screen name="Hỗ trợ" component={SupportScreen} />
+							<Drawer.Screen name="Trò chuyện - Tư vấn trực tuyến" component={ChatAndVideoCallScreen} />
 							<Drawer.Screen name="Cài đặt" component={SettingsScreen} />
-							<Drawer.Screen name="Điều khoản" component={BookmarkScreen} />
+							<Drawer.Screen name="Fanpage Doctor247" component={FanpageDoctor247Screen} />
 							<Drawer.Screen name="Danh sách bác sĩ" component={DoctorListScreen} />
 							<Drawer.Screen name="Lịch khám" component={AppointmentScreen} />
 							<Drawer.Screen name="Hỏi đáp cùng bác sĩ" component={QuestionAnswerScreen} />
