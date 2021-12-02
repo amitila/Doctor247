@@ -12,7 +12,7 @@ const FanpageDoctor247Screen = ({navigation}) => {
 		// 	/>
 		// </View>
 		<WebView 
-			originWhitelist={['*']}
+			// originWhitelist={['*']}
 			source={{ uri: 'https://www.facebook.com/doctor247DHT' }} 
 		/>
 	);
