@@ -28,7 +28,7 @@ export default function UploadImage(props) {
 	const checkForCameraRollPermission = async () => {
 		const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
 		if (status !== 'granted') {
-			alert("Vui lòng cấp quyền cho camera bên trong cài đặt hệ thống của bạn");
+			// alert("Vui lòng cấp quyền cho camera bên trong cài đặt hệ thống của bạn");
 		} else {
 			console.log('Quyền phương tiện đã được cấp')
 		}

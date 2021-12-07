@@ -101,6 +101,16 @@ const DoctorListScreen = ({ navigation }) => {
                             }
                             return patientList.push(item);
                         })
+                        if(patientList.length === 0) {
+                            patientList.push({
+                                userTwoId: '',
+                                userTwo: {
+                                    firstName: me.name,
+                                    lastName: ' (Tôi)',
+                                    avatarURL: me.avatar
+                                }
+                            })
+                        }
                         setPatients(patientList?.map(item => {
                             return {
                                 id: item.id,

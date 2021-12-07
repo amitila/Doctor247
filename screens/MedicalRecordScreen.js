@@ -171,7 +171,7 @@ const MedicalRecordScreen = ({ navigation }) => {
 							<Text style={{color: 'blue', fontWeight: 'bold'}}>Bác sĩ khám  |	{info.doctor + ' _MS:BS100' + info.doctorId} {"\n"}{"\n"}</Text>
 							<Text style={{color: 'green', fontWeight: 'bold'}}>Triệu chứng  |	{info.symptom.length ? info.symptom.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
 							<Text style={{color: 'blue', fontWeight: 'bold'}}>Đã chẩn đoán  |	{info.diagnostic.length ? info.diagnostic.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
-							<Text style={{color: 'green', fontWeight: 'bold'}}>Thuốc dùng  |		{info.dose.length ? info.dose.map(item => {return item + ', '}) : 'Không có'} {"\n"}{"\n"}</Text>
+							<Text style={{color: 'green', fontWeight: 'bold'}}>Thuốc dùng  |	{'Không có'}</Text>
 							<Text style={{color: 'blue', fontWeight: 'bold'}}>Lưu ý bác sĩ  |	{info.note} {"\n"}{"\n"}</Text>
 							<Text style={{color: 'green', fontWeight: 'bold'}}>Chi phí khám  |	{info.medicalExpense} {"\n"}{"\n"}</Text>
 							<Text style={{color: 'blue', fontWeight: 'bold'}}>Hình ảnh  | {"\n"}	{info.images.length ? info.images.map(item => {

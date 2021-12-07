@@ -100,6 +100,16 @@ const SignUpByPhoneScreen = ({ navigation }) => {
 				{ text: 'Okay' }
 			]);
 		}
+		else if(data.password.length < 4 || data.confirm_password.length < 4) {
+			Alert.alert('Lỗi mật khẩu!', 'Vui lòng nhập mật khẩu từ 4 ký từ trở lên', [
+				{ text: 'Okay' }
+			]);
+		}
+		else if(data.password != data.confirm_password) {
+			Alert.alert('Mật khẩu không khớp!', 'Vui lòng nhập lại mật khẩu và xác nhận mật khẩu.', [
+				{ text: 'Okay' }
+			]);
+		}
 		else {
 			APIService.signUp({
 				registerType: 'PHONE',

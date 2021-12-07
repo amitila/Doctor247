@@ -188,7 +188,7 @@ const ProfileForm = ({ navigation }) => {
 							onPress={() => Alert.alert("Avatar")}
 						/> */}
 						<View style={styles.avatar}>
-							<UploadImage url={data.avatar ? data.avatar : 'https://img.favpng.com/21/13/5/user-profile-default-computer-icons-network-video-recorder-png-favpng-7dPZA8WRdY80Uw3bdMWkEN4fR.jpg'} getUri={getUri} />
+							<UploadImage url={data.avatar ? data.avatar : 'https://lh3.googleusercontent.com/RNW7C92ezrXYI1oLR1aIlHu15yP07j9FsxIAiIs3HiZlfhE1JmdeKP68Gnpo5cmg_eSpU6xHta5QVKnOKuiCS-ROB3QpRFssVL17QhKoXn9bzprndasPBX9-5U3CQSLbKsyhSn9U02zfYmwpto1S7EguRRUIHPVx21d0Nr9JMogjwq1C8nJRZUM_crzCNBJG9Psnl89T1vXF6oxb585zIbuMHOj-JkF8jMqeJ4NPlLk8KuJFGTuu2JhVLZOotPEkW5h8qpoJfHveiXgRVkF1hrm-9yUp1JqGlwSszkj350HRExQdlK6m698dUTd0VkbwsIOABVK4dbCdX6-m-D4F5jQrkpn7zmB62Vj2n_pOV1kqpfXj5lhFoJ82YQhY-qp6ifM39yI2rB-dNByl4eVWSa8ycYE8OrR3zcFsss5mO4ZINpA8MMcCl_lEH2iwjjKv0LfLqZ6MfzRP-G0DRZ7WQQ4EYOy06AzgGlMFhs5JKXslNf6TZTmzxOnlYJs4NsEGg2RIcg8FXyT2EKgm_3GwXkFeQRYj0tvThSSuS8dxmryNeB0mTS8Uw4m2YUaGSGu7VfXrpNi05s0T_RXSH6V5jGOXdKkXYStyySGZjCLLvLklA2GLqtLknaUFLPdmQdGEEfnkPZIr0GWyGhzUIkJ32uvDpF-HXF9Ji-Kq-w2Y8DVov-nJsbO9EkDxZ_x63oWaOajCemwvp_H7O1sJZ9rAE9ctug=s500-no?authuser=0'} getUri={getUri} />
 							<Text style={{ marginVertical: 20, fontSize: 16 }}>Xin chào, {data.firstName + ' ' + data.lastName}</Text>
 						</View>
 					</View>

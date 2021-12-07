@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, TextInput, Picker } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Image, SafeAreaView, TextInput, Picker, Alert } from 'react-native';
 import { Card, ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import GuardianForm from '../forms/GuardianForm/GuardianForm';
 import APIService from '../utils/APIService';
@@ -209,28 +209,35 @@ const FamilyScreen = ({ navigation }) => {
 
     const handleConfirmGuardianUser = () => {
         // Confirm create guardian user
-        AsyncStorage.getItem('token')
-            .then((token) => {
-                APIService.postGuardianUser(
-                    token,
-                    {
-                        password: data.password,
-                        guardiantId: data.guardiantId,
-                        type: data.type,
-                        email: data.email,
-                        phoneNumber: data.phoneNumber,
-                        code: data.code,
-                        guardiantPassword: data.guardiantPassword
-                    },
-                    (success, json) => {
-                        if (success && json.result) {
-                            setVisible(false);
-                            return alert('Xác nhận tạo user mới')
-                        } else {
-                            return alert("Chuyển đổi THẤT BẠI!");
-                        }
-                    })
-            })
+        if(data.guardiantPassword.length < 4 || data.password.length < 4) {
+			Alert.alert('Lỗi mật khẩu!', 'Vui lòng nhập mật khẩu từ 4 ký từ trở lên', [
+				{ text: 'Okay' }
+			]);
+		}
+        else {
+            AsyncStorage.getItem('token')
+                .then((token) => {
+                    APIService.postGuardianUser(
+                        token,
+                        {
+                            password: data.password,
+                            guardiantId: data.guardiantId,
+                            type: data.type,
+                            email: data.email,
+                            phoneNumber: data.phoneNumber,
+                            code: data.code,
+                            guardiantPassword: data.guardiantPassword
+                        },
+                        (success, json) => {
+                            if (success && json.result) {
+                                setVisible(false);
+                                return alert('Xác nhận tạo user mới')
+                            } else {
+                                return alert("Chuyển đổi THẤT BẠI!");
+                            }
+                        })
+                })
+            }
     }
 
     return (

@@ -42,7 +42,7 @@ const AnswerForm = (props) => {
 								json.result.map(item => {
 									return replyList.push(item);
 								})
-								return setReplies(replyList?.map(item => {
+								setReplies(replyList?.map(item => {
 									return {
 										id: item.id,
 										doctorId: item.doctorId,
@@ -58,6 +58,7 @@ const AnswerForm = (props) => {
 										likeCounter: item._count.answerLike,
 									}
 								}))
+								return setIsHaveChange(false);
 							} else {
 								return console.log("THẤT BẠI");
 							}

@@ -66,6 +66,7 @@ const QuestionForm = (props) => {
 	};
 	//////////////////////////
 	const postQuestion = () => {
+		if(data.content === '') return alert('Vui lòng mô tả vấn đề cần hỏi!');
 		const arrImage = [];
 		if(images.image_1) arrImage.push(images.image_1);
 		if(images.image_2) arrImage.push(images.image_2);
@@ -149,14 +150,14 @@ const QuestionForm = (props) => {
 						<Avatar
 							size="xlarge"
 							source={{
-								uri: images.image_1 ? images.image_1.uri : "https://lh3.googleusercontent.com/js_muW7dgbU1UwFXFswhBPMT4Fe-s5kZb0H_Q2Ea88-AGtALGLaHbn4etsy_nsz9NFr7N6ZZaV6wcdkhDHLhmKyzAas0QIx_gjsDZRKRp6R5nezzlH72y9zM3lLySWM5Ia7McQOy3h06yF2eVB11BJsiAnCRS93GcEw5JpN-qydd62DlihWNssMM8YiyMVfrl_wuQlcImc458s_J8eV7mkvv39oeDAU4DHRsUpo-T-MWHu7FfroXeXA6dO270Lh9GrGnT446x3gCXgH8lRKkp8ecCE68BCrzIy77IUt5AR4XWge_xMkpL21fVmxB9rZXQ4Enp4XqcL6WByZH2OzS6zniqymvwOQXDseoIk8MvyJxmnH0a1g4ogajgl4p57krwp247LxMwlIIO4h_XM54gRPK3lq3A8Iw-2h7NaM0AmbjFCqjOrtjmjpZl72RU-4Ai6fZJpX-lulHOdTae43IvojvwfJXGrJNrNeb-pveU8GNGnADug1fGXpWmS3Pz-dhyBL3bccYtbtaHinnXjZ-LLppVsr1vsHSvXbryQ6xGj36OWcAVoDXKqtiPOqP7lr_gBV1NgXqnW37ZMM-1Lps1bkg-Ye2oKeLEE3Xe-h722DKOH0XiaM8i-QK3dqp1ZB33FSU_t_lUypS7fPPvfypjippGljbKNCeMEvo-yRtmKkKTVyOu_SOev2uBKzT-NnKXzt2BjPrY8yHLGuX92a_CqwvZg=w584-h664-no?authuser=0",
+								uri: images.image_1 ? images.image_1.uri : "https://marsurl.com/images/x0Rtl.jpg",
 							}}
 							onPress={() => { pickImageFromLibrary_1() }}
 						/>	
 						<Avatar
 							size="xlarge"
 							source={{
-								uri: images.image_2 ? images.image_2.uri : "https://lh3.googleusercontent.com/js_muW7dgbU1UwFXFswhBPMT4Fe-s5kZb0H_Q2Ea88-AGtALGLaHbn4etsy_nsz9NFr7N6ZZaV6wcdkhDHLhmKyzAas0QIx_gjsDZRKRp6R5nezzlH72y9zM3lLySWM5Ia7McQOy3h06yF2eVB11BJsiAnCRS93GcEw5JpN-qydd62DlihWNssMM8YiyMVfrl_wuQlcImc458s_J8eV7mkvv39oeDAU4DHRsUpo-T-MWHu7FfroXeXA6dO270Lh9GrGnT446x3gCXgH8lRKkp8ecCE68BCrzIy77IUt5AR4XWge_xMkpL21fVmxB9rZXQ4Enp4XqcL6WByZH2OzS6zniqymvwOQXDseoIk8MvyJxmnH0a1g4ogajgl4p57krwp247LxMwlIIO4h_XM54gRPK3lq3A8Iw-2h7NaM0AmbjFCqjOrtjmjpZl72RU-4Ai6fZJpX-lulHOdTae43IvojvwfJXGrJNrNeb-pveU8GNGnADug1fGXpWmS3Pz-dhyBL3bccYtbtaHinnXjZ-LLppVsr1vsHSvXbryQ6xGj36OWcAVoDXKqtiPOqP7lr_gBV1NgXqnW37ZMM-1Lps1bkg-Ye2oKeLEE3Xe-h722DKOH0XiaM8i-QK3dqp1ZB33FSU_t_lUypS7fPPvfypjippGljbKNCeMEvo-yRtmKkKTVyOu_SOev2uBKzT-NnKXzt2BjPrY8yHLGuX92a_CqwvZg=w584-h664-no?authuser=0",
+								uri: images.image_2 ? images.image_2.uri : "https://marsurl.com/images/x0Rtl.jpg",
 							}}
 							onPress={() => { pickImageFromLibrary_2() }}
 						/>						
