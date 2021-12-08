@@ -219,8 +219,8 @@ export default function QuestionCard(props) {
                             {myid === task.customerId && task.number_of_answer < 1? <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem> : null}
                             {myid === task.customerId && task.number_of_answer < 1? <MenuItem onClick={onDelete}>Xóa bài</MenuItem> : null}
                             {
-                                task.saved && myid ? <MenuItem>Bài đã lưu</MenuItem>
-                                                    :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
+                                task.saved && myid ? <MenuItem>Bài đã lưu</MenuItem> : myid ?
+                                                    <MenuItem onClick={onSave}>Lưu bài</MenuItem> : null
                             }
                         </Menu>
                    </div>

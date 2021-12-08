@@ -289,7 +289,7 @@ export default function HomeScreen() {
 				{/* Start Two Column Section */}
 				<div className="container my-5">
 					<div className="row py-4">
-						<div className="col-lg-4 mb-4 my-lg-auto">
+						<div className="col-lg-4 mb-4 my-lg-auto" style={{textAlign: 'center'}}>
 							<h1 className="text-dark font-weight-bold mb-3" style={{textAlign: 'center'}}>
 								<b>Trang Facebook của Doctor247</b>
 							</h1>
@@ -327,6 +327,40 @@ export default function HomeScreen() {
 								</div>
 							</div>
 							{/* <img src="img/code.jpg" alt="" className="w-100" /> */}
+						</div>
+					</div>
+				</div>
+
+				{/* Start Two Column Section To Introduce Mobile*/}
+				<div className="container my-5">
+					<div className="row py-4">
+						<div className="col-lg-3" style={{textAlign: 'center'}}>
+							<h1 className="text-dark font-weight-bold mb-3" style={{textAlign: 'center'}}>
+								<b>Doctor247 - Mobile</b>
+							</h1>
+							<p className="mb-4">Đây là ứng dụng Doctor247 chạy trên các thiết bị di động, phù hợp với với các hệ điều hành Android, IOS</p>
+							<p className="mb-4">Doctor247 - mong muốn mang lại trải nghiệm tuyệt vời nhất cho bạn và gia đình của bạn</p>
+							<Link 
+								to={{ pathname: "https://expo.dev/@amilila/Doctor247Mobile" }} 
+								className={classNames("btn btn-outline-dark btn-md", classes.button)} 
+								target="_blank"
+							>
+								Tải xuống ứng dụng mobile
+							</Link>
+						</div>
+
+						<div className="col-lg-1"></div>
+
+						<div className="col-lg-4">
+							<div className="w-100" >
+								<img src="img/mobile-hello.jpg" alt="mobile-hello" className="w-100" />
+							</div>
+						</div>
+
+						<div className="col-lg-4">
+							<div className="w-100" >
+								<img src="img/mobile-home.jpg" alt="mobile-home" className="w-100" />
+							</div>
 						</div>
 					</div>
 				</div>
