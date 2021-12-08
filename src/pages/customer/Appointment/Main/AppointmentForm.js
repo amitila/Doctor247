@@ -14,6 +14,7 @@ import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
 import getTimeFromOperationOfDoctor from  './getTimeFromOperationOfDoctor';
 import sortBookingTime from './sortBookingTime';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 
 const useStyles = makeStyles((theme) => ({
 	textSize: {
@@ -313,10 +314,8 @@ export default function AppointmentForm(props) {
 			<div className="panel-heading">
 				<h3 className="panel-title">
 					{state.id !== '' ? 'Chỉnh sửa lịch hẹn' : 'Thêm lịch hẹn'}
-					<span
-						className="fa fa-times-circle text-right"
-						onClick={onCloseForm}
-					></span>
+					&nbsp;
+					<DisabledByDefaultIcon onClick={onCloseForm} style={{color: 'red'}} />
 				</h3>
 			</div>
 			<div className="panel-body">

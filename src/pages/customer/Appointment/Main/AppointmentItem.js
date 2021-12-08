@@ -13,6 +13,9 @@ import Stack from '@mui/material/Stack';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
 import PaymentIcon from '@mui/icons-material/Payment';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AppointmentItem(props) {
 	const onDelete = () => {
@@ -59,6 +62,16 @@ export default function AppointmentItem(props) {
 			}
         )
     }
+
+	const [open, setOpen] = React.useState(false);
+
+	const handleClickOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
 
 	return (
 		<div style={{fontSize: 20}}>
@@ -130,13 +143,34 @@ export default function AppointmentItem(props) {
 									direction="row" 
 									spacing={50}
 								>
-									<Button 
+									{/* <Button 
 										variant="outlined" 
 										startIcon={<DeleteIcon />}
 										onClick={onDelete}
 									>
 										<b>Hủy lịch</b>
-									</Button>
+									</Button> */}
+									<div>
+										<Button startIcon={<DeleteIcon />} variant="outlined" onClick={handleClickOpen}>
+											<b>Hủy lịch</b>
+										</Button>
+										<Dialog
+											open={open}
+											onClose={handleClose}
+											aria-labelledby="alert-dialog-title"
+											aria-describedby="alert-dialog-description"
+										>
+											<DialogTitle id="alert-dialog-title">
+												{"Bạn chắc chắn muốn hủy lịch hẹn này chứ?"}
+											</DialogTitle>
+											<DialogActions>
+												<Button onClick={handleClose}>Hủy bỏ</Button>
+												<Button onClick={onDelete} autoFocus>
+													Đồng ý
+												</Button>
+											</DialogActions>
+										</Dialog>
+									</div>
 								</Stack>
 							</th>
 							<td>Họ và tên:</td>

@@ -19,9 +19,14 @@ import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#b7dde8 solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     avatar: {
         margin: theme.spacing(1),

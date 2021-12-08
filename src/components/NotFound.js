@@ -12,7 +12,7 @@ export default function NotFound () {
 	return(
 		<>
 			<Helmet>
-				<title>404 | Doctor247</title>
+				<title>Doctor247</title>
 			</Helmet>
 			<Box
 				sx={{

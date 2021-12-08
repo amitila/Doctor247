@@ -23,7 +23,6 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Link } from 'react-router-dom';
 import Logo from '../../components/Logo';
 // import { Badge } from '@mui/material';
@@ -344,7 +343,6 @@ export default function DrawerHeader(props) {
                                 <div className={classes.link} onClick={()=>history.push("/service")}>Khám dịch vụ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/savedquestion")}>Đã lưu</div>,
                                 <div className={classes.link} onClick={()=>history.push("/setting")}>Cài đặt</div>,
-                                <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
                                 // <Link className={classes.link} to="/home">Trang chủ</Link>,
                                 // <Link className={classes.link} to="/doctors">Danh sách Bác sĩ</Link>,
                                 // <Link className={classes.link} to="/appointment">Lịch khám</Link>,
@@ -367,8 +365,7 @@ export default function DrawerHeader(props) {
                                             <FolderSpecialIcon style={{color: '#005bf7'}} />,
                                             <WorkIcon style={{color: '#005bf7'}} />,
                                             <SaveIcon style={{color: '#005bf7'}} />,
-                                            <SettingsIcon style={{color: '#005bf7'}} />,
-                                            <ScheduleIcon style={{color: '#005bf7'}} />][index]
+                                            <SettingsIcon style={{color: '#005bf7'}} />][index]
                                         }
                                     </ListItemIcon>
                                     <ListItemText primary={text} />
@@ -420,7 +417,6 @@ export default function DrawerHeader(props) {
                                 <div className={classes.link} onClick={()=>history.push("/question")}>Hỏi đáp</div>,
                                 <div className={classes.link} onClick={()=>history.push("/phonebook")}>Danh bạ</div>,
                                 <div className={classes.link} onClick={()=>history.push("/speciality")}>Chuyên khoa</div>,
-                                <div className={classes.link} onClick={()=>history.push("/task")}>Công việc</div>,
                             ].map((text, index) => (
                                 <MyMenuItem button key={text} onClick={handleDrawerClose} >
                                     <ListItemIcon>
@@ -429,8 +425,7 @@ export default function DrawerHeader(props) {
                                             <FormatListNumberedIcon />, 
                                             <HelpIcon />, 
                                             <LibraryBooksIcon />, 
-                                            <FolderSpecialIcon />,
-                                            <ScheduleIcon />][index]
+                                            <FolderSpecialIcon />][index]
                                         }
                                     </ListItemIcon>
                                     <ListItemText primary={text} />

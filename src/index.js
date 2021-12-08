@@ -18,7 +18,11 @@ ReactDOM.render(
 );
 
 ReactDOM.render(
-	<SpeedDial />,
+	<Provider store={store}>
+		<React.StrictMode>
+			<SpeedDial />
+		</React.StrictMode>
+	</Provider>,
 	document.getElementById('speed_dial')
 );
 

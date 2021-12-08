@@ -22,7 +22,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import DoctorInfo from './DoctorInfo.js';
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import DialogForm from './DialogForm';
@@ -87,7 +87,7 @@ export default function DoctorCard(props) {
 
 	const { task } = props;
 
-	// const history = useHistory();
+	const history = useHistory();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
     const openAnchor = Boolean(anchorEl);
@@ -126,8 +126,8 @@ export default function DoctorCard(props) {
 								open={openAnchor}
 								onClose={handleAnchor}
 							>
-								<MenuItem onClick={handleAnchor}>Thông tin bác sĩ</MenuItem>
-								<MenuItem onClick={handleAnchor}>Chat với bác sĩ</MenuItem>
+								<MenuItem onClick={handleClickOpen}>Thông tin bác sĩ</MenuItem>
+								<MenuItem onClick={()=>history.push(`/doctorlist/${task.id}/chat-to-doctor`)}>Chat với bác sĩ</MenuItem>
 								<MenuItem><ShareBoard id={task.id} /></MenuItem>
 							</Menu>
 						</div>

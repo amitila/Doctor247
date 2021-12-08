@@ -198,7 +198,7 @@ export default function Index(props) {
                 {
                     questions.length ? null : 
                     <div className="text-center">          
-                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450" style={{marginTop: 10}}></img>  
                     </div>
                 }
             </div>

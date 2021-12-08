@@ -188,7 +188,7 @@ export default function MRItem(props) {
 						</tr>
 						<tr>
 							<td>Thuốc dùng: </td>
-							{
+							{/* {
 								task.dose.length > 0 ? 
 									<td>
 										{
@@ -202,7 +202,8 @@ export default function MRItem(props) {
 									</td>
 									:
 									<td>Không có</td>
-							}
+							} */}
+							<td>Không có</td>
 						</tr>
 						<tr>
 							<td>Lưu ý của bác sĩ: </td>

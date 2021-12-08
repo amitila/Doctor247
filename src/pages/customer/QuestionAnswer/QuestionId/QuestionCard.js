@@ -25,7 +25,7 @@ import { TextField } from '@material-ui/core';
 import AnswerCard from './AnswerCard';
 import ShareBoard from './ShareBoard';
 import { useSelector } from "react-redux";
-import { selectRole } from '../../../../store/userSlice';
+import { selectRole, selectMyid } from '../../../../store/userSlice';
 import APIService from '../../../../utils/APIService';
  
 const ExpandMore = styled((props) => {
@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function QuestionCard(props) {
     const classes = useStyles();
+    const myid = useSelector(selectMyid);
     const {task} = props;
     const [isHaveChange, setIsHaveChange] = React.useState(false);
     const [expanded, setExpanded] = React.useState(false);
@@ -215,13 +216,12 @@ export default function QuestionCard(props) {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem>
-                            <MenuItem onClick={onDelete}>Xóa bài</MenuItem>
+                            {myid === task.customerId && task.number_of_answer < 1? <MenuItem onClick={onUpdate}>Chỉnh sửa</MenuItem> : null}
+                            {myid === task.customerId && task.number_of_answer < 1? <MenuItem onClick={onDelete}>Xóa bài</MenuItem> : null}
                             {
-                                task.saved ? <MenuItem>Bài đã lưu</MenuItem>
-                                            :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
+                                task.saved && myid ? <MenuItem>Bài đã lưu</MenuItem>
+                                                    :<MenuItem onClick={onSave}>Lưu bài</MenuItem>
                             }
-                            
                         </Menu>
                    </div>
                 }
@@ -276,7 +276,7 @@ export default function QuestionCard(props) {
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography paragraph>Câu trả lời có sẵn</Typography>
+                    <Typography paragraph>Câu trả lời có sẵn : {task.number_of_answer}</Typography>
                     <Typography>
                         {comments.map((comment) => {
                             return <Box sx={{ p: 1 }}>

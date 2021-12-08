@@ -12,7 +12,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import SelectProvince from '../../../../components/SelectProvince';
 import Relationship from '../../../../components/Relationship';
 import UploadAvatar from "../../../../components/UploadAvatar.js";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -199,7 +199,7 @@ export default function ProfileForm(props) {
 				<h3 className="panel-title" onClick={onCloseForm} >
 					{state.id !== '' ? 'Hủy bỏ cập nhật hồ sơ' : 'Hủy bỏ thêm hồ sơ'}
 					&nbsp;
-					<HighlightOffIcon />
+					<DisabledByDefaultIcon style={{color: 'red'}} />
 				</h3>
 			</div>
 			<div className={classes.root}>

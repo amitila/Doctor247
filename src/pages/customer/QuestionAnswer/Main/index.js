@@ -8,11 +8,14 @@ import { Grid } from '@material-ui/core';
 import APIService from '../../../../utils/APIService';
 import getToken from '../../../../helpers/getToken';
 import { Link } from 'react-router-dom';
-
+import AlertComponent from '../../../../components/AlertComponent';
+import { useSelector } from "react-redux";
+import { selectName } from '../../../../store/userSlice';
 // const token = document.cookie.slice(6);
 
 export default function Index(props) {
     const history = useHistory();
+    const name = useSelector(selectName);
     // const flag = (localStorage && localStorage.getItem('questions')) ? JSON.parse(localStorage.getItem('questions')) : [];
     const [isHaveChange, setIsHaveChange] = useState(true);
     const [specialized, setSpecialized] = useState([]);
@@ -23,6 +26,10 @@ export default function Index(props) {
     //const [filter, setFilter] = useState({name: '', status: -1});
     //const [keyword, setKeyword] = useState('');
     const [sort, setSort] = useState({ by: 'name', value: 1 });
+
+    const [isHaveAlert, setIsHaveAlert] = useState(false);
+    const [alert, setAlert] = useState('');
+
 
     useEffect(() => {
         if (isHaveChange) {
@@ -51,7 +58,9 @@ export default function Index(props) {
                             answers: item.answers,
                             questionLike: item._count.questionLike,
                             liked: item.liked,
-                            saved: item.saved
+                            saved: item.saved,
+                            customerId: item.customerId,
+                            number_of_answer: item._count.answer
                         }
                     }))
                     setFlag(questionList?.map(item => {
@@ -64,7 +73,9 @@ export default function Index(props) {
                             answers: item.answers,
                             questionLike: item._count.questionLike,
                             liked: item.liked,
-                            saved: item.saved
+                            saved: item.saved,
+                            customerId: item.customerId,
+                            number_of_answer: item._count.answer
                         }
                     }))
                     setIsHaveChange(false);
@@ -145,9 +156,9 @@ export default function Index(props) {
                 (success, json) => {
                     if (success && json.result) {
                         setIsHaveChange(true);
-                        return alert("THÀNH CÔNG !");
+                        return alertFunction( 0,"Đã đăng một câu hỏi!");
                     } else {
-                        return alert("Cập nhật thay đổi THẤT BẠI !");
+                        return alertFunction( 1,"Đã có lỗi xảy ra!");
                     }
                 })
         } else {
@@ -171,9 +182,9 @@ export default function Index(props) {
                 (success, json) => {
                     if (success && json.result) {
                         setIsHaveChange(true);
-                        return alert("Cập nhật THÀNH CÔNG !");
+                        return alertFunction( 0,"Đã cập nhật một câu hỏi!");
                     } else {
-                        return alert("Cập nhật thay đổi THẤT BẠI !");
+                        return alertFunction( 1,"Đã có lỗi xảy ra!");
                     }
                 }
             )
@@ -210,9 +221,9 @@ export default function Index(props) {
             (success, json) => {
                 if (success && json.result) {
                     setIsHaveChange(true);
-                    return alert("XÓA THÀNH CÔNG !");
+                    return alertFunction( 0,"Đã xóa một câu hỏi!");
                 } else {
-                    return alert("Xóa bài thất bại !");
+                    return alertFunction( 1,"Đã có lỗi xảy ra!");
                 }
             })
         onCloseForm();
@@ -234,9 +245,9 @@ export default function Index(props) {
             (success, json) => {
                 if (success && json.result) {
                     setIsHaveChange(true);
-                    return alert("LƯU THÀNH CÔNG !", id);
+                    return alertFunction( 0,"Đã lưu bài!");
                 } else {
-                    return alert("Lưu bài thất bại !");
+                    return alertFunction( 1,"Đã có lỗi xảy ra!");
                 }
             })
         onCloseForm();
@@ -350,6 +361,16 @@ export default function Index(props) {
             task={taskEditing}
         /> : '';
 
+    const alertFunction = (number, sms) => {
+        setIsHaveAlert(true)
+        return setAlert({ number, sms})
+    }
+
+    const alertClose = () => {
+        setIsHaveAlert(false)
+        return setAlert({ number: '', sms: ''})
+    }
+
     return (
         <div className="container-fluid m-50">
             <div className="text-center">
@@ -362,6 +383,9 @@ export default function Index(props) {
                     })
                 }
                 <br />
+                {
+                    isHaveAlert ? <AlertComponent alert={alert} alertClose={alertClose} /> : null
+                }
             </div>
             <div className="row">
                 <div>
@@ -398,16 +422,29 @@ export default function Index(props) {
                         <Grid container spacing={2}>
                             {elmTaskForm}
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={3} >
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary"
-                                        onClick={onToggleForm}
-                                    >
-                                        <AddIcon />
-                                        Thêm vấn đề bạn muốn hỏi
-                                    </button>
-                                </Grid>
+                                {
+                                    name ? <Grid item xs={12} sm={3} >
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    onClick={onToggleForm}
+                                                >
+                                                    <AddIcon />
+                                                    Thêm vấn đề bạn muốn hỏi
+                                                </button>
+                                            </Grid> 
+                                            : 
+                                            <Grid item xs={12} sm={3} >
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    onClick={()=>history.push('/signin')}
+                                                >
+                                                    <AddIcon />
+                                                    Đăng nhập để hỏi bác sĩ
+                                                </button>
+                                            </Grid>
+                                }
                                 <Grid item xs={12} sm={9} >
                                     {/* Search-Sort */}
                                     <QuestionControl
@@ -435,7 +472,7 @@ export default function Index(props) {
                 {
                     questions.length ? null : 
                     <div className="text-center">          
-                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450" style={{marginTop: 10}}></img>  
                     </div>
                 }
             </div>

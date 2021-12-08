@@ -240,25 +240,30 @@ export default function Index(props) {
     const handleConfirmGuardianUser = (data) => {
         const token = getToken();
         // Confirm create guardian user
-        APIService.postGuardianUser(
-            token,
-            {
-                password: data.password,
-                guardiantId: data.guardiantId,
-                type: data.type,
-                email: data.email,
-                phoneNumber: data.phoneNumber,
-                code: data.code,
-                guardiantPassword: data.guardiantPassword
-            },
-            (success, json) => {
-                if (success && json.result) {
-                    setIsHaveChange(true);
-                    return alert('Xác nhận tạo user mới')
-                } else {
-                    return alert("Chuyển đổi THẤT BẠI!");
-                }
-            })
+        if(data.password.length < 4 || data.guardiantPassword.length < 4) {
+            return alert('Mật khẩu phải có từ 4 ký tự trở lên, vui lòng nhập lại!')
+        }
+        else {
+            APIService.postGuardianUser(
+                token,
+                {
+                    password: data.password,
+                    guardiantId: data.guardiantId,
+                    type: data.type,
+                    email: data.email,
+                    phoneNumber: data.phoneNumber,
+                    code: data.code,
+                    guardiantPassword: data.guardiantPassword
+                },
+                (success, json) => {
+                    if (success && json.result) {
+                        setIsHaveChange(true);
+                        return alert('Xác nhận tạo user mới')
+                    } else {
+                        return alert("Chuyển đổi THẤT BẠI!");
+                    }
+                })
+        }
     }
 
     const onUpdate = (id) => {
@@ -336,7 +341,7 @@ export default function Index(props) {
                 {
                     profiles.length ? null : 
                     <div className="text-center">          
-                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450" style={{marginTop: 10}}></img>  
                     </div>
                 }
             </div>

@@ -81,7 +81,7 @@ export default function Index() {
                             <NotificationList notificationCards={appointments.concat(notificationCards)} />   
                         </div> :
                         <div>          
-                            <img src="empty.jpg" alt="Chưa có hoạt động" width="500" height="600"></img>  
+                            <img src="empty.jpg" alt="Chưa có hoạt động" width="500" height="600" style={{marginTop: 10}}></img>  
                         </div>
                 }
                 

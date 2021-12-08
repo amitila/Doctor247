@@ -7,17 +7,24 @@ import Typography from "@material-ui/core/Typography";
 import APIService from "../../../utils/APIService";
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
-import { updateRole, updatePhone } from "../../../store/userSlice";
+import { updateRole, updatePhone, updateMyid } from "../../../store/userSlice";
 import { useHistory } from "react-router-dom";
-import { useContext } from "react";
-import { AppContext } from "../../../store/AppProvider";
+import Avatar from "@material-ui/core/Avatar";
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+// import { useContext } from "react";
+// import { AppContext } from "../../../store/AppProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(2),
+        marginTop: theme.spacing(8),
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#72ddf2 solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     form: {
         width: "100%", // Fix IE 11 issue.
@@ -30,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
         border: "#303F9F solid 2px",
         borderRadius: 5,
         padding: '5px 0px 0px 10px',
+    },
+	avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.info.light,
     },
 }));
 
@@ -90,6 +101,7 @@ export default function SignInBySms() {
 					const expireDate = new Date(expire);
 					cookies.set("token", json.result.token, {path: '/', expires: expireDate });
 					if(json.result.role === "CUSTOMER"){
+						dispatch(updateMyid(json.result.customer.id));
 						return history.push("/home");
 					}
 					else if(json.result.role === "DOCTOR"){
@@ -105,12 +117,15 @@ export default function SignInBySms() {
 	return (
 		<Container component="main" maxWidth="xs" style={{textAlign: "center", marginTop: 20}}>
 			<div id="recaptcha-container"></div>
-			<Typography component="h1" variant="h5">
-				Đăng nhập bằng điện thoại
-			</Typography>
-			<p className="sub-text">Vui lòng nhập số điện thoại</p>
 			{!viewOtpForm ? (
 				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>
+						<PhoneAndroidIcon />
+					</Avatar>
+					<Typography component="h1" variant="h5">
+						Đăng nhập bằng điện thoại
+					</Typography>
+					<p className="sub-text">Vui lòng nhập số điện thoại</p>
 					<form className={classes.form} id="loginForm" onSubmit={loginSubmit}>
 						<TextField
 							className={classes.textField}
@@ -139,6 +154,10 @@ export default function SignInBySms() {
 				</div>
 				) : (
 				<div className={classes.paper} onSubmit={otpSubmit}>
+					<Typography component="h1" variant="h5">
+						Đăng nhập bằng điện thoại
+					</Typography>
+					<p className="sub-text">Vui lòng nhập mã OTP</p>
 					<form className={classes.form} id="otpForm">
 						<TextField
 							className={classes.textField}

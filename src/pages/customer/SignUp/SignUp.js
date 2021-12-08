@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
@@ -25,9 +25,14 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#9fc0c7 solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -75,32 +80,37 @@ export default function SignUp() {
         setState(prevState => ({ ...prevState, [name]: value }));
     }
 
-    const [status, setStatus] = React.useState(false);
+    const [status, setStatus] = React.useState('');
     const onSignUp = (event) => {
         event.preventDefault();
-        APIService.signUp({
-            registerType: state.registerType,
-            email: state.email,
-            firstName: state.firstName,
-            lastName: state.lastName,
-            password: state.password,
-            phoneNumber: state.phoneNumber,
-            gender: state.gender,
-            code: state.code
-        },
-        (success, json) => {
-            if (success && json.result) {
-                // dispatch(updateEmail(email));
-                // dispatch(updatePassword(password));
-                // const timestamp = new Date().getTime();
-                // const expire = timestamp + (60*60*24*1000*3);
-                // const expireDate = new Date(expire);
-                // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
-                return history.push("/signin");
-            } else {
-                setStatus(true);
-            }
-        })
+        if(state.password.length < 4) {
+            return setStatus('password')
+        }
+        else {
+            APIService.signUp({
+                registerType: state.registerType,
+                email: state.email,
+                firstName: state.firstName,
+                lastName: state.lastName,
+                password: state.password,
+                phoneNumber: state.phoneNumber,
+                gender: state.gender,
+                code: state.code
+            },
+            (success, json) => {
+                if (success && json.result) {
+                    // dispatch(updateEmail(email));
+                    // dispatch(updatePassword(password));
+                    // const timestamp = new Date().getTime();
+                    // const expire = timestamp + (60*60*24*1000*3);
+                    // const expireDate = new Date(expire);
+                    // cookies.set("token", json.result.token, {path: '/', expires: expireDate });
+                    return history.push("/signin");
+                } else {
+                    setStatus('error');
+                }
+            })
+        }
     }
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -110,14 +120,14 @@ export default function SignUp() {
 
     const sendCodeToPhone = () => {
         if(state.phoneNumber === '') {
-            alert("Bạn chưa nhập số điện thoại!")
+            return setStatus('phoneNumber')
         }
         else {
             APIService.getCodeFromSms(state.phoneNumber, (success, json) => {
                 if (success && json.result) {
-                    return alert("Vui lòng kiểm tra tin nhắn!")
+                    return setStatus('phoneNumber_sendCode')
                 } else {
-                    return alert("Không gửi được!")
+                    return setStatus('error_sendCode')
                 }
             })
         }
@@ -125,14 +135,14 @@ export default function SignUp() {
 
     const sendCodeToMail = () => {
         if(state.email === '') {
-            alert("Bạn chưa nhập email!")
+            return setStatus('email')
         }
         else {
             APIService.getCodeFromMail(state.email, (success, json) => {
                 if (success && json.result) {
-                    return alert("Vui lòng kiểm tra mail!")
+                    return setStatus('email_sendCode')
                 } else {
-                    return alert("Không gửi được!")
+                    return setStatus('error_sendCode')
                 }
             })
         }
@@ -295,14 +305,32 @@ export default function SignUp() {
                             </Grid>   
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControlLabel
+                            {/* <FormControlLabel
                                 control={<Checkbox value="allowExtraEmails" color="primary" />}
                                 label="Tôi có muốn nhận thông báo qua email."
-                            />
+                            /> */}
                         </Grid>
                     </Grid>
                     {
-                        status ? <Alert severity="error">Email hay mật khẩu đã được sử dụng, vui lòng đăng ký lại!</Alert> : ''
+                        status === 'error' ? <Alert severity="error">Email hay mật khẩu đã được sử dụng, vui lòng đăng ký lại!</Alert> : ''
+                    }
+                    {
+                        status === 'password' ? <Alert severity="error">Mật khẩu phải có số ký tự từ 4 trở lên!</Alert> : ''
+                    }
+                    {
+                        status === 'phoneNumber' ? <Alert severity="error">Bạn chưa nhập số điện thoại!</Alert> : ''
+                    }
+                    {
+                        status === 'email' ? <Alert severity="error">Bạn chưa nhập email!</Alert> : ''
+                    }
+                    {
+                        status === 'phoneNumber_sendCode' ? <Alert severity="success">Vui lòng kiểm tra tin nhắn!</Alert> : ''
+                    }
+                    {
+                        status === 'email_sendCode' ? <Alert severity="success">Vui lòng kiểm tra email!</Alert> : ''
+                    }
+                    {
+                        status === 'error_sendCode' ? <Alert severity="error">Không gửi được!</Alert> : ''
                     }
                     <Button
                         type="submit"

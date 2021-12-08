@@ -22,7 +22,6 @@ import Service from './pages/customer/Service';
 import SavedQuestion from './pages/customer/SavedQuestion';
 import Chat from './pages/customer/Chat';
 import Videocall from './pages/customer/Videocall';
-import Task from './pages/customer/Task';
 import Footer from './layouts/customer/Footer';
 import HomeScreen from './pages/customer/Home/HomeScreen';
 import CheckToken from './helpers/checkToken';
@@ -82,7 +81,6 @@ export default function App() {
 					<Route exact path='/phonebook' component={PhoneBook} />
 					<Route exact path='/speciality' component={Speciality} />
 					<Route exact path='/service' component={Service} />
-					<Route exact path='/task' component={Task} />
 					<Route exact path='/doctorlist' component={ListDoctors} />
 					<Route exact path='/doctorlist/:id' component={DoctorId} />
 					<Route exact path='/question' component={QuestionAnswer} />

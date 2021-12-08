@@ -13,7 +13,8 @@ const initialState = {
 	bhyt: '',
 	phone: '',
 	province: '',
-	address: ''
+	address: '',
+	myid: ''
 };
 
 // Config slice
@@ -60,6 +61,9 @@ export const userSlice = createSlice({
 		updateAddress: (state, action) => {
 			state.address = action.payload || initialState.address;
 		},
+		updateMyid: (state, action) => {
+			state.myid = action.payload || initialState.myid;
+		},
 	}
 });
 
@@ -77,7 +81,8 @@ export const {
 	updateBhyt,
 	updatePhone,
 	updateProvince,
-	updateAddress
+	updateAddress,
+	updateMyid
 } = userSlice.actions;
 
 // Select state username from slice
@@ -94,6 +99,7 @@ export const selectBhyt = state => state.user.bhyt;
 export const selectPhone = state => state.user.phone;
 export const selectProvince = state => state.user.province;
 export const selectAddress = state => state.user.address;
+export const selectMyid = state => state.user.myid;
 
 // Export reducer
 export default userSlice.reducer;

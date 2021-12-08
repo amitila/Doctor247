@@ -302,6 +302,16 @@ export default function AppointmentForm(props) {
                         }
 						return profileList.push(item);
 					})
+					if(profileList.length === 0) {
+                        profileList.push({
+                            userTwoId: '',
+                            userTwo: {
+                                firstName: name,
+                                lastName: ' (Tôi)',
+                                avatarURL: avatarURL
+                            }
+                        })
+                    }
 					setPatientList(profileList?.map(item => {
 						return {
 							userTwoId: item.userTwoId,

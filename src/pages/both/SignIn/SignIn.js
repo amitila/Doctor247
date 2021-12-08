@@ -4,11 +4,11 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+// import FormControlLabel from "@material-ui/core/FormControlLabel";
+// import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import AssignmentIndOutlinedIcon from "@material-ui/icons/AssignmentIndOutlined";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -16,13 +16,13 @@ import { Link as LinkTo } from "react-router-dom";
 import APIService from '../../../utils/APIService';
 import Cookies from 'universal-cookie';
 import { useDispatch } from "react-redux";
-import { updateRole, updateEmail, updatePassword } from "../../../store/userSlice";
+import { updateRole, updateEmail, updatePassword, updateMyid } from "../../../store/userSlice";
 import Alert from '@mui/material/Alert';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import { useContext } from "react/cjs/react.development";
-import { useContext } from "react";
-import { AppContext } from "../../../store/AppProvider";
+// import { useContext } from "react";
+// import { AppContext } from "../../../store/AppProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#72ddf2 solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -83,6 +88,7 @@ export default function SignIn() {
                 const expireDate = new Date(expire);
                 cookies.set("token", json.result.token, {path: '/', expires: expireDate });
                 if(json.result.role === "CUSTOMER"){
+                    dispatch(updateMyid(json.result.customer.id));
                     return history.push("/home");
                 }
                 else if(json.result.role === "DOCTOR"){
@@ -99,7 +105,7 @@ export default function SignIn() {
             <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <AssignmentIndOutlinedIcon />
+                    <AccountCircleIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Đăng nhập
@@ -139,10 +145,10 @@ export default function SignIn() {
                             </Box>
                         </Grid>
                     </Grid>
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Nhớ mật khẩu"
-                    />
+                    /> */}
                     {
                         status ? <Alert severity="warning">Email hoặc mật khẩu không đúng, vui lòng đăng nhập lại!</Alert> : ''
                     }

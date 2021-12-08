@@ -9,6 +9,7 @@ import { Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from "react-redux";
 import { selectName, selectAvatar } from '../../../../store/userSlice';
+import AlertComponent from '../../../../components/AlertComponent';
 
 // Lấy lịch đăng ký từ db về 
 // const token = document.cookie.slice(6);
@@ -25,6 +26,9 @@ export default function Index(props) {
     const [sort, setSort] = useState({by: 'name', value: 1});
     const [doctorList, setDoctorList] = useState([]);
     var status = 'PENDING';
+
+    const [isHaveAlert, setIsHaveAlert] = useState(false);
+    const [alert, setAlert] = useState('');
 
     // var flag = appointments;
 
@@ -202,9 +206,9 @@ export default function Index(props) {
                     // console.log(json.result)
                     window.open(json.result, '_blank');
                     setIsHaveChange(true);
-					return alert("Đặt lịch THÀNH CÔNG!");
+					return alertFunction( 0,"Đặt lịch THÀNH CÔNG. Vui lòng thanh toán!");
 				} else {
-					return alert("THẤT BẠI");
+					return alertFunction( 1, "Đặt lịch thất bại!");
 				}
 			}
         )
@@ -230,9 +234,9 @@ export default function Index(props) {
                 (success, json) => {
                     if (success && json.result) {
                         setIsHaveChange(true);
-                        return console.log("Xóa thành công");
+                        return alertFunction( 0, "Xóa thành công!")
                     } else {
-                        return alert("THẤT BẠI!");
+                        return alertFunction( 1, "Xóa thất bại!")
                     }
                 }
     
@@ -324,6 +328,16 @@ export default function Index(props) {
                         }
                         return profileList.push(item);
                     })
+                    if(profileList.length === 0) {
+                        profileList.push({
+                            userTwoId: '',
+                            userTwo: {
+                                firstName: name,
+                                lastName: ' (Tôi)',
+                                avatarURL: avatarURL
+                            }
+                        })
+                    }
                     setPatientList(profileList?.map(item => {
                         return {
                             userTwoId: item.userTwoId,
@@ -349,12 +363,25 @@ export default function Index(props) {
                 doctorList={doctorList}
                 task={taskEditing}
             /> : '';
+    
+    const alertFunction = (number, sms) => {
+        setIsHaveAlert(true)
+        return setAlert({ number, sms})
+    }
+
+    const alertClose = () => {
+        setIsHaveAlert(false)
+        return setAlert({ number: '', sms: ''})
+    }
             
     return (
         <div className="container-fluid m-50">
             <div className="text-center">
                 <h1>Đăng ký lịch khám</h1>
                 <br />
+                {
+                    isHaveAlert ? <AlertComponent alert={alert} alertClose={alertClose} /> : null
+                }
             </div>
             <div className="row">
                 <div  >
@@ -419,7 +446,7 @@ export default function Index(props) {
                 {
                     appointments.length ? null : 
                     <div className="text-center">          
-                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450"></img>  
+                        <img src="empty.jpg" alt="Chưa có hoạt động" width="400" height="450" style={{marginTop: 10}}></img>  
                     </div>
                 }
             </div>

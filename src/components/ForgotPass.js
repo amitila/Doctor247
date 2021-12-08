@@ -24,9 +24,14 @@ import getToken from '../helpers/getToken';
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#ed93ce solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -65,7 +70,10 @@ export default function ForgotPassword() {
    
     const onChangePass = (event) => {
         event.preventDefault();
-        if(newPassword !== newPassword_1) {
+        if(newPassword.length < 4 || newPassword_1.length < 4) {
+            return alert('Mật khẩu phải có độ dài từ 4 ký tự trở lên, vui lòng nhập lại!')
+        }
+        else if(newPassword !== newPassword_1) {
             return alert('Mật khẩu mới nhập lại không trùng mật khẩu mới');
         }
         else {

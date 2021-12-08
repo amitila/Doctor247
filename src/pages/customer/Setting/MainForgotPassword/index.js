@@ -10,7 +10,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Link as LinkTo } from 'react-router-dom';
+// import { Link as LinkTo } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
@@ -24,9 +24,14 @@ import getToken from '../../../../helpers/getToken';
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: '100%',
+        margin: "auto",
+        border: "#ed93ce solid 5px",
+        borderRadius: 10,
+        padding: '10px',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -65,7 +70,10 @@ export default function ForgotPassword() {
    
     const onChangePass = (event) => {
         event.preventDefault();
-        if(newPassword !== newPassword_1) {
+        if(newPassword.length < 4 || newPassword_1.length < 4) {
+            return alert('Mật khẩu phải có độ dài từ 4 ký tự trở lên, vui lòng nhập lại!')
+        }
+        else if(newPassword !== newPassword_1) {
             return alert('Mật khẩu mới nhập lại không trùng mật khẩu mới');
         }
         else {
@@ -268,9 +276,9 @@ export default function ForgotPassword() {
                     </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
-                            <LinkTo to="/signin" variant="body2">
+                            {/* <LinkTo to="/signin" variant="body2">
                                 Quay về Đăng nhập
-                            </LinkTo>
+                            </LinkTo> */}
                         </Grid>
                     </Grid>
                 </form>

@@ -239,7 +239,10 @@ export default function HomeScreen() {
 								<img src="img/videocall.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Tư vấn từ xa</b></h4>
 								<p className={classes.text}>Tư vấn từ xa qua videocall mặt đối mặt</p>
-								<Link to="/doctorlist/:id/videocall-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								{
+									state.id ? <Link to="/doctorlist/all/videocall-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+										: <Link to="/signin" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Đăng nhập</Link>
+								}
 							</div>
 						</div>
 
@@ -248,7 +251,10 @@ export default function HomeScreen() {
 								<img src="img/chat.jpg" alt="" className="w-100" />
 								<h4 className="my-4" style={{textAlign: 'center'}}><b>Trò chuyện trực tuyến</b></h4>
 								<p className={classes.text}>Trò chuyện với bác sĩ qua tin nhắn</p>
-								<Link to="/doctorlist/:id/chat-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+								{
+									state.id ? <Link to="/doctorlist/all/chat-to-doctor" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Xem chi tiết</Link>
+										: <Link to="/signin" className={classNames("btn btn-outline-dark btn-md", classes.button)}>Đăng nhập</Link>
+								}
 							</div>
 						</div>
 
