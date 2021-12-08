@@ -60,7 +60,10 @@ const useStyles = makeStyles((theme) => ({
         margin: '5px',
         alignItems: 'center',
         display: 'flex',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '&:hover': {
+            background: "#80cbc8",
+        },
     }
 }));
 
@@ -79,7 +82,7 @@ export default function RoomList(props) {
                 <Typography className={classes.heading}>Danh sách tin nhắn</Typography>
             </AccordionSummary>
             <AccordionDetails style={{ display: 'block' }}>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} style={{maxHeight: '400px', overflow: 'auto'}} >
                     {
                         rooms.map(room =>
                             <Grid item xs={12} className={classes.user} onClick={() => { setSelectedRoomId(room.id); console.log(room.id); }}>

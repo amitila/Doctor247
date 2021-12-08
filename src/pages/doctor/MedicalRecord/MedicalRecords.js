@@ -27,6 +27,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
+import { useSnackbar } from 'notistack';
 
 // const token = localStorage.getItem("token_doctor247");
 const token = getToken();
@@ -289,6 +290,7 @@ function MedicalRecordList(props) {
 function MedicalRecordDetail(props) {
     const { appointmentSelect } = props;
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const defaultAvatarUrl = "https://banner2.cleanpng.com/20180326/wuq/kisspng-social-media-avatar-photography-digital-media-clip-profile-5ab915ee900719.55262584152207921459.jpg";
 
@@ -334,16 +336,14 @@ function MedicalRecordDetail(props) {
                 })
             }
         });
-        console.log('appointmentSelect');
-        console.log(appointmentSelect);
     }, []);
 
     const handleEditBodyStats = () => {
-        if(medicalStatus === 'PENDING'){
+        if(medicalStatus !== 'DONE'){
             setIsEditBodyStats(true);
         }
         else{
-            console.log(appointmentSelect);
+            enqueueSnackbar('Hồ sơ này đã khám xong!', { variant: 'error'});
         }
     }
     
@@ -352,33 +352,9 @@ function MedicalRecordDetail(props) {
     };
 
     const handleConfirm = () => {
-        // APIService.putDoctorMedicalRecordById(
-        //     token,
-        //     appointmentSelect.medicalRecord.id,
-        //     {
-        //         height: patientHeight,
-        //         weight: patientWeight,
-        //         bodyTemperature: patientBodyTemperature,
-        //         bloodPressure: patientBloodPressure,
-        //         heartBeat: patientHeartbeat,
-        //         bloodGroup: patientBloodGroup,
-        //         diagnostic: [diagnosticResult],
-        //         note: note,
-        //         medicalExpense: appointmentSelect.medicalRecord.cost + '',
-        //     },
-        //     (success, json) => {
-        //         if(success && json.result){
-        //             setMedicalStatus('DOING');
-        //             setPatientHeight2(patientHeight);
-        //             setPatientWeight2(patientWeight);
-        //             setPatientBodyTemperature2(patientBodyTemperature);
-        //             setPatientBloodPressure2(patientBloodPressure);
-        //             setPatientHeartbeat2(patientHeartbeat);
-        //             setPatientBloodGroup2(patientBloodGroup);
-        //             setDiagnosticResult2(diagnosticResult);
-        //             setNote2(note);
-        //         }
-        //     });
+        console.log('appointmentSelect');
+        console.log(appointmentSelect);
+        console.log('data');
         console.log({
             height: patientHeight,
             weight: patientWeight,
@@ -390,8 +366,58 @@ function MedicalRecordDetail(props) {
             note: note,
             medicalExpense: appointmentSelect.medicalRecord.cost + ''
         });
+        if (patientHeight.length === 0
+            || patientWeight.length === 0
+            || patientBodyTemperature.length === 0
+            || patientBloodPressure.length === 0
+            || patientHeartbeat.length === 0
+            || patientBloodGroup.length === 0
+            || diagnosticResult.length === 0) {
+            enqueueSnackbar('Vui lòng nhập đủ thông tin!', { variant: 'error' });
+            return;
+        }
+        if (window.confirm('Bạn chắc chắn đã nhập xong?')){
+            APIService.putDoctorMedicalRecordById(
+                token,
+                appointmentSelect.medicalRecord.id,
+                {
+                    height: patientHeight,
+                    weight: patientWeight,
+                    bodyTemperature: patientBodyTemperature,
+                    bloodPressure: patientBloodPressure,
+                    heartBeat: patientHeartbeat,
+                    bloodGroup: patientBloodGroup,
+                    diagnostic: [diagnosticResult],
+                    note: note,
+                    medicalExpense: appointmentSelect.medicalRecord.cost + '',
+                },
+                (success, json) => {
+                    if (success && json.result) {
+                        setMedicalStatus('DONE');
+                        setPatientHeight2(patientHeight);
+                        setPatientWeight2(patientWeight);
+                        setPatientBodyTemperature2(patientBodyTemperature);
+                        setPatientBloodPressure2(patientBloodPressure);
+                        setPatientHeartbeat2(patientHeartbeat);
+                        setPatientBloodGroup2(patientBloodGroup);
+                        setDiagnosticResult2(diagnosticResult);
+                        setNote2(note);
+                        APIService.putDoctorAppointmentById(
+                            token,
+                            appointmentSelect.aid,
+                            'DONE',
+                            (success, json) => {
+                                if (success && json.result) {
+                                    enqueueSnackbar('Đã khám xong!', { variant: 'success'});
+                                    setIsEditBodyStats(false);
+                                    setMedicalStatus('DONE');
+                                }
+                            }
+                        );
+                    }
+                });
+        }
 
-        setIsEditBodyStats(false);
     }
 
     return(
@@ -788,7 +814,7 @@ export default function MedicalRecords(props) {
                     </Grid> */}
                     <Grid xs={12} md={12} style={{marginTop: "100px"}}>
                         <Button variant="contained" color="default" hidden={contentId === ContentCode.LIST} onClick={() => setContentId(ContentCode.LIST)}>
-                            Return to List
+                            Quay về
                         </Button>
                     </Grid>
                 </Grid>

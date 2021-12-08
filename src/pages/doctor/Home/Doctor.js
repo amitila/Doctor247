@@ -17,7 +17,9 @@ import getToken from '../../../helpers/getToken';
 
 const useStyles = makeStyles((theme) => ({
     sidebar__inner: {
-        position: 'relative'
+        position: 'relative',
+        height: '95%',
+        overflow: 'auto'
     },
     profile: {
         display: 'flex',
@@ -194,7 +196,7 @@ function Doctor() {
                                     <p className={classes.profile_name}>Ricardo Kaka</p>
                                 </div>
                             </div>
-                            <ul style={{ paddingLeft: '0' }}>
+                            <ul style={{ paddingLeft: '0', overflow: 'auto'}}>
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.HOME) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.HOME ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>

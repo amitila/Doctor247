@@ -17,6 +17,10 @@ export default class APIService {
 	static apiDoctorListPublic = () => {
 		return `${APIService.baseAPI()}doctor/list`;
 	};
+	
+	static apiJobPosition = () => {
+		return `${APIService.baseAPI()}job-position`;
+	};
 
 	static apiPublicQuestion = () => {
 		return `${APIService.baseAPI()}question`;
@@ -311,7 +315,22 @@ export default class APIService {
         return `${APIService.baseAPI()}doctor/work-place`;
     }
 
-	// Doctor Work Place My URL
+	// Doctor Apply Work Place URL
+    static apiDoctorWorkPlaceApplyPut = () => {
+        return `${APIService.baseAPI()}doctor/work-place/application`;
+    }
+	
+	// Doctor Apply Work Place URL
+    static apiDoctorWorkPlaceApply = (id) => {
+        return `${APIService.baseAPI()}doctor/work-place/application/${id}`;
+    }
+
+	// Doctor Work Place Applied URL
+    static apiDoctorWorkPlaceApplied = () => {
+        return `${APIService.baseAPI()}doctor/work-place/applied`;
+    }
+
+	// Doctor My Work Place URL
     static apiDoctorWorkPlaceMy = () => {
         return `${APIService.baseAPI()}doctor/work-place/my`;
     }
@@ -330,6 +349,16 @@ export default class APIService {
 	static getSpecialized( callback ) {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
+			{
+			},
+			callback,
+		);
+	}
+
+	//apiJobPosition
+	static getJobPosition( callback ) {
+		WebService.sendJsonGET(
+			this.apiJobPosition(),
 			{
 			},
 			callback,
@@ -1274,6 +1303,18 @@ export default class APIService {
 			callback,
 		);
 	}
+	
+	// Get Doctor Appointment by id
+	static putDoctorAppointmentById(token, id, status, callback) {
+		WebService.sendJsonPUT(
+			this.apiDoctorAppointmentById(id),
+			{
+				jwt: token,
+				status,
+			},
+			callback,
+		);
+	}
 
 	// Get Doctor Medical Record
 	static getDoctorMedicalRecordById(token, id, values, callback) {
@@ -1307,7 +1348,6 @@ export default class APIService {
 			this.apiDoctorMedicalRecordId(id),
 			{
 				jwt: token,
-				id,
 				formData
 			},
 			callback,
@@ -1356,7 +1396,6 @@ export default class APIService {
 			});
 		}
 		formData.append('id', values.id);
-		console.log(formData.get("id"));
         WebService.sendJsonPUT(
 			this.apiDoctorOperation(),
 			{
@@ -1438,6 +1477,45 @@ export default class APIService {
 			{
 				jwt: token,
 				...query
+			},
+			callback,
+		);
+    }
+	
+	// Get Doctor Apply Work Place
+    static putDoctorWorkPlaceApply(token, operationId, status, callback) {
+        WebService.sendJsonPUT(
+			this.apiDoctorWorkPlaceApplyPut(),
+			{
+				jwt: token,
+				operationId,
+				status
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Apply Work Place
+    static postDoctorWorkPlaceApply(token, workPlaceId, jobPositionId, callback) {
+        WebService.sendJsonPOST(
+			this.apiDoctorWorkPlaceApply(workPlaceId),
+			{
+				jwt: token,
+				workPlaceId,
+				jobPositionId
+			},
+			callback,
+		);
+    }
+	
+	// Get Doctor Work Place Applied
+    static getDoctorWorkPlaceApplied(token, workPlaceId, status, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorWorkPlaceApplied(),
+			{
+				jwt: token,
+				workPlaceId,
+				status,
 			},
 			callback,
 		);
