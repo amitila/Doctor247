@@ -255,7 +255,7 @@ export default function DrawerHeader(props) {
                                                         <Notification />
                                                     </Link>
                                                 </Badge> */}
-                                                {name ? <Notification /> : null}
+                                                {/* {name ? <Notification /> : null} */}
                                             </IconButton>
                                             {/* <p>Thông báo</p> */}
                                         </Typography>
