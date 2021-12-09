@@ -105,7 +105,7 @@ export default function HomeScreen() {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 				<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 				{/* <title>HTML5 Website with Bootstrap | Responsive Website Design</title> */}
-				<link rel="shortcut icon" to="img/favicon.ico" />
+				{/* <link rel="shortcut icon" to="img/favicon.ico" /> */}
 				{/* Bootstrap 4.5 CSS */}
 				<link rel="stylesheet" to="css/bootstrap.min.css" />
 				{/* Style CSS */}
