@@ -24,7 +24,7 @@ export default function Doctors() {
         <Container maxWidth="lg">
             <Grid container spacing={1}>           
                 <Grid item xs={12} sm={8}>
-                    <Main />
+                    {/* <Main /> */}
                 </Grid>
             </Grid>
         </Container>
