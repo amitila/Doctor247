@@ -50,7 +50,7 @@ export default function AppProvider({ children }) {
     const [callingUserId, setCallingUserId] = useState(-1);
     const peer = useRef();
 
-    const socket = io('http://localhost:5000/');
+    const socket = io('https://socket-server-doctor247.herokuapp.com/');
 
     const openStream = () => {
         const config = { audio: true, video: true };
