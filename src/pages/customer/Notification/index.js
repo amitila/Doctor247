@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-// import Main from './Main';
+import Main from './Main';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +24,7 @@ export default function Doctors() {
         <Container maxWidth="lg">
             <Grid container spacing={1}>           
                 <Grid item xs={12} sm={8}>
-                    {/* <Main /> */}
+                    <Main />
                 </Grid>
             </Grid>
         </Container>
