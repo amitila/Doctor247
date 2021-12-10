@@ -33,6 +33,7 @@ import CustomImage from '../../../components/Image';
 import { AppContext } from '../../../store/AppProvider';
 import { toInteger, update } from 'lodash';
 import getToken from '../../../helpers/getToken';
+import { useSnackbar } from 'notistack';
 
 const axios = require("axios");
 
@@ -287,8 +288,8 @@ function getDay(datetime) {
     return result;
 }
 
-function checkWP(startingTime, endingTime, workAt1WP, workAtSelect) {
-    if(!startingTime && !endingTime && workAt1WP===0){
+function checkWP(startingTime, endingTime, workAtWP, workAtSelect) {
+    if(!startingTime && !endingTime && workAtWP===0){
         if(workAtSelect===0){
             return WPMode.SKIP;
         }
@@ -296,7 +297,7 @@ function checkWP(startingTime, endingTime, workAt1WP, workAtSelect) {
             return WPMode.DELETE;
         }
     }
-    if(startingTime && endingTime && workAt1WP!==0){
+    if(startingTime && endingTime && workAtWP!==0){
         if(workAtSelect===0){
             return WPMode.ADD;
         }
@@ -412,9 +413,19 @@ function HealthCheckPlanTable(props) {
     useEffect(() => {        
         APIService.getDoctorAppointment(token, (success, json) => {
             if (success && json.result) {
-                console.log("Get getDoctorAppointment");
-                console.log(json.result);
-                setHealthCheckList(json.result);
+                let list = [];
+                json.result.forEach(item => {
+                    if (item.status === 'PENDING') {
+                        list.push({
+                            ...item,
+                            od: parseInt(item.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':',''))
+                        });
+                    }
+                });
+                list.sort(function (a, b) {
+                    return a.od - b.od;
+                });
+                setHealthCheckList(list);
             }
         });
         APIService.getDoctorWorkPlaceMy(token, (success, json) => {
@@ -524,11 +535,11 @@ function WorkPlanTable(props) {
 }
 
 export default function TimeTable() {
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
     const [value, setValue] = React.useState(TabCode.APPOINTMENTS);
     const [isOpenHCP, setIsOpenHCP] = React.useState(false);
     const [isOpenWP, setIsOpenWP] = React.useState(false);
-    const [numbersOfUpdate, setNumbersOfUpdate] = React.useState(0);
     const [isReload, setIsReload] = React.useState(true);
 
     const [healthCheckData, setHealthCheckData] = useState({
@@ -629,11 +640,9 @@ export default function TimeTable() {
             startingAt3: data.startingAt3,
             endingAt3: data.endingAt3,
         });
-        setWorkAtSelect1(data.workAt1);
-        setWorkAtSelect2(data.workAt2);
-        setWorkAtSelect3(data.workAt3);
-        console.log('selected WP');
-        console.log(data);
+        setOldWorkAt1WP(data.workAt1);
+        setOldWorkAt2WP(data.workAt2);
+        setOldWorkAt3WP(data.workAt3);
     };
 
     const handleDelete1 = () => {
@@ -657,20 +666,20 @@ export default function TimeTable() {
     };
 
     const handleWPOK = () => {
-        const checkWP1 = checkWP(startingAt1WP, endingAt1WP, workAt1WP, workAtSelect1);
-        const checkWP2 = checkWP(startingAt2WP, endingAt2WP, workAt2WP, workAtSelect2);
-        const checkWP3 = checkWP(startingAt3WP, endingAt3WP, workAt3WP, workAtSelect3);
+        const checkWP1 = checkWP(startingAt1WP, endingAt1WP, workAt1WP, oldWorkAt1WP);
+        const checkWP2 = checkWP(startingAt2WP, endingAt2WP, workAt2WP, oldWorkAt2WP);
+        const checkWP3 = checkWP(startingAt3WP, endingAt3WP, workAt3WP, oldWorkAt3WP);
         if(checkWP1!==WPMode.ERR && checkWP2!==WPMode.ERR && checkWP3!==WPMode.ERR){
             if (checkWPLimit(SessionInDay.MORNING, startingAt1WP, endingAt1WP, workAt1WP) !== ErrSessionInDay.NONE) {
-                alert('Thời gian làm việc buổi sáng không hợp lệ.');
+                enqueueSnackbar("Thời gian làm việc buổi sáng không hợp lệ.", {variant: "error"});
                 return;
             }
             if (checkWPLimit(SessionInDay.AFTERNOON, startingAt2WP, endingAt2WP, workAt2WP) !== ErrSessionInDay.NONE) {
-                alert('Thời gian làm việc buổi chiều không hợp lệ.');
+                enqueueSnackbar("Thời gian làm việc buổi chiều không hợp lệ.", {variant: "error"});
                 return;
             }
             if (checkWPLimit(SessionInDay.NIGHT, startingAt3WP, endingAt3WP, workAt3WP) !== ErrSessionInDay.NONE) {
-                alert('Thời gian làm việc buổi tối không hợp lệ.');
+                enqueueSnackbar("Thời gian làm việc buổi tối không hợp lệ.", {variant: "error"});
                 return;
             }
             let logdt = [];
@@ -702,7 +711,7 @@ export default function TimeTable() {
             else if (checkWP1 === WPMode.DELETE) {
                 logdt.push({
                     "deleteList": [id1WP],
-                    "id": workAtSelect1
+                    "id": oldWorkAt1WP
                 });
             }
 
@@ -734,7 +743,7 @@ export default function TimeTable() {
             else if (checkWP2 === WPMode.DELETE) {
                 logdt.push({
                     "deleteList": [id2WP],
-                    "id": workAtSelect2
+                    "id": oldWorkAt2WP
                 });
             }
 
@@ -766,7 +775,7 @@ export default function TimeTable() {
             else if (checkWP3 === WPMode.DELETE) {
                 logdt.push({
                     "deleteList": [id3WP],
-                    "id": workAtSelect3
+                    "id": oldWorkAt3WP
                 });
             }
             console.log('logdt');
@@ -779,19 +788,19 @@ export default function TimeTable() {
                         if(success, json.result){
                             setIsOpenWP(false);
                             setIsReload(true);
-                            console.log('put operation ok.');
+                            enqueueSnackbar("Cập nhật thành công!", {variant: "success"});
                             console.log(json.result);
                         }
                         else{
+                            enqueueSnackbar("Cập nhật thất bại!", {variant: "error"});
                             console.log(json);
-                            console.log('put operation err.');
                         }
                     }
                 );
             });            
         }
         else{
-            alert("Bạn chưa nhập đủ thông tin.");
+            enqueueSnackbar("Bạn chưa nhập đủ thông tin.", {variant: "error"});
         }
         
         // APIService.putDoctorOperation(token, (success, json) => {
@@ -815,9 +824,9 @@ export default function TimeTable() {
     const [openWorkAtSelect1, setOpenWorkAtSelect1] = React.useState(false);
     const [openWorkAtSelect2, setOpenWorkAtSelect2] = React.useState(false);
     const [openWorkAtSelect3, setOpenWorkAtSelect3] = React.useState(false);
-    const [workAtSelect1, setWorkAtSelect1] = React.useState(0);
-    const [workAtSelect2, setWorkAtSelect2] = React.useState(0);
-    const [workAtSelect3, setWorkAtSelect3] = React.useState(0);
+    const [oldWorkAt1WP, setOldWorkAt1WP] = React.useState(0);
+    const [oldWorkAt2WP, setOldWorkAt2WP] = React.useState(0);
+    const [oldWorkAt3WP, setOldWorkAt3WP] = React.useState(0);
 
     const handleChangeWorkAtSelect1 = (event) => {
         setWorkAt1WP(event.target.value);

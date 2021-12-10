@@ -165,14 +165,14 @@ function Doctor() {
     const token = getToken();
 
     useEffect(() => {
-        APIService.getDoctorProfile(token, (success, json) => {
-            if (success && json.result) {
-                console.log('had doctor token');
-            }
-            else {
-                console.log('NO doctor token');
-            }
-        });
+        // APIService.getDoctorProfile(token, (success, json) => {
+        //     if (success && json.result) {
+        //         console.log('had doctor token');
+        //     }
+        //     else {
+        //         console.log('NO doctor token');
+        //     }
+        // });
     }, []);
 
     const menuRefClick = () => {

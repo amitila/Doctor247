@@ -82,47 +82,59 @@ function getStatus(status){
 }
 
 function createMedicalRecords(appointments){
-    let result = [];
+    let pendingList = [];
+    let doneList = [];
     appointments.forEach(element => {
-        return result.push(
-            {
-                aid: element.id,
-                id: element.medicalRecord.id,
-                date: element.day.substring(0, 16).replace('T',' '),
-                status: element.status,
-                note: element.medicalRecord.note,
+        const data = {
+            aid: element.id,
+            id: element.medicalRecord.id,
+            od: parseInt(element.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','')),
+            date: element.day.substring(0, 16).replace('T',' '),
+            status: element.status,
+            note: element.medicalRecord.note,
+            name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
+            customer: {
+                id: element.medicalRecord.customer.id,
                 name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
-                customer: {
-                    id: element.medicalRecord.customer.id,
-                    name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
-                    address: element.medicalRecord.customer.address,
-                    avatarURL: element.medicalRecord.customer.avatarURL,
-                    dob: element.medicalRecord.customer.birthday,
-                    phone: element.medicalRecord.customer.contactPhoneNumber,
-                    gender: element.medicalRecord.customer.gender
-                },
-                medicalRecord: {
-                    id: element.medicalRecord.id,
-                    status: element.medicalRecord.status,
-                    images: element.medicalRecord.images,
-                    diagnostic: element.medicalRecord.diagnostic,
-                    symptom: element.medicalRecord.symptom,
-                    note: element.medicalRecord.note,
-                    cost: element.medicalRecord.medicalExpense
-                },
-                history: null,
-                doctorId: element.doctorId,
-                clinic: element.workplace.name,
-                height: element.medicalRecord.height,
-                weight: element.medicalRecord.weight,
-                bodyTemperature: element.medicalRecord.bodyTemperature,
-                bloodPressure: element.medicalRecord.bloodPressure,
-                heartBeat: element.medicalRecord.heartBeat,
-                bloodGroup: element.medicalRecord.bloodGroup,
-            }
-        );
+                address: element.medicalRecord.customer.address,
+                avatarURL: element.medicalRecord.customer.avatarURL,
+                dob: element.medicalRecord.customer.birthday,
+                phone: element.medicalRecord.customer.contactPhoneNumber,
+                gender: element.medicalRecord.customer.gender
+            },
+            medicalRecord: {
+                id: element.medicalRecord.id,
+                status: element.medicalRecord.status,
+                images: element.medicalRecord.images,
+                diagnostic: element.medicalRecord.diagnostic,
+                symptom: element.medicalRecord.symptom,
+                note: element.medicalRecord.note,
+                cost: element.medicalRecord.medicalExpense
+            },
+            history: null,
+            doctorId: element.doctorId,
+            clinic: element.workplace.name,
+            height: element.medicalRecord.height,
+            weight: element.medicalRecord.weight,
+            bodyTemperature: element.medicalRecord.bodyTemperature,
+            bloodPressure: element.medicalRecord.bloodPressure,
+            heartBeat: element.medicalRecord.heartBeat,
+            bloodGroup: element.medicalRecord.bloodGroup,
+        }
+        if (element.status === 'DONE') {
+            doneList.push(data);
+        }
+        else{
+            pendingList.push(data);
+        }
     });
-    return result;
+    pendingList.sort(function (a, b) {
+        return a.od - b.od;
+    });
+    doneList.sort(function (a, b) {
+        return b.od - a.od;
+    });
+    return {pendingList, doneList};
 }
 
 function Row(props) {
@@ -246,7 +258,10 @@ function MedicalRecordList(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.appointmentList.map((data) => (
+                        {props.appointmentList.pendingList.map((data) => (
+                            <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect}/>
+                        ))}
+                        {props.appointmentList.doneList.map((data) => (
                             <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect}/>
                         ))}
                     </TableBody>
@@ -288,7 +303,7 @@ function MedicalRecordList(props) {
 }
 
 function MedicalRecordDetail(props) {
-    const { appointmentSelect } = props;
+    const { appointmentSelect, setAppointmentJson } = props;
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -316,19 +331,29 @@ function MedicalRecordDetail(props) {
     const [medicalStatus, setMedicalStatus] = useState(appointmentSelect.status);
 
     const [imgList, setImgList] = useState([
-        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
-        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
-        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
-        'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+        'http://www.boclinic.vn/wp-content/uploads/2017/05/5-meo-dep-bo-cang-thang-keo-dai-giup-ban-tre-khoe-moi-ngay-1.jpg',
+        'https://goldenhealthcarevn.com/wp-content/uploads/2018/12/stressed-businessman-300x200.jpeg',
     ]);
+    // const [imgList, setImgList] = useState([
+    //     'https://vinmec-prod.s3.amazonaws.com/images/20190301_035714_660235_an_khong_ngon_do_gan.max-800x800.jpg',
+    //     'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
+    //     'https://normagut.com/wp-content/uploads/2021/02/vi-tri-dau-bung-o-ben-trai-hoac-ben-phai.jpg',
+    // ]);
     
     const [isEditBodyStats, setIsEditBodyStats] = useState(false);
+    
+    useEffect(() => {
+        if (!isEditBodyStats) {
+            APIService.getDoctorAppointment(token, (success, json) => {
+                if (success && json.result) {
+                    setAppointmentJson(json.result);
+                }
+            });}
+    }, [isEditBodyStats]);
 
     useEffect(() => {
         APIService.getDoctorListPublic({}, (success, json) => {
             if (success && json.result) {
-                console.log('getDoctorListPublic');
-                console.log(json.result);
                 json.result.map(data => {
                     if(data.doctor.id === appointmentSelect.doctorId){
                         setDoctorName("Bác sĩ " + data.doctor.firstName + " " + data.doctor.lastName);
@@ -352,8 +377,6 @@ function MedicalRecordDetail(props) {
     };
 
     const handleConfirm = () => {
-        console.log('appointmentSelect');
-        console.log(appointmentSelect);
         console.log('data');
         console.log({
             height: patientHeight,
@@ -377,45 +400,54 @@ function MedicalRecordDetail(props) {
             return;
         }
         if (window.confirm('Bạn chắc chắn đã nhập xong?')){
-            APIService.putDoctorMedicalRecordById(
+            APIService.putDoctorAppointmentById(
                 token,
-                appointmentSelect.medicalRecord.id,
-                {
-                    height: patientHeight,
-                    weight: patientWeight,
-                    bodyTemperature: patientBodyTemperature,
-                    bloodPressure: patientBloodPressure,
-                    heartBeat: patientHeartbeat,
-                    bloodGroup: patientBloodGroup,
-                    diagnostic: [diagnosticResult],
-                    note: note,
-                    medicalExpense: appointmentSelect.medicalRecord.cost + '',
-                },
+                appointmentSelect.aid,
+                'DOING',
                 (success, json) => {
                     if (success && json.result) {
-                        setMedicalStatus('DONE');
-                        setPatientHeight2(patientHeight);
-                        setPatientWeight2(patientWeight);
-                        setPatientBodyTemperature2(patientBodyTemperature);
-                        setPatientBloodPressure2(patientBloodPressure);
-                        setPatientHeartbeat2(patientHeartbeat);
-                        setPatientBloodGroup2(patientBloodGroup);
-                        setDiagnosticResult2(diagnosticResult);
-                        setNote2(note);
-                        APIService.putDoctorAppointmentById(
+                        console.log('putDoctorAppointmentById DOING');
+                        APIService.putDoctorMedicalRecordById(
                             token,
-                            appointmentSelect.aid,
-                            'DONE',
+                            appointmentSelect.medicalRecord.id,
+                            {
+                                height: patientHeight,
+                                weight: patientWeight,
+                                bodyTemperature: patientBodyTemperature,
+                                bloodPressure: patientBloodPressure,
+                                heartBeat: patientHeartbeat,
+                                bloodGroup: patientBloodGroup,
+                                diagnostic: [diagnosticResult],
+                                note: note,
+                                medicalExpense: appointmentSelect.medicalRecord.cost + '',
+                            },
                             (success, json) => {
                                 if (success && json.result) {
+                                    setPatientHeight2(patientHeight);
+                                    setPatientWeight2(patientWeight);
+                                    setPatientBodyTemperature2(patientBodyTemperature);
+                                    setPatientBloodPressure2(patientBloodPressure);
+                                    setPatientHeartbeat2(patientHeartbeat);
+                                    setPatientBloodGroup2(patientBloodGroup);
+                                    setDiagnosticResult2(diagnosticResult);
+                                    setNote2(note);
                                     enqueueSnackbar('Đã khám xong!', { variant: 'success'});
                                     setIsEditBodyStats(false);
-                                    setMedicalStatus('DONE');
+                                    APIService.putDoctorAppointmentById(
+                                        token,
+                                        appointmentSelect.aid,
+                                        'DONE',
+                                        (success, json) => {
+                                            if (success && json.result) {
+                                                setMedicalStatus('DONE');
+                                            }
+                                        }
+                                    );
                                 }
-                            }
-                        );
+                            });
                     }
-                });
+                }
+            );
         }
 
     }
@@ -774,7 +806,7 @@ const ShowContent = (props) => {
     }
     else if(props.contentId === ContentCode.DETAIL){
         return(
-            <MedicalRecordDetail appointmentSelect={props.appointmentSelect}/>
+            <MedicalRecordDetail appointmentSelect={props.appointmentSelect} setAppointmentJson={props.setAppointmentJson}/>
         );
     }
 }
@@ -785,15 +817,13 @@ export default function MedicalRecords(props) {
 
     const [contentId, setContentId] = useState(ContentCode.LIST);
     const [appointmentJson, setAppointmentJson] = useState([]);
-    const [appointmentList, setAppointmentList] = useState([]);
+    const [appointmentList, setAppointmentList] = useState({pendingList: [], doneList: []});
     const [appointmentSelect, setAppointmentSelect] = useState();
 
     useEffect(() => {
         APIService.getDoctorAppointment(token, (success, json) => {
             if (success && json.result) {
                 setAppointmentJson(json.result);
-                console.log('setAppointmentJson');
-                console.log(json.result);
             }
         });
     }, []);
@@ -807,7 +837,7 @@ export default function MedicalRecords(props) {
             <div>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={12}>
-                        <ShowContent setContentId={setContentId} contentId={contentId} appointmentList={appointmentList} appointmentSelect={appointmentSelect} setAppointmentSelect={setAppointmentSelect} />
+                        <ShowContent setContentId={setContentId} contentId={contentId} appointmentList={appointmentList} appointmentSelect={appointmentSelect} setAppointmentSelect={setAppointmentSelect} setAppointmentJson={setAppointmentJson}/>
                     </Grid>
                     {/* <Grid xs={12} md={12}>
                         <Calendar/>

@@ -39,7 +39,6 @@ function ConfirmationDialogRaw(props) {
   };
 
   const handleOk = () => {
-    console.log(provinceSelect);
     onClose(value);
   };
 
@@ -73,15 +72,12 @@ function ConfirmationDialogRaw(props) {
 
   const handleChangeProvince = (event) => {
     setProvinceSelect(event.target.value);
-    console.log(event.target.value);
   };
   const handleChangeDistrict = (event) => {
     setDistrictSelect(event.target.value);
-    console.log(event.target.value);
   };
   const handleChangeWard = (event) => {
     setWardSelect(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleCloseProvinces = () => {
@@ -108,10 +104,7 @@ function ConfirmationDialogRaw(props) {
     axios
       .get("https://provinces.open-api.vn/api/?depth=2")
       .then(function (response) {
-        console.log("response+start");
-        console.log(response);
         setProvinces(response.data);
-        console.log("response+end");
       })
       .catch(function (error) {
         // handle error
@@ -124,9 +117,6 @@ function ConfirmationDialogRaw(props) {
     axios
       .get("https://provinces.open-api.vn/api/w")
       .then(function (response) {
-        console.log("response+start");
-        console.log(response);
-        console.log("response+end");
       })
       .catch(function (error) {
         // handle error

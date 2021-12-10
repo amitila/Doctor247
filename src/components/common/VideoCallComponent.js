@@ -99,7 +99,7 @@ export default function VideoCallComponent(props) {
     const classes = useStyles();
 
     socket.on('LIST_ONLINE_USERS', listUsers => {
-        setListOnlineUsers(listUsers);;
+        setListOnlineUsers(listUsers);
     });
 
     socket.on('HAS_NEW_USER', user => {
@@ -133,7 +133,6 @@ export default function VideoCallComponent(props) {
     socket.on('USER_BUSY', userId => {
         if (userId === callingUserId && isCallSend) {
             setCallingUserId(0);
-            console.log('user busy');
             setIsCallSend(false);
             setIsCallBusy(true);
         }

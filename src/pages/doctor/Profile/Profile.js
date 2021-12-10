@@ -45,10 +45,42 @@ const useStyles = makeStyles((theme) => ({
          },
     },
     formControl: {
-        margin: theme.spacing(1),
         minWidth: 120,
     },
 }));
+// get date from ymd
+function getDateTimeFromYMD(yyyyMMdd) {
+    const date = new Date();
+    date.setFullYear(yyyyMMdd.substring(0,4));
+    date.setMonth(yyyyMMdd.substring(5,7));
+    date.setDate(yyyyMMdd.substring(8));
+    return date;
+}
+
+function Row(props) {
+    const { removeThis, oldText, getText, index } = props;
+    const [text, setText] = useState('');
+    useEffect(() => {
+        setText(oldText);
+    }, []);
+    useEffect(() => {
+        getText(index, text);
+    }, [text]);
+    return (<Grid container xs={12} style={{marginTop: 14}}>
+        <Grid item xs={10}>
+            <TextField 
+                multiline
+                required
+                fullWidth
+                onChange={(e) => { setText(e.target.value) }} 
+                value={text}
+                 />
+        </Grid>
+        <Grid item xs={2}>
+            <Button variant="outlined" color="secondary" style={{marginLeft: "15%"}} onClick={removeThis}>-</Button>
+        </Grid>
+    </Grid>);
+}
 
 function Profile(props) {
     const classes = useStyles();
@@ -56,23 +88,24 @@ function Profile(props) {
     //const img1 = "https://thumbs.dreamstime.com/z/doctor-web-icon-therapist-medical-avatar-flat-style-illustration-doctor-web-icon-therapist-avatar-103706622.jpg";
     const [imgSrc, setImgSrc] = useState('');
 
-    const [fullname, setFullname] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [dob, setDob] = useState('');
     const [sex, setSex] = useState(0);
-    const [position, setPosition] = useState('');
-    const [workAbout, setWorkAbout] = useState('');
-    const [workAt, setWorkAt] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [note, setNote] = useState('');
-
-    const [firstIntroduce, setFirstIntroduce] = useState("");
+    const [province, setProvince] = useState(0);
+    const [medicalExamination, setMedicalExamination] = useState([]);
+    const [displayMedicalExamination, setDisplayMedicalExamination] = useState([]);
     const [introduces, setIntroduces] = useState([]);
+    const [displayIntroduces, setDisplayIntroduces] = useState([]);
+    const [lengthOfIntroduce, setLengthOfIntroduce] = useState(0);
+
+    const [provincesList, setProvincesList] = useState([]);
 
     const [workHistory, setWorkHistory] = useState([]);
 
     const [values, setValues] = useState({
-        fullname: '',
+        firstName: '',
+        lastName: '',
         dob: '',
         sex: '',
         position: '',
@@ -80,59 +113,63 @@ function Profile(props) {
         workAt: '',
         email: '',
         phone: '',
-        note: '',
         image: '',
+        province: 0,
+        introduces: [],
+        medicalExamination: [],
     });
 
     const [openSex, setOpenSex] = React.useState(false);
+    const [openProvince, setOpenProvince] = React.useState(false);
 
     // const token = localStorage.getItem("token_doctor247");
     const token = getToken();
     useEffect(() => {
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
-                console.log('doctorinfo');
+                console.log('profile');
                 console.log(json.result);
                 const workHistoryList = json.result.doctor.workHistory;
                 const positionName = workHistoryList.length > 0 ? workHistoryList[workHistoryList.length - 1].jobPosition.title : '';
                 const workplaceName = (workHistoryList.length > 0) ? workHistoryList[workHistoryList.length - 1].workplace.name : '';
                 setWorkHistory(workHistoryList);
                 setValues({
-                    fullname: json.result.doctor.firstName + " " + json.result.doctor.lastName,
+                    firstName: json.result.doctor.firstName,
+                    lastName: json.result.doctor.lastName,
                     dob: json.result.doctor.birthday.substring(0, 10),
                     sex: json.result.doctor.gender === "MALE" ? "Nam" : "Nữ",
                     position: positionName,
                     workAbout: json.result.doctor.specialized.name,
                     workAt: workplaceName,
                     email: json.result.email,
-                    phone: '',
-                    note: '',
-                    image: json.result.doctor.image,
+                    phone: json.result.phoneNumber,
+                    province: json.result.doctor.province===null?0:json.result.doctor.province.id,
+                    image: json.result.doctor.avatarURL===null?'':json.result.doctor.avatarURL,
+                    introduces:json.result.doctor.introduce,
+                    medicalExamination: json.result.doctor.medicalExamination,
                 });
-                setIntroduces(json.result.doctor.introduce);
-                setFirstIntroduce("Hiện đang là " + positionName + " - Chuyên khoa " + json.result.doctor.specialized.name + " tại " + workplaceName);
+                setDisplayIntroduces(json.result.doctor.introduce);
+                setDisplayMedicalExamination(json.result.doctor.medicalExamination);
+                setLengthOfIntroduce(json.result.doctor.introduce.length);
+            }
+        });
+        APIService.getProvinces((success, json) => {
+            if (success && json.result) {
+                setProvincesList(json.result);
             }
         });
     }, []);
-
-    useEffect(() => {
-        console.log('workHistory');
-        console.log(workHistory);
-    }, [workHistory]);
 
     const [openEditInfo, setOpenEditInfo] = React.useState(false);
 
     const handleClickOpenEditInfo = () => {
         setOpenEditInfo(true);
-        setFullname(values.fullname);
+        setFirstName(values.firstName);
+        setLastName(values.lastName);
         setDob(values.dob);
         setSex(values.sex === 'Nam' ? 0 : 1);
-        setPosition(values.position);
-        setWorkAbout(values.workAbout);
-        setWorkAt(values.workAt);
-        setEmail(values.email);
-        setPhone(values.phone);
-        setNote(values.note);
+        setProvince(values.province);
+        setIntroduces([...values.introduces]);
     };
 
     const handleClose = () => {
@@ -141,17 +178,67 @@ function Profile(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const data = {
+            firstName: firstName,
+            lastName: lastName,
+            dob: getDateTimeFromYMD(dob),
+            sex: sex === 0 ? 'MALE' : 'FEMALE',
+            avatarURL: imgSrc,
+            province: province,
+            introduces: introduces,
+            medicalExamination: medicalExamination
+        }
+        console.log(data);
+        APIService.putDoctorProfile(
+            token,
+            data,
+            (success, json) => {
+                if (success, json.result) {
+                    console.log(json.result);
+                }
+            }
+        );
+        return;
         setValues({
-            fullname: fullname,
+            firstName: firstName,
+            lastName: lastName,
             dob: dob,
             sex: sex,
-            position: position,
-            workAbout: workAbout,
-            workAt: workAt,
-            email: email,
-            phone: phone,
-            note: note
+            province: province,
+            introduces: introduces,
+            medicalExamination: medicalExamination
         });
+    }
+
+    const handleUpdateIntroText = (index, text) => {
+        let lst = introduces;
+        lst.splice(index, 1, text);
+        setIntroduces([...lst]);
+    }
+    const handleUpdateMEText = (index, text) => {
+        let lst = medicalExamination;
+        lst.splice(index, 1, text);
+        setMedicalExamination([...lst]);
+    } 
+
+    const handleRemoveIntroRow = (index) => {
+        let lst = introduces;
+        lst.splice(index, 1);
+        setIntroduces([...lst]);
+    }
+    const handleRemoveMERow = (index) => {
+        let lst = medicalExamination;
+        lst.splice(index, 1);
+        setMedicalExamination([...lst]);
+    }
+
+    const handleAddIntroRow = () => {
+        let newItem = '';
+        setIntroduces([...introduces, newItem]);
+    }
+    const handleAddMERow = () => {
+        let newItem = '';
+        setMedicalExamination([...medicalExamination, newItem]);
     }
 
     const handleChangeImage = (e) => {
@@ -175,7 +262,7 @@ function Profile(props) {
                 >
                     <form autoComplete="off" onSubmit={handleSubmit}>
                         <DialogTitle id="alert-dialog-title">
-                            <h4>Thông tin cơ bản</h4>
+                            <h4>Cập nhật thông tin</h4>
                         </DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
@@ -196,8 +283,11 @@ function Profile(props) {
                                             </i>
                                         </Button>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField onChange={(e) => setFullname(e.target.value)} required id="fullname" fullWidth label="Họ tên" defaultValue={fullname} />
+                                    <Grid item xs={6}>
+                                        <TextField onChange={(e) => setFirstName(e.target.value)} required id="fname" fullWidth label="Họ" value={firstName} />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField onChange={(e) => setLastName(e.target.value)} required id="lname" fullWidth label="Tên" value={lastName} />
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField onChange={(e) => setDob(e.target.value)} required id="dob" fullWidth label="Ngày sinh" defaultValue={dob} />
@@ -219,20 +309,63 @@ function Profile(props) {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setPosition(e.target.value)} required id="position" fullWidth label="Chức vụ" defaultValue={position} />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setWorkAbout(e.target.value)} required id="workAbout" fullWidth label="Chuyên khoa" defaultValue={workAbout} />
-                                    </Grid>
                                     <Grid item xs={12}>
-                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setEmail(e.target.value)} required id="email" fullWidth label="Email" defaultValue={email} />
+                                        <FormControl className={classes.formControl} fullWidth>
+                                            <InputLabel id="demo-controlled-open-select-label-province">Tỉnh/thành</InputLabel>
+                                            <Select
+                                                labelId="demo-controlled-open-select-label-province"
+                                                id="demo-controlled-open-select-province"
+                                                open={openProvince}
+                                                onClose={() => {setOpenProvince(false)}}
+                                                onOpen={() => {setOpenProvince(true)}}
+                                                value={province}
+                                                onChange={(e) => {setProvince(e.target.value)}}
+                                            >
+                                                <MenuItem value={0}>Chọn tỉnh thành</MenuItem>
+                                                {
+                                                    provincesList.map(province => 
+                                                        <MenuItem value={province.id}>{province.name}</MenuItem>)
+                                                }
+                                            </Select>
+                                        </FormControl>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField inputProps={{readOnly: true}} onChange={(e) => setPhone(e.target.value)} required id="phone" fullWidth label="SDT" defaultValue={phone} />
+                                    <div></div>
+                                    <Grid item xs={12} container>
+                                        <Grid item xs={12}>
+                                            <label>Giới thiệu:</label>
+                                        </Grid>
+                                        {
+                                            introduces.map((introduce, index) => {
+                                                return <Row oldText={introduce} index={index} getText={(index, text) => {handleUpdateIntroText(index, text)}} removeThis={() => {handleRemoveIntroRow(index)}}/>
+                                            }
+                                            )
+                                        }
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={handleAddIntroRow}
+                                            style={{ marginTop: 8 }}>
+                                            Thêm dòng
+                                        </Button>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField onChange={(e) => setNote(e.target.value)} id="note" fullWidth label="Ghi chú" defaultValue={note} />
+
+                                    <Grid item xs={12} container>
+                                        <Grid item xs={12}>
+                                            <label>Chuyên khám:</label>
+                                        </Grid>
+                                        {
+                                            medicalExamination.map((element, index) => {
+                                                return <Row oldText={element} index={index} getText={(index, text) => {handleUpdateMEText(index, text)}} removeThis={() => {handleRemoveMERow(index)}}/>
+                                            }
+                                            )
+                                        }
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={handleAddMERow}
+                                            style={{ marginTop: 8 }}>
+                                            Thêm dòng
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </DialogContentText>
@@ -267,7 +400,7 @@ function Profile(props) {
                                         <h5>Họ tên</h5>
                                     </div>
                                     <div className="col-md-9 text-secondary">
-                                        <h5>{values.fullname}</h5>
+                                        <h5>{values.firstName + ' ' + values.lastName}</h5>
                                     </div>
                                 </div>
                                 <hr />
@@ -341,19 +474,9 @@ function Profile(props) {
                                     </div>
                                 </div>
                                 <hr />
-
                                 <div className="row">
                                     <div className="col-md-3">
-                                        <h5>Ghi chú</h5>
-                                    </div>
-                                    <div className="col-md-9 text-secondary">
-                                        <h5>{values.note}</h5>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div className="row">
-                                    <div className="col-md-3">
-                                        <Button variant="outlined" fullWidth onClick={handleClickOpenEditInfo}>Cập nhật</Button>
+                                        <Button variant="contained" color="primary" fullWidth onClick={handleClickOpenEditInfo}>Cập nhật</Button>
                                     </div>
                                     <div className="col-md-6">
                                     </div>
@@ -374,8 +497,10 @@ function Profile(props) {
                                         </span>
                                     </div>
                                     <div className="col-md-9 text-secondary">
-                                        <CustomImage image={values.image} style={{ margin: '3%' }} width="44%" height="200" alt=""/>
-                                        {/* <img src={} style={{ margin: '3%' }} width="44%" height="200" alt=""></img> */}
+                                        {
+                                            values.image == ''? <h6>Chưa có hình</h6>
+                                            :<img src={values.image} style={{ margin: '3%' }} width="200" height="200" alt=""/>
+                                        }
                                     </div>
                                 </div>
                                 <div className="row">
@@ -387,11 +512,26 @@ function Profile(props) {
                                     </div> */}
                                 </div>
                                 {
-                                    introduces.map(intro => 
+                                    displayIntroduces.map(intro => 
                                         <div className="row">
                                             <div className="col-md-3"></div>
                                             <div className="col-md-9 text-secondary">
                                                 <h5>- {intro}</h5>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                                <div className="row">
+                                    <div className="col-md-3">
+                                        <h5>Chuyên khám</h5>
+                                    </div>
+                                </div>
+                                {
+                                    displayMedicalExamination.map(item => 
+                                        <div className="row">
+                                            <div className="col-md-3"></div>
+                                            <div className="col-md-9 text-secondary">
+                                                <h5>- {item}</h5>
                                             </div>
                                         </div>
                                     )

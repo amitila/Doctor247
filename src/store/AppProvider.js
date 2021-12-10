@@ -29,6 +29,7 @@ const ContentCode = {
 export const AppContext = React.createContext();
 
 export default function AppProvider({ children }) {
+    const [isLogin, setIsLogin] = useState(false);
     const [currentMenuItem, setCurrentMenuItem] = useState(ScreenCode.HOME);
     const [isAddRoomVisible, setIsAddRoomVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('0');
@@ -41,8 +42,8 @@ export default function AppProvider({ children }) {
 
     // for video call ->
     const [userInfo, setUserInfo] = useState({
-        name: '',
         id: 0,
+        name: '',
         avatarURL: null,
     });
     const [listOnlineUsers, setListOnlineUsers] = useState([]);
@@ -117,6 +118,7 @@ export default function AppProvider({ children }) {
                     name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
                     avatarURL: json.result.doctor.avatar
                 });
+                setIsLogin(true);
             } else {
                 console.log('Không lấy được thông tin bác sĩ')
                 APIService.getProfile(token, (success, json) => {
@@ -126,20 +128,23 @@ export default function AppProvider({ children }) {
                             name: json.result.customer.firstName + " " + json.result.customer.lastName,
                             avatarURL: json.result.customer.avatarURL ? json.result.customer.avatarURL : ''
                         });
+                        setIsLogin(true);
                     } else {
                         console.log('Không lấy được thông tin bệnh nhân')
                     }
                 }) 
             }
         });
-        peer.current = new Peer();    
-        peer.current.on('call', (call) => {
-            setCurrentCall(call);
-        });
-    }, []);
-
+        if (isLogin) {
+            peer.current = new Peer();    
+            peer.current.on('call', (call) => {
+                setCurrentCall(call);
+            });
+        }
+    }, [isLogin]);
+    
     useEffect(() => {
-        if (userInfo.id !== 0) {
+        if (isLogin && userInfo.id !== 0) {
             peer.current.on('open', (id) => {
                 console.log(id);
                 setMyPeerId(id);
@@ -151,7 +156,12 @@ export default function AppProvider({ children }) {
                 });
             });
         }
-    }, [userInfo.id]);
+    }, [userInfo]);
+
+    useEffect(() => {
+        console.log('userInfo.id');
+        console.log(userInfo.id);
+    }, [userInfo]);
 
     const getWorkPlaceName = (id) => {
         const wp = workPlaceList.find(x => x.id === id);
@@ -161,7 +171,10 @@ export default function AppProvider({ children }) {
     return (
         <AppContext.Provider
             value={{
+                isLogin,
+                setIsLogin,
                 userInfo,
+                setUserInfo,
                 callingUserId,
                 setCallingUserId,
                 currentCall,

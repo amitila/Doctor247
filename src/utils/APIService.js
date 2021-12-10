@@ -17,7 +17,7 @@ export default class APIService {
 	static apiDoctorListPublic = () => {
 		return `${APIService.baseAPI()}doctor/list`;
 	};
-	
+
 	static apiJobPosition = () => {
 		return `${APIService.baseAPI()}job-position`;
 	};
@@ -36,6 +36,10 @@ export default class APIService {
 
 	static apiConfirmPayment = () => {
 		return `${APIService.baseAPI()}payment/confirm_payment`;
+	};
+
+	static apiSignUpDoctor = () => {
+		return `${APIService.baseAPI()}user/doctor`;
 	};
 
 // For customer
@@ -346,7 +350,7 @@ export default class APIService {
 
 //====================GET SPECIALIZED======================
 	// api for Get Specialized
-	static getSpecialized( callback ) {
+	static getSpecialized(callback) {
 		WebService.sendJsonGET(
 			this.apiSpecialized(),
 			{
@@ -356,7 +360,7 @@ export default class APIService {
 	}
 
 	//apiJobPosition
-	static getJobPosition( callback ) {
+	static getJobPosition(callback) {
 		WebService.sendJsonGET(
 			this.apiJobPosition(),
 			{
@@ -366,13 +370,13 @@ export default class APIService {
 	}
 
 	// api for Get Confirm Payment
-	static getConfirmPayment( values, callback ) {
+	static getConfirmPayment(values, callback) {
 		const formData = new FormData();
 		formData.append('vnp_Amount', values.vnp_Amount);
 		formData.append('vnp_BankCode', values.vnp_BankCode);
 		formData.append('vnp_BankTranNo', values.vnp_BankTranNo);
 		formData.append('vnp_CardType', values.vnp_CardType);
-		formData.append('vnp_OrderInfo', values.vnp_OrderInfo );
+		formData.append('vnp_OrderInfo', values.vnp_OrderInfo);
 		formData.append('vnp_PayDate', values.vnp_PayDate);
 		formData.append('vnp_ResponseCode', values.vnp_ResponseCode);
 		formData.append('vnp_TmnCode', values.vnp_TmnCode);
@@ -405,9 +409,9 @@ export default class APIService {
 			callback,
 		);
 	}
-	
+
 	// api for Get Doctor List Public
-	static getDoctorListPublic(values, callback ) {
+	static getDoctorListPublic(values, callback) {
 		const formData = new FormData();
 		formData.append('specializedId', values.specializedId);
 		formData.append('skip', values.skip);
@@ -422,25 +426,45 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Public Question
-	static getPublicQuestion( values, callback ) {
-		const formData = new FormData();
-		formData.append('skip', values.skip);
-		formData.append('take', values.take);
-		formData.append('keyword', values.keyword);
-		formData.append('specializedId', values.specializedId);
+	static getPublicQuestion(data, callback) {
+		let query = {}
+		if (data.skip) {
+			query = {
+				...query,
+				skip: data.skip
+			}
+		}
+		if (data.take) {
+			query = {
+				...query,
+				take: data.take
+			}
+		}
+		if (data.keyword) {
+			query = {
+				...query,
+				keyword: data.keyword
+			}
+		}
+		if (data.specializedId) {
+			query = {
+				...query,
+				specializedId: data.specializedId
+			}
+		}
 		WebService.sendJsonGET(
 			this.apiPublicQuestion(),
 			{
-				formData
+				...query
 			},
 			callback,
 		);
-	}	
+	}
 
-  	// TODO: For customer
+	// TODO: For customer
 
 //====================CHECK-TOKEN AND SET NEW TOKEN======================
 
@@ -449,7 +473,7 @@ export default class APIService {
 		WebService.sendJsonPOST(
 			this.apiCheckToken(),
 			{
-				jwt : token,
+				jwt: token,
 				token
 			},
 			callback,
@@ -463,7 +487,7 @@ export default class APIService {
 		WebService.sendJsonPUT(
 			this.apiChangePassword(),
 			{
-				jwt : token,
+				jwt: token,
 				password,
 				newPassword
 			},
@@ -476,7 +500,7 @@ export default class APIService {
 		WebService.sendJsonPUT(
 			this.apiForgotPassword(),
 			{
-				jwt : token,
+				jwt: token,
 				newPassword,
 				code,
 				type,
@@ -508,7 +532,7 @@ export default class APIService {
 			callback,
 		);
 	}
-	  
+
 //====================SIGNIGN======================
 	// api for SignIn
 	static signIn(username, password, callback) {
@@ -548,7 +572,7 @@ export default class APIService {
 //====================PROFILE======================
 
 	// api for Get Profile
-	static getProfile(token, callback ) {
+	static getProfile(token, callback) {
 		WebService.sendJsonGET(
 			this.apiProfile(),
 			{
@@ -559,7 +583,7 @@ export default class APIService {
 	}
 
 	// api for Put Profile
-	static putProfile(token, values, callback ) {
+	static putProfile(token, values, callback) {
 		const formData = new FormData();
 		formData.append('firstName', values.firstName);
 		formData.append('lastName', values.lastName);
@@ -630,7 +654,7 @@ export default class APIService {
 	}
 
 	// api for Add relative phonenumber
-	static addRelativePhoneNumber(token, phoneNumber, callback ) {
+	static addRelativePhoneNumber(token, phoneNumber, callback) {
 		WebService.sendJsonPUT(
 			this.apiAddRelativePhoneNumber(),
 			{
@@ -642,7 +666,7 @@ export default class APIService {
 	}
 
 	// api for Set Emergency Sms
-	static setEmergencySms(token, phoneNumber, content, callback ) {
+	static setEmergencySms(token, phoneNumber, content, callback) {
 		WebService.sendJsonPUT(
 			this.apiSetEmergencySms(),
 			{
@@ -655,7 +679,7 @@ export default class APIService {
 	}
 
 	// api for Set Emergency Sms
-	static getEmergencySms(token, callback ) {
+	static getEmergencySms(token, callback) {
 		WebService.sendJsonGET(
 			this.apiGetEmergencySms(),
 			{
@@ -666,7 +690,7 @@ export default class APIService {
 	}
 
 	// api for Send Emergency Sms
-	static sendEmergencySms(token, callback ) {
+	static sendEmergencySms(token, callback) {
 		WebService.sendJsonPUT(
 			this.apiSendEmergencySms(),
 			{
@@ -762,7 +786,7 @@ export default class APIService {
 	}
 
 	// api for Get an appoitment by id
-	static getAppointmentById( token, id, callback ) {
+	static getAppointmentById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiAppointmentById(id),
 			{
@@ -773,7 +797,7 @@ export default class APIService {
 	}
 
 	// api for Delete an appoitment by id
-	static deleteAppointmentById( token, id, callback ) {
+	static deleteAppointmentById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiAppointmentById(id),
 			{
@@ -936,22 +960,6 @@ export default class APIService {
 
 //====================QUESTION======================
 
-	// // api for Get Public Question
-	// static getPublicQuestion( values, callback ) {
-	// 	const formData = new FormData();
-	// 	formData.append('skip', values.skip);
-	// 	formData.append('take', values.take);
-	// 	formData.append('keyword', values.keyword);
-	// 	formData.append('specializedId', values.specializedId);
-	// 	WebService.sendJsonGET(
-	// 		this.apiPublicQuestion(),
-	// 		{
-	// 			formData
-	// 		},
-	// 		callback,
-	// 	);
-	// }	
-
 	// api for Get Answer By Id
 	static getPublicAnswerById( id, callback ) {
 		WebService.sendJsonGET(
@@ -960,7 +968,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Question My
 	static getQuestionMy(token, callback ) {
@@ -971,7 +979,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for All Questions
 	static getQuestion(token, callback ) {
@@ -982,7 +990,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Post A Question
 	static postQuestion(token, values, callback) {
@@ -1045,7 +1053,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Put Question Save By Id
 	static putQuestionSaveById(token, id, callback ) {
@@ -1104,7 +1112,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Put Answer Like By Id
 	static putAnswerLikeById(token, id, callback ) {
@@ -1148,7 +1156,7 @@ export default class APIService {
 	// }	
 
 	// api for Get Doctor List
-	static getDoctorList(token, values, callback ) {
+	static getDoctorList(token, values, callback) {
 		const formData = new FormData();
 		formData.append('specializedId', values.specializedId);
 		formData.append('booked', values.booked);
@@ -1165,10 +1173,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Doctor Operation
-	static getOperationOfDoctor(token, doctorId , date, callback ) {
+	static getOperationOfDoctor(token, doctorId, date, callback) {
 		WebService.sendJsonGET(
 			this.apiDoctorOperationForCustomer(),
 			{
@@ -1178,10 +1186,10 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Doctor By Id
-	static getDoctorById(token, id, callback ) {
+	static getDoctorById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiDoctorById(id),
 			{
@@ -1189,7 +1197,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 //====================MEDICAL - RECORD======================
 
@@ -1209,7 +1217,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Get Medical-record By Id
 	static getMedicalRecordById(token, id, callback ) {
@@ -1220,7 +1228,7 @@ export default class APIService {
 			},
 			callback,
 		);
-	}	
+	}
 
 	// api for Put Answer Like By Id
 	static putStatusOfMedicalRecord(token, id, status, callback ) {
@@ -1260,8 +1268,35 @@ export default class APIService {
 		WebService.sendJsonPOST(
 			this.apiDoctorCheckToken(),
 			{
-				jwt : token,
+				jwt: token,
 				token
+			},
+			callback,
+		);
+	}
+
+	// POST Doctor Answer
+	static postSignUpDoctor(values, callback) {
+		const formData = new FormData();
+		formData.append('registerType', values.registerType);
+		formData.append('email', values.email);
+		formData.append('firstName', values.firstName);
+		formData.append('lastName', values.lastName);
+		formData.append('birthday', values.birthday);
+		formData.append('gender', values.gender);
+		formData.append('password', values.password);
+		formData.append('phoneNumber', values.phoneNumber);
+		formData.append('address', values.address);
+		formData.append('specializedId', values.specializedId);
+		formData.append('identityCardNumber', values.identityCardNumber);
+		formData.append('identityCard', values.identityCard);
+		formData.append('practicingCertificate', values.practicingCertificate);
+		formData.append('otherImages', values.otherImages);
+		formData.append('code', values.code);
+		WebService.sendJsonPOST(
+			this.apiSignUpDoctor(),
+			{
+				formData
 			},
 			callback,
 		);
@@ -1303,7 +1338,7 @@ export default class APIService {
 			callback,
 		);
 	}
-	
+
 	// Get Doctor Appointment by id
 	static putDoctorAppointmentById(token, id, status, callback) {
 		WebService.sendJsonPUT(
@@ -1380,23 +1415,17 @@ export default class APIService {
     // Put Doctor Operation
     static putDoctorOperation(token, values, callback) {
 		const formData = new FormData();
-		if(values.addList){
-			values.addList.forEach((e, index) => {
-				formData.append(`addList[${index}]`, JSON.stringify(e));
-			});
+		if (values.addList) {
+			formData.append(`addList`, JSON.stringify(values.addList));
 		}
-		if(values.updateList){
-			values.updateList.forEach((e, index) => {
-				formData.append(`updateList[${index}]`, JSON.stringify(e));
-			});
+		if (values.updateList) {
+			formData.append(`updateList`, JSON.stringify(values.updateList));
 		}
-		if(values.deleteList){
-			values.deleteList.forEach((e, index) => {
-				formData.append(`deleteList[${index}]`, JSON.stringify(e));
-			});
+		if (values.deleteList) {
+			formData.append(`deleteList`, JSON.stringify(values.deleteList));
 		}
 		formData.append('id', values.id);
-        WebService.sendJsonPUT(
+		WebService.sendJsonPUT(
 			this.apiDoctorOperation(),
 			{
 				jwt: token,
@@ -1404,7 +1433,7 @@ export default class APIService {
 			},
 			callback,
 		);
-    }
+	}
 
     // Get Doctor Profile
     static getDoctorProfile(token, callback) {
@@ -1417,21 +1446,26 @@ export default class APIService {
 		);
     }
 
-    // Put Doctor Profile
-    static putDoctorProfile(token, values, callback) {
+	// Put Doctor Profile
+	static putDoctorProfile(token, values, callback) {
 		const formData = new FormData();
 		formData.append('firstName', values.firstName);
 		formData.append('lastName', values.lastName);
 		formData.append('gender', values.gender);
 		formData.append('birthday', values.birthday);
-        WebService.sendJsonPUT(
+		formData.append('provinceId', values.provinceId);
+		formData.append('avatar', values.avatar);
+		formData.append('introduce', values.introduce);
+		formData.append('medicalExamination', values.medicalExamination);
+		WebService.sendJsonPUT(
 			this.apiDoctorProfile(),
 			{
-				jwt: token
+				jwt: token,
+				formData
 			},
 			callback,
 		);
-    }
+	}
 
 	// Get Doctor Question
     static getDoctorQuestion(token, callback) {
@@ -1566,13 +1600,16 @@ export default class APIService {
     }
 
 	// Post Doctor Work Place
-    static postDoctorWorkPlace(token, values, callback) {
+	static postDoctorWorkPlace(token, values, callback) {
 		const formData = new FormData();
 		formData.append('name', values.name);
+		formData.append('wardId', values.wardId);
 		formData.append('address', values.address);
 		formData.append('images', values.images);
+		formData.append('latitude', values.latitude);
+		formData.append('longitude', values.longitude);
 
-        WebService.sendJsonPOST(
+		WebService.sendJsonPOST(
 			this.apiDoctorWorkPlace(),
 			{
 				jwt: token,
@@ -1580,7 +1617,7 @@ export default class APIService {
 			},
 			callback,
 		);
-    }
+	}
 
 	// Put Doctor Work Place
     static putDoctorWorkPlace(token, values, callback) {

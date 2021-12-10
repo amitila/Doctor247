@@ -100,8 +100,6 @@ function Row(props) {
         if(openAnswer){
             APIService.getAnswer(row.id, {}, (success, json) => {
                 if (success && json.result) {
-                    console.log('getAnswer');
-                    console.log(json.result);
                     setAnswers(json.result);
                 }
             });
@@ -120,8 +118,11 @@ function Row(props) {
             null,
             (success, json) => {
                 if (success && json.result) {
-                    console.log('answered');
-                    console.log(json.result);
+                    APIService.getAnswer(row.id, {}, (success, json) => {
+                        if (success && json.result) {
+                            setAnswers(json.result);
+                        }
+                    });
                 }
             }
         );
@@ -256,23 +257,39 @@ function createQA(question){
 function QuestionsList(props) {
     const classes = useStyles();
 
-    const { questionsList, specializations } = props;
+    const { specializations } = props;
 
-    const [selectedSpecialization, setSelectedSpecialization] = React.useState(0);
+    const [questionsList, setQuestionsList] = useState([]);
+    const [specializedId, setSelectedspecializedId] = React.useState(0);
     const [openSpecialization, setOpenSpecialization] = React.useState(false);
     const [questionsFilterList, setQuestionsFilterList] = React.useState([]);
+    const [keyword, setKeyword]= React.useState('');
 
-    const handleChangeSpecialization = (event) => {
-        setSelectedSpecialization(event.target.value);
-    };
-
-    const handleCloseSpecialization = () => {
-        setOpenSpecialization(false);
-    };
-
-    const handleOpenSpecialization = () => {
-        setOpenSpecialization(true);
-    };
+    const handleClickSearch = () => {
+        let condition = {
+            keyword: keyword
+        }
+        if (specializedId !== 0) {
+            condition = {
+                keyword: keyword,
+                specializedId: specializedId
+            }
+        }
+        APIService.getPublicQuestion(
+            condition,
+            (success, json) => {
+                if (success && json.result) {
+                    setQuestionsList(json.result);
+                }
+            });
+    }
+    useEffect(() => {
+        APIService.getPublicQuestion({}, (success, json) => {
+            if (success && json.result) {
+                setQuestionsList(json.result);
+            }
+        });
+    }, []);
 
     return (
         <React.Fragment>
@@ -286,10 +303,10 @@ function QuestionsList(props) {
                                 labelId="demo-controlled-open-select-label"
                                 id="demo-controlled-open-select"
                                 open={openSpecialization}
-                                onClose={handleCloseSpecialization}
-                                onOpen={handleOpenSpecialization}
-                                value={selectedSpecialization}
-                                onChange={handleChangeSpecialization}
+                                onClose={() => {setOpenSpecialization(false)}}
+                                onOpen={() => {setOpenSpecialization(true)}}
+                                value={specializedId}
+                                onChange={(event) => {setSelectedspecializedId(event.target.value)}}
                             >
                                 <MenuItem value={0}>Tất cả</MenuItem>
                                 {
@@ -299,6 +316,16 @@ function QuestionsList(props) {
                                 }
                             </Select>
                         </FormControl>
+                        <TextField
+                            label="Từ khóa"
+                            defaultValue=""
+                            value={keyword}
+                            onChange={(e) => { setKeyword(e.target.value) }}
+                            className={classes.textField}
+                            helperText=""
+                            style={{ marginTop: '8px' }}
+                        />
+                        <Button variant="contained" style={{ marginLeft: '10px', marginTop: 15}} onClick={handleClickSearch}>Tìm kiếm</Button>
                     </Grid>
                     <Grid item xs={12}>
                         <h3>Danh sách câu hỏi</h3>
@@ -326,22 +353,11 @@ function QuestionsList(props) {
 }
 
 export default function QuestionList(props) {
-    const [questionsList, setQuestionsList] = useState([]);
     const [specializations, setSpecializationsList] = useState([]);
 
-    useEffect(() => {
-        APIService.getPublicQuestion({}, (success, json) => {
-            if (success && json.result) {
-                console.log('getQuestion');
-                console.log(json.result);
-                setQuestionsList(json.result);
-            }
-        });
-        
+    useEffect(() => {        
         APIService.getSpecialized((success, json) => {
             if (success && json.result) {
-                console.log('getSpecialized');
-                console.log(json.result);
                 setSpecializationsList(json.result);
             }
         });
@@ -352,7 +368,7 @@ export default function QuestionList(props) {
             <div>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={12}>
-                        <QuestionsList questionsList={questionsList} specializations={specializations}/>
+                        <QuestionsList specializations={specializations}/>
                     </Grid>
                     <Grid xs={12} md={12} style={{marginTop: "100px"}}>
                     </Grid>

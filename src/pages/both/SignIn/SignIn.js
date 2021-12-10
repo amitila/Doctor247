@@ -92,7 +92,8 @@ export default function SignIn() {
                     return history.push("/home");
                 }
                 else if(json.result.role === "DOCTOR"){
-                    return history.push("/doctor/home");
+                    history.push("/doctor/home");
+                    window.location.reload();
                 }
             } else {
                 setStatus(true);

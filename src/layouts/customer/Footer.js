@@ -60,6 +60,11 @@ const Footer = () => {
                                 </Link>
                             </Box>
                             <Box style={{marginTop: 10}} >
+                                <Link href={window.location.origin + '/signup-doctor'} className={classes.link} color="inherit">
+                                    Đăng ký bác sĩ
+                                </Link>
+                            </Box>
+                            <Box style={{marginTop: 10}} >
                                 <Link href={window.location.origin} className={classes.link} color="inherit">
                                     Phiên bản 1.8.8
                                 </Link>

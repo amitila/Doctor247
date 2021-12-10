@@ -1,17 +1,10 @@
-// const io = require('socket.io')(3000);
-
-// io.on('connection', socket => {
-//     //console.log(socket.id);
-//     socket.on('SIGN_UP_USER', username => {
-//         console.log(username);
-//     });
-// });
-
 const express = require("express")
 const http = require("http")
 const app = express()
 const server = http.createServer(app)
 const cors = require("cors")
+
+const port = process.env.PORT || 5000
 
 const io = require("socket.io")(server, {
     cors: {
@@ -102,4 +95,5 @@ io.on("connection", (socket) => {
     });
 })
 
-server.listen(5000, () => console.log("server is running on port 5000"));
+server.listen(port, () => console.log(`server is running on port ${port}`));
+// https://socket-server-doctor247.herokuapp.com/

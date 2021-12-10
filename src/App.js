@@ -34,6 +34,7 @@ import { selectRole } from './store/userSlice';
 import NotFound from './components/NotFound';
 import PaymentResult from './components/PaymentResult';
 import { SnackbarProvider } from 'notistack';
+import SignUpDoctor from './components/SignUpDoctor';
 
 export default function App() {
 	let mark;
@@ -66,6 +67,7 @@ export default function App() {
 					<Route exact path='/notification' component={Notification} />
 					<Route exact path='/signin' component={SignIn} />
 					<Route exact path='/signup' component={SignUp} />
+					<Route exact path='/signup-doctor' component={SignUpDoctor} />
 					<Route exact path='/forgotpass' component={ForgotPass} />
 					{
 						mark === 0 ? 

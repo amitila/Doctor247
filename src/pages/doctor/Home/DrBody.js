@@ -109,8 +109,8 @@ function CustomizedTables(props) {
                     <TableRow>
                         <StyledTableCell align="center">Ngày</StyledTableCell>
                         <StyledTableCell align="center"> Giờ</StyledTableCell>
-                        <StyledTableCell align="center">Mã hồ sơ</StyledTableCell>
                         <StyledTableCell align="center">Tên bệnh nhân</StyledTableCell>
+                        <StyledTableCell align="center">Nơi khám</StyledTableCell>
                         <StyledTableCell align="center"></StyledTableCell>
                     </TableRow>
                 </TableHead>
@@ -119,8 +119,8 @@ function CustomizedTables(props) {
                         <StyledTableRow key={row.name}>
                             <StyledTableCell align="center">{row.day.substring(0,10)}</StyledTableCell>
                             <StyledTableCell align="center">{row.day.substring(11,16)}</StyledTableCell>
-                            <StyledTableCell align="center">{row.medicalRecordId}</StyledTableCell>
                             <StyledTableCell align="center">{row.medicalRecord.customer.firstName + " " + row.medicalRecord.customer.lastName}</StyledTableCell>
+                            <StyledTableCell align="center">{row.workplace.name}</StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>
@@ -143,7 +143,23 @@ export default function DrBody() {
     useEffect(() => {
         APIService.getDoctorAppointment(token, (success, json) => {
             if (success && json.result) {
-                setAppointmentList(json.result);
+                let list = [];
+                json.result.forEach(item => {
+                   if (item.status === 'PENDING'){
+                       let d = item.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
+                       d = parseInt(d);
+                       list.push({
+                           ...item,
+                           od: d
+                       });
+                   } 
+                });
+                list.sort(function(a, b) {
+                    return a.od - b.od;
+                  });
+                console.log('list');
+                console.log(list);
+                setAppointmentList(list);
             }
         });
 
@@ -162,21 +178,7 @@ export default function DrBody() {
                 id: 3,
                 name: 'Dũng Hoàng',
                 status: 'online'
-            },{
-                id: 4,
-                name: 'Tâm Phạm',
-                status: 'offline'
-            },
-            {
-                id: 5,
-                name: 'Hân Lê',
-                status: 'offline'
-            },
-            {
-                id: 6,
-                name: 'Dũng Hoàng',
-                status: 'offline'
-            },
+            }
         ]);
     }, []);
 
@@ -189,18 +191,8 @@ export default function DrBody() {
             <div className={classes.cards}>
                 <div className={classes.cardSingle + " " + classes.cardFirst} onClick={() => {setCurrentMenuItem(ScreenCode.CHAT)}}>
                     <div>
-                        <h1>3</h1>
+                        <h1>1</h1>
                         <span>Tin nhắn mới</span>
-                    </div>
-                    <div>
-                        <span>=_=</span>
-                    </div>
-                </div>
-
-                <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.MEDICAL_RECORD)}}>
-                    <div>
-                        <h1>44</h1>
-                        <span>Hồ sơ</span>
                     </div>
                     <div>
                         <span>=_=</span>
@@ -209,7 +201,17 @@ export default function DrBody() {
 
                 <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.TIMETABLE)}}>
                     <div>
-                        <h1>13</h1>
+                        <h1>2</h1>
+                        <span>Cuộc hẹn mới</span>
+                    </div>
+                    <div>
+                        <span>=_=</span>
+                    </div>
+                </div>
+
+                <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.WORK_PLACE)}}>
+                    <div>
+                        <h1>1</h1>
                         <span>Yêu cầu mới</span>
                     </div>
                     <div>
@@ -219,7 +221,7 @@ export default function DrBody() {
 
                 <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.NOTIFY)}}>
                     <div>
-                        <h1>2</h1>
+                        <h1>0</h1>
                         <span>Thông báo</span>
                     </div>
                     <div>

@@ -114,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ClinicRegistrationDialogRaw(props) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const { onClose, value: valueProp, open, ...other } = props;
     const [value, setValue] = React.useState(valueProp);
@@ -204,10 +205,6 @@ function ClinicRegistrationDialogRaw(props) {
     }
 
     useEffect(() => {
-        console.log(imgSrcList);
-    }, [imgSrcList])
-
-    useEffect(() => {
         // Make a request for a user with a given ID
         axios
             .get("https://provinces.open-api.vn/api/?depth=3")
@@ -216,7 +213,6 @@ function ClinicRegistrationDialogRaw(props) {
             })
             .catch(function (error) {
                 // handle error
-                console.log(error);
             })
             .then(function () {
                 // always executed
@@ -235,9 +231,7 @@ function ClinicRegistrationDialogRaw(props) {
             {
                 take: 2,
             },
-            (success, json) => {                
-                console.log("getDoctorWorkPlaceManager 2");
-                console.log(json.result);
+            (success, json) => {
             });
 
     }, []);
@@ -256,24 +250,21 @@ function ClinicRegistrationDialogRaw(props) {
             const districtName = districts.find(x => x.code === districtSelect).name;
             const wardName = wards.find(x => x.code === wardSelect).name;
             const address = street + ", " + wardName + ", " + districtName + ", " + provinceName;
-            console.log({
-                clinicTypeSelect: clinicTypeSelect === 1 ? 'HOSPITAL' : 'CLINIC',
-                clinicName: clinicName,
-                address: address,
-                phone,
-                imgSrcList
-            });
 
             APIService.postDoctorWorkPlace(
                 token,
                 {
                     name: clinicName,
+                    wardId: 44,
+                    longitude: 123,
+                    latitude: 122,
                     address: address,
                     images: imgSrcListStr
                 },
-                (success, json) => {                
-                    console.log("postDoctorWorkPlace");
-                    console.log(json.result);
+                (success, json) => {
+                    if (success && json.result) { 
+                        enqueueSnackbar('Đã gửi yêu cầu đăng ký!', { variant: 'success' });
+                    }
                 }
             );
 
@@ -660,7 +651,15 @@ function ClinicRequestTable(props) {
                 "PENDING",
                 (success, json) => {
                     if (success, json.result) {
-                        setApplicationsListTemp(json.result);
+                        let list = [];
+                        json.result.forEach(item => {
+                            list.push({
+                                ...item,
+                                clinicName: clinic.name,
+                                clinicId: clinic.id
+                            });
+                        });
+                        setApplicationsListTemp(list);
                     }
                 }
             );
@@ -691,8 +690,6 @@ function ClinicRequestTable(props) {
 
     useEffect(() => {
         setApplicationsList(applicationsList.concat(applicationsListTemp));
-        console.log('applicationsList');
-        console.log(applicationsList);
     }, [applicationsListTemp]);
 
     return (
@@ -700,9 +697,11 @@ function ClinicRequestTable(props) {
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
+                        <StyledTableCell align="center">Phòng khám</StyledTableCell>
                         <StyledTableCell align="center">Họ Tên</StyledTableCell>
                         <StyledTableCell align="center">Giới tính</StyledTableCell>
                         <StyledTableCell align="center">Ngày sinh</StyledTableCell>
+                        <StyledTableCell align="center">Số điện thoại</StyledTableCell>
                         <StyledTableCell align="center">
                             <Button variant="outlined" color="default" align="center" ></Button>
                         </StyledTableCell>
@@ -712,9 +711,11 @@ function ClinicRequestTable(props) {
                     {
                         applicationsList.map(application => 
                             <StyledTableRow >
+                            <StyledTableCell align="center">{application.clinicName}</StyledTableCell>
                                 <StyledTableCell align="center">{application.doctor.firstName + " " + application.doctor.lastName}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.gender}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.birthday}</StyledTableCell>
+                                <StyledTableCell align="center">{application.doctor.gender === 'MALE' ? 'Nam' : 'Nữ'}</StyledTableCell>
+                                <StyledTableCell align="center">{application.doctor.birthday.substring(0, 10)}</StyledTableCell>
+                                <StyledTableCell align="center">{application.doctor.contactPhoneNumber}</StyledTableCell>
                                 <StyledTableCell align="center">
                                     <Button variant="outlined" color="primary" align="center" onClick={() => {handleAcceptApplication(application.id)}}>
                                         Chấp nhận
