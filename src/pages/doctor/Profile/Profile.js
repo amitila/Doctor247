@@ -18,6 +18,7 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
 function getDateTimeFromYMD(yyyyMMdd) {
     const date = new Date();
     date.setFullYear(yyyyMMdd.substring(0,4));
-    date.setMonth(yyyyMMdd.substring(5,7));
-    date.setDate(yyyyMMdd.substring(8));
+    date.setMonth(parseInt(yyyyMMdd.substring(5,7)) - 1);
+    date.setDate(yyyyMMdd.substring(8,10));
     return date;
 }
 
@@ -84,6 +85,7 @@ function Row(props) {
 
 function Profile(props) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     //const img1 = "https://thumbs.dreamstime.com/z/doctor-web-icon-therapist-medical-avatar-flat-style-illustration-doctor-web-icon-therapist-avatar-103706622.jpg";
     const [imgSrc, setImgSrc] = useState('');
@@ -125,6 +127,15 @@ function Profile(props) {
     // const token = localStorage.getItem("token_doctor247");
     const token = getToken();
     useEffect(() => {
+        loadMyProfile();
+        APIService.getProvinces((success, json) => {
+            if (success && json.result) {
+                setProvincesList(json.result);
+            }
+        });
+    }, []);
+
+    const loadMyProfile = () => {
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
                 console.log('profile');
@@ -143,9 +154,9 @@ function Profile(props) {
                     workAt: workplaceName,
                     email: json.result.email,
                     phone: json.result.phoneNumber,
-                    province: json.result.doctor.province===null?0:json.result.doctor.province.id,
-                    image: json.result.doctor.avatarURL===null?'':json.result.doctor.avatarURL,
-                    introduces:json.result.doctor.introduce,
+                    province: json.result.doctor.province === null ? 0 : json.result.doctor.province.id,
+                    image: json.result.doctor.avatarURL === null ? '' : json.result.doctor.avatarURL,
+                    introduces: json.result.doctor.introduce,
                     medicalExamination: json.result.doctor.medicalExamination,
                 });
                 setDisplayIntroduces(json.result.doctor.introduce);
@@ -153,12 +164,7 @@ function Profile(props) {
                 setLengthOfIntroduce(json.result.doctor.introduce.length);
             }
         });
-        APIService.getProvinces((success, json) => {
-            if (success && json.result) {
-                setProvincesList(json.result);
-            }
-        });
-    }, []);
+    }
 
     const [openEditInfo, setOpenEditInfo] = React.useState(false);
 
@@ -170,6 +176,7 @@ function Profile(props) {
         setSex(values.sex === 'Nam' ? 0 : 1);
         setProvince(values.province);
         setIntroduces([...values.introduces]);
+        setMedicalExamination([...values.medicalExamination]);
     };
 
     const handleClose = () => {
@@ -181,33 +188,39 @@ function Profile(props) {
         const data = {
             firstName: firstName,
             lastName: lastName,
-            dob: getDateTimeFromYMD(dob),
-            sex: sex === 0 ? 'MALE' : 'FEMALE',
-            avatarURL: imgSrc,
-            province: province,
-            introduces: introduces,
+            birthday: getDateTimeFromYMD(dob),
+            gender: sex === 0 ? 'MALE' : 'FEMALE',
+            avatar: imgSrc,
+            provinceId: province,
+            introduce: introduces,
             medicalExamination: medicalExamination
         }
         console.log(data);
+        if (firstName.length === 0 ||
+            lastName.length === 0 ||
+            dob.length === 0 ||
+            imgSrc === '' ||
+            province === 0 ||
+            introduces.length === 0 ||
+            medicalExamination.length === 0
+            ) {
+                enqueueSnackbar('Vui lòng nhập đủ thông tin!', { variant: 'error' });
+                return;
+            }
         APIService.putDoctorProfile(
             token,
             data,
             (success, json) => {
                 if (success, json.result) {
-                    console.log(json.result);
+                    enqueueSnackbar('Cập nhật thành công!', { variant: 'success' });
+                    setOpenEditInfo(false);
+                    loadMyProfile();
+                }
+                else {
+                    console.log(json);
                 }
             }
         );
-        return;
-        setValues({
-            firstName: firstName,
-            lastName: lastName,
-            dob: dob,
-            sex: sex,
-            province: province,
-            introduces: introduces,
-            medicalExamination: medicalExamination
-        });
     }
 
     const handleUpdateIntroText = (index, text) => {
@@ -290,7 +303,17 @@ function Profile(props) {
                                         <TextField onChange={(e) => setLastName(e.target.value)} required id="lname" fullWidth label="Tên" value={lastName} />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField onChange={(e) => setDob(e.target.value)} required id="dob" fullWidth label="Ngày sinh" defaultValue={dob} />
+                                        <TextField
+                                            id="date"
+                                            label="Ngày sinh"
+                                            type="date"
+                                            fullWidth
+                                            value={dob}
+                                            onChange={(e) => {setDob(e.target.value)}}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
                                     </Grid>
                                     <Grid item xs={6}>
                                         <FormControl className={classes.formControl} fullWidth>

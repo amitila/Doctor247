@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -10,8 +10,8 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import CustomImage from './Image';
 import APIService from '../utils/APIService';
-import { useEffect } from 'react/cjs/react.development';
-import { result } from 'lodash';
+import { useSnackbar } from 'notistack';
+import { AppContext } from '../../src/store/AppProvider';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,6 +40,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// get date from ymd
+function getDateTimeFromYMD(yyyyMMdd) {
+    const date = new Date();
+    date.setFullYear(yyyyMMdd.substring(0,4));
+    date.setMonth(parseInt(yyyyMMdd.substring(5,7)) - 1);
+    date.setDate(yyyyMMdd.substring(8,10));
+    return date;
+}
+
 function Row(props) {
     const { removeThis, oldText, getText, index } = props;
     const [text, setText] = React.useState('');
@@ -67,6 +76,9 @@ function Row(props) {
 
 export default function SignUpDoctor() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
+    const { history } = useContext(AppContext);
+
     const [sex, setSex] = React.useState(0);
     const [specialized, setSpecialized] = React.useState(0);
     const [email, setEmail] = React.useState('');
@@ -94,8 +106,7 @@ export default function SignUpDoctor() {
     const [districts, setDistricts] = React.useState([]);
     const [wards, setWards] = React.useState([]);
     
-    const [avatarSrc, setAvatarSrc] = React.useState([]);
-    const [avatarSrcStr, setAvatarSrcStr] = React.useState([]);   
+    const [imgSrc, setImgSrc] = React.useState();
     const [idImgSrcList, setIdImgSrcList] = React.useState([]);
     const [idImgSrcListStr, setIdImgSrcListStr] = React.useState([]);    
     const [certificateImgSrcList, setCertificateImgSrcList] = React.useState([]);
@@ -188,18 +199,18 @@ export default function SignUpDoctor() {
             email: email,
             firstName: firstName,
             lastName: lastName,
-            birthday: dob+"T00:00:00.000Z",
+            birthday: getDateTimeFromYMD(dob),
             gender: sex === 0 ? 'MALE' : 'FEMALE',
-            avatar: avatarSrcStr,
+            avatar: imgSrc,
             specializedId: specialized,
             identityCardNumber: id,
             code: otp,
             password: password,
             phoneNumber: phoneNumber,
             address: getFullAddress(),
-            identityCard: idImgSrcListStr,
-            practicingCertificate: certificateImgSrcListStr,
-            otherImages: certificateImgSrcListStr
+            identityCard: idImgSrcList,
+            practicingCertificate: certificateImgSrcList,
+            otherImages: certificateImgSrcList
         };
         console.log(data);
         if (specialized === 0 
@@ -211,16 +222,18 @@ export default function SignUpDoctor() {
             || dob.length === 0
             || otp.length === 0
             || password.length === 0) {
-                console.log("Nhập thiếu thông tin.");
+                enqueueSnackbar('Nhập thiếu thông tin.', { variant: 'error' });
                 return;
             }
         APIService.postSignUpDoctor(
             data,
             (success, json) => {
                 if (success, json.result) {
-                    console.log("Đăng ký thành công!");
+                    enqueueSnackbar('Đăng ký thành công! Vui lòng chờ quản trị viên xét duyệt và thông báo!', { variant: 'success' });
+                    history.push('/home');
                 }
                 else {
+                    enqueueSnackbar('Đăng ký thất bại!', { variant: 'error' });
                     console.log(json)
                 }
             }
@@ -229,37 +242,29 @@ export default function SignUpDoctor() {
 
     const handleGetOtp = () => {
         if (phoneNumber.length === 0) {
-            alert('Chưa nhập số điện thoại.');
+            enqueueSnackbar('Chưa nhập số điện thoại.', { variant: 'error' });
         }
         else {
             APIService.getCodeFromSms(phoneNumber, (success, json) => {
                 if (success && json.result) {
-                    console.log(json.result);
+                    enqueueSnackbar('Vui lòng kiểm tra tin nhắn.', { variant: 'success' });
                     setIsGetOtp(true);
                 }
                 else {
-                    alert('Số điện thoại không đúng.')
+                    enqueueSnackbar('Gửi mã thất bại.', { variant: 'error' });
                 }
             });
         }
     }
 
-    const handleChangeAvatarImage = (e) => {
+    const handleChangeImage = (e) => {
         const files = e.target.files;
         let fl = [];
-        let fl_s = [];
 
         for (let i of Object.keys(files)) {
-            fl.push(files[i]);
-            
-            const reader = new FileReader();
-            reader.readAsBinaryString(files[i]);
-            reader.onload = (e) => {
-                fl_s.push(e.target.result);
-            }
+            fl.push(files[i])
         }
-        setAvatarSrc(fl);
-        setAvatarSrcStr(fl_s);
+        setImgSrc(fl[0]);
     }
 
     const handleChangeIdImages = (e) => {
@@ -538,7 +543,7 @@ export default function SignUpDoctor() {
                                 <TextField
                                     label="Mã OTP"
                                     placeholder="Nhập mã OTP"
-                                    helperText=""
+                                    helperText="Hệ thống sẽ gửi mã trong vòng 30s khi quý khách nhấn nút Nhận mã"
                                     className={classes.field95}
                                     value={otp}
                                     onChange={(e) => {setOtp(e.target.value)}}
@@ -583,19 +588,13 @@ export default function SignUpDoctor() {
                                     <input
                                         type="file"
                                         accept='.jpg, .png'
-                                        onChange={handleChangeAvatarImage}
+                                        onChange={handleChangeImage}
                                         hidden
                                     />
                                 </Button>
                             </Grid>
                             <Grid item xs={12}>
-                                {
-                                    avatarSrc.map(imgSrc => {
-                                        //return <img src={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""></img>
-                                        return <CustomImage image={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt="" />
-                                    }
-                                    )
-                                }
+                                <CustomImage image={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt="" />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
@@ -629,7 +628,6 @@ export default function SignUpDoctor() {
                             <Grid item xs={12}>
                                 {
                                     idImgSrcList.map(imgSrc => {
-                                        //return <img src={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""></img>
                                         return <CustomImage image={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt="" />
                                     }
                                     )
@@ -667,7 +665,6 @@ export default function SignUpDoctor() {
                             <Grid item xs={12}>
                                 {
                                     certificateImgSrcList.map(imgSrc => {
-                                        //return <img src={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""></img>
                                         return <CustomImage image={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt="" />
                                     }
                                     )

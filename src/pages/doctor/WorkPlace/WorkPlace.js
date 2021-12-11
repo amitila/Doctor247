@@ -145,48 +145,12 @@ function ClinicRegistrationDialogRaw(props) {
     const [districts, setDistricts] = React.useState([]);
     const [wards, setWards] = React.useState([]);
     const [imgSrcList, setImgSrcList] = React.useState([]);
-    const [imgSrcListStr, setImgSrcListStr] = React.useState([]);
     const [clinicName, setClinicName] = React.useState('');
     const [street, setStreet] = React.useState('');
     const [phone, setPhone] = React.useState('');
+    const [latitude, setLatitude] = React.useState(0.0);
+    const [longitude, setLongitude] = React.useState(0.0);
 
-    const handleChangeClinicType = (event) => {
-        setClinicTypeSelect(event.target.value);
-    }
-    const handleChangeProvince = (event) => {
-        setProvinceSelect(event.target.value);
-    };
-    const handleChangeDistrict = (event) => {
-        setDistrictSelect(event.target.value);
-    };
-    const handleChangeWard = (event) => {
-        setWardSelect(event.target.value);
-    };
-
-    const handleCloseClinicTypes = () => {
-        setOpenClinicTypes(false);
-    };
-    const handleCloseProvinces = () => {
-        setOpenProvinces(false);
-    };
-    const handleCloseDistricts = () => {
-        setOpenDistricts(false);
-    };
-    const handleCloseWards = () => {
-        setOpenWards(false);
-    };
-    const handleOpenClinicTypes = () => {
-        setOpenClinicTypes(true);
-    }
-    const handleOpenProvinces = () => {
-        setOpenProvinces(true);
-    };
-    const handleOpenDistricts = () => {
-        setOpenDistricts(true);
-    };
-    const handleOpenWards = () => {
-        setOpenWards(true);
-    };
 
     const handleChangeImage = (e) => {
         const files = e.target.files;
@@ -201,22 +165,24 @@ function ClinicRegistrationDialogRaw(props) {
             fl_s.push(reader.result);
         }
         setImgSrcList(fl);
-        setImgSrcListStr(fl_s);
     }
 
     useEffect(() => {
         // Make a request for a user with a given ID
-        axios
-            .get("https://provinces.open-api.vn/api/?depth=3")
-            .then(function (response) {
-                setProvinces(response.data);
-            })
-            .catch(function (error) {
-                // handle error
-            })
-            .then(function () {
-                // always executed
-            });
+        // axios
+        //     .get("https://provinces.open-api.vn/api/?depth=3")
+        //     .then(function (response) {
+        //         setProvinces(response.data);
+        //     })
+        //     .catch(function (error) {
+        //     })
+        //     .then(function () {
+        //     });
+        APIService.getProvinces((success, json) => {
+            if (success && json.result){
+                setProvinces(json.result);
+            }
+        });
 
         setClinicTypes([
             {
@@ -236,34 +202,36 @@ function ClinicRegistrationDialogRaw(props) {
 
     }, []);
 
-
-    const handleCancelClinic = () => {
-        onClose();
-    };
-
     const handleRegistClinic = () => {
-        if (clinicTypeSelect === 0 || provinceSelect === 0 || districtSelect === 0 || wardSelect === 0 || clinicName === '' || phone === '' || street === '') {
+        if (wardSelect === 0 || clinicName === '' || latitude === '' || longitude === '' || street === '' || imgSrcList.length === 0) {
             alert('vui lòng nhập đủ tất cả các trường');
         }
         else {
-            const provinceName = provinces.find(x => x.code === provinceSelect).name;
-            const districtName = districts.find(x => x.code === districtSelect).name;
-            const wardName = wards.find(x => x.code === wardSelect).name;
+            const provinceName = provinces.find(x => x.code === provinceSelect)?.name;
+            const districtName = districts.find(x => x.code === districtSelect)?.name;
+            const wardName = wards.find(x => x.code === wardSelect)?.name;
             const address = street + ", " + wardName + ", " + districtName + ", " + provinceName;
-
+            const data = {
+                name: clinicName,
+                wardId: wardSelect,
+                latitude: parseInt(latitude),
+                longitude: parseInt(longitude),
+                address: address,
+                images: imgSrcList
+            }
+            console.log('data');
+            console.log(data);
             APIService.postDoctorWorkPlace(
                 token,
-                {
-                    name: clinicName,
-                    wardId: 44,
-                    longitude: 123,
-                    latitude: 122,
-                    address: address,
-                    images: imgSrcListStr
-                },
+                data,
                 (success, json) => {
                     if (success && json.result) { 
                         enqueueSnackbar('Đã gửi yêu cầu đăng ký!', { variant: 'success' });
+                        setClinicName('');
+                        setProvinceSelect(0);
+                        setStreet('');
+                        setLatitude('');
+                        setLatitude('');
                     }
                 }
             );
@@ -274,16 +242,27 @@ function ClinicRegistrationDialogRaw(props) {
 
     useEffect(() => {
         if (provinceSelect > 0) {
-            setDistricts(provinces.find(element => element.code === provinceSelect).districts);
+            APIService.getDistricts(provinceSelect, (success, json) => {
+                if (success && json.result){
+                    setDistricts(json.result);
+                }
+            });
+            //setDistricts(provinces.find(element => element.code === provinceSelect).districts);
         }
         else {
             setDistricts([]);
+            setWards([]);
         }
     }, [provinceSelect]);
 
     useEffect(() => {
         if (districtSelect > 0) {
-            setWards(districts.find(element => element.code === districtSelect).wards);
+            APIService.getWards(districtSelect, (success, json) => {
+                if (success && json.result){
+                    setWards(json.result);
+                }
+            });
+            //setWards(districts.find(element => element.code === districtSelect).wards);
         }
         else {
             setWards([]);
@@ -310,9 +289,9 @@ function ClinicRegistrationDialogRaw(props) {
                         required
                         open={openClinicTypes}
                         value={clinicTypeSelect}
-                        onClose={handleCloseClinicTypes}
-                        onOpen={handleOpenClinicTypes}
-                        onChange={handleChangeClinicType}
+                        onClose={() => {setOpenClinicTypes(false)}}
+                        onOpen={() => {setOpenClinicTypes(true)}}
+                        onChange={(e) => {setClinicTypeSelect(e.target.value)}}
                     >
                         <MenuItem value={0}>
                             <em>Loại phòng khám</em>
@@ -350,15 +329,15 @@ function ClinicRegistrationDialogRaw(props) {
                         id="demo-controlled-open-select"
                         open={openProvinces}
                         value={provinceSelect}
-                        onClose={handleCloseProvinces}
-                        onOpen={handleOpenProvinces}
-                        onChange={handleChangeProvince}
+                        onClose={() => {setOpenProvinces(false)}}
+                        onOpen={() => {setOpenProvinces(true)}}
+                        onChange={(e) => {setProvinceSelect(e.target.value)}}
                     >
                         <MenuItem value={0}>
                             <em>Chọn tỉnh / thành phố</em>
                         </MenuItem>
                         {provinces.map((province) => (
-                            <MenuItem value={province.code}>{province.name}</MenuItem>
+                            <MenuItem value={province.id}>{province.name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -374,15 +353,15 @@ function ClinicRegistrationDialogRaw(props) {
                         required
                         open={openDistricts}
                         value={districtSelect}
-                        onClose={handleCloseDistricts}
-                        onOpen={handleOpenDistricts}
-                        onChange={handleChangeDistrict}
+                        onClose={() => setOpenDistricts(false)}
+                        onOpen={() => {setOpenDistricts(true)}}
+                        onChange={(e) => {setDistrictSelect(e.target.value)}}
                     >
                         <MenuItem value={0}>
                             <em>Chọn quận / huyện</em>
                         </MenuItem>
                         {districts.map((district) => (
-                            <MenuItem value={district.code}>{district.name}</MenuItem>
+                            <MenuItem value={district.id}>{district.name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -398,15 +377,15 @@ function ClinicRegistrationDialogRaw(props) {
                         required
                         open={openWards}
                         value={wardSelect}
-                        onClose={handleCloseWards}
-                        onOpen={handleOpenWards}
-                        onChange={handleChangeWard}
+                        onClose={() => {setOpenWards(false)}}
+                        onOpen={() => {setOpenWards(true)}}
+                        onChange={(e) => {setWardSelect(e.target.value)}}
                     >
                         <MenuItem value={0}>
                             <em>Chọn phường / xã / thị trấn</em>
                         </MenuItem>
                         {wards.map((ward) => (
-                            <MenuItem value={ward.code}>{ward.name}</MenuItem>
+                            <MenuItem value={ward.id}>{ward.name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -429,10 +408,24 @@ function ClinicRegistrationDialogRaw(props) {
                 <TextField
                     id="filled-full-width"
                     required
-                    label="Điện thoại"
+                    label="Vĩ độ"
                     placeholder=""
-                    helperText=""
-                    onChange={(e) => { setPhone(e.target.value) }}
+                    helperText="Click chuột phải vào vị trí trên Google map, số đầu tiên chính là Vĩ độ"
+                    onChange={(e) => { setLatitude(e.target.value) }}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                        shrink: true
+                    }}
+                    variant="standard"
+                />
+                <TextField
+                    id="filled-full-width"
+                    required
+                    label="Kinh độ"
+                    placeholder=""
+                    helperText="Click chuột phải vào vị trí trên Google map, số thứ hai chính là Kinh độ"
+                    onChange={(e) => { setLongitude(e.target.value) }}
                     fullWidth
                     margin="normal"
                     InputLabelProps={{
@@ -464,12 +457,12 @@ function ClinicRegistrationDialogRaw(props) {
                 </Button>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleRegistClinic} onSubmit={() => { console.log('submitbutoon') }} color="primary" variant="outlined">
+                <Button onClick={handleRegistClinic} color="primary" variant="outlined">
                     Đăng ký
                 </Button>
                 <Button
                     autoFocus
-                    onClick={handleCancelClinic}
+                    onClick={() => {onClose()}}
                     color="secondary"
                     variant="outlined"
                 >
@@ -745,29 +738,10 @@ function SearchClinicsTable(props) {
     const [openPlace, setOpenPlace] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
 
-    const handleChangeType = (event) => {
-      setType(event.target.value);
-    };  
-    const handleCloseType = () => {
-      setOpenType(false);
-    };  
-    const handleOpenType = () => {
-      setOpenType(true);
-    };
-    const handleChangePlace = (event) => {
-      setPlace(event.target.value);
-    };  
-    const handleClosePlace = () => {
-      setOpenPlace(false);
-    };  
-    const handleOpenPlace = () => {
-      setOpenPlace(true);
-    };
-
     const handleClickSearch = () => {
-        console.log(type + '-' + place + '-' + keyword);
         const condition = {
-            keyword: keyword
+            keyword: keyword,
+            status: 'ACTIVE',
         }
         APIService.getDoctorWorkPlace(token, condition, (success, json) => {
             if (success, json.result) {
@@ -819,7 +793,10 @@ function SearchClinicsTable(props) {
     }, [wardsListTemp]);
 
     useEffect(() => {
-        APIService.getDoctorWorkPlace(token, {}, (success, json) => {
+        const condition = {
+            status: 'ACTIVE',
+        }
+        APIService.getDoctorWorkPlace(token, condition, (success, json) => {
             if (success, json.result) {
                 setWorkPlaceList(json.result);
             }
@@ -841,10 +818,10 @@ function SearchClinicsTable(props) {
                         labelId="demo-controlled-open-select-label"
                         id="demo-controlled-open-select"
                         open={openType}
-                        onClose={handleCloseType}
-                        onOpen={handleOpenType}
+                        onClose={() => {setOpenType(false)}}
+                        onOpen={() => {setOpenType(true)}}
                         value={type}
-                        onChange={handleChangeType}
+                        onChange={(e) => {setType(e.target.value)}}
                     >
                         <MenuItem value={0}>Chọn loại</MenuItem>
                         <MenuItem value={1}>Bệnh viện</MenuItem>
@@ -857,10 +834,10 @@ function SearchClinicsTable(props) {
                         labelId="demo-controlled-open-select-label"
                         id="demo-controlled-open-select"
                         open={openPlace}
-                        onClose={handleClosePlace}
-                        onOpen={handleOpenPlace}
+                        onClose={() => {setOpenPlace(false)}}
+                        onOpen={() => {setOpenPlace(true)}}
                         value={place}
-                        onChange={handleChangePlace}
+                        onChange={(e) => setPlace(e.target.value)}
                     >
                         <MenuItem value={0}>Chọn tỉnh</MenuItem>
                         {
@@ -972,7 +949,7 @@ export default function WorkPlace() {
             id: data.id,
             type: data.type,
             name: data.name,
-            images: imgList,
+            images: data.images,
             address: data.address,
             status: data.status,
             managerId: data.managerId,
@@ -1013,12 +990,6 @@ export default function WorkPlace() {
     }
 
     const handleClinicUpdateWorkPlace = () => {
-        console.log({
-            id: clinic.id,
-            clinicStatus,
-            newClinicName,
-            newClinicAddress,
-        });
         APIService.putDoctorWorkPlace(
             token,
             {
@@ -1050,12 +1021,6 @@ export default function WorkPlace() {
     };
 
     const [openClinicForm, setOpenClinicForm] = React.useState(false);
-    const handleClickOpenClinicForm = () => {
-        setOpenClinicForm(true);
-    };
-    const handleCloseClinicForm = () => {
-        setOpenClinicForm(false);
-    };
 
     return (
         <div className={classes.root}>
@@ -1070,7 +1035,7 @@ export default function WorkPlace() {
                 <SearchClinicsTable provinces={provinces} handleOpenClinicsDialog={handleOpenClinicsDialog} myClinics={myClinics}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <MyClinicsTable handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicForm={handleClickOpenClinicForm} myClinics={myClinics} myManagementClinics={myManagementClinics}/>
+                <MyClinicsTable handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicForm={() => {setOpenClinicForm(true)}} myClinics={myClinics} myManagementClinics={myManagementClinics}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <ClinicRequestTable myManagementClinics={myManagementClinics}/>
@@ -1082,7 +1047,7 @@ export default function WorkPlace() {
                 id="ringtone-menu"
                 keepMounted
                 open={openClinicForm}
-                onClose={handleCloseClinicForm}
+                onClose={() => {setOpenClinicForm(false)}}
             />
             <Dialog open={isOpenClinic} onClose={handleClinicClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Thông tin phòng khám</DialogTitle>

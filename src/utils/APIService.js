@@ -1289,10 +1289,18 @@ export default class APIService {
 		formData.append('address', values.address);
 		formData.append('specializedId', values.specializedId);
 		formData.append('identityCardNumber', values.identityCardNumber);
-		formData.append('identityCard', values.identityCard);
-		formData.append('practicingCertificate', values.practicingCertificate);
-		formData.append('otherImages', values.otherImages);
 		formData.append('code', values.code);
+		formData.append('avatar', values.avatar);
+		values.identityCard.forEach((item, index) => {
+			formData.append(`identityCard[${index}]`, item);
+		});
+		values.practicingCertificate.forEach((item, index) => {
+			formData.append(`practicingCertificate[${index}]`, item);
+		});
+		values.otherImages.forEach((item, index) => {
+			formData.append(`otherImages[${index}]`, item);
+		});
+		
 		WebService.sendJsonPOST(
 			this.apiSignUpDoctor(),
 			{
@@ -1455,8 +1463,12 @@ export default class APIService {
 		formData.append('birthday', values.birthday);
 		formData.append('provinceId', values.provinceId);
 		formData.append('avatar', values.avatar);
-		formData.append('introduce', values.introduce);
-		formData.append('medicalExamination', values.medicalExamination);
+		values.introduce.forEach((item, index) => {
+			formData.append(`introduce[${index}]`, item);
+		});
+		values.medicalExamination.forEach((item, index) => {
+			formData.append(`medicalExamination[${index}]`, item);
+		});
 		WebService.sendJsonPUT(
 			this.apiDoctorProfile(),
 			{
@@ -1605,9 +1617,11 @@ export default class APIService {
 		formData.append('name', values.name);
 		formData.append('wardId', values.wardId);
 		formData.append('address', values.address);
-		formData.append('images', values.images);
 		formData.append('latitude', values.latitude);
 		formData.append('longitude', values.longitude);
+		values.images.forEach((item, index) => {
+			formData.append(`images[${index}]`, item);
+		});
 
 		WebService.sendJsonPOST(
 			this.apiDoctorWorkPlace(),
