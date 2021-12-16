@@ -75,6 +75,9 @@ function Row(props) {
                 fullWidth
                 onChange={(e) => { setText(e.target.value) }} 
                 value={text}
+                inputProps={{
+                    spellCheck: 'false'
+                }}
                  />
         </Grid>
         <Grid item xs={2}>

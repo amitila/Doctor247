@@ -303,6 +303,11 @@ export default class APIService {
     static apiDoctorOperationById = (id) => {
         return `${APIService.baseAPI()}doctor/operation/{id}?id=${id}`;
     }
+	
+    // Doctor Password URL
+    static apiDoctorPassword = () => {
+        return `${APIService.baseAPI()}doctor/users/password`;
+    }
     
     // Doctor Profile URL
     static apiDoctorProfile = () => {
@@ -1387,6 +1392,9 @@ export default class APIService {
 		formData.append('diagnostic', values.diagnostic);
 		formData.append('note', values.note);
 		formData.append('medicalExpense', values.medicalExpense);
+		values.files.forEach((item, index) => {
+			formData.append(`files[${index}]`, item);			
+		});
 		WebService.sendJsonPUT(
 			this.apiDoctorMedicalRecordId(id),
 			{
@@ -1453,6 +1461,21 @@ export default class APIService {
 			callback,
 		);
     }
+
+	// Put Doctor Password
+	static putDoctorPassword(token, values, callback) {
+		const formData = new FormData();
+		formData.append('password', values.password);
+		formData.append('newPassword', values.newPassword);
+		WebService.sendJsonPUT(
+			this.apiDoctorPassword(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+	}
 
 	// Put Doctor Profile
 	static putDoctorProfile(token, values, callback) {

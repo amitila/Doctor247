@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -14,7 +14,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Grid } from '@material-ui/core';
 
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -31,7 +30,6 @@ import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
-import { AppContext } from '../../../store/AppProvider';
 
 const axios = require("axios");
 
@@ -895,7 +893,6 @@ function SearchClinicsTable(props) {
 export default function WorkPlace() {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
-    const { userInfo } = React.useContext(AppContext);
 
     const [value, setValue] = React.useState(TabCode.CLINICS);
     const [isOpenClinic, setIsOpenClinic] = React.useState(false);
@@ -1011,10 +1008,6 @@ export default function WorkPlace() {
             }
         );
     }
-    
-    const handleClinicClose = () => {
-        setIsOpenClinic(false);
-    }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -1049,7 +1042,7 @@ export default function WorkPlace() {
                 open={openClinicForm}
                 onClose={() => {setOpenClinicForm(false)}}
             />
-            <Dialog open={isOpenClinic} onClose={handleClinicClose} aria-labelledby="form-dialog-title">
+            <Dialog open={isOpenClinic} onClose={() => {setIsOpenClinic(false)}} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Thông tin phòng khám</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -1137,7 +1130,7 @@ export default function WorkPlace() {
                             Xác nhận
                         </Button> : null
                     }
-                    <Button onClick={handleClinicClose} color="default" variant="outlined">
+                    <Button onClick={() => {setIsOpenClinic(false)}} color="default" variant="outlined">
                         Close
                     </Button>
                 </DialogActions>

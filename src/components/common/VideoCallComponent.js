@@ -251,7 +251,7 @@ export default function VideoCallComponent(props) {
                             </span>
                             : null
                         }
-                        <Button
+                        {/* <Button
                             variant="contained"
                             onClick={() => {
                                 console.log({
@@ -260,7 +260,7 @@ export default function VideoCallComponent(props) {
                                 console.log(listOnlineUsers);
                             }}>
                             Check
-                        </Button>
+                        </Button> */}
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={4} md={4}>

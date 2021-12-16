@@ -6,6 +6,7 @@ import DrBody from './DrBody';
 import Profile from '../Profile/Profile';
 import TimeTable from '../TimeTable/TimeTable';
 import VideoCall from '../VideoCall/VideoCall';
+import Notification from '../Notification/Notification';
 
 import Chat from '../Chat/Chat';
 import { AppContext } from '../../../store/AppProvider';
@@ -112,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
 const ShowContent = (props) => {
     if (props.menuId === props.screenCode.HOME) {
         return (
-            <DrBody />
+            <DrBody myManagementClinics={props.myManagementClinics}/>
         );
     }
     else if (props.menuId === props.screenCode.MEDICAL_RECORD) {
@@ -150,6 +151,11 @@ const ShowContent = (props) => {
             <VideoCall />
         );
     }
+    else if (props.menuId === props.screenCode.NOTIFY) {
+        return (
+            <Notification />
+        );
+    }
     else {
         return (null);
     }
@@ -157,22 +163,19 @@ const ShowContent = (props) => {
 
 function Doctor() {
     const classes = useStyles();
+    const { ScreenCode, currentMenuItem, setCurrentMenuItem } = useContext(AppContext);
 
     const [isShowSidabar, setIsShowSidebar] = useState(false);
-
-    const { ScreenCode, currentMenuItem, setCurrentMenuItem } = useContext(AppContext);
+    const [myManagementClinics, setMyManagementClinics] = useState([]);
 
     const token = getToken();
 
     useEffect(() => {
-        // APIService.getDoctorProfile(token, (success, json) => {
-        //     if (success && json.result) {
-        //         console.log('had doctor token');
-        //     }
-        //     else {
-        //         console.log('NO doctor token');
-        //     }
-        // });
+        APIService.getDoctorWorkPlaceManager(token, "", {}, (success, json) => {
+            if (success && json.result) {
+                setMyManagementClinics(json.result);
+            }
+        });
     }, []);
 
     const menuRefClick = () => {
@@ -203,20 +206,20 @@ function Doctor() {
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Trang chủ</span>
                                     </a>
                                 </li>
-                                <li onClick={() => { setCurrentMenuItem(ScreenCode.MEDICAL_RECORD) }}>
-                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.MEDICAL_RECORD ? classes.currentMenuItem : ''].join(' ')} >
-                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-book-medical"></i></span>
-                                        </Tooltip>
-                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Quản lý bệnh án</span>
-                                    </a>
-                                </li>
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.TIMETABLE) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.TIMETABLE ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thời gian biểu</h6>}>
                                             <span className={classes.icon}><i class="fas fa-calendar-alt"></i></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thời gian biểu</span>
+                                    </a>
+                                </li>
+                                <li onClick={() => { setCurrentMenuItem(ScreenCode.MEDICAL_RECORD) }}>
+                                    <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.MEDICAL_RECORD ? classes.currentMenuItem : ''].join(' ')} >
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
+                                            <span className={classes.icon}><i class="fas fa-book-medical"></i></span>
+                                        </Tooltip>
+                                        <span className={isShowSidabar ? classes.title : classes.hideTitle}>Quản lý bệnh án</span>
                                     </a>
                                 </li>
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.WORK_PLACE) }}>
@@ -273,7 +276,7 @@ function Doctor() {
 
                     <div className={[classes.container, isShowSidabar ? '' : classes.containerX].join(' ')}>
                         <div className={classes.content}>
-                            <ShowContent menuId={currentMenuItem} screenCode={ScreenCode} />
+                            <ShowContent menuId={currentMenuItem} screenCode={ScreenCode} myManagementClinics={myManagementClinics}/>
                         </div>
                     </div>
                 </div>

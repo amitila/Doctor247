@@ -137,7 +137,7 @@ function Row(props) {
                         {openAnswer ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>}
                 </TableCell>
-                <TableCell >{row.createdAt}</TableCell>
+                <TableCell >{row.createdAt.substring(0, 16).replace('T', ' ')}</TableCell>
                 <TableCell >{row.customer}</TableCell>
                 <TableCell >{row.content}</TableCell>
                 <TableCell>

@@ -102,7 +102,7 @@ function MessageRight({text, createdAt, photoURL}) {
             <div className={classes.msg}>{text}</div>
             <div className={classes.date}>{createdAt}</div>
             <div className={classes.avatar}>
-              <Avatar src={photoURL} style={{ width: '40px', height: '40px' }}>A</Avatar>
+              <Avatar src={photoURL} style={{ width: '40px', height: '40px' }}></Avatar>
             </div>
           </span>
         </div>
@@ -119,7 +119,7 @@ function MessageLeft({text, displayName, createdAt, photoURL}) {
                 <div className={classes.msg}>{text}</div>
                 <div className={classes.date}>{createdAt}</div>
                 <div className={classes.avatar}>
-                    <Avatar src={photoURL} style={{ width: '40px', height: '40px' }}>A</Avatar>
+                    <Avatar src={photoURL} style={{ width: '40px', height: '40px' }}></Avatar>
                 </div>
             </span>
         </div>

@@ -116,7 +116,7 @@ export default function AppProvider({ children }) {
                 setUserInfo({
                     id: json.result.id,
                     name: json.result.doctor.firstName + " " + json.result.doctor.lastName,
-                    avatarURL: json.result.doctor.avatar
+                    avatarURL: json.result.doctor.avatarURL
                 });
                 setIsLogin(true);
             } else {
@@ -156,11 +156,6 @@ export default function AppProvider({ children }) {
                 });
             });
         }
-    }, [userInfo]);
-
-    useEffect(() => {
-        console.log('userInfo.id');
-        console.log(userInfo.id);
     }, [userInfo]);
 
     const getWorkPlaceName = (id) => {

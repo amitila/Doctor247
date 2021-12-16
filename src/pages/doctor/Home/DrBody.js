@@ -100,7 +100,7 @@ const rows = [
 function CustomizedTables(props) {
     const classes = useStyles();
     
-    const { appointmentList } = props;
+    const { newAppointmentList } = props;
 
     return (
         <TableContainer component={Paper}>
@@ -115,7 +115,7 @@ function CustomizedTables(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {appointmentList.map((row) => (
+                    {newAppointmentList.map((row) => (
                         <StyledTableRow key={row.name}>
                             <StyledTableCell align="center">{row.day.substring(0,10)}</StyledTableCell>
                             <StyledTableCell align="center">{row.day.substring(11,16)}</StyledTableCell>
@@ -129,60 +129,88 @@ function CustomizedTables(props) {
     );
 }
 
-export default function DrBody() {
+export default function DrBody(props) {
     const classes = useStyles();
-    // const token = localStorage.getItem("token_doctor247");
     const token = getToken();
-
+    const { myManagementClinics } = props;
     const { ScreenCode, setCurrentMenuItem } = useContext(AppContext);
 
-    const [appointmentList, setAppointmentList] = useState([]);
+    const [contactList, setContactList] = useState([{id: 0, name: '', status: ''}]);
+    const [newAppointmentList, setNewAppointmentList] = useState([]);
+    const [applicationsList, setApplicationsList] = React.useState([]);
 
-    const [contacts, setContacts] = useState([{id: 0, name: '', status: ''}]);
-
-    useEffect(() => {
+    const reloadPage = () => {
+        myManagementClinics.forEach(clinic => {
+            APIService.getDoctorWorkPlaceApplied(
+                token,
+                clinic.id,
+                "PENDING",
+                (success, json) => {
+                    if (success, json.result) {
+                        let list = [];
+                        json.result.forEach(item => {
+                            list.push({
+                                ...item,
+                                clinicName: clinic.name,
+                                clinicId: clinic.id
+                            });
+                        });
+                        setApplicationsList(list);
+                    }
+                }
+            );
+        });
         APIService.getDoctorAppointment(token, (success, json) => {
             if (success && json.result) {
-                let list = [];
+                let listPendingAppointment = [];
+                let listContacts = [];
                 json.result.forEach(item => {
                    if (item.status === 'PENDING'){
                        let d = item.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
                        d = parseInt(d);
-                       list.push({
+                       listPendingAppointment.push({
                            ...item,
                            od: d
                        });
-                   } 
+                    }
+                    if (listContacts.length > 0) {
+                        if (listContacts.findIndex(x => x.id === item.medicalRecord.customer.userId) < 0) {
+                            listContacts.push({
+                                id: item.medicalRecord.customer.userId,
+                                name: item.medicalRecord.customer.firstName + " " + item.medicalRecord.customer.lastName,
+                                status: ''
+                            });
+                        }
+                    }
+                    else {
+                        listContacts.push({
+                            id: item.medicalRecord.customer.userId,
+                            name: item.medicalRecord.customer.firstName + " " + item.medicalRecord.customer.lastName,
+                            status: ''
+                        });
+                    }
+
                 });
-                list.sort(function(a, b) {
+                listPendingAppointment.sort(function(a, b) {
                     return a.od - b.od;
                   });
-                console.log('list');
-                console.log(list);
-                setAppointmentList(list);
+                setNewAppointmentList(listPendingAppointment);
+                setContactList(listContacts);
             }
         });
+    }
 
-        setContacts([
-            {
-                id: 1,
-                name: 'Tâm Phạm',
-                status: 'online'
-            },
-            {
-                id: 2,
-                name: 'Hân Lê',
-                status: 'online'
-            },
-            {
-                id: 3,
-                name: 'Dũng Hoàng',
-                status: 'online'
-            }
-        ]);
+
+    useEffect(() => {
+        reloadPage();
     }, []);
 
-    const handleContactClick = () => {
+    const handleContactClick = (id) => {
+        console.log(id);
+        console.log('applicationsList');
+        console.log(applicationsList);
+        console.log('newAppointmentList');
+        console.log(newAppointmentList);
         //window.open("http://localhost:3000/videocall?id=a?name=dung", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=1200,height=800");
     }
 
@@ -191,7 +219,7 @@ export default function DrBody() {
             <div className={classes.cards}>
                 <div className={classes.cardSingle + " " + classes.cardFirst} onClick={() => {setCurrentMenuItem(ScreenCode.CHAT)}}>
                     <div>
-                        <h1>1</h1>
+                        <h1>0</h1>
                         <span>Tin nhắn mới</span>
                     </div>
                     <div>
@@ -201,7 +229,7 @@ export default function DrBody() {
 
                 <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.TIMETABLE)}}>
                     <div>
-                        <h1>2</h1>
+                        <h1>{newAppointmentList.length}</h1>
                         <span>Cuộc hẹn mới</span>
                     </div>
                     <div>
@@ -211,7 +239,7 @@ export default function DrBody() {
 
                 <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.WORK_PLACE)}}>
                     <div>
-                        <h1>1</h1>
+                        <h1>{applicationsList.length}</h1>
                         <span>Yêu cầu mới</span>
                     </div>
                     <div>
@@ -240,7 +268,7 @@ export default function DrBody() {
                                 <h3 style={{textAlign: 'center'}}>Những cuộc hẹn sắp tới</h3>
                             </div>
                             <div className={classes.root}>
-                                <CustomizedTables appointmentList={appointmentList}/>
+                                <CustomizedTables newAppointmentList={newAppointmentList}/>
                             </div>
                         </div>
                     </Grid>
@@ -252,8 +280,8 @@ export default function DrBody() {
 
                             <div style={{maxHeight: '350px', overflowY: 'scroll'}}>
                                 {
-                                    contacts.map(contact =>
-                                        <div className={classes.customer}>
+                                    contactList.map(contact =>
+                                        <div className={classes.customer} onClick={() => {handleContactClick(contact.id)}}>
                                             <div className="info">
                                                 <img src={userImg} width="40px" height="40px" alt=""></img>
                                                 <div>

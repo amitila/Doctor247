@@ -258,28 +258,28 @@ function getVnDay(day) {
 function getDay(datetime) {
     const dt = new Date(datetime.substring(0, 10));
     const dayCode = dt.getDay();
-    let result = "";
+    let result = dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
     switch (dayCode) {
         case 0:
-            result = "Chủ nhật";
+            result += "(Chủ nhật)";
             break;
         case 1:
-            result = "Thứ hai";
+            result += "(Thứ hai)";
             break;
         case 2:
-            result = "Thứ ba";
+            result += "(Thứ ba)";
             break;
         case 3:
-            result = "Thứ tư";
+            result += "(Thứ tư)";
             break;
         case 4:
-            result = "Thứ năm";
+            result += "(Thứ năm)";
             break;
         case 5:
-            result = "Thứ sáu";
+            result += "(Thứ sáu)";
             break;
         case 6:
-            result = "Thứ bảy";
+            result += "(Thứ bảy)";
             break;
         default:
             result = "error";
@@ -450,7 +450,7 @@ function HealthCheckPlanTable(props) {
                 <TableBody>
                     {healthCheckList.map((row) => (
                         <StyledTableRow key={row.id}>
-                            <StyledTableCell align="center">{row.day.substring(0, 10) + " - " +getDay(row.day)}</StyledTableCell>
+                            <StyledTableCell align="center">{getDay(row.day)}</StyledTableCell>
                             <StyledTableCell align="center">{row.day.substring(11, 16)}</StyledTableCell>
                             <StyledTableCell align="center">{row.workplace.name}</StyledTableCell>
                             <StyledTableCell align="center">{row.medicalRecord.customer.firstName + " " + row.medicalRecord.customer.lastName}</StyledTableCell>
@@ -541,6 +541,7 @@ export default function TimeTable() {
     const [isOpenHCP, setIsOpenHCP] = React.useState(false);
     const [isOpenWP, setIsOpenWP] = React.useState(false);
     const [isReload, setIsReload] = React.useState(true);
+    const [images, setImages] = React.useState([]);
 
     const [healthCheckData, setHealthCheckData] = useState({
         id: 0,
@@ -588,12 +589,9 @@ export default function TimeTable() {
             time: getDisplayHMS(data.day),
             workAt: data.workplace.name,
             patient: data.medicalRecord.customer.firstName + " " + data.medicalRecord.customer.lastName,
-            reason: data.medicalRecord.symptom.join(', ')
+            reason: data.medicalRecord.symptom.join(', '),
         });
-    };
-
-    const handleHCPClose = () => {
-        setIsOpenHCP(false);
+        setImages([...data.medicalRecord.images]);
     };
 
     const [dayWP, setDayWP] = useState('');
@@ -660,10 +658,6 @@ export default function TimeTable() {
         setStartingAt3WP('');
         setEndingAt3WP('');
     }
-
-    const handleWPClose = () => {
-        setIsOpenWP(false);
-    };
 
     const handleWPOK = () => {
         const checkWP1 = checkWP(startingAt1WP, endingAt1WP, workAt1WP, oldWorkAt1WP);
@@ -873,7 +867,7 @@ export default function TimeTable() {
             <TabPanel value={value} index={1}>
                 <WorkPlanTable handleOpenWPDialog={handleWPClickOpen} operationList={operationList} operationJson={operationJson}/>
             </TabPanel>
-            <Dialog open={isOpenHCP} onClose={handleHCPClose} aria-labelledby="form-dialog-title">
+            <Dialog open={isOpenHCP} onClose={() => {setIsOpenHCP(false)}} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Thông tin lịch khám</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -890,7 +884,7 @@ export default function TimeTable() {
                         margin="dense"
                         id="name"
                         label="Thời gian"
-                        defaultValue={healthCheckData.time}
+                        defaultValue={healthCheckData.time + ' ' + healthCheckData.day}
                         fullWidth
                         InputProps={{
                             readOnly: true,
@@ -916,15 +910,25 @@ export default function TimeTable() {
                             readOnly: true,
                         }}
                     />
+                    {
+                        images.length === 0 ?
+                        <span style={{display: 'inline-block', marginTop: "10px"}}><h5>Không có hình ảnh đính kèm</h5></span>
+                        :<span style={{display: 'inline-block', marginTop: "10px"}}><h5>Hình ảnh đính kèm</h5></span>
+                    }
+                    {
+                        images.map(imgSrc => {
+                            return <img src={imgSrc} style={{ margin: '3%' }} width="94%" height="280" alt=""></img>
+                        })
+                    }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleHCPClose} color="primary" variant="outlined">
+                    <Button onClick={() => {setIsOpenHCP(false)}} color="primary" variant="outlined">
                         Close
                     </Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={isOpenWP} onClose={handleWPClose} aria-labelledby="form-dialog-title">
+            <Dialog open={isOpenWP} onClose={() => {setIsOpenWP(false)}} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Chỉnh sửa giờ làm việc</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={2}>
@@ -1134,7 +1138,7 @@ export default function TimeTable() {
                     <Button onClick={handleWPOK} variant="outlined" color="primary">
                         OK
                     </Button>
-                    <Button onClick={handleWPClose} variant="outlined" color="secondary">
+                    <Button onClick={() => {setIsOpenWP(false)}} variant="outlined" color="secondary">
                         Cancel
                     </Button>
                 </DialogActions>

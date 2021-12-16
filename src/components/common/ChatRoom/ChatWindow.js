@@ -13,6 +13,8 @@ import Button from '@mui/material/Button';
 import Grid from '@material-ui/core/Grid';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
+const avatarTemplate = 'https://img.flaticon.com/icons/png/512/149/149071.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF';
+
 const styles = (theme) => ({
     root: {
         margin: 0,
@@ -138,7 +140,7 @@ function ChatWindow(props) {
                             <Message
                                 align={(msg.uid === userInfo.id.toString()) ? 'right' : 'left'}
                                 text={msg.text}
-                                photoURL={msg.photoURL}
+                                photoURL={(msg.uid === userInfo.id.toString()) ? userInfo.avatarURL : avatarTemplate}
                                 displayName={(msg.uid === userInfo.id.toString()) ? '' : selectedUser.name}
                                 createdAt={getDateTimeShow(msg.createdAt)}
                             />

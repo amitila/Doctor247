@@ -29,7 +29,6 @@ import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
 
-// const token = localStorage.getItem("token_doctor247");
 const token = getToken();
 
 const useStyles = makeStyles((theme) => ({
@@ -55,18 +54,37 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function createData(name, id, date, status, note,) {
-    return {
-        name,
-        id,
-        date,
-        status,
-        note,
-        history: status==='Chưa khám'?null:[
-            { date: '2020-01-05', customerId: 'Barack Obama', result: 'Đau bụng' },
-            { date: '2020-01-02', customerId: 'Max Agleri', result: 'Tiêu chảy' },
-        ],
-    };
+function getDay(datetime) {
+    const dt = new Date(datetime.substring(0, 10));
+    const dayCode = dt.getDay();
+    let result = datetime.substring(10,16) + " " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
+    switch (dayCode) {
+        case 0:
+            result += "(Chủ nhật)";
+            break;
+        case 1:
+            result += "(Thứ hai)";
+            break;
+        case 2:
+            result += "(Thứ ba)";
+            break;
+        case 3:
+            result += "(Thứ tư)";
+            break;
+        case 4:
+            result += "(Thứ năm)";
+            break;
+        case 5:
+            result += "(Thứ sáu)";
+            break;
+        case 6:
+            result += "(Thứ bảy)";
+            break;
+        default:
+            result = "error";
+            break;
+    }
+    return result;
 }
 
 function getStatus(status){
@@ -89,7 +107,7 @@ function createMedicalRecords(appointments){
             aid: element.id,
             id: element.medicalRecord.id,
             od: parseInt(element.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','')),
-            date: element.day.substring(0, 16).replace('T',' '),
+            date: getDay(element.day.replace('T',' ')),
             status: element.status,
             note: element.medicalRecord.note,
             name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
@@ -249,9 +267,9 @@ function MedicalRecordList(props) {
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell width="15%">Mã hồ sơ</TableCell>
+                            <TableCell width="10%">Mã hồ sơ</TableCell>
                             <TableCell width="15%">Tên bệnh nhân</TableCell>
-                            <TableCell width="15%">Ngày khám</TableCell>
+                            <TableCell width="20%">Thời gian khám</TableCell>
                             <TableCell width="15%">Trạng thái</TableCell>
                             <TableCell width="20%">Ghi chú</TableCell>
                             <TableCell width="20%"></TableCell>
@@ -318,6 +336,7 @@ function MedicalRecordDetail(props) {
     const [patientBloodGroup, setPatientBloodGroup] = useState('');
     const [diagnosticResult, setDiagnosticResult] = useState('');
     const [note, setNote] = useState('');
+    const [expense, setExpense] = useState(0);
 
     const [patientHeight2, setPatientHeight2] = useState(appointmentSelect.height===null? '' : appointmentSelect.height + '');
     const [patientWeight2, setPatientWeight2] = useState(appointmentSelect.weight===null? '' : appointmentSelect.weight + '');
@@ -327,8 +346,9 @@ function MedicalRecordDetail(props) {
     const [patientBloodGroup2, setPatientBloodGroup2] = useState(appointmentSelect.bloodGroup===null ? '' : appointmentSelect.bloodGroup + '');
     const [diagnosticResult2, setDiagnosticResult2] = useState(appointmentSelect.medicalRecord.diagnostic.join(', ') + '');
     const [note2, setNote2] = useState(appointmentSelect.medicalRecord.note===null ? '' : appointmentSelect.medicalRecord.note + '');
-
     const [medicalStatus, setMedicalStatus] = useState(appointmentSelect.status);
+    const [isEditBodyStats, setIsEditBodyStats] = useState(false);
+    const [fileList, setFileList] = React.useState([]);
 
     const [imgList, setImgList] = useState([
         'http://www.boclinic.vn/wp-content/uploads/2017/05/5-meo-dep-bo-cang-thang-keo-dai-giup-ban-tre-khoe-moi-ngay-1.jpg',
@@ -339,8 +359,6 @@ function MedicalRecordDetail(props) {
     //     'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
     //     'https://normagut.com/wp-content/uploads/2021/02/vi-tri-dau-bung-o-ben-trai-hoac-ben-phai.jpg',
     // ]);
-    
-    const [isEditBodyStats, setIsEditBodyStats] = useState(false);
     
     useEffect(() => {
         if (!isEditBodyStats) {
@@ -364,6 +382,7 @@ function MedicalRecordDetail(props) {
     }, []);
 
     const handleEditBodyStats = () => {
+        console.log(appointmentSelect);
         if(medicalStatus !== 'DONE'){
             setIsEditBodyStats(true);
         }
@@ -377,8 +396,7 @@ function MedicalRecordDetail(props) {
     };
 
     const handleConfirm = () => {
-        console.log('data');
-        console.log({
+        const data = {
             height: patientHeight,
             weight: patientWeight,
             bodyTemperature: patientBodyTemperature,
@@ -387,8 +405,11 @@ function MedicalRecordDetail(props) {
             bloodGroup: patientBloodGroup,
             diagnostic: [diagnosticResult],
             note: note,
-            medicalExpense: appointmentSelect.medicalRecord.cost + ''
-        });
+            medicalExpense: expense,
+            files: fileList
+        }
+        console.log('data');
+        console.log(data);
         if (patientHeight.length === 0
             || patientWeight.length === 0
             || patientBodyTemperature.length === 0
@@ -399,28 +420,21 @@ function MedicalRecordDetail(props) {
             enqueueSnackbar('Vui lòng nhập đủ thông tin!', { variant: 'error' });
             return;
         }
-        if (window.confirm('Bạn chắc chắn đã nhập xong?')){
+        else if (expense <= 0) {
+            enqueueSnackbar('Chi phí khám phải lớn hơn 0!', { variant: 'error' });
+            return;
+        }
+        if (window.confirm('Bạn chắc chắn đã nhập xong chứ?')){
             APIService.putDoctorAppointmentById(
                 token,
                 appointmentSelect.aid,
                 'DOING',
                 (success, json) => {
                     if (success && json.result) {
-                        console.log('putDoctorAppointmentById DOING');
                         APIService.putDoctorMedicalRecordById(
                             token,
                             appointmentSelect.medicalRecord.id,
-                            {
-                                height: patientHeight,
-                                weight: patientWeight,
-                                bodyTemperature: patientBodyTemperature,
-                                bloodPressure: patientBloodPressure,
-                                heartBeat: patientHeartbeat,
-                                bloodGroup: patientBloodGroup,
-                                diagnostic: [diagnosticResult],
-                                note: note,
-                                medicalExpense: appointmentSelect.medicalRecord.cost + '',
-                            },
+                            data,
                             (success, json) => {
                                 if (success && json.result) {
                                     setPatientHeight2(patientHeight);
@@ -444,12 +458,25 @@ function MedicalRecordDetail(props) {
                                         }
                                     );
                                 }
+                                else {
+                                    console.log(json);
+                                }
                             });
                     }
                 }
             );
         }
 
+    }
+
+    const handleChangeFiles = (e) => {
+        const files = e.target.files;
+        let fl = [];
+
+        for (let i of Object.keys(files)) {
+            fl.push(files[i]);
+        }
+        setFileList(fl);
     }
 
     return(
@@ -707,7 +734,7 @@ function MedicalRecordDetail(props) {
                     <Paper style={{marginTop: "20px"}}>
                         <h3>Một số hình ảnh</h3>
                         {
-                            imgList.map(imgSrc => 
+                            appointmentSelect.medicalRecord.images.map(imgSrc => 
                                 <img src={imgSrc} style={{margin: '3%'}} width="44%" height="300" alt=""></img>
                             )
                         }
@@ -772,13 +799,34 @@ function MedicalRecordDetail(props) {
                         fullWidth
                     />
                     <TextField
-                    margin="dense"
-                    label="Ghi chú của bác sĩ"
-                    multiline
-                    onChange={(e) => setNote(e.target.value)}
-                    value={note}
-                    fullWidth
-                />
+                        margin="dense"
+                        label="Ghi chú của bác sĩ"
+                        multiline
+                        onChange={(e) => setNote(e.target.value)}
+                        value={note}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Chi phí khám"
+                        type="number"
+                        onChange={(e) => setExpense(e.target.value)}
+                        value={expense}
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+                            step: 10000,
+                        }}
+                    />
+                    <span style={{display: 'inline-block', marginTop: "20px"}}><h5>Đính kèm file ảnh (png, jpg) hoặc file pdf)</h5></span>
+                        <input
+                            type="file"
+                            accept='.jpg, .png, .pdf'
+                            multiple
+                            onChange={handleChangeFiles}
+                        />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleConfirm} color="primary" variant="outlined">
