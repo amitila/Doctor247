@@ -1,9 +1,9 @@
 import WebService from './WebService';
 
 export default class APIService {
-	// static urlServerAddress = 'http://192.168.1.7:8080';
+	static urlServerAddress = 'http://192.168.1.5:8080';
 	// static urlServerAddress = 'http://localhost:8081';
-	static urlServerAddress = 'https://doctor247api.herokuapp.com';
+	// static urlServerAddress = 'https://doctor247api.herokuapp.com';
 
 // For visitor
 	static baseAPI = () => {

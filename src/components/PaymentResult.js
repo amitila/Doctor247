@@ -148,18 +148,28 @@ export default function PaymentResult () {
 									/>
 								</Box> 
 								:
-								!isLoading && !result ?	<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
-															<img
-																alt="paymentResult"
-																src="/paymentFail.jpg"
-																style={{
-																	marginTop: 50,
-																	display: 'inline-block',
-																	maxWidth: '100%',
-																	width: 560
-																}}
-															/>
-														</Box> :
+								!isLoading && !result ?<div>
+															<Typography
+																align="center"
+																color="textPrimary"
+																variant="h4"
+																style={{color: 'red'}}
+															>
+																Có thể xảy ra lỗi do số dư của bạn đã biến động. Vui lòng thanh toán lại!
+															</Typography>
+															<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
+																<img
+																	alt="paymentResult"
+																	src="/paymentFail.jpg"
+																	style={{
+																		marginTop: 50,
+																		display: 'inline-block',
+																		maxWidth: '100%',
+																		width: 560
+																	}}
+																/>
+															</Box>
+														</div> :
 														<Box sx={{ textAlign: 'center', marginBottom: 20 }}>
 															<Typography
 																align="center"

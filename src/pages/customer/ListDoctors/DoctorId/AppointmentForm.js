@@ -126,8 +126,13 @@ export default function AppointmentForm(props) {
 			},
 			(success, json) => {
 				if (success && json.result) {
-					window.open(json.result, '_blank');
-					return alert("Đặt lịch THÀNH CÔNG!");
+					if(json.result === true) {
+					    return alert("Đặt lịch và thanh toán THÀNH CÔNG!");
+                    }
+                    else {
+                        window.open(json.result, '_blank');
+                        return alert("Đặt lịch THÀNH CÔNG. Vui lòng thanh toán!");
+                    }
 				} else {
 					return alert("THẤT BẠI");
 				}

@@ -53,8 +53,13 @@ export default function AppointmentItem(props) {
 			},
 			(success, json) => {
 				if (success && json.result) {
-					window.open(json.result, '_blank');
-					return json.result;
+					if(json.result === true) {
+					    return alert("Thanh toán THÀNH CÔNG!");
+                    }
+                    else {
+                        window.open(json.result, '_blank');
+                        return json.result;
+                    }
 				} else {
 					setShowResult('Đã thanh toán')
 					return console.log(json.error)
@@ -151,9 +156,11 @@ export default function AppointmentItem(props) {
 										<b>Hủy lịch</b>
 									</Button> */}
 									<div>
-										<Button startIcon={<DeleteIcon />} variant="outlined" onClick={handleClickOpen}>
-											<b>Hủy lịch</b>
-										</Button>
+										{
+											task.status === 'WAITING_PAYMENT' || task.status === 'PENDING' ? <Button startIcon={<DeleteIcon />} variant="outlined" onClick={handleClickOpen}>
+																												<b>Hủy lịch</b>
+																											</Button> : null
+										}
 										<Dialog
 											open={open}
 											onClose={handleClose}

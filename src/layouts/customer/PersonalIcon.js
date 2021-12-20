@@ -139,6 +139,7 @@ export default function PersonalIcon(props) {
 		address: '',
 		province: '',
 		avatar: '',
+		amount: '',
     });
 	const [provinceId, setProvinceId] = useState('');
 
@@ -167,6 +168,7 @@ export default function PersonalIcon(props) {
 						address: json.result.customer.address ? json.result.customer.address : '',
 						province: json.result.customer.province?.name,
 						avatar: json.result.customer.avatarURL ? json.result.customer.avatarURL : '' ,
+						amount: json.result.amount,
 					});
 				}
 			}) 
@@ -244,6 +246,11 @@ export default function PersonalIcon(props) {
 		date.setFullYear(parseInt(value.slice(0,4)));
 		return date;
 	}
+
+	const [showBalance, setShowBalance] = useState(false);
+	const handleClickShowBalance = () => {
+		setShowBalance(!showBalance);
+	};
 
 	return (
 		<div>
@@ -430,6 +437,21 @@ export default function PersonalIcon(props) {
 					</Container>
 				</DialogContent>
 				<DialogActions>
+					<div style={{alignItems: 'center', float: 'left'}}>
+						<TextField
+							variant="standard"
+							margin="normal"
+							fullWidth
+							required
+							disabled 
+							id="balance"
+							name="balance"
+							value={showBalance ? (parseInt(state.amount)/100 + ' VND') : '0000'}
+							label="Số dư"
+							type={showBalance ? "text": "password"}
+							onClick={handleClickShowBalance}
+						/>
+					</div>
 					<Button
 						autoFocus
 						type="submit"

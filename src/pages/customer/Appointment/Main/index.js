@@ -184,12 +184,12 @@ export default function Index(props) {
     const onSubmit = (data) => {
         const token = getToken();
         const customerIp = window.location.hostname;
-        // console.log(data.guardianId)
-        // console.log(data.doctorId)
-        // console.log(data.dayTime)
-        // console.log([data.description])
-        // console.log(data.imagesSend)
-        // console.log(customerIp)
+        console.log(data.guardianId)
+        console.log(data.doctorId)
+        console.log(data.dayTime)
+        console.log([data.description])
+        console.log(data.imagesSend)
+        console.log(customerIp)
         APIService.postAppointment(
 			token,
 			{
@@ -204,9 +204,15 @@ export default function Index(props) {
 				
 				if (success && json.result) {
                     // console.log(json.result)
-                    window.open(json.result, '_blank');
-                    setIsHaveChange(true);
-					return alertFunction( 0,"Đặt lịch THÀNH CÔNG. Vui lòng thanh toán!");
+                    if(json.result === true) {
+                        setIsHaveChange(true);
+					    return alertFunction( 0,"Đặt lịch và thanh toán THÀNH CÔNG!");
+                    }
+                    else {
+                        window.open(json.result, '_blank');
+                        setIsHaveChange(true);
+                        return alertFunction( 0,"Đặt lịch THÀNH CÔNG. Vui lòng thanh toán!");
+                    }
 				} else {
 					return alertFunction( 1, "Đặt lịch thất bại!");
 				}
