@@ -71,13 +71,13 @@ export default function MRItem(props) {
 						<Grid item xs={12} sm={5}>
 							<Typography style={{fontSize: 23}}>
 								Chế độ xem: {
-												visible === "PUBLIC" ? "Mọi người" : ""
+												visible === "PUBLIC" ? " Mọi người" : ""
 											}
 											{
-												visible === "PRIVATE" ? "Chỉ mình tôi" : ""
+												visible === "PRIVATE" ? " Chỉ mình tôi" : ""
 											}
 											{
-												visible === "ONLY_DOCTOR_EXAMINATION" ? "Chỉ bác sĩ khám" : ""
+												visible === "ONLY_DOCTOR_EXAMINATION" ? " Chỉ bác sĩ khám" : ""
 											}
 							</Typography>
 						</Grid>

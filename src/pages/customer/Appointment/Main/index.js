@@ -184,12 +184,12 @@ export default function Index(props) {
     const onSubmit = (data) => {
         const token = getToken();
         const customerIp = window.location.hostname;
-        console.log(data.guardianId)
-        console.log(data.doctorId)
-        console.log(data.dayTime)
-        console.log([data.description])
-        console.log(data.imagesSend)
-        console.log(customerIp)
+        // console.log(data.guardianId)
+        // console.log(data.doctorId)
+        // console.log(data.dayTime)
+        // console.log([data.description])
+        // console.log(data.imagesSend)
+        // console.log(customerIp)
         APIService.postAppointment(
 			token,
 			{

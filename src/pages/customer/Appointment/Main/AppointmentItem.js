@@ -104,19 +104,19 @@ export default function AppointmentItem(props) {
 							<Typography style={{fontSize: 23}}>
 								Tình trạng lịch: 
 												{
-													task.status === "WAITING_PAYMENT" ? "Chờ thanh toán" : ""
+													task.status === "WAITING_PAYMENT" ? " Chờ thanh toán" : ""
 												}
 												{
-													task.status === "PENDING" ? "Chờ khám" : ""
+													task.status === "PENDING" ? " Chờ khám" : ""
 												}
 												{
-													task.status === "DOING" ? "Đang khám" : ""
+													task.status === "DOING" ? " Đang khám" : ""
 												}
 												{
-													task.status === "DONE" ? "Hoàn thành" : ""
+													task.status === "DONE" ? " Hoàn thành" : ""
 												}
 												{
-													task.status === "DOCTOR_CANCEL" ? "Bác sĩ từ chối" : ""
+													task.status === "DOCTOR_CANCEL" ? " Bác sĩ từ chối" : ""
 												}
 												{
 													task.status === "CUSTOMER_CANCEL" ? "Tôi đã hủy" : ""

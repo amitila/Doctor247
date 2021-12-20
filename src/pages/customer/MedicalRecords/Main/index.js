@@ -23,10 +23,12 @@ export default function Index(props) {
     const getMedicalRecord = () => {
         const token = getToken();
         const mrList = [];
+        const appointmentStatus = 'DONE';
         APIService.getMedicalRecords(
             token,
             {
             },
+            appointmentStatus,
             (success, json) => {
                 if (success && json.result) {
                     
