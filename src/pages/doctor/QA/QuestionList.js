@@ -85,6 +85,39 @@ function getStatus(status){
     }
 }
 
+function getDay(datetime) {
+    const dt = new Date(datetime);
+    const dayCode = dt.getDay();
+    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0') + " " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
+    switch (dayCode) {
+        case 0:
+            result += "(Chủ nhật)";
+            break;
+        case 1:
+            result += "(Thứ hai)";
+            break;
+        case 2:
+            result += "(Thứ ba)";
+            break;
+        case 3:
+            result += "(Thứ tư)";
+            break;
+        case 4:
+            result += "(Thứ năm)";
+            break;
+        case 5:
+            result += "(Thứ sáu)";
+            break;
+        case 6:
+            result += "(Thứ bảy)";
+            break;
+        default:
+            result = "error";
+            break;
+    }
+    return result;
+}
+
 function Row(props) {
     const { data } = props;
 
@@ -105,6 +138,11 @@ function Row(props) {
             });
         }
     }, [openAnswer]);
+
+    useEffect(() => {
+        console.log('row');
+        console.log(row);
+    }, []);
 
     const handleSendAnswer = () => {
         if(myAnswer.length < 50){
@@ -137,7 +175,7 @@ function Row(props) {
                         {openAnswer ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>}
                 </TableCell>
-                <TableCell >{row.createdAt.substring(0, 16).replace('T', ' ')}</TableCell>
+                <TableCell >{getDay(row.createdAt)}</TableCell>
                 <TableCell >{row.customer}</TableCell>
                 <TableCell >{row.content}</TableCell>
                 <TableCell>
@@ -151,7 +189,7 @@ function Row(props) {
                             <Typography variant="h6" gutterBottom component="div">
                                 Hình ảnh
                                 {
-                                    row.images.length === 0 ? ': Không có' : (row.images.length + ' hình')
+                                    row.images.length === 0 ? ': Không có' : (': ' + row.images.length + ' hình')
                                 }
                             </Typography>
                             <Table size="small" aria-label="purchases">
@@ -166,7 +204,7 @@ function Row(props) {
                                         <TableRow key={1}>
                                             {row.images.map((image) => (
                                                 <TableCell>
-                                                    <img src={image.imgSrc} style={{ margin: '3%' }} width="95%" height="200" alt="" />
+                                                    <img src={image} style={{ margin: '3%' }} width="95%" height="200" alt="" />
                                                 </TableCell>
 
                                             ))}
@@ -189,7 +227,7 @@ function Row(props) {
                                             <TableCell>
                                                 <TextField
                                                     id="standard-multiline-flexible"
-                                                    label={"Trả lời bởi " + answer.doctorId + " lúc " + answer.createdAt.substring(0, 17).replace('T',' ')}
+                                                    label={"Trả lời bởi " + answer.doctorId + " lúc " + getDay(answer.createdAt)}
                                                     multiline
                                                     fullWidth
                                                     defaultValue={answer.content}

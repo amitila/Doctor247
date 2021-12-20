@@ -896,10 +896,12 @@ export default function WorkPlace() {
     const [isOpenClinic, setIsOpenClinic] = React.useState(false);
     const [isEditMode, setIsEditMode] = React.useState(false);
     const [isApplyMode, setIsApplyMode] = React.useState(false);
+    const [openClinicForm, setOpenClinicForm] = React.useState(false);
 
     const [provinces, setProvinces] = React.useState([]);
     const [myClinics, setMyClinics] = React.useState([]);
     const [myManagementClinics, setMyManagementClinics] = React.useState([]);
+    const [myOperations, setMyOperations] = React.useState([]);
 
     const [clinic, setClinic] = React.useState({
         id: 0, type: '', name: '', address: '', images: [], status: '', managerId: 0,
@@ -909,15 +911,11 @@ export default function WorkPlace() {
     const [newClinicName, setNewClinicName] = React.useState('');
     const [newClinicStatus, setNewClinicStatus] = React.useState('');
     const [newClinicAddress, setNewClinicAddress] = React.useState('');
+    const [operationIdSelect, setOperationIdSelect] = React.useState(0);
+    const [newPatientNumber, setNewPatientNumber] = React.useState(0);
+    const [newMedicalExpense, setNewMedicalExpense] = React.useState(0);
 
-    useEffect(() => {
-        APIService.getProvinces(
-            (success, json) => {
-                if (success && json.result) {
-                    setProvinces(json.result);
-                }
-            }
-        );
+    const loadData = () => {
         APIService.getDoctorWorkPlaceMy(token, (success, json) => {
             if (success && json.result) {
                 setMyClinics(json.result);
@@ -928,7 +926,14 @@ export default function WorkPlace() {
                 setMyManagementClinics(json.result);
             }
         });
-    }, []);
+        APIService.getDoctorOperation(token, (success, json) => {
+            if (success && json.result) {
+                console.log('getDoctorOperation');
+                console.log(json.result);
+                setMyOperations(json.result);
+            }
+        });
+    }
 
     const imgList = [
         'https://cdnmedia.baotintuc.vn/Upload/4l8oGGp94lA5r6lHXppg/files/2021/06/nhidong1.jpg',
@@ -937,6 +942,8 @@ export default function WorkPlace() {
     ];
 
     const handleOpenClinicsDialog = (data, isEdit, isApply) => {
+        console.log('data');
+        console.log(data);
         setIsOpenClinic(true);
         setIsEditMode(isEdit);
         setIsApplyMode(isApply);
@@ -951,6 +958,10 @@ export default function WorkPlace() {
         });
         setNewClinicName(data.name);
         setNewClinicAddress(data.address);
+        let operation = myOperations.find(x => x.workplace.id === data.id);
+        setOperationIdSelect(operation.id);
+        setNewPatientNumber(operation.patientPerHalfHour===null?0:operation.patientPerHalfHour);
+        setNewMedicalExpense(operation.medicalExpense===null?0:operation.medicalExpense);
         if (data.status === 'ACTIVE'){
             setClinicStatus(1);
         }
@@ -985,6 +996,33 @@ export default function WorkPlace() {
     }
 
     const handleClinicUpdateWorkPlace = () => {
+        if (newClinicName.length === 0 || newPatientNumber < 0 || newMedicalExpense < 0) {
+            enqueueSnackbar('Nhập sai!', { variant: 'error' });
+            return;
+        }
+        APIService.putDoctorOperationPatientPerHalfHour(
+            token,
+            {
+                id: operationIdSelect,
+                patients: newPatientNumber
+            },
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Cập nhật số người khám thành công!', { variant: 'success' });
+                }
+            });
+        APIService.putDoctorOperationMedicalExpense(
+            token,
+            {
+                id: operationIdSelect,
+                medicalExpense: newMedicalExpense
+            },
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Cập nhật chi phí khám thành công!', { variant: 'success' });
+                    loadData();
+                }
+            });
         APIService.putDoctorWorkPlace(
             token,
             {
@@ -1006,12 +1044,21 @@ export default function WorkPlace() {
             }
         );
     }
+    
+    useEffect(() => {
+        APIService.getProvinces(
+            (success, json) => {
+                if (success && json.result) {
+                    setProvinces(json.result);
+                }
+            }
+        );
+        loadData();
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    const [openClinicForm, setOpenClinicForm] = React.useState(false);
 
     return (
         <div className={classes.root}>
@@ -1083,6 +1130,31 @@ export default function WorkPlace() {
                         fullWidth
                         InputProps={{
                             readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        type="number"
+                        label="Số bệnh nhân khám trong nửa giờ"
+                        value={newPatientNumber}
+                        onChange={(e) => {setNewPatientNumber(e.target.value)}}
+                        fullWidth
+                        InputProps={{
+                            readOnly: !isEditMode,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        type="number"
+                        label="Số tiền khám"
+                        value={newMedicalExpense}
+                        onChange={(e) => {setNewMedicalExpense(e.target.value)}}
+                        fullWidth
+                        InputProps={{
+                            readOnly: !isEditMode,
+                            step: 10000,
                         }}
                     />
                     <FormControl className={classes.formControl} fullWidth>

@@ -55,9 +55,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getDay(datetime) {
-    const dt = new Date(datetime.substring(0, 10));
+    const dt = new Date(datetime);
     const dayCode = dt.getDay();
-    let result = datetime.substring(10,16) + " " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
+    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0') + " " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
     switch (dayCode) {
         case 0:
             result += "(Chủ nhật)";
@@ -107,7 +107,7 @@ function createMedicalRecords(appointments){
             aid: element.id,
             id: element.medicalRecord.id,
             od: parseInt(element.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','')),
-            date: getDay(element.day.replace('T',' ')),
+            date: getDay(element.day),
             status: element.status,
             note: element.medicalRecord.note,
             name: element.medicalRecord.customer.firstName + ' ' + element.medicalRecord.customer.lastName,
@@ -139,10 +139,10 @@ function createMedicalRecords(appointments){
             heartBeat: element.medicalRecord.heartBeat,
             bloodGroup: element.medicalRecord.bloodGroup,
         }
-        if (element.status === 'DONE') {
+        if (element.status === 'DONE' || element.status === 'DOING') {
             doneList.push(data);
         }
-        else{
+        else if (element.status === 'PENDING') {
             pendingList.push(data);
         }
     });
@@ -875,6 +875,8 @@ export default function MedicalRecords(props) {
 
     useEffect(() => {
         setAppointmentList(createMedicalRecords(appointmentJson));
+        console.log('appointmentJson');
+        console.log(appointmentJson);
     }, [appointmentJson]);
 
     return (

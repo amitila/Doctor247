@@ -209,7 +209,7 @@ function getDateTime(hms) {
 // get MMss(int) from HH:mm(string)
 function getDateTimeFromMS(hm) {
     const date = new Date();
-    date.setHours(7+toInteger(hm.substring(0,2)), toInteger(hm.substring(3,5)));
+    date.setHours(toInteger(hm.substring(0,2)), toInteger(hm.substring(3,5)));
     return date;
 }
 
@@ -218,7 +218,11 @@ function getHMS(datetime) {
 }
 
 function getDisplayHMS(datetime) {
-    return datetime.replace('T', '').substring(10, 15);
+    //return datetime.replace('T', '').substring(10, 15);
+    console.log(datetime);
+    const dt = new Date(datetime);
+    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0');
+    return result;
 }
 
 function getVnDay(day) {
@@ -253,7 +257,7 @@ function getVnDay(day) {
 }
 
 function getDay(datetime) {
-    const dt = new Date(datetime.substring(0, 10));
+    const dt = new Date(datetime);
     const dayCode = dt.getDay();
     let result = dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
     switch (dayCode) {
@@ -282,6 +286,12 @@ function getDay(datetime) {
             result = "error";
             break;
     }
+    return result;
+}
+
+function getTime(datetime){
+    const dt = new Date(datetime);
+    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0');
     return result;
 }
 
@@ -468,7 +478,7 @@ function HealthCheckPlanTable(props) {
                     {healthCheckList.map((row) => (
                         <StyledTableRow key={row.id}>
                             <StyledTableCell align="center">{getDay(row.day)}</StyledTableCell>
-                            <StyledTableCell align="center">{row.day.substring(11, 16)}</StyledTableCell>
+                            <StyledTableCell align="center">{getTime(row.day)}</StyledTableCell>
                             <StyledTableCell align="center">{row.workplace.name}</StyledTableCell>
                             <StyledTableCell align="center">{row.medicalRecord.customer.firstName + " " + row.medicalRecord.customer.lastName}</StyledTableCell>
                             <StyledTableCell align="center">
@@ -504,6 +514,8 @@ function WorkPlanTable(props) {
             });
         });
         SetWorkPlanList(createWPDataList(doctorOperationHourList, props.operationList));
+        console.log('doctorOperationHourList');
+        console.log(doctorOperationHourList);
     }, [props.operationList]);
 
     return (

@@ -299,6 +299,16 @@ export default class APIService {
         return `${APIService.baseAPI()}doctor/operation`;
     }
 
+    // Doctor Profile URL
+    static apiDoctorOperationPatientPerHaftHour = () => {
+        return `${APIService.baseAPI()}doctor/operation/patient-per-half-hour`;
+    }
+
+    // Doctor Profile URL
+    static apiDoctorOperationMedicalExpense = () => {
+        return `${APIService.baseAPI()}doctor/operation/medical-expense`;
+    }
+
     // Doctor Profile URL by id
     static apiDoctorOperationById = (id) => {
         return `${APIService.baseAPI()}doctor/operation/{id}?id=${id}`;
@@ -1451,6 +1461,36 @@ export default class APIService {
 			callback,
 		);
 	}
+	
+    // Put Doctor Operation
+    static putDoctorOperationPatientPerHalfHour(token, values, callback) {
+		const formData = new FormData();
+		formData.append('id', values.id);
+		formData.append('patients', values.patients);
+        WebService.sendJsonPUT(
+			this.apiDoctorOperationPatientPerHaftHour(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+    }
+	
+    // Put Doctor Operation
+    static putDoctorOperationMedicalExpense(token, values, callback) {
+		const formData = new FormData();
+		formData.append('id', values.id);
+		formData.append('medicalExpense', values.medicalExpense);
+        WebService.sendJsonPUT(
+			this.apiDoctorOperationMedicalExpense(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+    }
 
     // Get Doctor Profile
     static getDoctorProfile(token, callback) {
