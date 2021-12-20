@@ -139,14 +139,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function DoctorTopNavbar(props) {
+export default function DoctorTopNavbar(props) {
     const classes = useStyles();
     const [openChangePassword, setOpenChangePassword] = React.useState(false);
-    const [value, setValue] = React.useState('Dione');
     const [anchorEl, setAnchorEl] = useState(null);
     const cookies = new Cookies();
 
-    const { history } = useContext(AppContext);
+    const { history, doctorCheck } = useContext(AppContext);
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -167,6 +167,12 @@ function DoctorTopNavbar(props) {
         history.push('/signin');
         window.location.reload();
     }
+
+    React.useEffect(() => {
+        setInterval(() => {
+            doctorCheck();
+        }, 5000);
+    }, []);
 
     return (
         <React.Fragment>
@@ -214,5 +220,3 @@ function DoctorTopNavbar(props) {
         </React.Fragment>
     );
 }
-
-export default DoctorTopNavbar;

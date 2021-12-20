@@ -35,9 +35,6 @@ import { toInteger, update } from 'lodash';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
 
-const axios = require("axios");
-
-// const token = localStorage.getItem("token_doctor247");
 const token = getToken();
 
 const AntTabs = withStyles({
@@ -406,6 +403,7 @@ function createWPDataList(doctorOperationHourList, operation) {
 
 function HealthCheckPlanTable(props) {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [healthCheckList, setHealthCheckList] = useState([]);
     const [workPlaceList, setWorkPlaceList] = useState([]);
@@ -435,6 +433,25 @@ function HealthCheckPlanTable(props) {
         });
     }, []);
 
+    const handleCancelApointment = (data) => {
+        console.log(data);
+        if (window.confirm("Bạn có chắc chắn muốn hủy cuộc hẹn này chứ ?")) {
+            APIService.putDoctorAppointmentById(
+                token,
+                data.id,
+                "DOCTOR_CANCEL",
+                (success, json) => {
+                    if (success && json.result) {
+                        let username = data.medicalRecord.customer.firstName + " " + data.medicalRecord.customer.lastName;
+                        enqueueSnackbar("Bạn đã hủy cuộc hẹn với " + username, {variant: "error"});
+                    }
+                    else {
+                        console.log(json);
+                    }
+                });
+        };
+    }
+
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="customized table">
@@ -459,6 +476,11 @@ function HealthCheckPlanTable(props) {
                                     onClick={() => props.handleOpenHCPDialog(row)}
                                 >
                                     Chi tiết
+                                </Button>
+                                <Button variant="outlined" color="secondary" align="center"
+                                    onClick={() => handleCancelApointment(row)}
+                                >
+                                    Từ chối
                                 </Button>
                             </StyledTableCell>
                         </StyledTableRow>
@@ -543,6 +565,8 @@ export default function TimeTable() {
     const [isReload, setIsReload] = React.useState(true);
     const [images, setImages] = React.useState([]);
 
+    const { setPendingAppointmentList, setNewPendingAppointmentList } = useContext(AppContext);
+
     const [healthCheckData, setHealthCheckData] = useState({
         id: 0,
         day: '',
@@ -578,6 +602,32 @@ export default function TimeTable() {
         });
         setOperationList(ol);
     }, [operationJson]);
+
+    useEffect(() => {
+        APIService.getDoctorAppointment(
+            token,
+            (success, json) => {
+                if (success, json.result) {
+                    var list = [];
+                    json.result.forEach(item => {
+                        if (item.status === 'PENDING') {
+                            let d = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
+                            d = parseInt(d);
+                            list.push({
+                                id: item.id,
+                                od: d
+                            });
+                        }
+                    });
+                    list.sort(function(a, b) {
+                        return a.od - b.od;
+                      });
+                    setPendingAppointmentList(list);
+                    setNewPendingAppointmentList(list);
+                }
+            }
+        );
+    }, []);
 
     const [workPlanData, setWorkPlanData] = useState(createWEEmpty("SUNDAY"));
 
@@ -772,18 +822,15 @@ export default function TimeTable() {
                     "id": oldWorkAt3WP
                 });
             }
-            console.log('logdt');
             logdt.forEach(item => {
                 APIService.putDoctorOperation(
                     token,
                     item,
                     (success, json) => {
-                        console.log(item);
                         if(success, json.result){
                             setIsOpenWP(false);
                             setIsReload(true);
                             enqueueSnackbar("Cập nhật thành công!", {variant: "success"});
-                            console.log(json.result);
                         }
                         else{
                             enqueueSnackbar("Cập nhật thất bại!", {variant: "error"});
@@ -796,12 +843,6 @@ export default function TimeTable() {
         else{
             enqueueSnackbar("Bạn chưa nhập đủ thông tin.", {variant: "error"});
         }
-        
-        // APIService.putDoctorOperation(token, (success, json) => {
-        //     if (success && json.result) {
-        //         setOperationJson(json.result);
-        //     }
-        // });
     };
 
     const imgList = [

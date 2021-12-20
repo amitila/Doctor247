@@ -217,8 +217,6 @@ function ClinicRegistrationDialogRaw(props) {
                 address: address,
                 images: imgSrcList
             }
-            console.log('data');
-            console.log(data);
             APIService.postDoctorWorkPlace(
                 token,
                 data,

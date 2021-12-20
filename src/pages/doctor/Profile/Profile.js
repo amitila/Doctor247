@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './Profile.css';
 import Grid from '@material-ui/core/Grid';
 import APIService from '../../../utils/APIService';
@@ -19,6 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
+import { AppContext } from '../../../store/AppProvider';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,12 +62,15 @@ function getDateTimeFromYMD(yyyyMMdd) {
 function Row(props) {
     const { removeThis, oldText, getText, index } = props;
     const [text, setText] = useState('');
+
     useEffect(() => {
         setText(oldText);
     }, []);
+
     useEffect(() => {
         getText(index, text);
     }, [text]);
+
     return (<Grid container xs={12} style={{marginTop: 14}}>
         <Grid item xs={10}>
             <TextField 
@@ -89,6 +93,7 @@ function Row(props) {
 function Profile(props) {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
+    const { pendingAppointmentList, newPendingAppointmentList, setNewPendingAppointmentList } = useContext(AppContext);
 
     //const img1 = "https://thumbs.dreamstime.com/z/doctor-web-icon-therapist-medical-avatar-flat-style-illustration-doctor-web-icon-therapist-avatar-103706622.jpg";
     const [imgSrc, setImgSrc] = useState('');
@@ -127,22 +132,11 @@ function Profile(props) {
     const [openSex, setOpenSex] = React.useState(false);
     const [openProvince, setOpenProvince] = React.useState(false);
 
-    // const token = localStorage.getItem("token_doctor247");
     const token = getToken();
-    useEffect(() => {
-        loadMyProfile();
-        APIService.getProvinces((success, json) => {
-            if (success && json.result) {
-                setProvincesList(json.result);
-            }
-        });
-    }, []);
 
     const loadMyProfile = () => {
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
-                console.log('profile');
-                console.log(json.result);
                 const workHistoryList = json.result.doctor.workHistory;
                 const positionName = workHistoryList.length > 0 ? workHistoryList[workHistoryList.length - 1].jobPosition.title : '';
                 const workplaceName = (workHistoryList.length > 0) ? workHistoryList[workHistoryList.length - 1].workplace.name : '';
@@ -198,7 +192,6 @@ function Profile(props) {
             introduce: introduces,
             medicalExamination: medicalExamination
         }
-        console.log(data);
         if (firstName.length === 0 ||
             lastName.length === 0 ||
             dob.length === 0 ||
@@ -266,6 +259,22 @@ function Profile(props) {
         }
         setImgSrc(fl[0]);
     }
+
+    useEffect(() => {
+        loadMyProfile();
+        APIService.getProvinces((success, json) => {
+            if (success && json.result) {
+                setProvincesList(json.result);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        if (pendingAppointmentList.length < newPendingAppointmentList.length) {
+            enqueueSnackbar('Bạn có ' + (newPendingAppointmentList.length - pendingAppointmentList.length) + ' cuộc hẹn mới!', { variant: 'info' });
+        }
+        setNewPendingAppointmentList(pendingAppointmentList);
+    }, [pendingAppointmentList, newPendingAppointmentList]);
 
     return (
         <React.Fragment>

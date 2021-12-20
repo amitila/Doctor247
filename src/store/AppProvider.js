@@ -35,10 +35,14 @@ export default function AppProvider({ children }) {
     const [selectedRoomId, setSelectedRoomId] = useState('0');
     const [isVideoCallVisible, setIsVideoCallVisible] = useState(false);
     const [limitMsgAmount, setLimitMsgAmount] = useState(10);
-    const [workPlaceList, setWorkPlaceList] = useState([]);
     const [currentCall, setCurrentCall] = useState(null);
+    
+    const [pendingAppointmentList, setPendingAppointmentList] = useState([]);
+    const [newPendingAppointmentList, setNewPendingAppointmentList] = useState([]);
 
     const history = useHistory();
+
+    const token = getToken();
 
     // for video call ->
     const [userInfo, setUserInfo] = useState({
@@ -109,8 +113,57 @@ export default function AppProvider({ children }) {
         [selectedRoom]
     ); 
 
+    const doctorCheck = () => {
+        APIService.getDoctorAppointment(
+            token,
+            (success, json) => {
+                if (success, json.result) {
+                    var list = [];
+                    json.result.forEach(item => {
+                        if (item.status === 'PENDING') {
+                            let d = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
+                            d = parseInt(d);
+                            list.push({
+                                id: item.id,
+                                od: d
+                            });
+                        }
+                    });
+                    list.sort(function(a, b) {
+                        return a.od - b.od;
+                      });
+                    setNewPendingAppointmentList(list);
+                }
+            }
+        );
+    }
+
     useEffect(() => {
-        const token = getToken();
+        APIService.getDoctorAppointment(
+            token,
+            (success, json) => {
+                if (success, json.result) {
+                    var list = [];
+                    json.result.forEach(item => {
+                        if (item.status === 'PENDING') {
+                            let d = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
+                            d = parseInt(d);
+                            list.push({
+                                id: item.id,
+                                od: d
+                            });
+                        }
+                    });
+                    list.sort(function(a, b) {
+                        return a.od - b.od;
+                      });
+                    setPendingAppointmentList(list);
+                }
+            }
+        );
+    }, []);
+
+    useEffect(() => {
         APIService.getDoctorProfile(token, (success, json) => {
             if (success && json.result) {
                 setUserInfo({
@@ -156,12 +209,7 @@ export default function AppProvider({ children }) {
                 });
             });
         }
-    }, [userInfo]);
-
-    const getWorkPlaceName = (id) => {
-        const wp = workPlaceList.find(x => x.id === id);
-        return wp.name;
-    }
+    }, [isLogin, userInfo]);
 
     return (
         <AppContext.Provider
@@ -201,9 +249,12 @@ export default function AppProvider({ children }) {
                 limitMsgAmount,
                 setLimitMsgAmount,
                 history,
-                workPlaceList,
-                getWorkPlaceName,
-                isGetRoom
+                isGetRoom,
+                doctorCheck,
+                newPendingAppointmentList,
+                setNewPendingAppointmentList,
+                pendingAppointmentList,
+                setPendingAppointmentList
             }}>
             {children}
         </AppContext.Provider>

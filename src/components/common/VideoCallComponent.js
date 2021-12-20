@@ -157,8 +157,6 @@ export default function VideoCallComponent(props) {
                 playStream('localStream', stream);
             });
         //const query = new URLSearchParams(useLocation().search);
-        console.log('location');
-        console.log(location);
     }, []);
 
     useEffect(() => {

@@ -3,7 +3,6 @@ import userImg from '../../../assets/user.png';
 import '../../../App.css';
 import { AppContext } from '../../../store/AppProvider';
 import Grid from '@material-ui/core/Grid';
-import PropTypes from "prop-types";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,6 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -86,21 +86,10 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-function createData(day, time, recordId, patient) {
-    return { day, time, recordId, patient };
-}
-
-const rows = [
-    createData('Thứ hai', '9:30', '20121', 'Luke Shaw'),
-    createData('Thứ hai', '10:30', '20122', 'Ben Arfa'),
-    createData('Thứ ba', '11:30', '20124', 'Frank Ribry'),
-    createData('Thứ năm', '8:00', '20126', 'Rikado Kaka')
-];
-
 function CustomizedTables(props) {
     const classes = useStyles();
     
-    const { newAppointmentList } = props;
+    const { displayAppointmentList } = props;
 
     return (
         <TableContainer component={Paper}>
@@ -115,7 +104,7 @@ function CustomizedTables(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {newAppointmentList.map((row) => (
+                    {displayAppointmentList.map((row) => (
                         <StyledTableRow key={row.name}>
                             <StyledTableCell align="center">{row.day.substring(0,10)}</StyledTableCell>
                             <StyledTableCell align="center">{row.day.substring(11,16)}</StyledTableCell>
@@ -133,10 +122,11 @@ export default function DrBody(props) {
     const classes = useStyles();
     const token = getToken();
     const { myManagementClinics } = props;
-    const { ScreenCode, setCurrentMenuItem } = useContext(AppContext);
+    const { ScreenCode, setCurrentMenuItem, pendingAppointmentList, newPendingAppointmentList, setPendingAppointmentList ,setNewPendingAppointmentList } = useContext(AppContext);
+    const { enqueueSnackbar } = useSnackbar();
 
     const [contactList, setContactList] = useState([{id: 0, name: '', status: ''}]);
-    const [newAppointmentList, setNewAppointmentList] = useState([]);
+    const [displayAppointmentList, setDisplayAppointmentList] = useState([]);
     const [applicationsList, setApplicationsList] = React.useState([]);
 
     const reloadPage = () => {
@@ -164,13 +154,20 @@ export default function DrBody(props) {
             if (success && json.result) {
                 let listPendingAppointment = [];
                 let listContacts = [];
+                let list = [];
                 json.result.forEach(item => {
                    if (item.status === 'PENDING'){
                        let d = item.day.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
+                       let d2 = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
                        d = parseInt(d);
+                       d2 = parseInt(d2);
                        listPendingAppointment.push({
                            ...item,
                            od: d
+                       });
+                       list.push({
+                           id: item.id,
+                           od: d2
                        });
                     }
                     if (listContacts.length > 0) {
@@ -194,23 +191,58 @@ export default function DrBody(props) {
                 listPendingAppointment.sort(function(a, b) {
                     return a.od - b.od;
                   });
-                setNewAppointmentList(listPendingAppointment);
+                setDisplayAppointmentList(listPendingAppointment);
                 setContactList(listContacts);
+                setNewPendingAppointmentList(list);
+                setPendingAppointmentList(list);
             }
         });
     }
-
 
     useEffect(() => {
         reloadPage();
     }, []);
 
+    useEffect(() => {
+        if (pendingAppointmentList.length < newPendingAppointmentList.length) {
+            enqueueSnackbar('Bạn có ' + (newPendingAppointmentList.length - pendingAppointmentList.length) + ' cuộc hẹn mới!', { variant: 'info' });
+            reloadPage();
+        }
+        else if (pendingAppointmentList.length > newPendingAppointmentList.length) {
+            if (newPendingAppointmentList.length > 0) {
+                enqueueSnackbar('Bạn có cuộc hẹn bị hủy!', { variant: 'warning' });
+            }
+            else {
+                enqueueSnackbar('Bạn có ' + pendingAppointmentList.length + ' cuộc hẹn bị hủy!', { variant: 'warning' });
+            }
+            // console.log('pendingAppointmentList');
+            // console.log(pendingAppointmentList);
+            // console.log('newPendingAppointmentList');
+            // console.log(newPendingAppointmentList);
+            // console.log('lastItem');
+            // console.log(pendingAppointmentList[pendingAppointmentList.length - 1]);
+            // console.log('lastItemNew');
+            // console.log(newPendingAppointmentList[newPendingAppointmentList.length - 1]);
+        }
+        else {
+            if (newPendingAppointmentList.length > 0) {
+                for (let index = 0; index < newPendingAppointmentList.length; index++) {
+                    if (newPendingAppointmentList[index].id !== pendingAppointmentList[index].id) {
+                        enqueueSnackbar('Bạn có cuộc hẹn bị hủy và cuộc hẹn mới!', { variant: 'warning' });
+                    }
+                    
+                }
+            }
+        }
+    }, [newPendingAppointmentList.length]);
+
     const handleContactClick = (id) => {
         console.log(id);
-        console.log('applicationsList');
-        console.log(applicationsList);
-        console.log('newAppointmentList');
-        console.log(newAppointmentList);
+        console.log('pendingAppointmentList');
+        console.log(pendingAppointmentList);
+        console.log('newPendingAppointmentList');
+        console.log(newPendingAppointmentList);
+
         //window.open("http://localhost:3000/videocall?id=a?name=dung", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=1200,height=800");
     }
 
@@ -229,7 +261,7 @@ export default function DrBody(props) {
 
                 <div className={classes.cardSingle} onClick={() => {setCurrentMenuItem(ScreenCode.TIMETABLE)}}>
                     <div>
-                        <h1>{newAppointmentList.length}</h1>
+                        <h1>{displayAppointmentList.length}</h1>
                         <span>Cuộc hẹn mới</span>
                     </div>
                     <div>
@@ -268,7 +300,7 @@ export default function DrBody(props) {
                                 <h3 style={{textAlign: 'center'}}>Những cuộc hẹn sắp tới</h3>
                             </div>
                             <div className={classes.root}>
-                                <CustomizedTables newAppointmentList={newAppointmentList}/>
+                                <CustomizedTables displayAppointmentList={displayAppointmentList}/>
                             </div>
                         </div>
                     </Grid>

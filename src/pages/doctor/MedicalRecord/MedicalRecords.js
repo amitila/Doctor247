@@ -382,7 +382,6 @@ function MedicalRecordDetail(props) {
     }, []);
 
     const handleEditBodyStats = () => {
-        console.log(appointmentSelect);
         if(medicalStatus !== 'DONE'){
             setIsEditBodyStats(true);
         }
@@ -408,8 +407,6 @@ function MedicalRecordDetail(props) {
             medicalExpense: expense,
             files: fileList
         }
-        console.log('data');
-        console.log(data);
         if (patientHeight.length === 0
             || patientWeight.length === 0
             || patientBodyTemperature.length === 0
