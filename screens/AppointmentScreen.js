@@ -263,7 +263,7 @@ const AppointmentScreen = ({ navigation }) => {
 	const getPaymentUrl = (appointentId) => {
         AsyncStorage.getItem('token')
             .then((token) => {
-                const customerIp = '192.168.1.7';
+                const customerIp = '192.168.1.5';
                 APIService.getPaymentUrl(
                     token,
                     {
@@ -272,8 +272,13 @@ const AppointmentScreen = ({ navigation }) => {
                     },
                     (success, json) => {
                         if (success && json.result) {
-                            Linking.openURL(json.result);
-                            return json.result;
+                            if(json.result === true) {
+								return alert("Thanh toán THÀNH CÔNG!");
+							}
+							else {
+								Linking.openURL(json.result);
+								return json.result;
+							}
                         } else {
                             // setShowResult('Đã thanh toán')
                             return console.log(json.error)
@@ -364,7 +369,9 @@ const AppointmentScreen = ({ navigation }) => {
                             })} {"\n"}</Text>
                         </Dialog.Description>
                     </ScrollView>
-                    <Dialog.Button label="Hủy lịch" onPress={()=>handleDelete(info.id)} />
+                    {
+                        info.status === 'WAITING_PAYMENT' || info.status === 'PENDING' ? <Dialog.Button label="Hủy lịch" onPress={()=>handleDelete(info.id)} /> : null
+                    }
                     <Dialog.Button label="Quay về" onPress={handleCancel} />
                 </Dialog.Container>
             </View>

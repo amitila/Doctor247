@@ -26,6 +26,7 @@ export function DrawerContent(props) {
 		firstName: '',
 		lastName: '',
 		avatar: '',
+		amount: '',
 	})
 	const [isHaveChange, setIsHaveChange] = useState(true);
 
@@ -45,6 +46,7 @@ export function DrawerContent(props) {
 							firstName: json.result.customer.firstName,
 							lastName: json.result.customer.lastName,
 							avatar: json.result.customer.avatarURL,
+							amount: json.result.amount,
 						});
 						setIsHaveChange(false);
 						return console.log('success')
@@ -70,6 +72,13 @@ export function DrawerContent(props) {
 							<View style={{ marginLeft: 15, flexDirection: 'column' }}>
 								<Title style={styles.title}>{data.firstName + ' ' + data.lastName}</Title>
 								<Caption style={styles.caption}>Chào thân mến</Caption>
+							</View>
+						</View>
+
+						<View style={styles.row}>
+							<View style={styles.section}>
+								<Caption style={styles.caption}>Số dư: </Caption>
+								<Paragraph style={[styles.paragraph, styles.caption]}>{parseInt(data.amount)/100 + ' VND'}</Paragraph>
 							</View>
 						</View>
 

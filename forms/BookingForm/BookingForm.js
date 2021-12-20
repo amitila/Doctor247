@@ -171,7 +171,7 @@ const BookingForm = (props) => {
 		AsyncStorage.getItem('token')
 			.then((token) => {
 				const arrImage = [];
-				const customerIp = '192.168.1.7';
+				const customerIp = '192.168.1.5';
 				if(images.image_1) arrImage.push(images.image_1);
 				if(images.image_2) arrImage.push(images.image_2);
 				APIService.postAppointment(
@@ -186,11 +186,17 @@ const BookingForm = (props) => {
 					},
 					(success, json) => {
 						if (success && json.result) {
-							console.log('Tahnfh cong roi nè')
-							setIsHaveChange(0);
-							props.onClose();
-							Linking.openURL(json.result);
-							return alert("Đặt lịch THÀNH CÔNG!");
+							if(json.result === true) {
+								setIsHaveChange(0);
+								props.onClose();
+								return alert("Đặt lịch và thanh toán THÀNH CÔNG!");
+							}
+							else {
+								setIsHaveChange(0);
+								props.onClose();
+								Linking.openURL(json.result);
+								return alert("Đặt lịch THÀNH CÔNG!");
+							}
 						} else {
 							return alert("THẤT BẠI");
 						}
