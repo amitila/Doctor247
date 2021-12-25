@@ -183,7 +183,7 @@ export default function Index(props) {
 
     const onSubmit = (data) => {
         const token = getToken();
-        const customerIp = window.location.hostname;
+        const customerIp = '192.168.1.5';
         // console.log(data.guardianId)
         // console.log(data.doctorId)
         // console.log(data.dayTime)

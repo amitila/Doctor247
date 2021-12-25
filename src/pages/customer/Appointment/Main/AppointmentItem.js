@@ -44,7 +44,7 @@ export default function AppointmentItem(props) {
 	const [showResult, setShowResult] = React.useState('Nhấn để thanh toán');
 	const getPaymentUrl = (appointentId) => {
         const token = getToken();
-        const customerIp = window.location.hostname;
+        const customerIp = "192.168.1.5";
         APIService.getPaymentUrl(
 			token,
 			{

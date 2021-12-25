@@ -113,7 +113,7 @@ export default function AppointmentForm(props) {
 		event.preventDefault();
 		console.log(state);
 		const token = getToken();
-		const customerIp = window.location.hostname;
+		const customerIp = '192.168.1.5';
         APIService.postAppointment(
 			token,
 			{
