@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage":"https://doctor247-web.herokuapp.com/",
+  "homepage": "https://doctor247-web.herokuapp.com/",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@date-io/date-fns": "^1.3.13",
@@ -35,8 +35,8 @@
     "lodash": "^4.17.21",
     "material-ui-dropzone": "^3.5.0",
     "node": "16.11.1",
-    "npm": "8.0.0",
     "notistack": "^1.0.10",
+    "npm": "8.0.0",
     "peerjs": "^1.3.2",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
