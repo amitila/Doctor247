@@ -65,7 +65,7 @@ export default function QuestionList(props) {
 	const mobile = useMediaQuery(theme.breakpoints.down('sm'));
     // const tablet = useMediaQuery(theme.breakpoints.up('md'));
 
-    const temp = elmQuestions.reverse();
+    const temp = elmQuestions;
     const temp1 = temp;
     const temp2 = temp;
     const temp3 = temp;

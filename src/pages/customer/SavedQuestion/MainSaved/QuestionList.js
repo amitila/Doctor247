@@ -62,7 +62,7 @@ export default function QuestionList(props) {
 	const theme = useTheme();
 	const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const temp = elmQuestions.reverse();
+    const temp = elmQuestions;
     const temp1 = temp;
     const temp2 = temp;
     const temp3 = temp;

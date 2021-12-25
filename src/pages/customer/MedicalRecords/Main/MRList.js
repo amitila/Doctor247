@@ -37,6 +37,8 @@ export default function MRList(props) {
                 />
     });
 
+    const temp = elmTasks.reverse();
+
     const unique = (arr) => {
         var newArr = []
         for (var i = 0; i < arr.length; i++) {
@@ -154,7 +156,7 @@ export default function MRList(props) {
             </table>  
             <Grid container spacing={5}>
                 <Grid item xs={12} sm={11}>
-                    {elmTasks}
+                    {temp}
                 </Grid>
                 <Grid item xs={12} sm={1}>
                    

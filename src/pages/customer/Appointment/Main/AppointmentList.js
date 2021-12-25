@@ -29,7 +29,7 @@ export default function AppointmentList(props) {
                     onDelete={props.onDelete}
                 />
     });
-    
+    const temp = elmTasks.reverse();
     return (
         <>
             <Box sx={{ minWidth: 150 }}>
@@ -53,7 +53,7 @@ export default function AppointmentList(props) {
             </Box>
             <Grid container spacing={5}>
                 <Grid item xs={12} sm={11}>
-                    {elmTasks}
+                    {temp}
                 </Grid>
                 <Grid item xs={12} sm={1}>
                     
