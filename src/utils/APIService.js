@@ -284,6 +284,11 @@ export default class APIService {
         return `${APIService.baseAPI()}doctor/appointment/${id}`;
     }
 
+	// Doctor Medical Customer Record By Id URL
+	static apiDoctorMedicalRecordCustomer = (id) => {
+        return `${APIService.baseAPI()}doctor/medical-record/customer/${id}`;
+    }
+
 	// Doctor Medical Record By Id URL
 	static apiDoctorMedicalRecordId = (id) => {
         return `${APIService.baseAPI()}doctor/medical-record/${id}`;
@@ -354,9 +359,19 @@ export default class APIService {
         return `${APIService.baseAPI()}doctor/work-place/my`;
     }
 
-	// Doctor Work Place My URL
-    static apiDoctorWorkPlaceManager = () => {
+	// Doctor Work Place Management URL
+    static apiDoctorWorkPlaceManagement = () => {
         return `${APIService.baseAPI()}doctor/work-place/manage`;
+    }
+
+	// Doctor Work Place Status Management URL
+    static apiDoctorWorkPlaceDoctorStatusManagement = () => {
+        return `${APIService.baseAPI()}doctor/work-place/manage/doctor/status`;
+    }
+
+	// Doctor Work Place Doctor Management URL
+    static apiDoctorWorkPlaceDoctorManagement = (id) => {
+        return `${APIService.baseAPI()}doctor/work-place/manage/doctor/${id}`;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -825,7 +840,7 @@ export default class APIService {
 //====================PROVINCES======================
 
 	// api for Get Provinces
-	static getProvinces( callback ) {
+	static getProvinces(callback) {
 		WebService.sendJsonGET(
 			this.apiProvinces(),
 			{
@@ -835,7 +850,7 @@ export default class APIService {
 	}
 
 	// api for Get Districts
-	static getDistricts( id, callback ) {
+	static getDistricts(id, callback) {
 		WebService.sendJsonGET(
 			this.apiDistricts(id),
 			{
@@ -845,7 +860,7 @@ export default class APIService {
 	}
 
 	// api for Get Wards
-	static getWards( id, callback ) {
+	static getWards(id, callback) {
 		WebService.sendJsonGET(
 			this.apiWards(id),
 			{
@@ -856,7 +871,7 @@ export default class APIService {
 //====================GUARDIAN======================
 
 	// api for Post Guardian
-	static postGuardian(token, values, callback ) {
+	static postGuardian(token, values, callback) {
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
@@ -878,7 +893,7 @@ export default class APIService {
 	}
 
 	// api for Get Guardian
-	static getGuardian(token, callback ) {
+	static getGuardian(token, callback) {
 		WebService.sendJsonGET(
 			this.apiGuardian(),
 			{
@@ -889,7 +904,7 @@ export default class APIService {
 	}
 
 	// api for Put a Guardian by id
-	static putGuardianById( token, id, values, callback ) {
+	static putGuardianById(token, id, values, callback) {
 		const formData = new FormData();
 		formData.append('guardianName', values.guardianName);
 		formData.append('firstName', values.firstName);
@@ -911,7 +926,7 @@ export default class APIService {
 	}
 
 	// api for Get code verify to Delete Guardian
-	static getCodeVerifyGuardian(token, values, callback ) {
+	static getCodeVerifyGuardian(token, values, callback) {
 		WebService.sendJsonPOST(
 			this.apiGuardianVerify(),
 			{
@@ -924,7 +939,7 @@ export default class APIService {
 	}
 
 	// api for Delete Guardian
-	static deleteGuardian(token, id, code, callback ) {
+	static deleteGuardian(token, id, code, callback) {
 		WebService.sendJsonPUT(
 			this.apiDeleteGuardianById(id),
 			{
@@ -936,7 +951,7 @@ export default class APIService {
 	}
 
 	// api for Guardian User
-	static postGuardianUser( token, values, callback ) {
+	static postGuardianUser(token, values, callback) {
 		const formData = new FormData();
 		formData.append('password', values.password);
 		formData.append('guardiantId', values.guardiantId);
@@ -956,7 +971,7 @@ export default class APIService {
 	}
 
 	// api for Verify Guardian User
-	static verifyGuardianUser( token, values, callback ) {
+	static verifyGuardianUser(token, values, callback) {
 		const formData = new FormData();
 		formData.append('password', values.password);
 		formData.append('guardiantId', values.guardiantId);
@@ -976,7 +991,7 @@ export default class APIService {
 //====================QUESTION======================
 
 	// api for Get Answer By Id
-	static getPublicAnswerById( id, callback ) {
+	static getPublicAnswerById(id, callback) {
 		WebService.sendJsonGET(
 			this.apiPublicAnswerById(id),
 			{
@@ -986,7 +1001,7 @@ export default class APIService {
 	}
 
 	// api for Get Question My
-	static getQuestionMy(token, callback ) {
+	static getQuestionMy(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestionMy(),
 			{
@@ -997,7 +1012,7 @@ export default class APIService {
 	}
 
 	// api for All Questions
-	static getQuestion(token, callback ) {
+	static getQuestion(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestion(),
 			{
@@ -1026,7 +1041,7 @@ export default class APIService {
 	}
 
 	// api for Put Question By Id
-	static putQuestionById(token, id, values, callback ) {
+	static putQuestionById(token, id, values, callback) {
 		const formData = new FormData();
 		formData.append('title', values.title);
 		formData.append('content', values.content);
@@ -1047,7 +1062,7 @@ export default class APIService {
 	}
 
 	// api for Delete Question By Id
-	static deleteQuestionById(token, id, callback ) {
+	static deleteQuestionById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiQuestionById(id),
 			{
@@ -1060,7 +1075,7 @@ export default class APIService {
 //====================SAVE - UNSAVE QUESTION======================
 
 	// api for Get Saved Question
-	static getSavedQuestion(token, callback ) {
+	static getSavedQuestion(token, callback) {
 		WebService.sendJsonGET(
 			this.apiQuestionSave(),
 			{
@@ -1071,7 +1086,7 @@ export default class APIService {
 	}
 
 	// api for Put Question Save By Id
-	static putQuestionSaveById(token, id, callback ) {
+	static putQuestionSaveById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionSaveById(id),
 			{
@@ -1082,7 +1097,7 @@ export default class APIService {
 	}
 
 	// api for Put Question UnSave By Id
-	static putQuestionUnSaveById(token, id, callback ) {
+	static putQuestionUnSaveById(token, id, callback) {
 		WebService.sendJsonDELETE(
 			this.apiQuestionUnSaveById(id),
 			{
@@ -1095,7 +1110,7 @@ export default class APIService {
 //====================LIKE - UNLIKE QUESTION======================
 
 	// api for Put Question Like By Id
-	static putQuestionLikeById(token, id, callback ) {
+	static putQuestionLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionLikeById(id),
 			{
@@ -1106,7 +1121,7 @@ export default class APIService {
 	}
 
 	// api for Put Question Like By Id
-	static putQuestionUnLikeById(token, id, callback ) {
+	static putQuestionUnLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiQuestionUnLikeById(id),
 			{
@@ -1119,7 +1134,7 @@ export default class APIService {
 //====================LIKE - UNLIKE ANSWER======================
 
 	// api for Get Answer By Id
-	static getAnswerById(token, id, callback ) {
+	static getAnswerById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiAnswerById(id),
 			{
@@ -1130,7 +1145,7 @@ export default class APIService {
 	}
 
 	// api for Put Answer Like By Id
-	static putAnswerLikeById(token, id, callback ) {
+	static putAnswerLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiAnswerLikeById(id),
 			{
@@ -1141,7 +1156,7 @@ export default class APIService {
 	}
 
 	// api for Put Answer Like By Id
-	static putAnswerUnLikeById(token, id, callback ) {
+	static putAnswerUnLikeById(token, id, callback) {
 		WebService.sendJsonPUT(
 			this.apiAnswerUnLikeById(id),
 			{
@@ -1370,6 +1385,17 @@ export default class APIService {
 			{
 				jwt: token,
 				status,
+			},
+			callback,
+		);
+	}
+
+	// Get Doctor Medical Record
+	static getDoctorMedicalRecordCustomer(token, id, callback) {
+		WebService.sendJsonGET(
+			this.apiDoctorMedicalRecordCustomer(id),
+			{
+				jwt: token,
 			},
 			callback,
 		);
@@ -1643,7 +1669,7 @@ export default class APIService {
     }
 
 	// Get Doctor Work Place
-    static getDoctorWorkPlaceManager(token, status, data, callback) {
+    static getDoctorWorkPlaceManagement(token, status, data, callback) {
 		let query = {}
 		if(data.skip){
 			query = {
@@ -1665,11 +1691,38 @@ export default class APIService {
 		}
 
         WebService.sendJsonGET(
-			this.apiDoctorWorkPlaceManager(),
+			this.apiDoctorWorkPlaceManagement(),
 			{
 				jwt: token,
 				status,
 				...query
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Work Place
+    static putDoctorStatus(token, values, callback) {
+		const formData = new FormData();
+		formData.append('doctorId', values.doctorId);
+		formData.append('status', values.status);
+		formData.append('workplaceId', values.workplaceId);
+        WebService.sendJsonPUT(
+			this.apiDoctorWorkPlaceDoctorStatusManagement(),
+			{
+				jwt: token,
+				formData
+			},
+			callback,
+		);
+    }
+
+	// Get Doctor Work Place
+    static getDoctorWorkPlaceDoctorManagement(token, id, callback) {
+        WebService.sendJsonGET(
+			this.apiDoctorWorkPlaceDoctorManagement(id),
+			{
+				jwt: token,
 			},
 			callback,
 		);

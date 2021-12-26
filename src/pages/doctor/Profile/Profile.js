@@ -286,7 +286,7 @@ function Profile(props) {
                     aria-describedby="alert-dialog-description"
                 >
                     <form autoComplete="off" onSubmit={handleSubmit}>
-                        <DialogTitle id="alert-dialog-title">
+                        <DialogTitle id="alert-dialog-title" style={{backgroundColor: 'cadetblue'}}>
                             <h4>Cập nhật thông tin</h4>
                         </DialogTitle>
                         <DialogContent>

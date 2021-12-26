@@ -20,9 +20,6 @@ import { updateRole, updateEmail, updatePassword, updateMyid } from "../../../st
 import Alert from '@mui/material/Alert';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-// import { useContext } from "react/cjs/react.development";
-// import { useContext } from "react";
-// import { AppContext } from "../../../store/AppProvider";
 
 const useStyles = makeStyles((theme) => ({
     paper: {

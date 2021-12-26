@@ -1,5 +1,5 @@
 import './ChatRoom.css';
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext, useState, useEffect  } from 'react';
 import { doc, setDoc, updateDoc } from '@firebase/firestore';
 import styled from 'styled-components';
 import { db } from '../../../firebase/config';
@@ -8,7 +8,6 @@ import Message from './Message';
 import { AppContext } from '../../../store/AppProvider';
 import { GetMessages } from '../../../firebase/useFirestore';
 
-import { useContext, useState, useEffect } from 'react/cjs/react.development';
 import Button from '@mui/material/Button';
 import Grid from '@material-ui/core/Grid';
 import OutlinedInput from '@material-ui/core/OutlinedInput';

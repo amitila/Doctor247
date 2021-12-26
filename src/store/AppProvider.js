@@ -93,7 +93,7 @@ export default function AppProvider({ children }) {
     const users = useFirestore("users", userCondition);
 
     const [isGetRoom, setIsGetRoom] = useState(false);
-    const rooms = useFirestore('rooms', roomsCondition, () => { setIsGetRoom(true); });
+    const rooms = useFirestore('rooms', roomsCondition, () => {setIsGetRoom(true);});
 
     const user = useMemo(() =>
         users.find((u) => u.id === userInfo.id.toString()),
@@ -105,12 +105,12 @@ export default function AppProvider({ children }) {
         [rooms, selectedRoomId]
     );
 
-    const TRoom = { members: ['0'] };
+    const TRoom = {members: ['0']};
 
     const selectedUserId = useMemo(() =>
         ((selectedRoom === null || selectedRoom === undefined) ? TRoom : selectedRoom).members.find(id => id !== userInfo.id.toString()),
         [selectedRoom]
-    );
+    ); 
 
     const doctorCheck = () => {
         APIService.getDoctorAppointment(
@@ -120,7 +120,7 @@ export default function AppProvider({ children }) {
                     var list = [];
                     json.result.forEach(item => {
                         if (item.status === 'PENDING') {
-                            let d = item.createdAt.substring(0, 16).replaceAll('-', '').replaceAll('T', '').replaceAll(':', '');
+                            let d = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
                             d = parseInt(d);
                             list.push({
                                 id: item.id,
@@ -128,9 +128,9 @@ export default function AppProvider({ children }) {
                             });
                         }
                     });
-                    list.sort(function (a, b) {
+                    list.sort(function(a, b) {
                         return a.od - b.od;
-                    });
+                      });
                     setNewPendingAppointmentList(list);
                 }
             }
@@ -145,7 +145,7 @@ export default function AppProvider({ children }) {
                     var list = [];
                     json.result.forEach(item => {
                         if (item.status === 'PENDING') {
-                            let d = item.createdAt.substring(0, 16).replaceAll('-', '').replaceAll('T', '').replaceAll(':', '');
+                            let d = item.createdAt.substring(0,16).replaceAll('-','').replaceAll('T','').replaceAll(':','');
                             d = parseInt(d);
                             list.push({
                                 id: item.id,
@@ -153,9 +153,9 @@ export default function AppProvider({ children }) {
                             });
                         }
                     });
-                    list.sort(function (a, b) {
+                    list.sort(function(a, b) {
                         return a.od - b.od;
-                    });
+                      });
                     setPendingAppointmentList(list);
                 }
             }
@@ -174,7 +174,7 @@ export default function AppProvider({ children }) {
             } else {
                 console.log('Không lấy được thông tin bác sĩ')
                 APIService.getProfile(token, (success, json) => {
-                    if (success && json.result) {
+                    if(success && json.result){
                         setUserInfo({
                             id: json.result.id,
                             name: json.result.customer.firstName + " " + json.result.customer.lastName,
@@ -184,17 +184,17 @@ export default function AppProvider({ children }) {
                     } else {
                         console.log('Không lấy được thông tin bệnh nhân')
                     }
-                })
+                }) 
             }
         });
         if (isLogin) {
-            peer.current = new Peer();
+            peer.current = new Peer();    
             peer.current.on('call', (call) => {
                 setCurrentCall(call);
             });
         }
     }, [isLogin]);
-
+    
     useEffect(() => {
         if (isLogin && userInfo.id !== 0) {
             peer.current.on('open', (id) => {

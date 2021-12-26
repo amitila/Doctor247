@@ -28,6 +28,7 @@ import Select from '@material-ui/core/Select';
 import InputBase from '@material-ui/core/InputBase';
 import Icon from '@material-ui/core/Icon';
 import SendIcon from '@material-ui/icons/Send';
+import { useSnackbar } from 'notistack';
 
 import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
@@ -119,15 +120,18 @@ function getDay(datetime) {
 }
 
 function Row(props) {
-    const { data } = props;
+    const { data, specializations } = props;
 
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const row = createQA(data);
 
     const [openAnswer, setOpenAnswer] = React.useState(false);
     const [answers, setAnswers] = React.useState([]);
     const [myAnswer, setMyAnswer] = React.useState('');
+    const [selectedSpecializedId, setSelectedspecializedId] = React.useState(0);
+    const [openSpecialization, setOpenSpecialization] = React.useState(false);
 
     useEffect(() => {
         if(openAnswer){
@@ -140,22 +144,24 @@ function Row(props) {
     }, [openAnswer]);
 
     useEffect(() => {
-        console.log('row');
-        console.log(row);
-    }, []);
+        console.log('selectedSpecializedId');
+        console.log(selectedSpecializedId);
+    }, [selectedSpecializedId]);
 
     const handleSendAnswer = () => {
         if(myAnswer.length < 50){
             alert('Câu trả lời phải có độ dài ít nhất 50 kí tự.');
             return;
         }
+        let specializedId = selectedSpecializedId===0?null:selectedSpecializedId;
         APIService.postDoctorAnswer(
             token,
             row.id,
             myAnswer,
-            null,
+            specializedId,
             (success, json) => {
                 if (success && json.result) {
+                    enqueueSnackbar('Đã trả lời!', { variant: 'success'});
                     APIService.getAnswer(row.id, {}, (success, json) => {
                         if (success && json.result) {
                             setAnswers(json.result);
@@ -253,6 +259,30 @@ function Row(props) {
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>
+                                                <FormControl className={classes.formControl}>
+                                                    <InputLabel id="demo-controlled-open-select-label">Chuyên khoa</InputLabel>
+                                                    <Select
+                                                        labelId="demo-controlled-open-select-label"
+                                                        id="demo-controlled-open-select"
+                                                        fullWidth
+                                                        open={openSpecialization}
+                                                        onClose={() => { setOpenSpecialization(false) }}
+                                                        onOpen={() => { setOpenSpecialization(true) }}
+                                                        value={selectedSpecializedId}
+                                                        onChange={(event) => { setSelectedspecializedId(event.target.value) }}
+                                                    >
+                                                        <MenuItem value={0}>Không</MenuItem>
+                                                        {
+                                                            specializations.map(specialization =>
+                                                                (<MenuItem value={specialization.id}>{specialization.name}</MenuItem>)
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>
                                                 <Button
                                                     variant="outlined"
                                                     color="primary"
@@ -298,7 +328,7 @@ function QuestionsList(props) {
     const { specializations } = props;
 
     const [questionsList, setQuestionsList] = useState([]);
-    const [specializedId, setSelectedspecializedId] = React.useState(0);
+    const [selectedSpecializedId, setSelectedspecializedId] = React.useState(0);
     const [openSpecialization, setOpenSpecialization] = React.useState(false);
     const [questionsFilterList, setQuestionsFilterList] = React.useState([]);
     const [keyword, setKeyword]= React.useState('');
@@ -307,10 +337,10 @@ function QuestionsList(props) {
         let condition = {
             keyword: keyword
         }
-        if (specializedId !== 0) {
+        if (selectedSpecializedId !== 0) {
             condition = {
                 keyword: keyword,
-                specializedId: specializedId
+                specializedId: selectedSpecializedId
             }
         }
         APIService.getPublicQuestion(
@@ -343,7 +373,7 @@ function QuestionsList(props) {
                                 open={openSpecialization}
                                 onClose={() => {setOpenSpecialization(false)}}
                                 onOpen={() => {setOpenSpecialization(true)}}
-                                value={specializedId}
+                                value={selectedSpecializedId}
                                 onChange={(event) => {setSelectedspecializedId(event.target.value)}}
                             >
                                 <MenuItem value={0}>Tất cả</MenuItem>
@@ -381,7 +411,7 @@ function QuestionsList(props) {
                     </TableHead>
                     <TableBody>
                         {questionsList.map((data) => (
-                            <Row key={data.aid} data={data} />
+                            <Row key={data.aid} data={data} specializations={specializations}/>
                         ))}
                     </TableBody>
                 </Table>

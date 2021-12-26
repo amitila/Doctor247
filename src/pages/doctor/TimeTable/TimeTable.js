@@ -921,7 +921,7 @@ export default function TimeTable() {
                 <WorkPlanTable handleOpenWPDialog={handleWPClickOpen} operationList={operationList} operationJson={operationJson}/>
             </TabPanel>
             <Dialog open={isOpenHCP} onClose={() => {setIsOpenHCP(false)}} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Thông tin lịch khám</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Thông tin lịch khám</DialogTitle>
                 <DialogContent>
                     <TextField
                         margin="dense"
@@ -982,7 +982,7 @@ export default function TimeTable() {
             </Dialog>
 
             <Dialog open={isOpenWP} onClose={() => {setIsOpenWP(false)}} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Chỉnh sửa giờ làm việc</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Chỉnh sửa giờ làm việc</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={2}>
                         <Grid xs={12}>

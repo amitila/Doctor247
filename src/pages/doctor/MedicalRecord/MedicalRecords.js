@@ -57,28 +57,28 @@ const useStyles = makeStyles((theme) => ({
 function getDay(datetime) {
     const dt = new Date(datetime);
     const dayCode = dt.getDay();
-    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0') + " " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
+    let result = dt.getHours() + "h" + dt.getMinutes().toString().padStart(2, '0') + "', ngày " + dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
     switch (dayCode) {
         case 0:
-            result += "(Chủ nhật)";
+            result = "Chủ nhật, "+ result;
             break;
         case 1:
-            result += "(Thứ hai)";
+            result = "Thứ hai, "+ result;
             break;
         case 2:
-            result += "(Thứ ba)";
+            result = "Thứ ba, "+ result;
             break;
         case 3:
-            result += "(Thứ tư)";
+            result = "Thứ tư, "+ result;
             break;
         case 4:
-            result += "(Thứ năm)";
+            result = "Thứ năm, "+ result;
             break;
         case 5:
-            result += "(Thứ sáu)";
+            result = "Thứ sáu, "+ result;
             break;
         case 6:
-            result += "(Thứ bảy)";
+            result = "Thứ bảy, "+ result;
             break;
         default:
             result = "error";
@@ -98,6 +98,45 @@ function getStatus(status){
         return "Đang khám";
     }
 }
+
+function createHistory() {
+    return [
+        {
+            id: 0,
+            name: '',
+            doctor: {
+                id: 1,
+                name: 'Nguyễn An'
+            },
+            status: 'DONE',
+            day: '2021-10-24T09:30:00.000Z',
+            diagnostic: ['Viêm xoang'],
+            note: '',
+            workplace: {
+                id: 1,
+                name: 'Phòng khám Bách Khoa',
+                type: 'CLINIC'
+            }
+        },
+        {
+            id: 1,
+            name: '',
+            doctor: {
+                id: 1,
+                name: 'Nguyễn An'
+            },
+            status: 'DONE',
+            day: '2021-11-03T11:30:00.000Z',
+            diagnostic: ['Đau họng'],
+            note: '',
+            workplace: {
+                id: 1,
+                name: 'Phòng khám Bách Khoa',
+                type: 'CLINIC'
+            }
+        }
+    ]
+} 
 
 function createMedicalRecords(appointments){
     let pendingList = [];
@@ -129,7 +168,7 @@ function createMedicalRecords(appointments){
                 note: element.medicalRecord.note,
                 cost: element.medicalRecord.medicalExpense
             },
-            history: null,
+            history: createHistory(),
             doctorId: element.doctorId,
             clinic: element.workplace.name,
             height: element.medicalRecord.height,
@@ -156,21 +195,51 @@ function createMedicalRecords(appointments){
 }
 
 function Row(props) {
-    const { setContentId } = props;
-    const { row, setAppointmentSelect } = props;
-    const [open, setOpen] = React.useState(false);
     const classes = useStyles();
+
+    const { setContentId, row, setAppointmentSelect, setIsOpenHistoryMedicalRecord, setHistoryMedicalRecordSelect } = props;
+
+    const [open, setOpen] = React.useState(false);
+    const [historyList, setHistoryList] = React.useState([]);
 
     const handleClickDetail = () => {
         setAppointmentSelect(row);
         setContentId(ContentCode.DETAIL);
     }
 
+    const handleOpenHistory = () => {
+        setOpen(!open);
+        if (!open) {
+            console.log(row);
+            APIService.getDoctorMedicalRecordCustomer(
+                token,
+                row.customer.id,
+                (success, json) =>{
+                    if(success, json.result) {
+                        let list = [];
+                        json.result.forEach(item => {
+                            if (item.id !== row.id && item.status==='PUBLIC' && item.diagnostic.length > 0) {
+                                list.push(item)
+                            }
+                        });
+                        console.log('list');
+                        console.log(list);
+                        setHistoryList(list);
+                    }
+                    else {
+                        console.log('error');
+                        console.log(json);
+                    }
+                }
+            );
+        }
+    }
+
     return (
         <React.Fragment>
             <TableRow className={classes.root}>
                 <TableCell>
-                    {(row.history===null)?null:<IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                    {(row.history===null)?null:<IconButton aria-label="expand row" size="small" onClick={handleOpenHistory}>
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>}
                 </TableCell>
@@ -189,32 +258,38 @@ function Row(props) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                             <Typography variant="h6" gutterBottom component="div">
-                                Tiền sử bệnh án
+                                Lịch sử bệnh án
                             </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Thời gian</TableCell>
-                                        <TableCell>Người khám</TableCell>
-                                        <TableCell align="right">Kết quả</TableCell>
-                                        <TableCell align="right">Ghi chú</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
-                                            <TableCell component="th" scope="row">
-                                                {historyRow.date}
-                                            </TableCell>
-                                            <TableCell>{historyRow.customerId}</TableCell>
-                                            <TableCell align="right">{historyRow.result}</TableCell>
-                                            <TableCell align="right">
-                                                {historyRow.price}
-                                            </TableCell>
+                            {
+                                historyList.length!==0?
+                                <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell width="25%">Thời gian khám</TableCell>
+                                            <TableCell width="20%">Nơi khám</TableCell>
+                                            <TableCell width="15%">Người khám</TableCell>
+                                            <TableCell width="30%">Kết quả</TableCell>
+                                            <TableCell width="15%"></TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHead>
+                                    <TableBody>
+                                        {historyList.map((historyRow) => (
+                                            <TableRow key={historyRow.updatedAt}>
+                                                <TableCell component="th" scope="row">
+                                                    {getDay(historyRow.appointment[0].day)}
+                                                </TableCell>
+                                                <TableCell >{historyRow.appointment[0].workplace.name}</TableCell>
+                                                <TableCell>{historyRow.appointment[0].doctor.firstName + " " + historyRow.appointment[0].doctor.lastName}</TableCell>
+                                                <TableCell >{historyRow.diagnostic.join(', ')}</TableCell>
+                                                <TableCell align="center">
+                                                    <Button variant="outlined" color="primary" onClick={() => {setIsOpenHistoryMedicalRecord(true); setHistoryMedicalRecordSelect(historyRow);}}>Chi tiết</Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>:
+                                <h5>Không có lịch sử bệnh án</h5>
+                            }
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -245,10 +320,6 @@ function MedicalRecordList(props) {
 
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -267,9 +338,9 @@ function MedicalRecordList(props) {
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell width="10%">Mã hồ sơ</TableCell>
-                            <TableCell width="15%">Tên bệnh nhân</TableCell>
-                            <TableCell width="20%">Thời gian khám</TableCell>
+                            <TableCell width="7%">ID</TableCell>
+                            <TableCell width="20%">Tên bệnh nhân</TableCell>
+                            <TableCell width="18%">Thời gian khám</TableCell>
                             <TableCell width="15%">Trạng thái</TableCell>
                             <TableCell width="20%">Ghi chú</TableCell>
                             <TableCell width="20%"></TableCell>
@@ -277,7 +348,7 @@ function MedicalRecordList(props) {
                     </TableHead>
                     <TableBody>
                         {props.appointmentList.pendingList.map((data) => (
-                            <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect}/>
+                            <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect} setIsOpenHistoryMedicalRecord={props.setIsOpenHistoryMedicalRecord}  setHistoryMedicalRecordSelect={props.setHistoryMedicalRecordSelect}/>
                         ))}
                         {props.appointmentList.doneList.map((data) => (
                             <Row key={data.aid} row={data} setContentId={props.setContentId} setAppointmentSelect={props.setAppointmentSelect}/>
@@ -285,8 +356,8 @@ function MedicalRecordList(props) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+            <Dialog open={open} onClose={() => {setOpen(false)}} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Subscribe</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -740,7 +811,7 @@ function MedicalRecordDetail(props) {
 
             </Grid>
             <Dialog open={isEditBodyStats} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Nhập hồ sơ bệnh án</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Nhập hồ sơ bệnh án</DialogTitle>
                 <DialogContent>
                     <span style={{display: 'inline-block'}}><h5>Các chỉ số cơ thể</h5></span>
                     <TextField
@@ -846,7 +917,7 @@ const ContentCode = {
 const ShowContent = (props) => {
     if(props.contentId === ContentCode.LIST){
         return (
-            <MedicalRecordList setContentId={props.setContentId} appointmentList={props.appointmentList} setAppointmentSelect={props.setAppointmentSelect}/>
+            <MedicalRecordList setContentId={props.setContentId} appointmentList={props.appointmentList} setAppointmentSelect={props.setAppointmentSelect} setIsOpenHistoryMedicalRecord={props.setIsOpenHistoryMedicalRecord} setHistoryMedicalRecordSelect={props.setHistoryMedicalRecordSelect}/>
         );
     }
     else if(props.contentId === ContentCode.DETAIL){
@@ -864,6 +935,8 @@ export default function MedicalRecords(props) {
     const [appointmentJson, setAppointmentJson] = useState([]);
     const [appointmentList, setAppointmentList] = useState({pendingList: [], doneList: []});
     const [appointmentSelect, setAppointmentSelect] = useState();
+    const [historyMedicalRecordSelect, setHistoryMedicalRecordSelect] = useState();
+    const [isOpenHistoryMedicalRecord, setIsOpenHistoryMedicalRecord] = useState(false);
 
     useEffect(() => {
         APIService.getDoctorAppointment(token, (success, json) => {
@@ -884,7 +957,7 @@ export default function MedicalRecords(props) {
             <div>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={12}>
-                        <ShowContent setContentId={setContentId} contentId={contentId} appointmentList={appointmentList} appointmentSelect={appointmentSelect} setAppointmentSelect={setAppointmentSelect} setAppointmentJson={setAppointmentJson}/>
+                        <ShowContent setContentId={setContentId} contentId={contentId} appointmentList={appointmentList} appointmentSelect={appointmentSelect} setAppointmentSelect={setAppointmentSelect} setAppointmentJson={setAppointmentJson} setHistoryMedicalRecordSelect={setHistoryMedicalRecordSelect} setIsOpenHistoryMedicalRecord={setIsOpenHistoryMedicalRecord}/>
                     </Grid>
                     {/* <Grid xs={12} md={12}>
                         <Calendar/>
@@ -895,6 +968,71 @@ export default function MedicalRecords(props) {
                         </Button>
                     </Grid>
                 </Grid>
+                <Dialog open={isOpenHistoryMedicalRecord} onClose={() => {setIsOpenHistoryMedicalRecord(false)}} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title" style={{ backgroundColor: 'cadetblue' }}>Thông tin bệnh án</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            margin="dense"
+                            id="name"
+                            label="Thời gian khám"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? getDay(historyMedicalRecordSelect.appointment[0].day) : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Nơi khám"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? historyMedicalRecordSelect.appointment[0].workplace.name : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Bác sĩ khám"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? (historyMedicalRecordSelect.appointment[0].doctor.firstName + " " + historyMedicalRecordSelect.appointment[0].doctor.lastName) : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Triệu chứng"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? historyMedicalRecordSelect.diagnostic.join(', ') : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Kết quả chẩn đoán"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? historyMedicalRecordSelect.symptom.join(', ') : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Ghi chú"
+                            fullWidth
+                            defaultValue={historyMedicalRecordSelect !== undefined? historyMedicalRecordSelect.note : ''}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {setIsOpenHistoryMedicalRecord(false)}} color="primary" variant="outlined">
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </React.Fragment>
     );

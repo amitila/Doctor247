@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -25,11 +25,17 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputBase from '@material-ui/core/InputBase';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
+import { AppContext } from '../../../store/AppProvider';
 
 const axios = require("axios");
 
@@ -188,15 +194,6 @@ function ClinicRegistrationDialogRaw(props) {
                 name: 'Phòng khám tư nhân'
             }
         ]);
-        
-        APIService.getDoctorWorkPlaceManager(
-            token,
-            'ACTIVE',
-            {
-                take: 2,
-            },
-            (success, json) => {
-            });
 
     }, []);
 
@@ -273,7 +270,7 @@ function ClinicRegistrationDialogRaw(props) {
             open={open}
             {...other}
         >
-            <DialogTitle id="confirmation-dialog-title">Đăng ký phòng khám</DialogTitle>
+            <DialogTitle id="confirmation-dialog-title" style={{backgroundColor: 'cadetblue'}}>Đăng ký phòng khám</DialogTitle>
             <DialogContent dividers style={{ overflowX: 'hidden' }}>
                 <FormControl className={classes.formControl} fullWidth style={{ marginLeft: 0 }}>
                     <InputLabel id="demo-controlled-open-select-label">
@@ -523,33 +520,13 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-// get DoctorOperation();
-const operation = [
-    {
-        id: 1,
-        address: 'PKS101'
-    },
-    {
-        id: 2,
-        address: 'PKS102'
-    }
-];
-
-function getDateTime(hms) {
-    let result = "2021-01-01T" + hms + ":00.000Z";
-    return result;
+function getDate(datetime) {
+    const dt = new Date(datetime);
+    return dt.getDate().toString().padStart(2, '0') + "/" + (dt.getMonth() + 1).toString().padStart(2, '0') + "/" + dt.getFullYear();
 }
 
-function getHMS(datetime) {
-    return (parseInt(datetime.replace('T', '').replace(':', '').substring(10, 14)));
-}
-
-function getDisplayHMS(datetime) {
-    return datetime.replace('T', '').substring(10, 15);
-}
-
-function getDay(datetime) {
-    const dt = new Date(datetime.substring(0, 10));
+function getDayOfWeek(datetime) {
+    const dt = new Date(datetime);
     const dayCode = dt.getDay();
     let result = "";
     switch (dayCode) {
@@ -591,29 +568,32 @@ function MyClinicsTable(props) {
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell align="center">Loại phòng khám</StyledTableCell>
-                        <StyledTableCell align="center"> Tên phòng khám</StyledTableCell>
-                        <StyledTableCell align="center">Địa chỉ</StyledTableCell>
-                        <StyledTableCell align="center">Trạng thái</StyledTableCell>
-                        <StyledTableCell align="center">
-                            <Button variant="outlined" color="default" align="center" onClick={() => props.handleOpenClinicForm()}>Đăng ký</Button>
+                        <StyledTableCell align="center" width="15%">Loại phòng khám</StyledTableCell>
+                        <StyledTableCell align="center" width="20%">Tên phòng khám</StyledTableCell>
+                        <StyledTableCell align="center" width="40%">Địa chỉ</StyledTableCell>
+                        <StyledTableCell align="center" width="10%">Trạng thái</StyledTableCell>
+                        <StyledTableCell align="center" width="15%">
+                            {/* <Button variant="outlined" color="default" align="center" onClick={() => props.handleOpenClinicRegistrationForm()}>Đăng ký</Button> */}
                         </StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {myClinics.map((row) => (
                         <StyledTableRow key={row.id}>
-                            <StyledTableCell align="center">{row.type === 'HOSPITAL' ? 'Bệnh viện' : 'Phòng khám tư'}</StyledTableCell>
-                            <StyledTableCell align="center">{row.name}</StyledTableCell>
-                            <StyledTableCell align="center">{row.address}</StyledTableCell>
-                            <StyledTableCell align="center">{row.status}</StyledTableCell>
+                            <StyledTableCell align="left">{row.type === 'HOSPITAL' ? 'Bệnh viện' : 'Phòng khám tư'}</StyledTableCell>
+                            <StyledTableCell align="left">{row.name}</StyledTableCell>
+                            <StyledTableCell align="left">{row.address}</StyledTableCell>
+                            <StyledTableCell align="center">{row.status==='ACTIVE' ? 'Đang hoạt động' : 'Tạm dừng'}</StyledTableCell>
                             <StyledTableCell align="center">
-                                <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, false, false)}>
+                                <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, false, true)}>
                                     Xem
                                 </Button>
-                                <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, true, false)}>
-                                    Sửa
-                                </Button>
+                                {
+                                    row.managerId===props.userInfo.id?
+                                    <Button variant="outlined" color="primary" align="center" onClick={() => props.handleOpenClinicsDialog(row, true, true)}>
+                                        Sửa
+                                    </Button>:null
+                                }
                             </StyledTableCell>
                         </StyledTableRow>
                     ))}
@@ -623,14 +603,19 @@ function MyClinicsTable(props) {
     );
 }
 
-function ClinicRequestTable(props) {
+function DoctorManagementTable(props) {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
-    const { myManagementClinics } = props;
+    const { myManagementClinics, handleOpenDoctorDialog, setSelectedWorkPlaceId, isReload, setIsReload } = props;
 
+    const [doctorList, setDoctorList] = React.useState([]);
+    const [bannedDoctorList, setBannedDoctorList] = React.useState([]);
+    const [clinicsList, setClinicsList] = React.useState([]);
     const [applicationsList, setApplicationsList] = React.useState([]);
     const [applicationsListTemp, setApplicationsListTemp] = React.useState([]);
+    const [selectedClinicId, setSelectedClinicId] = React.useState(0);
+    const [openSelectClinic, setOpenSelectClinic] = React.useState(false);
 
     const reloadPage = () => {
         myManagementClinics.forEach(clinic => {
@@ -653,69 +638,244 @@ function ClinicRequestTable(props) {
                 }
             );
         });
+        if (selectedClinicId !== 0) {
+            APIService.getDoctorWorkPlaceDoctorManagement(
+                token,
+                selectedClinicId,
+                (success, json) => {
+                    if (success && json.result) {
+                        console.log('getDoctorWorkPlaceDoctorManagement');
+                        console.log(json.result);
+                        let bannedList = [];
+                        let list = [];
+                        json.result.forEach(item => {
+                            if (item.doctorStatus === 'BANNED') {
+                                bannedList.push(item);
+                            }
+                            else {
+                                list.push(item);
+                            }
+                        });
+                        setDoctorList(list);
+                        setBannedDoctorList(bannedList);
+                    }
+                }
+            );
+        }
     }
+    const [selectedDoctorStatus, setSelectedDoctorStatus] = React.useState('active');
+    const [error, setError] = React.useState(false);
+    const [helperText, setHelperText] = React.useState('Chọn điều kiện');
 
-    const handleAcceptApplication = (applicationId) => {
-        APIService.putDoctorWorkPlaceApply(
-            token,
-            applicationId,
-            "ACTIVE",
-            (success, json) => {
-                if (success, json.result) {
-                    enqueueSnackbar('Chấp nhận thành công!', { variant: 'success'});
-                    setApplicationsList([]);
-                    reloadPage();
-                }
-                else{
-                    console.log(json);
-                }
-            }
-        );
-    }
+    const handleRadioDoctorStatusChange = (event) => {
+        setSelectedDoctorStatus(event.target.value);
+        setHelperText(' ');
+        setError(false);
+    };
+
+    const handleSubmitDoctorStatus = (event) => {
+        event.preventDefault();
+
+        if (selectedDoctorStatus === 'active') {
+            setHelperText('Chỉ hiển thị các bác sĩ đang làm việc.');
+            setError(false);
+        } else if (selectedDoctorStatus === 'banned') {
+            setHelperText('Chỉ hiển thị các bác sĩ đã bị xóa.');
+            setError(true);
+        } else {
+            setHelperText('Chọn trạng thái làm việc muốn hiển thị');
+            setError(true);
+        }
+    };
 
     useEffect(() => {
         reloadPage();
+        console.log('list myManagementClinics');
+        console.log(myManagementClinics);
+        let list = [];
+        myManagementClinics.forEach(item => {
+            if (item.status === 'ACTIVE') {
+                list.push(item);
+            }
+
+        });
+        setClinicsList(list);
     }, []);
 
     useEffect(() => {
         setApplicationsList(applicationsList.concat(applicationsListTemp));
     }, [applicationsListTemp]);
 
+    useEffect(() => {
+        setSelectedWorkPlaceId(selectedClinicId);
+        APIService.getDoctorWorkPlaceDoctorManagement(
+            token,
+            selectedClinicId,
+            (success, json) => {
+                if (success && json.result) {
+                    console.log('getDoctorWorkPlaceDoctorManagement');
+                    console.log(json.result);
+                    let bannedList = [];
+                    let list = [];
+                    json.result.forEach(item => {
+                        if (item.doctorStatus === 'BANNED') {
+                            bannedList.push(item);
+                        }
+                        else {
+                            list.push(item);
+                        }
+                    });
+                    setDoctorList(list);
+                    setBannedDoctorList(bannedList);
+                }
+            }
+        );
+    }, [selectedClinicId]);
+
+    useEffect(() => {
+        if (isReload) {
+            setIsReload(false);
+            setApplicationsList([]);
+            setDoctorList([]);
+            setBannedDoctorList([]);
+            reloadPage();
+        }
+    }, [isReload])
+
     return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                    <TableRow>
-                        <StyledTableCell align="center">Phòng khám</StyledTableCell>
-                        <StyledTableCell align="center">Họ Tên</StyledTableCell>
-                        <StyledTableCell align="center">Giới tính</StyledTableCell>
-                        <StyledTableCell align="center">Ngày sinh</StyledTableCell>
-                        <StyledTableCell align="center">Số điện thoại</StyledTableCell>
-                        <StyledTableCell align="center">
-                            <Button variant="outlined" color="default" align="center" ></Button>
-                        </StyledTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        applicationsList.map(application => 
-                            <StyledTableRow >
-                            <StyledTableCell align="center">{application.clinicName}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.firstName + " " + application.doctor.lastName}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.gender === 'MALE' ? 'Nam' : 'Nữ'}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.birthday.substring(0, 10)}</StyledTableCell>
-                                <StyledTableCell align="center">{application.doctor.contactPhoneNumber}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <Button variant="outlined" color="primary" align="center" onClick={() => {handleAcceptApplication(application.id)}}>
-                                        Chấp nhận
-                                    </Button>
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        )
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <div>
+            <TableContainer component={Paper}>
+                <div style={{ marginBottom: '10px' }}>
+                    <InputBase
+                        defaultValue="Chọn phòng khám/bệnh viện: "
+                        disabled
+                        inputProps={{ 'aria-label': 'naked' }}
+                        style={{ marginTop: '25px', marginLeft: '10px', width: '300px', fontSize: '20px', fontWeight: 'bold' }}
+                    />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-controlled-open-select-label"></InputLabel>
+                        <Select
+                            labelId="demo-controlled-open-select-label"
+                            style={{marginTop: '14px'}}
+                            open={openSelectClinic}
+                            onClose={() => { setOpenSelectClinic(false) }}
+                            onOpen={() => { setOpenSelectClinic(true) }}
+                            value={selectedClinicId}
+                            onChange={(e) => { setSelectedClinicId(e.target.value) }}
+                        >
+                            <MenuItem value={0}>Chọn phòng khám</MenuItem>
+                            {
+                                clinicsList.map(clinic =>
+                                    <MenuItem value={clinic.id}>{clinic.name}</MenuItem>
+                                )
+                            }
+                        </Select>
+                    </FormControl>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                    <InputBase
+                        defaultValue="Điều kiện"
+                        disabled
+                        inputProps={{ 'aria-label': 'naked' }}
+                        style={{ marginTop: '5px', marginLeft: '10px', width: '300px', fontSize: '20px', fontWeight: 'bold' }}
+                    />
+                    <form onSubmit={handleSubmitDoctorStatus}>
+                        <FormControl component="fieldset" error={error} className={classes.formControl}>
+                            <RadioGroup aria-label="quiz" name="quiz" value={selectedDoctorStatus} onChange={handleRadioDoctorStatusChange}>
+                                <FormControlLabel value="active" control={<Radio />} label="Chỉ hiển thị bác sĩ đang làm việc" />
+                                <FormControlLabel value="banned" control={<Radio />} label="Chỉ hiển thị bác sĩ bị xóa" />
+                            </RadioGroup>
+                            <FormHelperText>{helperText}</FormHelperText>
+                            {/* <Button type="submit" variant="outlined" color="primary" className={classes.button}>
+                                Tìm kiếm
+                            </Button> */}
+                        </FormControl>
+                    </form>
+                </div>
+                <h3>Danh sách bác sĩ</h3>
+                <Table className={classes.table} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell align="center">Họ Tên</StyledTableCell>
+                            <StyledTableCell align="center">Giới tính</StyledTableCell>
+                            <StyledTableCell align="center">Ngày sinh</StyledTableCell>
+                            <StyledTableCell align="center">Số điện thoại</StyledTableCell>
+                            <StyledTableCell align="center">
+                                <Button variant="outlined" color="default" align="center" ></Button>
+                            </StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            selectedDoctorStatus==='active'?
+                            doctorList.map(doctor =>
+                                <StyledTableRow >
+                                    <StyledTableCell align="left">{doctor.firstName + " " + doctor.lastName}</StyledTableCell>
+                                    <StyledTableCell align="left">{doctor.gender === 'MALE' ? 'Nam' : 'Nữ'}</StyledTableCell>
+                                    <StyledTableCell align="left">{getDate(doctor.birthday)}</StyledTableCell>
+                                    <StyledTableCell align="left">{doctor.contactPhoneNumber}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus) }}>
+                                            Chi tiết
+                                        </Button>
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            )
+                            :
+                            bannedDoctorList.map(doctor =>
+                                <StyledTableRow >
+                                    <StyledTableCell align="left">{doctor.firstName + " " + doctor.lastName}</StyledTableCell>
+                                    <StyledTableCell align="left">{doctor.gender === 'MALE' ? 'Nam' : 'Nữ'}</StyledTableCell>
+                                    <StyledTableCell align="left">{getDate(doctor.birthday)}</StyledTableCell>
+                                    <StyledTableCell align="left">{doctor.contactPhoneNumber}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus) }}>
+                                            Chi tiết
+                                        </Button>
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <h1 style={{alignContent: 'center'}}>-----------------</h1>
+            <TableContainer component={Paper}>
+                <h3>Danh sách yêu cầu mới</h3>
+                <Table className={classes.table} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell align="center">Phòng khám</StyledTableCell>
+                            <StyledTableCell align="center">Họ Tên</StyledTableCell>
+                            <StyledTableCell align="center">Giới tính</StyledTableCell>
+                            <StyledTableCell align="center">Ngày sinh</StyledTableCell>
+                            <StyledTableCell align="center">Số điện thoại</StyledTableCell>
+                            <StyledTableCell align="center">
+                                <Button variant="outlined" color="default" align="center" ></Button>
+                            </StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            applicationsList.map(application =>
+                                <StyledTableRow >
+                                    <StyledTableCell align="left">{application.clinicName}</StyledTableCell>
+                                    <StyledTableCell align="left">{application.doctor.firstName + " " + application.doctor.lastName}</StyledTableCell>
+                                    <StyledTableCell align="left">{application.doctor.gender === 'MALE' ? 'Nam' : 'Nữ'}</StyledTableCell>
+                                    <StyledTableCell align="left">{getDate(application.doctor.birthday)}</StyledTableCell>
+                                    <StyledTableCell align="left">{application.doctor.contactPhoneNumber}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(application.doctor, true, '') }}>
+                                            Chi tiết
+                                        </Button>
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
     );
 }
 
@@ -854,15 +1014,16 @@ function SearchClinicsTable(props) {
                     style={{marginTop:'8px'}}
                 />
                 <Button variant="contained" style={{marginLeft: '10px'}} onClick={handleClickSearch}>Tìm kiếm</Button>
+                <Button variant="contained" style={{marginLeft: '10px'}} onClick={() => props.handleOpenClinicRegistrationForm()}>Đăng ký phòng khám</Button>
             </div>
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell align="center">Loại phòng khám</StyledTableCell>
-                        <StyledTableCell align="center">Tên phòng khám</StyledTableCell>
-                        <StyledTableCell align="center">Người quản lý</StyledTableCell>
-                        <StyledTableCell align="center">Địa chỉ</StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" width="15%">Loại phòng khám</StyledTableCell>
+                        <StyledTableCell align="center" width="20%">Tên phòng khám</StyledTableCell>
+                        <StyledTableCell align="center" width="15%">Người quản lý</StyledTableCell>
+                        <StyledTableCell align="center" width="40%">Địa chỉ</StyledTableCell>
+                        <StyledTableCell align="center" width="10%">
                         </StyledTableCell>
                     </TableRow>
                 </TableHead>
@@ -870,12 +1031,17 @@ function SearchClinicsTable(props) {
                     {
                         workPlaceList.map(item =>
                             <StyledTableRow >
-                                <StyledTableCell align="center">{item.type}</StyledTableCell>
-                                <StyledTableCell align="center">{item.name}</StyledTableCell>
-                                <StyledTableCell align="center">{item.managerId}</StyledTableCell>
-                                <StyledTableCell align="center">{item.address}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <Button variant="outlined" color="default" align="center" onClick={() => {props.handleOpenClinicsDialog(item, false, true)}}>
+                                <StyledTableCell align="left">{item.type === 'HOSPITAL'? 'Bệnh viện' : 'Phòng khám tư'}</StyledTableCell>
+                                <StyledTableCell align="left">{item.name}</StyledTableCell>
+                                <StyledTableCell align="left">
+                                    {
+                                        item.manager.doctor!==undefined?item.manager.doctor?.firstName + ' ' + item.manager.doctor?.lastName
+                                        :'Quản trị viên'
+                                    }
+                                </StyledTableCell>
+                                <StyledTableCell align="left">{item.address}</StyledTableCell>
+                                <StyledTableCell align="right">
+                                    <Button variant="outlined" color="primary" align="center" onClick={() => {props.handleOpenClinicsDialog(item, false, false)}}>
                                         Chi tiết
                                     </Button>
                                 </StyledTableCell>
@@ -891,25 +1057,35 @@ function SearchClinicsTable(props) {
 export default function WorkPlace() {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useContext(AppContext);
 
     const [value, setValue] = React.useState(TabCode.CLINICS);
-    const [isOpenClinic, setIsOpenClinic] = React.useState(false);
+    const [isOpenClinicDialog, setIsOpenClinicDialog] = React.useState(false);
+    const [isOpenDoctorDialog, setIsOpenDoctorDialog] = React.useState(false);
     const [isEditMode, setIsEditMode] = React.useState(false);
-    const [isApplyMode, setIsApplyMode] = React.useState(false);
-    const [openClinicForm, setOpenClinicForm] = React.useState(false);
+    const [isMine, setIsMine] = React.useState(false);
+    const [isApply, setIsApply] = React.useState(false);
+    const [selectedDoctorStatus, setSelectedDoctorStatus] = React.useState('');
+    const [openClinicRegistrationForm, setOpenClinicRegistrationForm] = React.useState(false);
+    const [isReload, setIsReload] = React.useState(false);
 
+    const [specializedList, setSpecializedList] = React.useState([]);
     const [provinces, setProvinces] = React.useState([]);
     const [myClinics, setMyClinics] = React.useState([]);
     const [myManagementClinics, setMyManagementClinics] = React.useState([]);
     const [myOperations, setMyOperations] = React.useState([]);
 
-    const [clinic, setClinic] = React.useState({
+    const [selectedWorkPlaceId, setSelectedWorkPlaceId] = React.useState(0);
+    const [selectedApplicationId, setSelectedApplicationId] = React.useState(0);
+    const [selectedDoctor, setSelectedDoctor] = React.useState({
+        id: 0, gender: '', name: '', address: '', avatarURL: '', clinic: '', dob: '', introduce: [], medicalExamination: [], contactPhoneNumber: '', specializedId: 0
+    });
+    const [selectedClinic, setSelectedClinic] = React.useState({
         id: 0, type: '', name: '', address: '', images: [], status: '', managerId: 0,
     });
     const [openClinicStatus, setOpenClinicStatus] = React.useState(false);
     const [clinicStatus, setClinicStatus] = React.useState(0);
     const [newClinicName, setNewClinicName] = React.useState('');
-    const [newClinicStatus, setNewClinicStatus] = React.useState('');
     const [newClinicAddress, setNewClinicAddress] = React.useState('');
     const [operationIdSelect, setOperationIdSelect] = React.useState(0);
     const [newPatientNumber, setNewPatientNumber] = React.useState(0);
@@ -921,15 +1097,13 @@ export default function WorkPlace() {
                 setMyClinics(json.result);
             }
         });
-        APIService.getDoctorWorkPlaceManager(token, "", {}, (success, json) => {
+        APIService.getDoctorWorkPlaceManagement(token, "", {}, (success, json) => {
             if (success && json.result) {
                 setMyManagementClinics(json.result);
             }
         });
         APIService.getDoctorOperation(token, (success, json) => {
             if (success && json.result) {
-                console.log('getDoctorOperation');
-                console.log(json.result);
                 setMyOperations(json.result);
             }
         });
@@ -941,13 +1115,35 @@ export default function WorkPlace() {
         'https://quantri.nhidong.org.vn/UploadImages/bvnhidong/PHP06/2018_6/20/1012.JPG?w=600',
     ];
 
-    const handleOpenClinicsDialog = (data, isEdit, isApply) => {
-        console.log('data');
+    const handleOpenDoctorDialog = (data, isApply, status) => {
+        setIsApply(isApply);
+        setSelectedDoctorStatus(status);
+        setIsOpenDoctorDialog(true);
+        setSelectedApplicationId(data.applicationId);
+        console.log('doctor data');
         console.log(data);
-        setIsOpenClinic(true);
+        setSelectedDoctor({
+            id: data.id,
+            gender: data.gender === 'MALE' ? 'Nam' : 'Nữ',
+            name: data.firstName + " " + data.lastName,
+            address: '123 HHT',
+            avatarURL: data.avatarURL,
+            clinic: '',
+            dob: data.birthday,
+            contactPhoneNumber: data.contactPhoneNumber,
+            introduce: data.introduce,
+            medicalExamination: data.medicalExamination,
+            specializedId: data.specializedId,
+        });
+    }
+
+    const handleOpenClinicsDialog = (data, isEdit, isMine) => {
+        console.log('clinic data');
+        console.log(data);
+        setIsOpenClinicDialog(true);
         setIsEditMode(isEdit);
-        setIsApplyMode(isApply);
-        setClinic({
+        setIsMine(isMine);
+        setSelectedClinic({
             id: data.id,
             type: data.type,
             name: data.name,
@@ -955,6 +1151,7 @@ export default function WorkPlace() {
             address: data.address,
             status: data.status,
             managerId: data.managerId,
+            //managerName: data.manager.doctor !== undefined ? data.manager.doctor?.firstName + ' ' + data.manager.doctor?.lastName:'Quản trị viên'
         });
         setNewClinicName(data.name);
         setNewClinicAddress(data.address);
@@ -973,7 +1170,7 @@ export default function WorkPlace() {
     const handleApplyWorkPlace = () => {
         let allow = true;
         myClinics.forEach(item => {
-            if (item.id === clinic.id) {
+            if (item.id === selectedClinic.id) {
                 enqueueSnackbar('Bạn đã nộp vào đây rồi!', { variant: 'error' });                
                 allow = false;
             }
@@ -981,7 +1178,7 @@ export default function WorkPlace() {
         if (allow){
             APIService.postDoctorWorkPlaceApply(
                 token,
-                clinic.id,
+                selectedClinic.id,
                 1,
                 (success, json) => {
                     if (success, json.result) {
@@ -1026,14 +1223,14 @@ export default function WorkPlace() {
         APIService.putDoctorWorkPlace(
             token,
             {
-                id: clinic.id,
+                id: selectedClinic.id,
                 status: clinicStatus === 0 ? 'INACTIVE' : 'ACTIVE',
                 name: newClinicName,
                 address: newClinicAddress
             },
             (success, json) => {
                 if (success, json.result) {
-                    setIsOpenClinic(false);
+                    setIsOpenClinicDialog(false);
                     enqueueSnackbar('Cập nhật phòng khám thành công!', { variant: 'success' });
                     APIService.getDoctorWorkPlaceMy(token, (success, json) => {
                         if (success && json.result) {
@@ -1044,7 +1241,88 @@ export default function WorkPlace() {
             }
         );
     }
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const getSpecializedName = (id) => {
+        const res = specializedList.find(x => x.id === id);
+        if (res === undefined){
+            return '';
+        }
+        else {
+            return res.name;
+        }
+    }
     
+    const handleAcceptApplication = (status) => {
+        setIsOpenDoctorDialog(false);
+        if (selectedApplicationId === 0){
+            return;
+        }
+        APIService.putDoctorWorkPlaceApply(
+            token,
+            selectedApplicationId,
+            status,
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Chấp nhận thành công!', { variant: 'success'});
+                    setIsReload(true);
+                }
+                else{
+                    console.log(json);
+                }
+            }
+        );
+    }
+
+    const handleBannedDoctor = () => {
+        if (window.confirm("Bạn có chắc muốn khóa tài khoản này?")) {
+            setIsOpenDoctorDialog(false);
+            APIService.putDoctorStatus(
+                token,
+                {
+                    doctorId: selectedDoctor.id,
+                    workplaceId: selectedWorkPlaceId,
+                    status: 'BANNED'
+                },
+                (success, json) => {
+                    if (success, json.result) {
+                        enqueueSnackbar('Đã xóa!', { variant: 'success'});
+                        setIsReload(true);
+                    }
+                    else{
+                        console.log(json);
+                    }
+                }
+            );
+        }
+    }
+
+    const handleActiveDoctor = () => {
+        if (window.confirm("Bạn có chắc muốn kích hoạt lại tài khoản này?")) {
+            setIsOpenDoctorDialog(false);
+            APIService.putDoctorStatus(
+                token,
+                {
+                    doctorId: selectedDoctor.id,
+                    workplaceId: selectedWorkPlaceId,
+                    status: 'ACTIVE'
+                },
+                (success, json) => {
+                    if (success, json.result) {
+                        enqueueSnackbar('Đã kích hoạt!', { variant: 'success'});
+                        setIsReload(true);
+                    }
+                    else{
+                        console.log(json);
+                    }
+                }
+            );
+        }
+    }
+
     useEffect(() => {
         APIService.getProvinces(
             (success, json) => {
@@ -1053,12 +1331,17 @@ export default function WorkPlace() {
                 }
             }
         );
+        APIService.getSpecialized(
+            (success, json) => {
+                if (success && json.result) {
+                    setSpecializedList(json.result);
+                    console.log('getSpecialized');
+                    console.log(json.result);
+                }
+            }
+        );
         loadData();
     }, []);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
 
     return (
         <div className={classes.root}>
@@ -1066,17 +1349,19 @@ export default function WorkPlace() {
                 <AntTabs value={value} onChange={handleChange} aria-label="ant example">
                     <AntTab label="Tìm kiếm phòng khám" />
                     <AntTab label="Phòng khám của tôi" />
-                    <AntTab label="Các yêu cầu mới" />
+                    <AntTab label="Quản lý bác sĩ" />
                 </AntTabs>
             </div>
             <TabPanel value={value} index={0}>
-                <SearchClinicsTable provinces={provinces} handleOpenClinicsDialog={handleOpenClinicsDialog} myClinics={myClinics}/>
+                <SearchClinicsTable provinces={provinces} handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicRegistrationForm={() => {setOpenClinicRegistrationForm(true)}} myClinics={myClinics}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <MyClinicsTable handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicForm={() => {setOpenClinicForm(true)}} myClinics={myClinics} myManagementClinics={myManagementClinics}/>
+                <MyClinicsTable handleOpenClinicsDialog={handleOpenClinicsDialog} handleOpenClinicRegistrationForm={() => {setOpenClinicRegistrationForm(true)}} myClinics={myClinics} myManagementClinics={myManagementClinics} userInfo={userInfo}  isReload={isReload} setIsReload={setIsReload}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ClinicRequestTable myManagementClinics={myManagementClinics}/>
+                <DoctorManagementTable myManagementClinics={myManagementClinics} handleOpenDoctorDialog={handleOpenDoctorDialog} setSelectedWorkPlaceId={setSelectedWorkPlaceId} isReload={isReload} setIsReload={setIsReload}/>
+                {/* <h3>----- ----- ----- ----- -----</h3>
+                <ClinicRequestTable myManagementClinics={myManagementClinics}/> */}
             </TabPanel>
             <ClinicRegistrationDialogRaw
                 classes={{
@@ -1084,17 +1369,17 @@ export default function WorkPlace() {
                 }}
                 id="ringtone-menu"
                 keepMounted
-                open={openClinicForm}
-                onClose={() => {setOpenClinicForm(false)}}
+                open={openClinicRegistrationForm}
+                onClose={() => {setOpenClinicRegistrationForm(false)}}
             />
-            <Dialog open={isOpenClinic} onClose={() => {setIsOpenClinic(false)}} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Thông tin phòng khám</DialogTitle>
+            <Dialog open={isOpenClinicDialog} onClose={() => {setIsOpenClinicDialog(false)}} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Thông tin phòng khám</DialogTitle>
                 <DialogContent>
                     <TextField
                         margin="dense"
                         id="name"
                         label="Loại"
-                        defaultValue={clinic.type}
+                        defaultValue={selectedClinic.type}
                         fullWidth
                         InputProps={{
                             readOnly: true,
@@ -1122,41 +1407,47 @@ export default function WorkPlace() {
                             readOnly: !isEditMode,
                         }}
                     />
-                    <TextField
+                    {/* <TextField
                         margin="dense"
                         id="name"
                         label="Người quản lý"
-                        defaultValue={clinic.managerId}
+                        defaultValue={selectedClinic.managerId}
                         fullWidth
                         InputProps={{
                             readOnly: true,
                         }}
-                    />
-                    <TextField
-                        margin="dense"
-                        id="name"
-                        type="number"
-                        label="Số bệnh nhân khám trong nửa giờ"
-                        value={newPatientNumber}
-                        onChange={(e) => {setNewPatientNumber(e.target.value)}}
-                        fullWidth
-                        InputProps={{
-                            readOnly: !isEditMode,
-                        }}
-                    />
-                    <TextField
-                        margin="dense"
-                        id="name"
-                        type="number"
-                        label="Số tiền khám"
-                        value={newMedicalExpense}
-                        onChange={(e) => {setNewMedicalExpense(e.target.value)}}
-                        fullWidth
-                        InputProps={{
-                            readOnly: !isEditMode,
-                            step: 10000,
-                        }}
-                    />
+                    /> */}
+                    {
+                        (isEditMode) ?
+                        <TextField
+                            margin="dense"
+                            id="name"
+                            type="number"
+                            label="Số bệnh nhân khám trong nửa giờ"
+                            value={newPatientNumber}
+                            onChange={(e) => {setNewPatientNumber(e.target.value)}}
+                            fullWidth
+                            InputProps={{
+                                readOnly: !isEditMode,
+                            }}
+                        />: null
+                    }
+                    {
+                        (isEditMode) ?
+                        <TextField
+                            margin="dense"
+                            id="name"
+                            type="number"
+                            label="Số tiền khám"
+                            value={newMedicalExpense}
+                            onChange={(e) => {setNewMedicalExpense(e.target.value)}}
+                            fullWidth
+                            InputProps={{
+                                readOnly: !isEditMode,
+                                step: 10000,
+                            }}
+                        />:null
+                    }
                     <FormControl className={classes.formControl} fullWidth>
                         <InputLabel id="demo-controlled-open-select-label">Trạng thái hoạt động</InputLabel>
                         <Select
@@ -1178,20 +1469,20 @@ export default function WorkPlace() {
                     <br />
                     <h6>
                         {
-                            clinic.images.length > 0 ? 'Hình ảnh' : ''
+                            selectedClinic.images.length > 0 ? 'Hình ảnh' : ''
                         }
                     </h6>
                     {
-                        clinic.images.map(imgSrc =>
+                        selectedClinic.images.map(imgSrc =>
                             <img src={imgSrc} style={{ margin: '3%' }} width="44%" height="200" alt=""></img>
                         )
                     }
                 </DialogContent>
                 <DialogActions>
                     {
-                        isApplyMode ?
+                        !isEditMode ?
                         <Button onClick={handleApplyWorkPlace} color="primary" variant="contained" >
-                            Nộp đơn
+                            {isMine ? 'Đăng ký làm việc':'Nộp đơn vào đây'}
                         </Button> : null
                     }
                     {
@@ -1200,8 +1491,127 @@ export default function WorkPlace() {
                             Xác nhận
                         </Button> : null
                     }
-                    <Button onClick={() => {setIsOpenClinic(false)}} color="default" variant="outlined">
-                        Close
+                    <Button onClick={() => {setIsOpenClinicDialog(false)}} color="default" variant="outlined">
+                        Đóng
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={isOpenDoctorDialog} onClose={() => {setIsOpenDoctorDialog(false)}} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{backgroundColor: 'cadetblue'}}>Thông tin bác sĩ</DialogTitle>
+                <DialogContent>
+                    <img src={selectedDoctor.avatarURL} style={{ margin: '3%' }} width="44%" height="160px" alt=""></img>
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Họ tên"
+                        defaultValue={selectedDoctor.name}
+                        fullWidth
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Giới tính"
+                        defaultValue={selectedDoctor.gender}
+                        fullWidth
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Ngày sinh"
+                        defaultValue={getDate(selectedDoctor.dob)}
+                        fullWidth
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Chuyên ngành"
+                        defaultValue={getSpecializedName(selectedDoctor.specializedId)}
+                        fullWidth
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Số điện thoại"
+                        defaultValue={selectedDoctor.contactPhoneNumber}
+                        fullWidth
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <br />
+                    <h5 style={{marginTop: '15px', marginBottom: '5px'}}>Thông tin giới thiệu</h5>
+                    {
+                        selectedDoctor.introduce.length===0?
+                        <h6>(Đang cập nhật)</h6>:null
+                    }
+                    {
+                        selectedDoctor.introduce.map(item =>
+                            <TextField
+                                margin="dense"
+                                label=""
+                                defaultValue={" - " + item}
+                                fullWidth
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                            )
+                    }
+                    <br/>
+                    <h5 style={{marginTop: '15px', marginBottom: '5px'}}>Thông tin chuyên khám</h5>
+                    {
+                        selectedDoctor.medicalExamination.length===0?
+                        <h6>(Đang cập nhật)</h6>:null
+                    }
+                    {
+                        selectedDoctor.medicalExamination.map(item =>
+                            <TextField
+                                margin="dense"
+                                label=""
+                                defaultValue={" - " + item}
+                                fullWidth
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                            />
+                            )
+                    }
+                </DialogContent>
+                <DialogActions>
+                    {
+                        isApply?
+                        <Button onClick={() => {handleAcceptApplication("ACTIVE")}} color="primary" variant="outlined">
+                            Chấp nhận
+                        </Button>:null
+                    }
+                    {
+                        isApply?
+                        <Button onClick={() => {handleAcceptApplication("INACTIVE")}} color="secondary" variant="outlined">
+                            Từ chối
+                        </Button>:
+                        selectedDoctorStatus==='active'?
+                        <Button onClick={() => {handleBannedDoctor()}} color="secondary" variant="outlined">
+                            Khóa
+                        </Button>:
+                        <Button onClick={() => {handleActiveDoctor()}} color="secondary" variant="outlined">
+                            Mở khóa
+                        </Button>
+                    }
+                    <Button onClick={() => {setIsOpenDoctorDialog(false)}} color="default" variant="outlined">
+                        Đóng
                     </Button>
                 </DialogActions>
             </Dialog>

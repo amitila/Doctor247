@@ -171,7 +171,7 @@ function Doctor() {
     const token = getToken();
 
     useEffect(() => {
-        APIService.getDoctorWorkPlaceManager(token, "", {}, (success, json) => {
+        APIService.getDoctorWorkPlaceManagement(token, "", {}, (success, json) => {
             if (success && json.result) {
                 setMyManagementClinics(json.result);
             }

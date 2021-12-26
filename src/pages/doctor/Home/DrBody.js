@@ -86,6 +86,45 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
+function getTime(datetime){
+    const dt = new Date(datetime);
+    let result = dt.getHours() + ":" + dt.getMinutes().toString().padStart(2, '0');
+    return result;
+}
+
+function getDay(datetime) {
+    const dt = new Date(datetime);
+    const dayCode = dt.getDay();
+    let result = dt.getDate() + "/" + (dt.getMonth()+1) + "/" + dt.getFullYear() + "";
+    switch (dayCode) {
+        case 0:
+            result += "(Chủ nhật)";
+            break;
+        case 1:
+            result += "(Thứ hai)";
+            break;
+        case 2:
+            result += "(Thứ ba)";
+            break;
+        case 3:
+            result += "(Thứ tư)";
+            break;
+        case 4:
+            result += "(Thứ năm)";
+            break;
+        case 5:
+            result += "(Thứ sáu)";
+            break;
+        case 6:
+            result += "(Thứ bảy)";
+            break;
+        default:
+            result = "error";
+            break;
+    }
+    return result;
+}
+
 function CustomizedTables(props) {
     const classes = useStyles();
     
@@ -106,8 +145,8 @@ function CustomizedTables(props) {
                 <TableBody>
                     {displayAppointmentList.map((row) => (
                         <StyledTableRow key={row.name}>
-                            <StyledTableCell align="center">{row.day.substring(0,10)}</StyledTableCell>
-                            <StyledTableCell align="center">{row.day.substring(11,16)}</StyledTableCell>
+                            <StyledTableCell align="center">{getDay(row.day)}</StyledTableCell>
+                            <StyledTableCell align="center">{getTime(row.day)}</StyledTableCell>
                             <StyledTableCell align="center">{row.medicalRecord.customer.firstName + " " + row.medicalRecord.customer.lastName}</StyledTableCell>
                             <StyledTableCell align="center">{row.workplace.name}</StyledTableCell>
                         </StyledTableRow>

@@ -78,7 +78,7 @@ function ConfirmationDialogRaw(props) {
             aria-labelledby="confirmation-dialog-title"
             open={open}
         >
-            <DialogTitle id="confirmation-dialog-title">Đổi mật khẩu</DialogTitle>
+            <DialogTitle id="confirmation-dialog-title" style={{backgroundColor: 'cadetblue'}}>Đổi mật khẩu</DialogTitle>
             <DialogContent dividers>
                 <TextField
                     id="standard-multiline-flexible1"
