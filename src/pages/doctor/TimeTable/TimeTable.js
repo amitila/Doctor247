@@ -360,23 +360,23 @@ function createWPDataList(doctorOperationHourList, operation) {
     ];
 
     function updateWPData(index, element) {
-        if (getHMS(element.startTime) < 1200) {
-            result[index].id1 = element.id;
-            result[index].startingAt1 = getDisplayHMS(element.startTime);
-            result[index].endingAt1 = getDisplayHMS(element.endTime);
-            result[index].workAt1 = operation.find(e => e.id === element.operationId).id;
+        if (getHMS(element.startTime) > 1100 && getHMS(element.startTime) < 1500) {
+            result[index].id3 = element.id;
+            result[index].startingAt3 = getDisplayHMS(element.startTime);
+            result[index].endingAt3 = getDisplayHMS(element.endTime);
+            result[index].workAt3 = operation.find(e => e.id === element.operationId).id;
         }
-        else if (getHMS(element.startTime) > 1200 && getHMS(element.startTime) < 1800) {
+        else if (getHMS(element.startTime) > 500 && getHMS(element.startTime) < 1100) {
             result[index].id2 = element.id;
             result[index].startingAt2 = getDisplayHMS(element.startTime);
             result[index].endingAt2 = getDisplayHMS(element.endTime);
             result[index].workAt2 = operation.find(e => e.id === element.operationId).id;
         }
         else {
-            result[index].id3 = element.id;
-            result[index].startingAt3 = getDisplayHMS(element.startTime);
-            result[index].endingAt3 = getDisplayHMS(element.endTime);
-            result[index].workAt3 = operation.find(e => e.id === element.operationId).id;
+            result[index].id1 = element.id;
+            result[index].startingAt1 = getDisplayHMS(element.startTime);
+            result[index].endingAt1 = getDisplayHMS(element.endTime);
+            result[index].workAt1 = operation.find(e => e.id === element.operationId).id;
         }
     }
 
@@ -539,7 +539,7 @@ function WorkPlanTable(props) {
                                 <StyledTableCell align="center">Sáng</StyledTableCell>
                                 <StyledTableCell align="center">{row.startingAt1}</StyledTableCell>
                                 <StyledTableCell align="center">{row.endingAt1}</StyledTableCell>
-                                <StyledTableCell align="center">{row.workAt1 > 0 ? props.operationList.find(x => x.id === row.workAt1).name : ''}</StyledTableCell>
+                                <StyledTableCell align="left">{row.workAt1 > 0 ? props.operationList.find(x => x.id === row.workAt1).name : ''}</StyledTableCell>
                                 <StyledTableCell rowSpan={3} align="center">
                                     <Button variant="outlined" color="primary" align="center"
                                         onClick={() => props.handleOpenWPDialog(row)}
