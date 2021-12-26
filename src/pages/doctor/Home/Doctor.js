@@ -15,6 +15,15 @@ import APIService from '../../../utils/APIService';
 import WorkPlace from '../WorkPlace/WorkPlace';
 import QuestionList from '../QA/QuestionList';
 import getToken from '../../../helpers/getToken';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import ScheduleOutlinedIcon from '@material-ui/icons/ScheduleOutlined';
+import PlaceOutlinedIcon from '@material-ui/icons/PlaceOutlined';
+import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
+import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
+import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
+import NotificationsActiveOutlinedIcon from '@material-ui/icons/NotificationsActiveOutlined';
 
 const useStyles = makeStyles((theme) => ({
     sidebar__inner: {
@@ -202,14 +211,14 @@ function Doctor() {
                             <ul style={{ paddingLeft: '0', overflow: 'auto'}}>
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.HOME) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.HOME ? classes.currentMenuItem : ''].join(' ')} >
-                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><i class="fas fa-home"></i></span></Tooltip>
+                                        <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Trang chủ</h6>}><span className={classes.icon}><HomeOutlinedIcon /></span></Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Trang chủ</span>
                                     </a>
                                 </li>
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.TIMETABLE) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.TIMETABLE ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thời gian biểu</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-calendar-alt"></i></span>
+                                            <span className={classes.icon}><ScheduleOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thời gian biểu</span>
                                     </a>
@@ -217,7 +226,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.MEDICAL_RECORD) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.MEDICAL_RECORD ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Quản lý bệnh án</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-book-medical"></i></span>
+                                            <span className={classes.icon}><DescriptionOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Quản lý bệnh án</span>
                                     </a>
@@ -225,7 +234,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.WORK_PLACE) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.WORK_PLACE ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Nơi làm việc</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-map-marker-alt"></i></span>
+                                            <span className={classes.icon}><PlaceOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Nơi làm việc</span>
                                     </a>
@@ -233,7 +242,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.QA) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.QA ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Hỏi đáp</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-question-circle"></i></span>
+                                            <span className={classes.icon}><HelpOutlineOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Hỏi đáp</span>
                                     </a>
@@ -241,7 +250,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.CHAT) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.CHAT ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Nhắn tin</h6>}>
-                                            <span className={classes.icon}><i class="far fa-comments"></i></span>
+                                            <span className={classes.icon}><SmsOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Nhắn tin</span>
                                     </a>
@@ -249,7 +258,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.VIDEO) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.VIDEO ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Gọi video</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-video"></i></span>
+                                            <span className={classes.icon}><VideocamOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Gọi video</span>
                                     </a>
@@ -257,7 +266,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.PROFILE) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.PROFILE ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thông tin cá nhân</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-user-edit"></i></span>
+                                            <span className={classes.icon}><AccountBoxOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thông tin cá nhân</span>
                                     </a>
@@ -265,7 +274,7 @@ function Doctor() {
                                 <li onClick={() => { setCurrentMenuItem(ScreenCode.NOTIFY) }}>
                                     <a className={[classes.ul_li_a, currentMenuItem === ScreenCode.NOTIFY ? classes.currentMenuItem : ''].join(' ')} >
                                         <Tooltip title={isShowSidabar ? '' : <h6 style={{ color: "lightblue" }}>Thông báo</h6>}>
-                                            <span className={classes.icon}><i class="fas fa-bell"></i></span>
+                                            <span className={classes.icon}><NotificationsActiveOutlinedIcon /></span>
                                         </Tooltip>
                                         <span className={isShowSidabar ? classes.title : classes.hideTitle}>Thông báo</span>
                                     </a>

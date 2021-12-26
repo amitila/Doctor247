@@ -552,13 +552,13 @@ function WorkPlanTable(props) {
                                 <StyledTableCell align="center">Chiều</StyledTableCell>
                                 <StyledTableCell align="center">{row.startingAt2}</StyledTableCell>
                                 <StyledTableCell align="center">{row.endingAt2}</StyledTableCell>
-                                <StyledTableCell align="center">{row.workAt2 > 0 ? props.operationList.find(x => x.id === row.workAt2).name : ''}</StyledTableCell>
+                                <StyledTableCell align="left">{row.workAt2 > 0 ? props.operationList.find(x => x.id === row.workAt2).name : ''}</StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow>
                                 <StyledTableCell align="center">Tối</StyledTableCell>
                                 <StyledTableCell align="center">{row.startingAt3}</StyledTableCell>
                                 <StyledTableCell align="center">{row.endingAt3}</StyledTableCell>
-                                <StyledTableCell align="center">{row.workAt3 > 0 ? props.operationList.find(x => x.id === row.workAt3).name : ''}</StyledTableCell>
+                                <StyledTableCell align="left">{row.workAt3 > 0 ? props.operationList.find(x => x.id === row.workAt3).name : ''}</StyledTableCell>
                             </StyledTableRow>
                         </React.Fragment>
                     ))}

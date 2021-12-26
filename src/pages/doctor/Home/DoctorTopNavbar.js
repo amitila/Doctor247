@@ -15,6 +15,7 @@ import TextField from "@material-ui/core/TextField";
 import { useSnackbar } from 'notistack';
 import APIService from '../../../utils/APIService';
 import getToken from '../../../helpers/getToken';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 function ConfirmationDialogRaw(props) {
     const { onClose, open } = props;
@@ -137,6 +138,9 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         width: 360,
     },
+    userIcon: {
+        cursor: 'pointer'
+    }
 }));
 
 export default function DoctorTopNavbar(props) {
@@ -201,7 +205,7 @@ export default function DoctorTopNavbar(props) {
                     <div className="right_menu">
                         <ul>
                             <li>
-                                <i className="fas fa-user" onClick={handleClick}></i>
+                                <span onClick={handleClick} className={classes.userIcon}><AccountCircleIcon /></span>
                                 <Menu
                                     id="simple-menu"
                                     anchorEl={anchorEl}
