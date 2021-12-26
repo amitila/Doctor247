@@ -1072,7 +1072,7 @@ export default function WorkPlace() {
 
     const [selectedWorkPlaceId, setSelectedWorkPlaceId] = React.useState(0);
     const [selectedApplicationId, setSelectedApplicationId] = React.useState(0);
-    const [selectedApplication, setSelectedApplication] = React.useState();
+    const [selectedApplication, setSelectedApplication] = React.useState({});
     const [selectedDoctor, setSelectedDoctor] = React.useState({
         id: 0, gender: '', name: '', address: '', avatarURL: '', clinic: '', dob: '', introduce: [], medicalExamination: [], contactPhoneNumber: '', specializedId: 0
     });
@@ -1261,8 +1261,8 @@ export default function WorkPlace() {
         APIService.putDoctorStatus(
             token,
             {
-                doctorId: workplaceId?.doctorId,
-                workplaceId: workplaceId?.workplaceId,
+                doctorId: selectedApplication.doctorId,
+                workplaceId: selectedApplication.workplaceId,
                 status: status
             },
             (success, json) => {
