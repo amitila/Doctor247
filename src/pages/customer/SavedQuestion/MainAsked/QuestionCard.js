@@ -74,6 +74,7 @@ export default function QuestionCard(props) {
         mark: task.liked
     });
     const [isHaveChange, setIsHaveChange] = React.useState(false);
+    const [isHaveReply, setIsHaveReply] = React.useState(false);
     const [replies, setReplies] = React.useState([]);
 
     const handleExpandClick = () => {
@@ -91,35 +92,39 @@ export default function QuestionCard(props) {
 	}
 
     React.useEffect(() => {
-        const replyList = [];
-        const id = task.id;
-        APIService.getPublicAnswerById(
-            id,
-            (success, json) => {
-                if (success && json.result) {
-                    json.result.map(item => {
-                        return replyList.push(item);
-                    })
-                    return setReplies(replyList?.map(item => {
-                        return {
-                            id: item.id,
-                            doctorId: item.doctorId,
-                            questionId: item.questionId,
-                            updatedAt: item.updatedAt,
-                            doctorName: item.doctor.firstName + ' ' + item.doctor.lastName,
-                            doctorAvatar: item.doctor.avatarURL,
-                            specialized: item.specialized.name,
-                            specializedId: item.specializedId,
-                            specialityName: item.specialized.name,
-                            replyContent: item.content,
-                            liked: item.liked,
-                            likeCounter: item._count.answerLike,
-                        }
-                    }))
-                } else {
-                    return console.log("THẤT BẠI");
-                }
-            })
+        if(isHaveReply === false) {
+            const replyList = [];
+            const id = task.id;
+            APIService.getPublicAnswerById(
+                id,
+                (success, json) => {
+                    if (success && json.result) {
+                        json.result.map(item => {
+                            return replyList.push(item);
+                        })
+                        // console.log(replyList)
+                        setReplies(replyList?.map(item => {
+                            return {
+                                id: item.id,
+                                doctorId: item.doctorId,
+                                questionId: item.questionId,
+                                updatedAt: item.updatedAt,
+                                doctorName: item.doctor.firstName + ' ' + item.doctor.lastName,
+                                doctorAvatar: item.doctor.avatarURL,
+                                specialized: item.specialized ? item.specialized : 'Khác' ,
+                                specializedId: item.specializedId ? item.specializedId: '',
+                                specialityName: item.specialized ? item.specialized : 'Khác',
+                                replyContent: item.content,
+                                liked: item.liked,
+                                likeCounter: item._count.answerLike,
+                            }
+                        }))
+                        return setIsHaveReply(true)
+                    } else {
+                        return console.log("THẤT BẠI");
+                    }
+                })
+        }
         if(isHaveChange === false) {
             replies.map(reply => {
                 var elmComment = <Grid container spacing={2}>
@@ -131,8 +136,8 @@ export default function QuestionCard(props) {
                 return setIsHaveChange(true)
             }) 
         }
-    },[isHaveChange, replies, task.id])
-
+    },[isHaveChange, isHaveReply, replies, task.id])
+    
     const handleChangeComment = (e) => {
         var elmComment = <Grid container spacing={2}>
             <AnswerCard  
