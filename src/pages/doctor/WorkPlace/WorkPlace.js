@@ -172,16 +172,6 @@ function ClinicRegistrationDialogRaw(props) {
     }
 
     useEffect(() => {
-        // Make a request for a user with a given ID
-        // axios
-        //     .get("https://provinces.open-api.vn/api/?depth=3")
-        //     .then(function (response) {
-        //         setProvinces(response.data);
-        //     })
-        //     .catch(function (error) {
-        //     })
-        //     .then(function () {
-        //     });
         APIService.getProvinces((success, json) => {
             if (success && json.result){
                 setProvinces(json.result);
@@ -202,9 +192,9 @@ function ClinicRegistrationDialogRaw(props) {
             alert('vui lòng nhập đủ tất cả các trường');
         }
         else {
-            const provinceName = provinces.find(x => x.code === provinceSelect)?.name;
-            const districtName = districts.find(x => x.code === districtSelect)?.name;
-            const wardName = wards.find(x => x.code === wardSelect)?.name;
+            const provinceName = provinces.find(x => x.id === provinceSelect)?.name;
+            const districtName = districts.find(x => x.id === districtSelect)?.name;
+            const wardName = wards.find(x => x.id === wardSelect)?.name;
             const address = street + ", " + wardName + ", " + districtName + ", " + provinceName;
             const data = {
                 name: clinicName,
@@ -225,6 +215,8 @@ function ClinicRegistrationDialogRaw(props) {
                         setStreet('');
                         setLatitude('');
                         setLatitude('');
+                        console.log('regist clinic info');
+                        console.log(data);
                     }
                 }
             );
@@ -633,6 +625,8 @@ function DoctorManagementTable(props) {
                                 clinicId: clinic.id
                             });
                         });
+                        console.log('application list');
+                        console.log(list);
                         setApplicationsListTemp(list);
                     }
                 }
@@ -735,6 +729,7 @@ function DoctorManagementTable(props) {
     useEffect(() => {
         if (isReload) {
             setIsReload(false);
+            setApplicationsListTemp([]);
             setApplicationsList([]);
             setDoctorList([]);
             setBannedDoctorList([]);
@@ -1271,6 +1266,7 @@ export default function WorkPlace() {
                     setIsReload(true);
                 }
                 else{
+                    console.log(selectedApplicationId);
                     console.log(json);
                 }
             }

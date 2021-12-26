@@ -234,7 +234,7 @@ export default function SignUpDoctor() {
                 }
                 else {
                     enqueueSnackbar('Đăng ký thất bại!', { variant: 'error' });
-                    console.log(json)
+                    console.log(json);
                 }
             }
         );
@@ -485,7 +485,7 @@ export default function SignUpDoctor() {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} container style={{marginTop: 40, marginBottom: 10}}>
+                            {/* <Grid item xs={12} container style={{marginTop: 40, marginBottom: 10}}>
                                 <Grid item xs={12}>
                                     <h5>Giới thiệu bản thân:</h5>
                                 </Grid>
@@ -520,7 +520,7 @@ export default function SignUpDoctor() {
                                     style={{ marginTop: 8 }}>
                                     Thêm dòng
                                 </Button>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={8}>
                                 <TextField
                                     label="Số điện thoại"
