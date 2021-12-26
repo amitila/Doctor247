@@ -1251,7 +1251,7 @@ export default class APIService {
 	}
 
 	// api for Get Medical-record By Id
-	static getMedicalRecordById(token, id, callback ) {
+	static getMedicalRecordById(token, id, callback) {
 		WebService.sendJsonGET(
 			this.apiMedicalRecordById(id),
 			{
@@ -1262,7 +1262,7 @@ export default class APIService {
 	}
 
 	// api for Put Answer Like By Id
-	static putStatusOfMedicalRecord(token, id, status, callback ) {
+	static putStatusOfMedicalRecord(token, id, status, callback) {
 		WebService.sendJsonPUT(
 			this.apiMedicalRecordById(id),
 			{

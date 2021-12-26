@@ -810,7 +810,7 @@ function DoctorManagementTable(props) {
                                     <StyledTableCell align="left">{getDate(doctor.birthday)}</StyledTableCell>
                                     <StyledTableCell align="left">{doctor.contactPhoneNumber}</StyledTableCell>
                                     <StyledTableCell align="center">
-                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus) }}>
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus, null) }}>
                                             Chi tiết
                                         </Button>
                                     </StyledTableCell>
@@ -824,7 +824,7 @@ function DoctorManagementTable(props) {
                                     <StyledTableCell align="left">{getDate(doctor.birthday)}</StyledTableCell>
                                     <StyledTableCell align="left">{doctor.contactPhoneNumber}</StyledTableCell>
                                     <StyledTableCell align="center">
-                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus) }}>
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(doctor, false, selectedDoctorStatus, null) }}>
                                             Chi tiết
                                         </Button>
                                     </StyledTableCell>
@@ -860,7 +860,7 @@ function DoctorManagementTable(props) {
                                     <StyledTableCell align="left">{getDate(application.doctor.birthday)}</StyledTableCell>
                                     <StyledTableCell align="left">{application.doctor.contactPhoneNumber}</StyledTableCell>
                                     <StyledTableCell align="center">
-                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(application.doctor, true, '') }}>
+                                        <Button variant="outlined" color="primary" align="center" onClick={() => { handleOpenDoctorDialog(application.doctor, true, '', application) }}>
                                             Chi tiết
                                         </Button>
                                     </StyledTableCell>
@@ -1030,7 +1030,7 @@ function SearchClinicsTable(props) {
                                 <StyledTableCell align="left">{item.name}</StyledTableCell>
                                 <StyledTableCell align="left">
                                     {
-                                        item.manager.doctor!==undefined?item.manager.doctor?.firstName + ' ' + item.manager.doctor?.lastName
+                                        item.manager.doctor?.firstName!==undefined?item.manager.doctor?.firstName + ' ' + item.manager.doctor?.lastName
                                         :'Quản trị viên'
                                     }
                                 </StyledTableCell>
@@ -1072,6 +1072,7 @@ export default function WorkPlace() {
 
     const [selectedWorkPlaceId, setSelectedWorkPlaceId] = React.useState(0);
     const [selectedApplicationId, setSelectedApplicationId] = React.useState(0);
+    const [selectedApplication, setSelectedApplication] = React.useState();
     const [selectedDoctor, setSelectedDoctor] = React.useState({
         id: 0, gender: '', name: '', address: '', avatarURL: '', clinic: '', dob: '', introduce: [], medicalExamination: [], contactPhoneNumber: '', specializedId: 0
     });
@@ -1110,7 +1111,8 @@ export default function WorkPlace() {
         'https://quantri.nhidong.org.vn/UploadImages/bvnhidong/PHP06/2018_6/20/1012.JPG?w=600',
     ];
 
-    const handleOpenDoctorDialog = (data, isApply, status) => {
+    const handleOpenDoctorDialog = (data, isApply, status, application) => {
+        setSelectedApplication(application);
         setIsApply(isApply);
         setSelectedDoctorStatus(status);
         setIsOpenDoctorDialog(true);
@@ -1256,17 +1258,19 @@ export default function WorkPlace() {
         if (selectedApplicationId === 0){
             return;
         }
-        APIService.putDoctorWorkPlaceApply(
+        APIService.putDoctorStatus(
             token,
-            selectedApplicationId,
-            status,
+            {
+                doctorId: workplaceId?.doctorId,
+                workplaceId: workplaceId?.workplaceId,
+                status: status
+            },
             (success, json) => {
                 if (success, json.result) {
-                    enqueueSnackbar('Chấp nhận thành công!', { variant: 'success'});
+                    enqueueSnackbar('Cài đặt thành công!', { variant: 'success'});
                     setIsReload(true);
                 }
                 else{
-                    console.log(selectedApplicationId);
                     console.log(json);
                 }
             }
