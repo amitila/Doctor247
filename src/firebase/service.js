@@ -82,5 +82,7 @@ export const addRoom = (id1, id2) => {
         members: [id1, id2],
         length: 0,
         description: '',
+        name: '',
+        avatarURL: '',
     });
 }
