@@ -175,7 +175,7 @@ export default function AppointmentForm(props) {
 							result
 						};
 					}));
-
+					setIsChecked(true);
                     return console.log("Lấy lịch thành công");
                 } else {
                     return console.log("Không lấy được lịch");
