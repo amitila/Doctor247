@@ -116,6 +116,101 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+function SetPatientNumberDialog(props) {
+    const { onClose, open, operationIdSelect, patientNumber, setPatientNumber, medicalExpenses, setMedicalExpenses, loadData, setOpenChangePatientNumber } = props;
+
+    const radioGroupRef = React.useRef(null);
+    const { enqueueSnackbar } = useSnackbar();
+
+    const token = getToken();
+
+    const handleEntering = () => {
+      if (radioGroupRef.current != null) {
+        radioGroupRef.current.focus();
+      }
+    };
+
+    const handleConfirm = () => {
+        APIService.putDoctorOperationPatientPerHalfHour(
+            token,
+            {
+                id: operationIdSelect,
+                patients: patientNumber
+            },
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Cập nhật số người khám thành công!', { variant: 'success' });
+                }
+            });
+        APIService.putDoctorOperationMedicalExpense(
+            token,
+            {
+                id: operationIdSelect,
+                medicalExpense: medicalExpenses
+            },
+            (success, json) => {
+                if (success, json.result) {
+                    enqueueSnackbar('Cập nhật chi phí khám thành công!', { variant: 'success' });
+                    setOpenChangePatientNumber(false);
+                    loadData();
+                }
+            });
+    }
+
+    const handleCancel = () => {
+        onClose();
+    }
+
+    return (
+        <Dialog
+            fullWidth
+            onEntering={handleEntering}
+            aria-labelledby="confirmation-dialog-title"
+            open={open}
+        >
+            <DialogTitle id="confirmation-dialog-title" style={{backgroundColor: 'cadetblue'}}>Cài đặt phòng khám</DialogTitle>
+            <DialogContent dividers>
+                <TextField
+                    id="standard-multiline-flexible1"
+                    label="Số bệnh nhân khám trong nửa giờ"
+                    fullWidth
+                    required
+                    type="number"
+                    style={{marginBottom: 15}}
+                    onChange={(e) => { setPatientNumber(e.target.value) }}
+                    value={patientNumber}
+                />
+                <TextField
+                    id="standard-multiline-flexible2"
+                    label="Số tiền một lần khám bệnh"
+                    type="number"
+                    fullWidth
+                    required
+                    style={{marginBottom: 15}}
+                    onChange={(e) => { setMedicalExpenses(e.target.value) }}
+                    value={medicalExpenses}
+                    InputProps={{
+                        step: 1000
+                    }}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleConfirm} variant="outlined" color="primary">
+                    Xác nhận
+                </Button>
+                <Button autoFocus onClick={handleCancel} variant="outlined" color="secondary">
+                    Hủy
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+SetPatientNumberDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+};
+
 function ClinicRegistrationDialogRaw(props) {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
@@ -1084,8 +1179,10 @@ export default function WorkPlace() {
     const [newClinicName, setNewClinicName] = React.useState('');
     const [newClinicAddress, setNewClinicAddress] = React.useState('');
     const [operationIdSelect, setOperationIdSelect] = React.useState(0);
-    const [newPatientNumber, setNewPatientNumber] = React.useState(0);
-    const [newMedicalExpense, setNewMedicalExpense] = React.useState(0);
+    const [patientNumber, setPatientNumber] = React.useState(0);
+    const [medicalExpenses, setMedicalExpenses] = React.useState(0);
+
+    const [openChangePatientNumber, setOpenChangePatientNumber] = React.useState(false);
 
     const loadData = () => {
         APIService.getDoctorWorkPlaceMy(token, (success, json) => {
@@ -1117,8 +1214,6 @@ export default function WorkPlace() {
         setSelectedDoctorStatus(status);
         setIsOpenDoctorDialog(true);
         setSelectedApplicationId(data.applicationId);
-        console.log('doctor data');
-        console.log(data);
         setSelectedDoctor({
             id: data.id,
             gender: data.gender === 'MALE' ? 'Nam' : 'Nữ',
@@ -1154,8 +1249,10 @@ export default function WorkPlace() {
         setNewClinicAddress(data.address);
         let operation = myOperations.find(x => x.workplace.id === data.id);
         setOperationIdSelect(operation.id);
-        setNewPatientNumber(operation.patientPerHalfHour===null?0:operation.patientPerHalfHour);
-        setNewMedicalExpense(operation.medicalExpense===null?0:operation.medicalExpense);
+        setPatientNumber(operation.patientPerHalfHour===null?0:operation.patientPerHalfHour);
+        setMedicalExpenses(operation.medicalExpense===null?0:operation.medicalExpense);
+        console.log('operation.medicalExpense data');
+        console.log(operation.medicalExpense);
         if (data.status === 'ACTIVE'){
             setClinicStatus(1);
         }
@@ -1190,33 +1287,10 @@ export default function WorkPlace() {
     }
 
     const handleClinicUpdateWorkPlace = () => {
-        if (newClinicName.length === 0 || newPatientNumber < 0 || newMedicalExpense < 0) {
-            enqueueSnackbar('Nhập sai!', { variant: 'error' });
+        if (newClinicName.length === 0) {
+            enqueueSnackbar('Nhập tên phòng khám.', { variant: 'error' });
             return;
         }
-        APIService.putDoctorOperationPatientPerHalfHour(
-            token,
-            {
-                id: operationIdSelect,
-                patients: newPatientNumber
-            },
-            (success, json) => {
-                if (success, json.result) {
-                    enqueueSnackbar('Cập nhật số người khám thành công!', { variant: 'success' });
-                }
-            });
-        APIService.putDoctorOperationMedicalExpense(
-            token,
-            {
-                id: operationIdSelect,
-                medicalExpense: newMedicalExpense
-            },
-            (success, json) => {
-                if (success, json.result) {
-                    enqueueSnackbar('Cập nhật chi phí khám thành công!', { variant: 'success' });
-                    loadData();
-                }
-            });
         APIService.putDoctorWorkPlace(
             token,
             {
@@ -1232,6 +1306,7 @@ export default function WorkPlace() {
                     APIService.getDoctorWorkPlaceMy(token, (success, json) => {
                         if (success && json.result) {
                             setMyClinics(json.result);
+                            loadData();
                         }
                     });
                 }
@@ -1363,6 +1438,22 @@ export default function WorkPlace() {
                 {/* <h3>----- ----- ----- ----- -----</h3>
                 <ClinicRequestTable myManagementClinics={myManagementClinics}/> */}
             </TabPanel>
+            <SetPatientNumberDialog
+                classes={{
+                    paper: classes.paper,
+                }}
+                id="ringtone-menu"
+                patientNumber={patientNumber}
+                setPatientNumber={setPatientNumber}
+                medicalExpenses={medicalExpenses}
+                setMedicalExpenses={setMedicalExpenses}
+                operationIdSelect={operationIdSelect}
+                loadData={loadData}
+                setOpenChangePatientNumber={setOpenChangePatientNumber}
+                keepMounted
+                open={openChangePatientNumber}
+                onClose={() => {setOpenChangePatientNumber(false)}}
+            />
             <ClinicRegistrationDialogRaw
                 classes={{
                     paper: classes.paper
@@ -1417,15 +1508,15 @@ export default function WorkPlace() {
                             readOnly: true,
                         }}
                     /> */}
-                    {
+                    {/* {
                         (isEditMode) ?
                         <TextField
                             margin="dense"
                             id="name"
                             type="number"
                             label="Số bệnh nhân khám trong nửa giờ"
-                            value={newPatientNumber}
-                            onChange={(e) => {setNewPatientNumber(e.target.value)}}
+                            value={patientNumber}
+                            onChange={(e) => {setPatientNumber(e.target.value)}}
                             fullWidth
                             InputProps={{
                                 readOnly: !isEditMode,
@@ -1438,16 +1529,16 @@ export default function WorkPlace() {
                             margin="dense"
                             id="name"
                             type="number"
-                            label="Số tiền khám"
-                            value={newMedicalExpense}
-                            onChange={(e) => {setNewMedicalExpense(e.target.value)}}
+                            label="Số tiền một lần khám"
+                            value={medicalExpenses}
+                            onChange={(e) => {setMedicalExpenses(e.target.value)}}
                             fullWidth
                             InputProps={{
                                 readOnly: !isEditMode,
                                 step: 10000,
                             }}
                         />:null
-                    }
+                    } */}
                     <FormControl className={classes.formControl} fullWidth>
                         <InputLabel id="demo-controlled-open-select-label">Trạng thái hoạt động</InputLabel>
                         <Select
@@ -1490,6 +1581,12 @@ export default function WorkPlace() {
                         <Button onClick={handleClinicUpdateWorkPlace} color="primary" variant="contained" >
                             Xác nhận
                         </Button> : null
+                    }
+                    {
+                        isMine ? 
+                        <Button onClick={() => {setOpenChangePatientNumber(true)}} color="primary" variant="outlined">
+                            Cài đặt
+                        </Button>:null
                     }
                     <Button onClick={() => {setIsOpenClinicDialog(false)}} color="default" variant="outlined">
                         Đóng
