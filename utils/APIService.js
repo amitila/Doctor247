@@ -1,8 +1,8 @@
 import WebService from './WebService';
 
 export default class APIService {
-	static urlServerAddress = 'http://192.168.1.5:8080';
-	// static urlServerAddress = 'https://doctor247api.herokuapp.com';
+	// static urlServerAddress = 'http://192.168.1.5:8080';
+	static urlServerAddress = 'https://doctor247api.herokuapp.com';
 
 	// For customer
 	static baseAPI = () => {
@@ -990,7 +990,7 @@ export default class APIService {
 	//====================MEDICAL - RECORD======================
 
 	// api for Get Medical-records
-	static getMedicalRecords(token, values, callback ) {
+	static getMedicalRecords(token, values, appointmentStatus, callback ) {
 		const formData = new FormData();
 		formData.append('skip', values.skip);
 		formData.append('take', values.take);
@@ -1001,7 +1001,8 @@ export default class APIService {
 			this.apiMedicalRecord(),
 			{
 				jwt: token,
-				formData
+				formData,
+				appointmentStatus
 			},
 			callback,
 		);

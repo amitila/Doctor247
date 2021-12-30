@@ -14,7 +14,7 @@ const ChatAndVideoCallScreen = ({navigation}) => {
 		// </View>
 		<WebView 
 			originWhitelist={['*']}
-			source={{ uri: 'http://192.168.1.7:3000/home' }} 
+			source={{ uri: 'https://doctor247-web.herokuapp.com/home' }} 
 			style={{marginTop: -60}}
 		/>
 	);

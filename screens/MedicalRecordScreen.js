@@ -16,10 +16,12 @@ const MedicalRecordScreen = ({ navigation }) => {
 			AsyncStorage.getItem('token')
 				.then((token) => {
                     const mrList = [];
+					const appointmentStatus = 'DONE';
 					APIService.getMedicalRecords(
 						token,
 						{
 						},
+						appointmentStatus,
 						(success, json) => {
 							if (success && json.result) {
 								json.result.map(item => {
