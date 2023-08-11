@@ -29,15 +29,12 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
 
 import APIService from '../../../utils/APIService';
 import CustomImage from '../../../components/Image';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
 import { AppContext } from '../../../store/AppProvider';
-
-const axios = require("axios");
 
 // const token = localStorage.getItem("token_doctor247");
 const token = getToken();
@@ -138,7 +135,7 @@ function SetPatientNumberDialog(props) {
                 patients: patientNumber
             },
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     enqueueSnackbar('Cập nhật số người khám thành công!', { variant: 'success' });
                 }
             });
@@ -149,7 +146,7 @@ function SetPatientNumberDialog(props) {
                 medicalExpense: medicalExpenses
             },
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     enqueueSnackbar('Cập nhật chi phí khám thành công!', { variant: 'success' });
                     setOpenChangePatientNumber(false);
                     loadData();
@@ -246,10 +243,8 @@ function ClinicRegistrationDialogRaw(props) {
     const [imgSrcList, setImgSrcList] = React.useState([]);
     const [clinicName, setClinicName] = React.useState('');
     const [street, setStreet] = React.useState('');
-    const [phone, setPhone] = React.useState('');
     const [latitude, setLatitude] = React.useState(0.0);
     const [longitude, setLongitude] = React.useState(0.0);
-
 
     const handleChangeImage = (e) => {
         const files = e.target.files;
@@ -310,7 +305,7 @@ function ClinicRegistrationDialogRaw(props) {
                         setStreet('');
                         setLatitude('');
                         setLatitude('');
-                        console.log('regist clinic info');
+                        console.log('register clinic info');
                         console.log(data);
                     }
                 }
@@ -612,39 +607,6 @@ function getDate(datetime) {
     return dt.getDate().toString().padStart(2, '0') + "/" + (dt.getMonth() + 1).toString().padStart(2, '0') + "/" + dt.getFullYear();
 }
 
-function getDayOfWeek(datetime) {
-    const dt = new Date(datetime);
-    const dayCode = dt.getDay();
-    let result = "";
-    switch (dayCode) {
-        case 0:
-            result = "Chủ nhật";
-            break;
-        case 1:
-            result = "Thứ hai";
-            break;
-        case 2:
-            result = "Thứ ba";
-            break;
-        case 3:
-            result = "Thứ tư";
-            break;
-        case 4:
-            result = "Thứ năm";
-            break;
-        case 5:
-            result = "Thứ sáu";
-            break;
-        case 6:
-            result = "Thứ bảy";
-            break;
-        default:
-            result = "error";
-            break;
-    }
-    return result;
-}
-
 function MyClinicsTable(props) {
     const classes = useStyles();
     
@@ -692,7 +654,6 @@ function MyClinicsTable(props) {
 
 function DoctorManagementTable(props) {
     const classes = useStyles();
-    const { enqueueSnackbar } = useSnackbar();
 
     const { myManagementClinics, handleOpenDoctorDialog, setSelectedWorkPlaceId, isReload, setIsReload } = props;
 
@@ -711,7 +672,7 @@ function DoctorManagementTable(props) {
                 clinic.id,
                 "PENDING",
                 (success, json) => {
-                    if (success, json.result) {
+                    if (success && json.result) {
                         let list = [];
                         json.result.forEach(item => {
                             list.push({
@@ -990,7 +951,7 @@ function SearchClinicsTable(props) {
             status: 'ACTIVE',
         }
         APIService.getDoctorWorkPlace(token, condition, (success, json) => {
-            if (success, json.result) {
+            if (success && json.result) {
                 if (place === 0 && type === 0) {
                     setWorkPlaceList(json.result);
                     return;
@@ -1012,7 +973,7 @@ function SearchClinicsTable(props) {
         setWardsList([]);
         if (place !== 0) {
             APIService.getDistricts(place, (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     setDistrictsList(json.result);
                 }
             });
@@ -1026,7 +987,7 @@ function SearchClinicsTable(props) {
         if (districtsList.length !== 0) {
             districtsList.forEach(district => {
                 APIService.getWards(district.id, (success, json) => {
-                    if (success, json.result) {
+                    if (success && json.result) {
                         setWardsListTemp(json.result);
                     }
                 });
@@ -1043,7 +1004,7 @@ function SearchClinicsTable(props) {
             status: 'ACTIVE',
         }
         APIService.getDoctorWorkPlace(token, condition, (success, json) => {
-            if (success, json.result) {
+            if (success && json.result) {
                 setWorkPlaceList(json.result);
             }
         });
@@ -1202,12 +1163,6 @@ export default function WorkPlace() {
         });
     }
 
-    const imgList = [
-        'https://cdnmedia.baotintuc.vn/Upload/4l8oGGp94lA5r6lHXppg/files/2021/06/nhidong1.jpg',
-        'https://media.vov.vn/sites/default/files/styles/large_watermark/public/2021-07/benh_vien.jpg',
-        'https://quantri.nhidong.org.vn/UploadImages/bvnhidong/PHP06/2018_6/20/1012.JPG?w=600',
-    ];
-
     const handleOpenDoctorDialog = (data, isApply, status, application) => {
         setSelectedApplication(application);
         setIsApply(isApply);
@@ -1275,7 +1230,7 @@ export default function WorkPlace() {
                 selectedClinic.id,
                 1,
                 (success, json) => {
-                    if (success, json.result) {
+                    if (success && json.result) {
                         enqueueSnackbar('Nộp đơn thành công!', { variant: 'success' });
                     }
                     else{
@@ -1300,7 +1255,7 @@ export default function WorkPlace() {
                 address: newClinicAddress
             },
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     setIsOpenClinicDialog(false);
                     enqueueSnackbar('Cập nhật phòng khám thành công!', { variant: 'success' });
                     APIService.getDoctorWorkPlaceMy(token, (success, json) => {
@@ -1341,7 +1296,7 @@ export default function WorkPlace() {
                 status: status
             },
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     enqueueSnackbar('Cài đặt thành công!', { variant: 'success'});
                     setIsReload(true);
                 }
@@ -1363,7 +1318,7 @@ export default function WorkPlace() {
                     status: 'BANNED'
                 },
                 (success, json) => {
-                    if (success, json.result) {
+                    if (success && json.result) {
                         enqueueSnackbar('Đã xóa!', { variant: 'success'});
                         setIsReload(true);
                     }
@@ -1386,7 +1341,7 @@ export default function WorkPlace() {
                     status: 'ACTIVE'
                 },
                 (success, json) => {
-                    if (success, json.result) {
+                    if (success && json.result) {
                         enqueueSnackbar('Đã kích hoạt!', { variant: 'success'});
                         setIsReload(true);
                     }

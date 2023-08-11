@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
-import { AppContext } from '../../../store/AppProvider';
 
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
@@ -421,16 +420,6 @@ function MedicalRecordDetail(props) {
     const [isEditBodyStats, setIsEditBodyStats] = useState(false);
     const [fileList, setFileList] = React.useState([]);
 
-    const [imgList, setImgList] = useState([
-        'http://www.boclinic.vn/wp-content/uploads/2017/05/5-meo-dep-bo-cang-thang-keo-dai-giup-ban-tre-khoe-moi-ngay-1.jpg',
-        'https://goldenhealthcarevn.com/wp-content/uploads/2018/12/stressed-businessman-300x200.jpeg',
-    ]);
-    // const [imgList, setImgList] = useState([
-    //     'https://vinmec-prod.s3.amazonaws.com/images/20190301_035714_660235_an_khong_ngon_do_gan.max-800x800.jpg',
-    //     'https://www.tapchiyhoccotruyen.com/wp-content/uploads/2021/05/image4-115.jpg',
-    //     'https://normagut.com/wp-content/uploads/2021/02/vi-tri-dau-bung-o-ben-trai-hoac-ben-phai.jpg',
-    // ]);
-    
     useEffect(() => {
         if (!isEditBodyStats) {
             APIService.getDoctorAppointment(token, (success, json) => {

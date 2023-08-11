@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core';
 import userImg from '../../assets/user.png';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { useLocation } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
     customer: {
@@ -86,7 +85,7 @@ function UserDiv(props) {
 export default function VideoCallComponent(props) {
     const { role } = props;
 
-    const { peer, listOnlineUsers, setListOnlineUsers, callingUserId, setCallingUserId, userInfo, socket, openStream, playStream, closeStream, currentCall, myPeerId } = useContext(AppContext);
+    const { peer, listOnlineUsers, setListOnlineUsers, callingUserId, setCallingUserId, userInfo, socket, openStream, playStream, closeStream, currentCall } = useContext(AppContext);
 
     const [isCallSend, setIsCallSend] = useState(false);
     const [isCallAccept, setIsCallAccept] = useState(false);
@@ -94,7 +93,6 @@ export default function VideoCallComponent(props) {
     const [isCallBusy, setIsCallBusy] = useState(false);
     const [waitingUserId, setWaitingUserId] = useState(0);
     const [waitingPeerId, setWaitingPeerId] = useState('');
-    const [currentCallSend, setCurrentCallSend] = useState(null);
 
     const classes = useStyles();
 
@@ -147,17 +145,6 @@ export default function VideoCallComponent(props) {
             setCallingUserId(0);
         }
     });
-
-    // get param when open new window
-    const location = useLocation();
-    useEffect(() => {
-        socket.emit('GET_ONLINE_USERS');
-        openStream()
-            .then(stream => {
-                playStream('localStream', stream);
-            });
-        //const query = new URLSearchParams(useLocation().search);
-    }, []);
 
     useEffect(() => {
         if (isCallBusy) {

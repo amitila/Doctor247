@@ -12,7 +12,7 @@ const CustomImage = ({image, ...props}) => {
     }
 
     return (
-        <img src={imageURL} {...props}></img>
+        <img src={imageURL} {...props} alt=''></img>
     )
 }
 

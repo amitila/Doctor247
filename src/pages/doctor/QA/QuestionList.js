@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Profile/Profile.css';
 import { Grid } from '@material-ui/core';
-import { AppContext } from '../../../store/AppProvider';
 
 import TextField from '@material-ui/core/TextField';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,8 +23,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputBase from '@material-ui/core/InputBase';
-import Icon from '@material-ui/core/Icon';
 import SendIcon from '@material-ui/icons/Send';
 import { useSnackbar } from 'notistack';
 
@@ -73,18 +69,6 @@ const useStyles = makeStyles((theme) => ({
       minWidth: '20ch',
     },
 }));
-
-function getStatus(status){
-    if(status === "DONE"){
-        return "Đã khám";
-    }
-    else if(status === "PENDING"){
-        return "Chưa khám";
-    }
-    else if(status === "DOING"){
-        return "Đang khám";
-    }
-}
 
 function getDay(datetime) {
     const dt = new Date(datetime);
@@ -330,7 +314,6 @@ function QuestionsList(props) {
     const [questionsList, setQuestionsList] = useState([]);
     const [selectedSpecializedId, setSelectedspecializedId] = React.useState(0);
     const [openSpecialization, setOpenSpecialization] = React.useState(false);
-    const [questionsFilterList, setQuestionsFilterList] = React.useState([]);
     const [keyword, setKeyword]= React.useState('');
 
     const handleClickSearch = () => {

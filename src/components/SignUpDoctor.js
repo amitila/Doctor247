@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -111,37 +111,6 @@ export default function SignUpDoctor() {
     const [idImgSrcListStr, setIdImgSrcListStr] = React.useState([]);    
     const [certificateImgSrcList, setCertificateImgSrcList] = React.useState([]);
     const [certificateImgSrcListStr, setCertificateImgSrcListStr] = React.useState([]);
-    
-    const [introduces, setIntroduces] = React.useState([]);
-    const [medicalExamination, setMedicalExamination] = React.useState([]);
-    const handleUpdateIntroText = (index, text) => {
-        let lst = introduces;
-        lst.splice(index, 1, text);
-        setIntroduces([...lst]);
-    }
-    const handleUpdateMEText = (index, text) => {
-        let lst = medicalExamination;
-        lst.splice(index, 1, text);
-        setMedicalExamination([...lst]);
-    }
-    const handleRemoveIntroRow = (index) => {
-        let lst = introduces;
-        lst.splice(index, 1);
-        setIntroduces([...lst]);
-    }
-    const handleRemoveMERow = (index) => {
-        let lst = medicalExamination;
-        lst.splice(index, 1);
-        setMedicalExamination([...lst]);
-    }
-    const handleAddIntroRow = () => {
-        let newItem = '';
-        setIntroduces([...introduces, newItem]);
-    }
-    const handleAddMERow = () => {
-        let newItem = '';
-        setMedicalExamination([...medicalExamination, newItem]);
-    }
 
     const getFullAddress = () => {
         const p = provinces.find(x => x.id === provinceSelect)?.name;
@@ -170,7 +139,7 @@ export default function SignUpDoctor() {
         setWardSelect(0);
         if (provinceSelect !== 0) {
             APIService.getDistricts(provinceSelect, (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     setDistricts(json.result);
                 }
             });
@@ -187,7 +156,7 @@ export default function SignUpDoctor() {
             return;
         }
         APIService.getWards(districtSelect, (success, json) => {
-            if (success, json.result) {
+            if (success && json.result) {
                 setWards(json.result);
             }
         });
@@ -195,7 +164,6 @@ export default function SignUpDoctor() {
 
     const handeSubmitForm = () => {
         const data = {
-            firstName: 'PHONE',
             email: email,
             firstName: firstName,
             lastName: lastName,
@@ -228,7 +196,7 @@ export default function SignUpDoctor() {
         APIService.postSignUpDoctor(
             data,
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     enqueueSnackbar('Đăng ký thành công! Vui lòng chờ quản trị viên xét duyệt và thông báo!', { variant: 'success' });
                     history.push('/home');
                 }
@@ -485,42 +453,6 @@ export default function SignUpDoctor() {
                                     }}
                                 />
                             </Grid>
-                            {/* <Grid item xs={12} container style={{marginTop: 40, marginBottom: 10}}>
-                                <Grid item xs={12}>
-                                    <h5>Giới thiệu bản thân:</h5>
-                                </Grid>
-                                {
-                                    introduces.map((introduce, index) => {
-                                        return <Row oldText={introduce} index={index} getText={(index, text) => { handleUpdateIntroText(index, text) }} removeThis={() => { handleRemoveIntroRow(index) }} />
-                                    }
-                                    )
-                                }
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={handleAddIntroRow}
-                                    style={{ marginTop: 8 }}>
-                                    Thêm dòng
-                                </Button>
-                            </Grid>
-                            <Grid item xs={12} container style={{marginTop: 30, marginBottom: 40}}>
-                                <Grid item xs={12}>
-                                    <h5>Thông tin chuyên khám:</h5>
-                                </Grid>
-                                {
-                                    medicalExamination.map((element, index) => {
-                                        return <Row oldText={element} index={index} getText={(index, text) => { handleUpdateMEText(index, text) }} removeThis={() => { handleRemoveMERow(index) }} />
-                                    }
-                                    )
-                                }
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={handleAddMERow}
-                                    style={{ marginTop: 8 }}>
-                                    Thêm dòng
-                                </Button>
-                            </Grid> */}
                             <Grid item xs={8}>
                                 <TextField
                                     label="Số điện thoại"

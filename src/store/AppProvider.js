@@ -5,7 +5,6 @@ import useFirestore from '../firebase/useFirestore';
 import { useHistory } from "react-router-dom";
 import APIService from '../utils/APIService';
 import getToken from '../helpers/getToken';
-import Cookies from 'universal-cookie';
 
 const ScreenCode = {
     HOME: 1,
@@ -116,7 +115,7 @@ export default function AppProvider({ children }) {
         APIService.getDoctorAppointment(
             token,
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     var list = [];
                     json.result.forEach(item => {
                         if (item.status === 'PENDING') {
@@ -141,7 +140,7 @@ export default function AppProvider({ children }) {
         APIService.getDoctorAppointment(
             token,
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     var list = [];
                     json.result.forEach(item => {
                         if (item.status === 'PENDING') {

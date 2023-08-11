@@ -1,5 +1,4 @@
-import { collection, doc, getDoc, setDoc, updateDoc,query, where, onSnapshot } from "@firebase/firestore";
-import _ from "lodash";
+import { doc, getDoc, setDoc} from "@firebase/firestore";
 import { db } from "./config"
 
 export const addDocument = (collectionName, data, dataId) => {
@@ -10,12 +9,6 @@ export const addDocument = (collectionName, data, dataId) => {
     }));
 
 }
-
-// export const updateDocumentField = (collectionName, dataId, fieldName, fieldValue) => {
-//     updateDoc((doc(db, collectionName, dataId), {
-//         fieldName: fieldValue
-//     }));
-// }
 
 export const getDocument = async(collectionName, dataId) => {  
     const docRef = doc(db, collectionName, dataId);
@@ -49,30 +42,6 @@ export const getNowDateTimeCode = () => {
         time.getMinutes().toString().padStart(2, 0) + "" + 
         time.getSeconds().toString().padStart(2, 0);
     return parseInt(result);
-}
-
-export const listenDocumentSnapshot = (collection, dataId) => {
-    const unsub = onSnapshot(doc(db, collection, dataId), (doc) => {
-        //console.log("Current data: ", doc.data());
-    });
-}
-
-export const listenSnapshot = () => {
-    const q = query(collection(db, "users"), where("email", "!=", ""));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
-                console.log("Added : ", change.doc.data());
-            }
-            if (change.type === "modified") {
-                console.log("Modified : ", change.doc.data());
-            }
-            if (change.type === "removed") {
-                console.log("Removed : ", change.doc.data());
-            }
-        });
-    });
-
 }
 
 export const addRoom = (id1, id2) => {

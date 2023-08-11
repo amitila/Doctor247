@@ -25,13 +25,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import DialogContentText from "@material-ui/core/DialogContentText";
 
 import APIService from '../../../utils/APIService';
-import CustomImage from '../../../components/Image';
 
 import { AppContext } from '../../../store/AppProvider';
-import { toInteger, update } from 'lodash';
+import { toInteger } from 'lodash';
 import getToken from '../../../helpers/getToken';
 import { useSnackbar } from 'notistack';
 
@@ -199,11 +197,6 @@ const WPMode = {
     ADD: 1,
     UPDATE: 2,
     DELETE: 3,
-}
-
-function getDateTime(hms) {
-    let result = "2021-01-01T" + hms + ":00.000Z";
-    return result;
 }
 
 // get MMss(int) from HH:mm(string)
@@ -619,7 +612,7 @@ export default function TimeTable() {
         APIService.getDoctorAppointment(
             token,
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     var list = [];
                     json.result.forEach(item => {
                         if (item.status === 'PENDING') {
@@ -839,7 +832,7 @@ export default function TimeTable() {
                     token,
                     item,
                     (success, json) => {
-                        if(success, json.result){
+                        if(success && json.result){
                             setIsOpenWP(false);
                             setIsReload(true);
                             enqueueSnackbar("Cập nhật thành công!", {variant: "success"});
@@ -856,13 +849,6 @@ export default function TimeTable() {
             enqueueSnackbar("Bạn chưa nhập đủ thông tin.", {variant: "error"});
         }
     };
-
-    const imgList = [
-        'https://cdnmedia.baotintuc.vn/Upload/4l8oGGp94lA5r6lHXppg/files/2021/06/nhidong1.jpg',
-        'https://media.vov.vn/sites/default/files/styles/large_watermark/public/2021-07/benh_vien.jpg',
-        'https://quantri.nhidong.org.vn/UploadImages/bvnhidong/PHP06/2018_6/20/1012.JPG?w=600',
-    ];
-
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

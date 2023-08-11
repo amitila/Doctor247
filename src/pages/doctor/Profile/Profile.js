@@ -3,7 +3,6 @@ import './Profile.css';
 import Grid from '@material-ui/core/Grid';
 import APIService from '../../../utils/APIService';
 
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120
+        minWidth: 120,
     },
     selectEmpty: {
         marginTop: theme.spacing(2)
@@ -45,9 +44,6 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             color: '#004d40'
          },
-    },
-    formControl: {
-        minWidth: 120,
     },
 }));
 // get date from ymd
@@ -207,7 +203,7 @@ function Profile(props) {
             token,
             data,
             (success, json) => {
-                if (success, json.result) {
+                if (success && json.result) {
                     enqueueSnackbar('Cập nhật thành công!', { variant: 'success' });
                     setOpenEditInfo(false);
                     loadMyProfile();
@@ -533,7 +529,7 @@ function Profile(props) {
                                     </div>
                                     <div className="col-md-9 text-secondary">
                                         {
-                                            values.image == ''? <h6>Chưa có hình</h6>
+                                            values.image === ''? <h6>Chưa có hình</h6>
                                             :<img src={values.image} style={{ margin: '3%' }} width="200" height="200" alt=""/>
                                         }
                                     </div>

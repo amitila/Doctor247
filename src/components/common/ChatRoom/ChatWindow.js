@@ -14,19 +14,6 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 
 const avatarTemplate = 'https://img.flaticon.com/icons/png/512/149/149071.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF';
 
-const styles = (theme) => ({
-    root: {
-        margin: 0,
-        padding: theme.spacing(2),
-    },
-    closeButton: {
-        position: 'absolute',
-        right: theme.spacing(1),
-        top: theme.spacing(1),
-        color: theme.palette.grey[500],
-    },
-});
-
 const HeaderStyled = styled.div`
     display: flex;
     justify-content: space-between;
